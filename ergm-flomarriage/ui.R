@@ -100,10 +100,12 @@ shinyUI(fluidPage(
                              networks is ', code('~ degree + espartners + distance'), 'and for 
                              directed networks is ', code('~ idegree + odegree + espartners + 
                                                           distance'), '.'),
-                           
-                           selectInput('gofterm', 'Goodness of Fit Term:',
-                                       c(Choose='', 'degree', 'distance', 'espartners', 'dspartners', 'triadcensus', 'model'),
-                                       selectize = FALSE),
+                           fluidRow(
+                                    column(6, selectInput('gofterm', 'Goodness of Fit Term:',
+                                                          c(Default='', 'degree', 'distance', 'espartners', 
+                                                            'dspartners', 'triadcensus', 'model'),
+                                                          selectize = FALSE)),
+                                    column(4, actionButton('gofButton', 'Run'))),
                            verbatimTextOutput('gof.summary'),  
                            plotOutput('gofplot')
                            
