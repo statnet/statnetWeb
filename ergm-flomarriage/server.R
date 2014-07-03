@@ -10,15 +10,26 @@ shinyServer(
     
     data(florentine)   
     
-    #nw <- reactive({eval(parse(text = input$dataset))})
+    ##########################
+    ## reactive expressions ##
     
+    nw <- reactive({eval(parse(text = input$dataset))})
+    ergm.terms <- reactive({paste(input$terms, sep = '', collapse = '+')})
+    ergm.formula <- reactive({formula(paste('nw() ~ ',ergm.terms(), sep = ''))})
+    model1 <- reactive({ergm(ergm.formula())})
+    model1.sim <- reactive({simulate(model1(), nsim = input$nsims)})
+    model1.gof1 <- reactive({gof(model1())})
+    gof.formula <- reactive({formula(paste('model1 ~ ', input$gofterm, sep = ''))})
+    model1.gof2 <- reactive({gof(gof.formula())})
+    
+    
+    ########################
+    ## output expressions ##    
     
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
-      }
-      nw <- isolate(eval(parse(text = input$dataset)))
-      
+      } 
       #could isolate iso, vnames, vcolor, vsize if you don't want them to update automatically
       vcolor <- switch(input$colorby,
                        'None' = 2,
@@ -27,22 +38,23 @@ shinyServer(
                        'vertex.names' = 'vertex.names',
                        'wealth' = 'wealth')
       vsize <- switch(input$sizeby,               
-                      'priorates' = get.vertex.attribute(nw,'priorates')/25,
-                      'totalties' = get.vertex.attribute(nw,'totalties')/25,
+                      'priorates' = get.vertex.attribute(nw(),'priorates')/25,
+                      'totalties' = get.vertex.attribute(nw(),'totalties')/25,
                       'vertex.names' = ,
-                      'None' = 0.9,
-                      'wealth' = get.vertex.attribute(nw,'wealth')/25)
+                      'None' = 1,
+                      'wealth' = get.vertex.attribute(nw(),'wealth')/25)
       
-      plot(nw, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
+      plot.network(nw(), displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
     })
+    
     
     output$attr <- renderPrint({
       if (input$goButton == 0){
         return('Please choose a sample dataset from the side panel')
       }
-      nw <- isolate(eval(parse(text = input$dataset)))
-      return(nw)
+      return(nw())
     })
+    
     
     output$modelfit <- renderPrint({
       if (input$goButton == 0){
@@ -51,13 +63,9 @@ shinyServer(
       else if (input$fitButton == 0){
         return('Please choose term(s) for the model')
       }
-      nw <- isolate(eval(parse(text = input$dataset)))
-      ergm.terms <- isolate(paste(input$terms, sep = '', collapse = '+'))
-      ergm.formula <- isolate(formula(paste('nw ~ ',ergm.terms, sep = '')))
-      
-      model1 <- ergm(ergm.formula) #this changes with terms!
-      return(summary(model1))
+      return(summary(model1()))
     })
+    
     
     output$sim.summary <- renderPrint({
       if (input$goButton == 0){
@@ -66,14 +74,9 @@ shinyServer(
       else if (input$simButton == 0){
         return("You haven't clicked 'Simulate' yet!")
       }
-      nw <- isolate(eval(parse(text = input$dataset)))
-      ergm.terms <- isolate(paste(input$terms, sep = '', collapse = '+'))
-      ergm.formula <- formula(paste('nw ~ ',ergm.terms, sep = ''))
-      
-      model1 <- ergm(ergm.formula) #this changes with terms!
-      model1.sim <- isolate(simulate(model1, nsim = input$nsims))
-      return(summary(model1.sim))
+      return(summary(model1.sim()))
     })
+    
     
     output$simplot <- renderPlot({
       input$goButton
@@ -85,15 +88,7 @@ shinyServer(
       #can't plot simulation number greater than total sims
       if(input$this.sim > nsims){
         return()
-      }
-      
-      nw <- isolate(eval(parse(text = input$dataset)))
-      ergm.terms <- isolate(paste(input$terms, sep = '', collapse = '+'))
-      ergm.formula <- formula(paste('nw ~ ',ergm.terms, sep = ''))
-      
-      model1 <- ergm(ergm.formula) #this changes with terms!
-      model1.sim <- isolate(simulate(model1, nsim = nsims))
-      
+      }      
       #use plot display options from sidebar
       vcolor <- switch(input$colorby,
                        'None' = 2,
@@ -102,19 +97,19 @@ shinyServer(
                        'vertex.names' = 'vertex.names',
                        'wealth' = 'wealth')
       vsize <- switch(input$sizeby,               
-                      'priorates' = get.vertex.attribute(nw,'priorates')/25,
-                      'totalties' = get.vertex.attribute(nw,'totalties')/25,
+                      'priorates' = get.vertex.attribute(nw(),'priorates')/25,
+                      'totalties' = get.vertex.attribute(nw(),'totalties')/25,
                       'vertex.names' = ,
                       'None' = 0.9,
-                      'wealth' = get.vertex.attribute(nw,'wealth')/25)
-      
-      
+                      'wealth' = get.vertex.attribute(nw(),'wealth')/25)      
+      model1.sim.all <- model1.sim()     
       if (nsims == 1){
-        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
+        plot(model1.sim.all, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
       } else {
-        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
+        plot(model1.sim.all[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
       }
     })
+    
     
     output$gof.summary <- renderPrint({
       if (input$goButton == 0){
@@ -122,38 +117,23 @@ shinyServer(
       }
       else if (input$fitButton == 0){
         return('Please choose term(s) for the model on the "Fit Model" tab')
-      }
-      
-      nw <- isolate(eval(parse(text = input$dataset)))
-      ergm.terms <- isolate(paste(input$terms, sep = '', collapse = '+'))
-      ergm.formula <- formula(paste('nw ~ ',ergm.terms, sep = ''))
-      
-      model1 <- ergm(ergm.formula) #this changes with terms!
-      
+      }      
       if (input$gofterm == ''){
-        model1.gof <- gof(model1)
+        model1.gof <- model1.gof1()
       } else {
-        gof.formula <- formula(paste('model1 ~ ', input$gofterm, sep = ''))
-        model1.gof <- gof(gof.formula)}
+        model1.gof <- model1.gof2()}
       return(model1.gof)
     })
     
-    output$gofplot <- renderPlot({
-      nw <- isolate(eval(parse(text = input$dataset)))
-      ergm.terms <- isolate(paste(input$terms, sep = '', collapse = '+'))
-      ergm.formula <- formula(paste('nw ~ ',ergm.terms, sep = ''))
-      
-      model1 <- ergm(ergm.formula) #this changes with terms!
+    
+    output$gofplot <- renderPlot({   
       if (input$gofterm == ''){
-        model1.gof <- gof(model1)
+        model1.gof <- model1.gof1()
         par(c(3,1))
       } else {
         par(c(1,1))
-        gof.formula <- formula(paste('model1 ~ ', input$gofterm, sep = ''))
-        model1.gof <- gof(gof.formula)}
+        model1.gof <- model1.gof2()}
       plot.gofobject(model1.gof)
-    })
-    
-    
+    })  
     
   })
