@@ -129,11 +129,12 @@ shinyServer(
     output$gofplot <- renderPlot({   
       if (input$gofterm == ''){
         model1.gof <- model1.gof1()
-        par(c(3,1))
+        par(mfrow=c(1,3))
       } else {
-        par(c(1,1))
+        par(mfrow=c(1,1))
         model1.gof <- model1.gof2()}
       plot.gofobject(model1.gof)
+      par(mfrow=c(1,1))
     })  
     
   })
