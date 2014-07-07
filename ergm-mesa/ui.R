@@ -30,16 +30,20 @@ shinyUI(fluidPage(
                                      value = FALSE),
                        selectInput('colorby',
                                    label = 'Color nodes according to:',
-                                   c(),
+                                   c('na', 'Grade','Race','Sex'),
                                    selectize = FALSE),
                        selectInput('sizeby',
                                    label = 'Size nodes according to:',
-                                   c(),
+                                   c('na', 'Grade','Race','Sex'),
                                    selectize = FALSE))),
     
     mainPanel(
       tabsetPanel(type = 'tabs', id = 'tabs1',
-                  tabPanel('Plot Network'),
+                  tabPanel('Plot Network',
+                           plotOutput('nwplot'),
+                           h4('Network Summary'),
+                           verbatimTextOutput('attr')
+                           ),
                   
                   tabPanel('Fit Model',
                            fluidRow(
@@ -59,9 +63,25 @@ shinyUI(fluidPage(
                              p('Be sure to continue all the way to the "Goodness of Fit" and "Diagnostics"
                                tabs to check for model degeneracy.'),
                              br(),
-                             verbatimTextOutput('modelfit'))),
+                             verbatimTextOutput('modelfit'))
+                           ),
                   
-                  tabPanel('Simulations'),
+                  tabPanel('Simulations',
+                           fluidRow(
+                             column(6,
+                                    numericInput('nsims',
+                                                 label = 'Number of simulations:',
+                                                 min = 1,
+                                                 value = 1)),
+                             column(4,
+                                    actionButton('simButton', 'Simulate'))),
+                           verbatimTextOutput('sim.summary'),
+                           numericInput('this.sim',
+                                        label = 'Choose a simulation to plot',
+                                        min = 1,
+                                        value = 1),
+                           plotOutput('simplot')
+                           ),
                   
                   tabPanel('Goodness of Fit',
                            p('Test how well your model fits the original data by choosing 
@@ -72,10 +92,19 @@ shinyUI(fluidPage(
                            p('If you do not specify a term the default formula for undirected 
                              networks is ', code('~ degree + espartners + distance'), 'and for 
                              directed networks is ', code('~ idegree + odegree + espartners + 
-                                                          distance'), '.') 
+                                                          distance'), '.'),
+                           fluidRow(
+                             column(6, selectInput('gofterm', 'Goodness of Fit Term:',
+                                                   c(Default='', 'degree', 'distance', 'espartners', 
+                                                     'dspartners', 'triadcensus', 'model'),
+                                                   selectize = FALSE)),
+                             column(4, actionButton('gofButton', 'Run'))),
+                           verbatimTextOutput('gof.summary'),  
+                           plotOutput('gofplot')
                            ),
                   
-                  tabPanel('Diagnostics')
+                  tabPanel('Diagnostics',
+                           verbatimTextOutput('diagnostics'))
                            )
       )
     )
