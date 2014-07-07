@@ -3,3 +3,7 @@
 library(shiny)
 library(statnet)
 
+shinyServer(
+  function(input, output){
+    
+  })
