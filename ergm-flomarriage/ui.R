@@ -99,4 +99,10 @@ shinyUI(fluidPage(
                            verbatimTextOutput('gof.summary'),  
                            plotOutput('gofplot')),
                   
-                  tabPanel('Diagnostics'))))))
+                  tabPanel('Diagnostics',
+                           verbatimTextOutput('diagnostics'))
+                  )
+      )
+    )
+  )
+  )

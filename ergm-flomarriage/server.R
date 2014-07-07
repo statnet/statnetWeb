@@ -156,6 +156,15 @@ shinyServer(
       
       plot.gofobject(model1.gof)
       par(mfrow=c(1,1))
-    })  
+    })
+    
+    output$diagnostics <- renderPrint({
+      model1 <- model1.reac()
+      if (is.null(model1$sample)){
+        return('MCMC did not run to fit this model')
+      } else {
+        mcmc.diagnostics(model1)
+      }
+    })
     
   })
