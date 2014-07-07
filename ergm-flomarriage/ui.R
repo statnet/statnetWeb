@@ -18,33 +18,31 @@ shinyUI(fluidPage(
       br(),
       actionButton('goButton', 'Run'),
       
-      tags$hr(),
-      h5('Display Options'),
-      p('Pay attention to whether these options make sense for your network.'),
-      checkboxInput('iso',
-                    label = 'Display isolates?', 
-                    value = TRUE),
-      checkboxInput('vnames',
-                    label = 'Display vertex names?',
-                    value = FALSE),
-      selectInput('colorby',
-                  label = 'Color nodes according to:',
-                  c('None','priorates','totalties','vertex.names', 'wealth'),
-                  selectize = FALSE),
-      selectInput('sizeby',
-                  label = 'Size nodes according to:',
-                  c('None','priorates','totalties','vertex.names', 'wealth'),
-                  selectize = FALSE)
-      
-    ),
+      conditionalPanel(condition = "input.tabs1 == 'Plot Network' | input.tabs1 == 'Simulations'",
+                       tags$hr(),
+                       h5('Display Options'),
+                       p('Pay attention to whether these options make sense for your network.'),
+                       checkboxInput('iso',
+                                     label = 'Display isolates?', 
+                                     value = TRUE),
+                       checkboxInput('vnames',
+                                     label = 'Display vertex names?',
+                                     value = FALSE),
+                       selectInput('colorby',
+                                   label = 'Color nodes according to:',
+                                   c('None','priorates','totalties','vertex.names', 'wealth'),
+                                   selectize = FALSE),
+                       selectInput('sizeby',
+                                   label = 'Size nodes according to:',
+                                   c('None','priorates','totalties','vertex.names', 'wealth'),
+                                   selectize = FALSE))),
     
     mainPanel(
-      tabsetPanel(type = 'tabs',
+      tabsetPanel(type = 'tabs', id = 'tabs1',
                   tabPanel('Plot Network',
                            plotOutput('nwplot'),
                            h4('Network Summary'),
-                           verbatimTextOutput('attr')
-                  ),
+                           verbatimTextOutput('attr')),
                   
                   tabPanel('Fit Model',
                            fluidRow(
@@ -52,15 +50,11 @@ shinyUI(fluidPage(
                                     selectInput('terms',label = 'Choose term(s).',
                                                 c("edges", "triangle", "nodecov('wealth')"),
                                                 multiple=TRUE, 
-                                                selectize = FALSE)
-                             ),
+                                                selectize = FALSE)),
                              column(4,
-                                    actionButton('fitButton', 'Fit Model')
-                             )
-                           ),
+                                    actionButton('fitButton', 'Fit Model'))),
                            tags$hr(),
-                           fluidRow(
-                             
+                           fluidRow(  
                              p('The output of the model fitting process and the summary of the model
                                fit is below. Pay attention to the coefficient estimates and 
                                significance for each term.'),
@@ -68,9 +62,7 @@ shinyUI(fluidPage(
                              p('Be sure to continue all the way to the "Goodness of Fit" and "Diagnostics"
                                tabs to check for model degeneracy.'),
                              br(),
-                             verbatimTextOutput('modelfit')
-                             )
-                           ),
+                             verbatimTextOutput('modelfit'))),
                   
                   tabPanel('Simulations',
                            fluidRow(
@@ -80,15 +72,13 @@ shinyUI(fluidPage(
                                                  min = 1,
                                                  value = 1)),
                              column(4,
-                                    actionButton('simButton', 'Simulate'))
-                           ),
+                                    actionButton('simButton', 'Simulate'))),
                            verbatimTextOutput('sim.summary'),
                            numericInput('this.sim',
                                         label = 'Choose a simulation to plot',
                                         min = 1,
                                         value = 1),
-                           plotOutput('simplot')
-                  ),
+                           plotOutput('simplot')),
                   
                   tabPanel('Goodness of Fit',
                            p('Test how well your model fits the original data by choosing 
@@ -107,13 +97,6 @@ shinyUI(fluidPage(
                                                           selectize = FALSE)),
                                     column(4, actionButton('gofButton', 'Run'))),
                            verbatimTextOutput('gof.summary'),  
-                           plotOutput('gofplot')
-                           
-                  ),
+                           plotOutput('gofplot')),
                   
-                  tabPanel('Diagnostics')
-                  
-                  )
-    )
-    )
-  ))
+                  tabPanel('Diagnostics'))))))
