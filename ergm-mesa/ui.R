@@ -79,23 +79,6 @@ shinyUI(fluidPage(
                              verbatimTextOutput('modelfit'))
                            ),
                   
-                  tabPanel('Simulations',
-                           fluidRow(
-                             column(6,
-                                    numericInput('nsims',
-                                                 label = 'Number of simulations:',
-                                                 min = 1,
-                                                 value = 1)),
-                             column(4,
-                                    actionButton('simButton', 'Simulate'))),
-                           verbatimTextOutput('sim.summary'),
-                           numericInput('this.sim',
-                                        label = 'Choose a simulation to plot',
-                                        min = 1,
-                                        value = 1),
-                           plotOutput('simplot')
-                           ),
-                  
                   tabPanel('Goodness of Fit',
                            p('Test how well your model fits the original data by choosing 
                              a network statistic that is not in the model, and comparing 
@@ -117,8 +100,24 @@ shinyUI(fluidPage(
                            ),
                   
                   tabPanel('Diagnostics',
-                           verbatimTextOutput('diagnostics'))
-                           )
+                           verbatimTextOutput('diagnostics')),
+                  
+                  tabPanel('Simulations',
+                           fluidRow(
+                             column(6,
+                                    numericInput('nsims',
+                                                 label = 'Number of simulations:',
+                                                 min = 1,
+                                                 value = 1)),
+                             column(4,
+                                    actionButton('simButton', 'Simulate'))),
+                           verbatimTextOutput('sim.summary'),
+                           numericInput('this.sim',
+                                        label = 'Choose a simulation to plot',
+                                        min = 1,
+                                        value = 1),
+                           plotOutput('simplot'))
+                  )
       )
     )
 )
