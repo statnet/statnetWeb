@@ -1,6 +1,7 @@
 #ergm-mesa
 #ui.R
 library(shiny)
+library(statnet)
 
 shinyUI(fluidPage(
   titlePanel('ERGM App Specific to faux.mesa.high'),
@@ -49,18 +50,24 @@ shinyUI(fluidPage(
                            fluidRow(
                              column(5,
                                     selectInput('terms',label = 'Choose term(s):',
-                                                c('edges','triangle','gwesp','nodematch'),
+                                                c('edges','degree','gwesp','nodematch','triangle'),
                                                 multiple=TRUE, 
                                                 selectize = FALSE)),
-                             column(5,
-                                    selectInput('gwespterms', label = 'Gwesp terms:',
-                                                c(list.vertex.attributes(faux.mesa.high)),
+                             column(4,
+                                    conditionalPanel(condition = 'input.terms.indexOf("gwesp") != -1', 
+                                      selectInput('gwespterms', label = 'Gwesp terms:',
+                                                c('Grade','Race','Sex'),
                                                 multiple = TRUE,
                                                 selectize = FALSE)),
-                             column(4,
-                                    actionButton('fitButton', 'Fit Model'))),
+                                    conditionalPanel(condition = 'input.terms.indexOf("degree") != -1',
+                                      selectInput('degreeterms', label = 'Degree terms:',
+                                                paste(0:3),
+                                                multiple = TRUE,
+                                                selectize = FALSE)))
+                           ),
+                           actionButton('fitButton', 'Fit Model'),
                            tags$hr(),
-                           fluidRow(  
+                           fluidRow(
                              p('The output of the model fitting process and the summary of the model
                                fit is below. Pay attention to the coefficient estimates and 
                                significance for each term.'),

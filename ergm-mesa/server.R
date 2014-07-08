@@ -24,6 +24,7 @@ shinyServer(
     ########################
     ## output expressions ##    
     
+    
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
