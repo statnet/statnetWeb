@@ -159,12 +159,14 @@ shinyServer(
     })
     
     output$diagnostics <- renderPrint({
+      if (input$fitButton == 0){
+        return()
+      }
       model1 <- model1.reac()
       if (is.null(model1$sample)){
         return('MCMC did not run to fit this model')
-      } else {
-        mcmc.diagnostics(model1)
       }
+        mcmc.diagnostics(model1)
     })
     
   })
