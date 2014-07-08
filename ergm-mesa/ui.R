@@ -54,12 +54,12 @@ shinyUI(fluidPage(
                                                 multiple=TRUE, 
                                                 selectize = FALSE)),
                              column(4,
-                                    conditionalPanel(condition = 'input.terms.indexOf("gwesp") != -1', 
+                                    conditionalPanel(condition = 'input.terms.indexOf("gwesp") > -1', 
                                       selectInput('gwespterms', label = 'Gwesp terms:',
                                                 c('Grade','Race','Sex'),
                                                 multiple = TRUE,
                                                 selectize = FALSE)),
-                                    conditionalPanel(condition = 'input.terms.indexOf("degree") != -1',
+                                    conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
                                       selectInput('degreeterms', label = 'Degree terms:',
                                                 paste(0:3),
                                                 multiple = TRUE,
@@ -68,6 +68,7 @@ shinyUI(fluidPage(
                            actionButton('fitButton', 'Fit Model'),
                            tags$hr(),
                            fluidRow(
+                             verbatimTextOutput('checkform'),
                              p('The output of the model fitting process and the summary of the model
                                fit is below. Pay attention to the coefficient estimates and 
                                significance for each term.'),

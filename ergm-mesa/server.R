@@ -12,8 +12,23 @@ shinyServer(
     ## reactive expressions ##
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
-    gwesp.terms <- reactive(paste("gwesp('",input$gwespterms,"')", sep=""))
-    ergm.terms <- reactive({paste(c(input$terms, gwesp.terms), sep = '', collapse = '+')})
+    gwesp.terms <- reactive({
+            gterms <- paste("gwesp('",input$gwespterms,"')", sep="")
+            if (!any(input$terms == 'gwesp')){
+              gterms <- NULL
+            }
+            gterms})
+    degree.terms <- reactive({
+            dterms <- paste("degree('",input$degreeterms,"')", sep="")
+            if(!any(input$terms == 'degree')){
+              dterms <- NULL
+            }
+            dterms})
+    ergm.terms <- reactive({
+                        interms <- input$terms
+                        if (any(interms == 'gwesp')) {interms <- interms[-which(interms == 'gwesp')]}
+                        if (any(interms == 'degree')) {interms <- interms[-which(interms == 'degree')]}                     
+                        paste(c(interms, gwesp.terms(), degree.terms()), sep = '', collapse = '+')})
     ergm.formula <- reactive({formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
     model1.reac <- reactive({ergm(ergm.formula())})
     model1.sim.reac <- reactive({simulate(model1.reac(), nsim = input$nsims)})
@@ -24,6 +39,9 @@ shinyServer(
     ########################
     ## output expressions ##    
     
+    output$checkform <- renderPrint({
+      ergm.terms()
+    })
     
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
