@@ -13,6 +13,7 @@ shinyServer(
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
     nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
+    attr <- reactive({list.vertex.attributes(nw.reac())}) #list of attributes in nw
     gwesp.terms <- reactive({
             gterms <- paste("gwesp(",input$choosegwesp,", fixed = ",input$fixgwesp,")", sep="")
             if (!any(input$terms == 'gwesp')){
@@ -30,7 +31,7 @@ shinyServer(
             if(!any(input$terms == 'nodematch')){
               nterms <- NULL
             }
-    })
+            nterms})
     ergm.terms <- reactive({
                         interms <- input$terms
                         if (any(interms == 'gwesp')) {interms <- interms[-which(interms == 'gwesp')]}
@@ -52,25 +53,27 @@ shinyServer(
       ergm.terms()
     })
     
+    output$colorattr <- renderUI({
+      selectInput('colorby',
+                  label = 'Color nodes according to:',
+                  c('None' = 2, attr()),
+                  selectize = FALSE)
+    })
+    
+    output$sizeattr <- renderUI({
+      selectInput('sizeby',
+                  label = 'Size nodes according to:',
+                  c('None' = 1, attr()),
+                  selectize = FALSE)
+    })
+    
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
       } 
-      
       nw <- isolate(nw.reac())
-      #could isolate iso, vnames, vcolor, vsize if you don't want them to update automatically
-      vcolor <- switch(input$colorby,
-                       'None' = 2,
-                       'Grade' = 'Grade',
-                       'Race' = 'Race',
-                       'Sex' = 'Sex')
-      #vsize <- switch(input$sizeby,               
-                      #'Grade' = get.vertex.attribute(nw,'Grade')/25,
-                      #'Race' = get.vertex.attribute(nw,'Race')/25,
-                      #'Sex' = get.vertex.attribute(nw,'Sex')/25,
-                      #'None' = 1)
-      
-      plot.network(nw, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor)
+      # eventually add vertex.cex = input$sizeby
+      plot.network(nw, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
     })
     
     
@@ -120,23 +123,12 @@ shinyServer(
         return()
       }      
       #use plot display options from sidebar
-      vcolor <- switch(input$colorby,
-                       'None' = 2,
-                       'Grade' = 'Grade',
-                       'Race' = 'Race',
-                       'Sex' = 'Sex',
-                       'wealth' = 'wealth')
-      #vsize <- switch(input$sizeby,               
-                      #'Grade' = get.vertex.attribute(nw,'Grade')/25,
-                      #'Race' = ,
-                      #'Sex' = ,
-                      #'None' = 0.9,
-                      #'wealth' = get.vertex.attribute(nw,'wealth')/25)      
+      #add sizing option eventually    
       model1.sim <- isolate(model1.sim.reac())     
       if (nsims == 1){
-        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor)
+        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
       } else {
-        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor)
+        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
       }
     })
     

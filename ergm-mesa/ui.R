@@ -29,14 +29,9 @@ shinyUI(fluidPage(
                        checkboxInput('vnames',
                                      label = 'Display vertex names?',
                                      value = FALSE),
-                       selectInput('colorby',
-                                   label = 'Color nodes according to:',
-                                   c('None', 'Grade','Race','Sex'),
-                                   selectize = FALSE),
-                       selectInput('sizeby',
-                                   label = 'Size nodes according to:',
-                                   c('None' = 1, 'Grade','Race','Sex'),
-                                   selectize = FALSE))),
+                       uiOutput('colorattr'),
+                       uiOutput('sizeattr'))
+      ),
     
     mainPanel(
       tabsetPanel(type = 'tabs', id = 'tabName',
