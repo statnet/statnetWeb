@@ -12,23 +12,31 @@ shinyServer(
     ## reactive expressions ##
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
+    nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
     gwesp.terms <- reactive({
-            gterms <- paste("gwesp('",input$gwespterms,"')", sep="")
+            gterms <- paste("gwesp(",input$choosegwesp,", fixed = ",input$fixgwesp,")", sep="")
             if (!any(input$terms == 'gwesp')){
               gterms <- NULL
             }
             gterms})
     degree.terms <- reactive({
-            dterms <- paste("degree('",input$degreeterms,"')", sep="")
+            dterms <- paste("degree(",input$choosedegree,")", sep="")
             if(!any(input$terms == 'degree')){
               dterms <- NULL
             }
             dterms})
+    nodematch.terms <- reactive({
+            nterms <- paste("nodematch(",input$choosenodematch,")", sep="")
+            if(!any(input$terms == 'nodematch')){
+              nterms <- NULL
+            }
+    })
     ergm.terms <- reactive({
                         interms <- input$terms
                         if (any(interms == 'gwesp')) {interms <- interms[-which(interms == 'gwesp')]}
-                        if (any(interms == 'degree')) {interms <- interms[-which(interms == 'degree')]}                     
-                        paste(c(interms, gwesp.terms(), degree.terms()), sep = '', collapse = '+')})
+                        if (any(interms == 'degree')) {interms <- interms[-which(interms == 'degree')]}
+                        if (any(interms == 'nodematch')) {interms <- interms[-which(interms == 'nodematch')]}
+                        paste(c(interms, gwesp.terms(), degree.terms(), nodematch.terms()), sep = '', collapse = '+')})
     ergm.formula <- reactive({formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
     model1.reac <- reactive({ergm(ergm.formula())})
     model1.sim.reac <- reactive({simulate(model1.reac(), nsim = input$nsims)})
@@ -39,7 +47,8 @@ shinyServer(
     ########################
     ## output expressions ##    
     
-    output$checkform <- renderPrint({
+    
+    output$check1 <- renderPrint({
       ergm.terms()
     })
     
@@ -81,9 +90,8 @@ shinyServer(
       else if (input$fitButton == 0){
         return('Please choose term(s) for the model')
       }
-      ergm.terms()
-      #model1 <- isolate(model1.reac())
-      #return(summary(model1))
+      model1 <- isolate(model1.reac())
+      return(summary(model1))
     })
     
     
@@ -114,21 +122,21 @@ shinyServer(
       #use plot display options from sidebar
       vcolor <- switch(input$colorby,
                        'None' = 2,
-                       'priorates' = 'priorates',
-                       'totalties' = 'totalties',
-                       'vertex.names' = 'vertex.names',
+                       'Grade' = 'Grade',
+                       'Race' = 'Race',
+                       'Sex' = 'Sex',
                        'wealth' = 'wealth')
-      vsize <- switch(input$sizeby,               
-                      'priorates' = get.vertex.attribute(nw,'priorates')/25,
-                      'totalties' = get.vertex.attribute(nw,'totalties')/25,
-                      'vertex.names' = ,
-                      'None' = 0.9,
-                      'wealth' = get.vertex.attribute(nw,'wealth')/25)      
+      #vsize <- switch(input$sizeby,               
+                      #'Grade' = get.vertex.attribute(nw,'Grade')/25,
+                      #'Race' = ,
+                      #'Sex' = ,
+                      #'None' = 0.9,
+                      #'wealth' = get.vertex.attribute(nw,'wealth')/25)      
       model1.sim <- isolate(model1.sim.reac())     
       if (nsims == 1){
-        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
+        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor)
       } else {
-        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor, vertex.cex = vsize)
+        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = vcolor)
       }
     })
     

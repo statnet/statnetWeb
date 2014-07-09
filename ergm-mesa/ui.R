@@ -51,24 +51,30 @@ shinyUI(fluidPage(
                              column(5,
                                     selectInput('terms',label = 'Choose term(s):',
                                                 c('edges','degree','gwesp','nodematch','triangle'),
+                                                selected='edges',
                                                 multiple=TRUE, 
                                                 selectize = FALSE)),
                              column(4,
                                     conditionalPanel(condition = 'input.terms.indexOf("gwesp") > -1', 
-                                      selectInput('gwespterms', label = 'Gwesp terms:',
-                                                c('Grade','Race','Sex'),
-                                                multiple = TRUE,
-                                                selectize = FALSE)),
+                                      numericInput('choosegwesp', label = 'pick alpha for gwesp',
+                                                value = 0, min = 0),
+                                      checkboxInput('fixgwesp', label = 'fixed?', value = TRUE)),
                                     conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
-                                      selectInput('degreeterms', label = 'Degree terms:',
+                                      selectInput('choosedegree', label = 'Match number of nodes of degree:',
                                                 paste(0:3),
                                                 multiple = TRUE,
-                                                selectize = FALSE)))
+                                                selectize = FALSE)),
+                                    conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
+                                       selectInput('choosenodematch', label = 'Attribute for nodematch',
+                                                   c('Grade','Race','Sex'),
+                                                   multiple = TRUE,
+                                                   selectize = FALSE))
+                                    )
                            ),
                            actionButton('fitButton', 'Fit Model'),
                            tags$hr(),
                            fluidRow(
-                             verbatimTextOutput('checkform'),
+                             verbatimTextOutput('check1'),
                              p('The output of the model fitting process and the summary of the model
                                fit is below. Pay attention to the coefficient estimates and 
                                significance for each term.'),
