@@ -57,12 +57,7 @@ shinyUI(fluidPage(
                                     conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
                                       uiOutput('dynamicdegree')),
                                     conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
-                                      uiOutput('dynamicnodematch')
-                                                     #selectInput('choosenodematch', label = 'Attribute for nodematch',
-                                                   #c('Grade','Race','Sex'),
-                                                  # multiple = TRUE,
-                                                   #selectize = FALSE)
-                                       )
+                                      uiOutput('dynamicnodematch'))
                                     )
                            ),
                            actionButton('fitButton', 'Fit Model'),
