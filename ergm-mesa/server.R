@@ -58,14 +58,14 @@ shinyServer(
       ergm.terms()
     })
     
-    output$colorattr <- renderUI({
+    output$dynamiccolor <- renderUI({
       selectInput('colorby',
                   label = 'Color nodes according to:',
                   c('None' = 2, attr()),
                   selectize = FALSE)
     })
     
-    output$sizeattr <- renderUI({
+    output$dynamicsize <- renderUI({
       selectInput('sizeby',
                   label = 'Size nodes according to:',
                   c('None' = 1, attr()),

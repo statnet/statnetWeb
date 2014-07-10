@@ -29,8 +29,8 @@ shinyUI(fluidPage(
                        checkboxInput('vnames',
                                      label = 'Display vertex names?',
                                      value = FALSE),
-                       uiOutput('colorattr'),
-                       uiOutput('sizeattr'))
+                       uiOutput('dynamiccolor'),
+                       uiOutput('dynamicsize'))
       ),
     
     mainPanel(
