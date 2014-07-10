@@ -55,15 +55,14 @@ shinyUI(fluidPage(
                                                 value = 0, min = 0),
                                       checkboxInput('fixgwesp', label = 'fixed?', value = TRUE)),
                                     conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
-                                      selectInput('choosedegree', label = 'Match number of nodes of degree:',
-                                                paste(0:3),
-                                                multiple = TRUE,
-                                                selectize = FALSE)),
+                                      uiOutput('dynamicdegree')),
                                     conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
-                                       selectInput('choosenodematch', label = 'Attribute for nodematch',
-                                                   c('Grade','Race','Sex'),
-                                                   multiple = TRUE,
-                                                   selectize = FALSE))
+                                      uiOutput('dynamicnodematch')
+                                                     #selectInput('choosenodematch', label = 'Attribute for nodematch',
+                                                   #c('Grade','Race','Sex'),
+                                                  # multiple = TRUE,
+                                                   #selectize = FALSE)
+                                       )
                                     )
                            ),
                            actionButton('fitButton', 'Fit Model'),

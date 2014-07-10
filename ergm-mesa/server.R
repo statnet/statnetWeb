@@ -72,6 +72,20 @@ shinyServer(
                   selectize = FALSE)
     })
     
+    output$dynamicdegree <- renderUI({
+      selectInput('choosedegree', label = 'Choose degree(s)',
+                  paste(0:(as.numeric(nodes())-1)),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+    
+    output$dynamicnodematch <- renderUI({
+      selectInput('choosenodematch', label = 'Attribute for nodematch',
+                  attr(),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+    
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
