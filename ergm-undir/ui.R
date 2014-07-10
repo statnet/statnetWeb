@@ -12,7 +12,7 @@ shinyUI(fluidPage(
                        h5('Choose a dataset'),
                        selectInput('dataset',
                                    label = 'Sample datasets',
-                                   c(Choose = '','faux.mesa.high'),
+                                   c(Choose = '','faux.mesa.high','flobusiness','flomarriage'),
                                    selectize = FALSE),
                        br(),
                        actionButton('goButton', 'Run')),

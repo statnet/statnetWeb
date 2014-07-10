@@ -6,7 +6,8 @@ library(statnet)
 shinyServer(
   function(input, output){
     
-    data(faux.mesa.high)   
+    data(faux.mesa.high)
+    data(florentine)
     
     ##########################
     ## reactive expressions ##
