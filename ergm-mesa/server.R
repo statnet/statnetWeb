@@ -58,6 +58,10 @@ shinyServer(
       ergm.terms()
     })
     
+    output$currentdataset <- renderPrint({
+        input$dataset
+    })
+    
     output$dynamiccolor <- renderUI({
       selectInput('colorby',
                   label = 'Color nodes according to:',

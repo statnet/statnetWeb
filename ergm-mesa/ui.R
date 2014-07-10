@@ -10,14 +10,20 @@ shinyUI(fluidPage(
     "from the 2014 Network Modeling for Epidemics Workshop. Stay tuned for updates!"),
   sidebarLayout(
     sidebarPanel(
-      h5('Choose a dataset'),
-      p(em('Note:'), 'This app is only set up to use the faux.mesa.high network.'),
-      selectInput('dataset',
-                  label = 'Sample datasets',
-                  c(Choose = '','faux.mesa.high'),
-                  selectize = FALSE),
-      br(),
-      actionButton('goButton', 'Run'),
+      conditionalPanel(condition = "input.tabName == 'Plot Network'",
+                      h5('Choose a dataset'),
+                      p(em('Note:'), 'This app is only set up to use the faux.mesa.high network.'),
+                      selectInput('dataset',
+                                  label = 'Sample datasets',
+                                  c(Choose = '','faux.mesa.high'),
+                                  selectize = FALSE),
+                      br(),
+                      actionButton('goButton', 'Run')),
+      
+      conditionalPanel(condition = "input.tabName != 'Plot Network'",
+                       h5('Choose a dataset'),
+                       p('You are currently using the ', verbatimTextOutput('currentdataset'), ' network.
+                         Return to the first tab if you would like to switch networks.')),
       
       conditionalPanel(condition = "input.tabName == 'Plot Network' | input.tabName == 'Simulations'",
                        tags$hr(),
