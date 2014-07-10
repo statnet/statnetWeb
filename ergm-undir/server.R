@@ -6,61 +6,99 @@ library(statnet)
 shinyServer(
   function(input, output){
     
-    data(faux.mesa.high)
+    
+    data(ecoli)
     data(florentine)
+    data(fauxhigh)
+    data(faux.mesa.high)
+    data(kapferer)
     
     ##########################
     ## reactive expressions ##
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
     nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
+    
+    #list of attributes in nw
     attr <- reactive({
       attr <- ''
       if(input$dataset != ''){      
         attr<-list.vertex.attributes(nw.reac())
       }
-      attr}) #list of attributes in nw
+      attr}) 
+    
+    #numeric attributes only (for size menu)
+    numattr <- reactive({
+      numattr <- c()
+      if(input$dataset != ''){  
+        for(i in 1:length(attr())){
+          if(is.numeric(get.vertex.attribute(nw.reac(),attr()[i]))){
+            numattr <- append(numattr,attr()[i])
+          } 
+        }} 
+      numattr})
+    
+    
     gwesp.terms <- reactive({
-      gterms <- paste("gwesp(",input$choosegwesp,", fixed = ",input$fixgwesp,")", sep="")
+      gterms <- paste("gwesp(",input$choosegwesp,
+                      ", fixed = ",input$fixgwesp,")", sep="")
       if (!any(input$terms == 'gwesp')){
         gterms <- NULL
       }
       gterms})
+    
     degree.terms <- reactive({
       dterms <- paste("degree(",input$choosedegree,")", sep="")
       if(!any(input$terms == 'degree')){
         dterms <- NULL
       }
       dterms})
+    
     nodematch.terms <- reactive({
       nterms <- paste("nodematch(",input$choosenodematch,")", sep="")
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
       }
       nterms})
+    
     ergm.terms <- reactive({
       interms <- input$terms
-      if (any(interms == 'gwesp')) {interms <- interms[-which(interms == 'gwesp')]}
-      if (any(interms == 'degree')) {interms <- interms[-which(interms == 'degree')]}
-      if (any(interms == 'nodematch')) {interms <- interms[-which(interms == 'nodematch')]}
-      paste(c(interms, gwesp.terms(), degree.terms(), nodematch.terms()), sep = '', collapse = '+')})
-    ergm.formula <- reactive({formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
+      if (any(interms == 'gwesp')) {
+        interms <- interms[-which(interms == 'gwesp')]}
+      if (any(interms == 'degree')) {
+        interms <- interms[-which(interms == 'degree')]}
+      if (any(interms == 'nodematch')) {
+        interms <- interms[-which(interms == 'nodematch')]}
+      paste(c(interms, gwesp.terms(), degree.terms(), 
+              nodematch.terms()), sep = '', collapse = '+')})
+    
+    ergm.formula <- reactive({
+      formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
+    
     model1.reac <- reactive({ergm(ergm.formula())})
-    model1.sim.reac <- reactive({simulate(model1.reac(), nsim = input$nsims)})
+    
+    model1.sim.reac <- reactive({
+      simulate(model1.reac(), nsim = input$nsims)})
+    
     model1.gof1 <- reactive({gof(model1.reac())})
-    gof.form <- reactive({formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))})
+    
+    gof.form <- reactive({
+      formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))})
+    
     model1.gof2 <- reactive({gof(gof.form())})
     
-    ########################
-    ## output expressions ##    
     
+    
+    ########################
+    ## output expressions ##
     
     output$check1 <- renderPrint({
       ergm.terms()
     })
     
     output$currentdataset <- renderPrint({
-      input$dataset
+      input$goButton
+      isolate(input$dataset)
     })
     
     output$dynamiccolor <- renderUI({
@@ -73,19 +111,21 @@ shinyServer(
     output$dynamicsize <- renderUI({
       selectInput('sizeby',
                   label = 'Size nodes according to:',
-                  c('None' = 1, attr()),
+                  c('None' = 1, numattr()),
                   selectize = FALSE)
     })
     
     output$dynamicdegree <- renderUI({
-      selectInput('choosedegree', label = 'Choose degree(s)',
+      selectInput('choosedegree', 
+                  label = 'Choose degree(s)',
                   paste(0:(as.numeric(nodes())-1)),
                   multiple = TRUE,
                   selectize = FALSE)
     })
     
     output$dynamicnodematch <- renderUI({
-      selectInput('choosenodematch', label = 'Attribute for nodematch',
+      selectInput('choosenodematch', 
+                  label = 'Attribute for nodematch',
                   attr(),
                   multiple = TRUE,
                   selectize = FALSE)
@@ -97,7 +137,10 @@ shinyServer(
       } 
       nw <- isolate(nw.reac())
       # eventually add vertex.cex = input$sizeby
-      plot.network(nw, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
+      plot.network(nw, displayisolates = input$iso, 
+                   displaylabels = input$vnames, 
+                   vertex.col = input$colorby,
+                   vertex.cex = input$sizeby)
     })
     
     
@@ -150,9 +193,14 @@ shinyServer(
       #add sizing option eventually    
       model1.sim <- isolate(model1.sim.reac())     
       if (nsims == 1){
-        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
+        plot(model1.sim, displayisolates = input$iso, 
+             displaylabels = input$vnames, 
+             vertex.col = input$colorby)
       } else {
-        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
+        plot(model1.sim[[input$this.sim]], 
+             displayisolates = input$iso, 
+             displaylabels = input$vnames, 
+             vertex.col = input$colorby)
       }
     })
     
