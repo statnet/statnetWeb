@@ -13,7 +13,12 @@ shinyServer(
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
     nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
-    attr <- reactive({list.vertex.attributes(nw.reac())}) #list of attributes in nw
+    attr <- reactive({
+            attr <- ''
+            if(input$dataset != ''){      
+              attr<-list.vertex.attributes(nw.reac())
+            }
+            attr}) #list of attributes in nw
     gwesp.terms <- reactive({
             gterms <- paste("gwesp(",input$choosegwesp,", fixed = ",input$fixgwesp,")", sep="")
             if (!any(input$terms == 'gwesp')){
