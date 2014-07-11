@@ -1,4 +1,4 @@
-#ergm-undir
+#ergm-common
 #server.R
 library(shiny)
 library(statnet)
@@ -12,6 +12,12 @@ shinyServer(
     data(fauxhigh)
     data(faux.mesa.high)
     data(kapferer)
+    data(sampson)
+    
+    dir.terms <- c('mutual', 'idegree', 'odegree')
+    undir.terms <- c('degree', 'b1degree', 'b2degree', 'mindegree', 'triangles')
+    bothdir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
+                       'absdiff', 'gwesp') 
     
     ##########################
     ## reactive expressions ##
@@ -136,7 +142,7 @@ shinyServer(
         return()
       } 
       nw <- isolate(nw.reac())
-      # eventually add vertex.cex = input$sizeby
+      # default of size 1 doesn't work
       plot.network(nw, displayisolates = input$iso, 
                    displaylabels = input$vnames, 
                    vertex.col = input$colorby,
@@ -152,6 +158,20 @@ shinyServer(
       return(nw)
     })
     
+    output$dirlistofterms <- renderUI({
+                       selectInput('terms',label = 'Choose term(s):',
+                                   c(dir.terms, bothdir.terms),
+                                   selected='edges',
+                                   multiple=TRUE, 
+                                   selectize = FALSE)
+    })
+    output$undirlistofterms <- renderUI({
+                       selectInput('terms',label = 'Choose term(s):',
+                                   c(undir.terms, bothdir.terms),
+                                   selected='edges',
+                                   multiple=TRUE, 
+                                   selectize = FALSE)
+    })
     
     output$modelfit <- renderPrint({
       if (input$goButton == 0){

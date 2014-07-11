@@ -1,10 +1,10 @@
-#ergm-undir
+#ergm-common
 #ui.R
 library(shiny)
 library(statnet)
 
 shinyUI(fluidPage(
-  titlePanel('ERGM App for undirected networks'),
+  titlePanel('ERGM App for sample networks'),
   p("This app is based on the ergm-mesa app, but will have more networks to choose from and more features."),
   sidebarLayout(
     sidebarPanel(
@@ -12,8 +12,8 @@ shinyUI(fluidPage(
                        h5('Choose a dataset'),
                        selectInput('dataset',
                                    label = 'Sample datasets',
-                                   c(Choose = '','ecoli2', 'faux.mesa.high','fauxhigh', 'flobusiness','flomarriage',
-                                     'kapferer','kapferer2'),
+                                   c(Choose = '', 'ecoli1', 'ecoli2', 'faux.mesa.high','fauxhigh', 'flobusiness','flomarriage',
+                                     'kapferer','kapferer2','samplike'),
                                    selectize = FALSE),
                        br(),
                        actionButton('goButton', 'Run')),
@@ -48,11 +48,10 @@ shinyUI(fluidPage(
                   tabPanel('Fit Model',
                            fluidRow(
                              column(5,
-                                    selectInput('terms',label = 'Choose term(s):',
-                                                c('edges','degree','gwesp','nodematch','triangle'),
-                                                selected='edges',
-                                                multiple=TRUE, 
-                                                selectize = FALSE)),
+                                    conditionalPanel(condition = 'input.dataset.gal.directed == TRUE',
+                                                     uiOutput('dirlistofterms')),
+                                    conditionalPanel(condition = 'input.dataset.gal.directed == FALSE',
+                                                     uiOutput('undirlistofterms'))),
                              column(4,
                                     conditionalPanel(condition = 'input.terms.indexOf("gwesp") > -1', 
                                                      numericInput('choosegwesp', label = 'pick alpha for gwesp',
@@ -61,12 +60,12 @@ shinyUI(fluidPage(
                                     conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
                                                      uiOutput('dynamicdegree')),
                                     conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
-                                                     uiOutput('dynamicnodematch'))
-                             )
+                                                     uiOutput('dynamicnodematch')))
                            ),
                            actionButton('fitButton', 'Fit Model'),
                            tags$hr(),
                            fluidRow(
+                             p('Right hand side of ergm fit formula:'),
                              verbatimTextOutput('check1'),
                              p('The output of the model fitting process and the summary of the model
                                fit is below. Pay attention to the coefficient estimates and 
