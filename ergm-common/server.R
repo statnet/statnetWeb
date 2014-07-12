@@ -140,13 +140,16 @@ shinyServer(
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
-      } 
+      }
+      if (input$sizeby == '1'){
+        size = 1
+      } else { size = input$sizeby }
       nw <- isolate(nw.reac())
       # default of size 1 doesn't work
       plot.network(nw, displayisolates = input$iso, 
                    displaylabels = input$vnames, 
                    vertex.col = input$colorby,
-                   vertex.cex = input$sizeby)
+                   vertex.cex = size)
     })
     
     
