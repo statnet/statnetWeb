@@ -1,5 +1,6 @@
-#ergm-common
-#server.R
+#' ergm-common
+#' ======================
+
 library(shiny)
 library(statnet)
 
@@ -19,8 +20,15 @@ shinyServer(
     bothdir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
                        'absdiff', 'gwesp') 
     
-    ##########################
-    ## reactive expressions ##
+
+#' Reactive Expressions
+#' ---------------------------------
+#' These expressions contain most of the code from the ergm package
+#' that we will be using. Objects created with a reactive expression
+#' can be accessed from any other reactive expression or a render function
+#' and they only get re-run when their values are outdated. Since many of 
+#' our render functions will be calling the same ergm objects, using 
+#' reactive expressions will help the app run much faster.
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
     nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
@@ -94,9 +102,12 @@ shinyServer(
     model1.gof2 <- reactive({gof(gof.form())})
     
     
-    
-    ########################
-    ## output expressions ##
+
+#' Output Expressions
+#' ---------------------------
+#' Every piece of content that gets displayed in the app has to be
+#' rendered by the appropriate `render*` function. Most of the render
+#' functions here call reactive objects that were created above.
     
     output$check1 <- renderPrint({
       ergm.terms()
