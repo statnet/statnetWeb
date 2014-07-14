@@ -60,10 +60,12 @@ shinyServer(
                         paste(c(interms, gwesp.terms(), degree.terms(), nodematch.terms()), sep = '', collapse = '+')})
     ergm.formula <- reactive({formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
     model1.reac <- reactive({ergm(ergm.formula())})
-    model1.sim.reac <- reactive({simulate(model1.reac(), nsim = input$nsims)})
     model1.gof1 <- reactive({gof(model1.reac())})
     gof.form <- reactive({formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))})
     model1.gof2 <- reactive({gof(gof.form())})
+    model1.sim.reac <- reactive({simulate(model1.reac(), nsim = input$nsims)})
+    sim.coords.1 <- reactive({plot.network(model1.sim.reac())})
+    sim.coords.2 <- reactive({plot.network(model1.sim.reac()[[input$this.sim]])})
   
     ########################
     ## output expressions ##    
@@ -169,9 +171,14 @@ shinyServer(
       #add sizing option eventually    
       model1.sim <- isolate(model1.sim.reac())     
       if (nsims == 1){
-        plot(model1.sim, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
+        coords <- plot.network(model1.sim)
+        plot.network(model1.sim, coord = sim.coords.1(), displayisolates = input$iso,
+                     displaylabels = input$vnames, vertex.col = input$colorby)
       } else {
-        plot(model1.sim[[input$this.sim]], displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
+        coords <- plot.network(model1.sim[[input$this.sim]])
+        plot.network(model1.sim[[input$this.sim]], coord = sim.coords.2(), 
+                     displayisolates = input$iso, displaylabels = input$vnames,
+                     vertex.col = input$colorby)
       }
     })
     
