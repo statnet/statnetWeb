@@ -12,7 +12,6 @@ shinyUI(fluidPage(
     sidebarPanel(
       conditionalPanel(condition = "input.tabName == 'Plot Network'",
                       h5('Choose a dataset'),
-                      p(em('Note:'), 'This app is only set up to use the faux.mesa.high network.'),
                       selectInput('dataset',
                                   label = 'Sample datasets',
                                   c(Choose = '','faux.mesa.high'),

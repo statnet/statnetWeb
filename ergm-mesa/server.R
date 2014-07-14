@@ -13,12 +13,27 @@ shinyServer(
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
     nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
+    coords <- reactive({plot.network(eval(parse(text = input$dataset)))})
+    
+    #list of attributes in nw
     attr <- reactive({
             attr <- ''
             if(input$dataset != ''){      
               attr<-list.vertex.attributes(nw.reac())
             }
-            attr}) #list of attributes in nw
+            attr}) 
+    
+    #numeric attributes only (for size menu)
+    numattr <- reactive({
+      numattr <- c()
+      if(input$dataset != ''){  
+        for(i in 1:length(attr())){
+          if(is.numeric(get.vertex.attribute(nw.reac(),attr()[i]))){
+            numattr <- append(numattr,attr()[i])
+          } 
+        }} 
+      numattr})
+    
     gwesp.terms <- reactive({
             gterms <- paste("gwesp(",input$choosegwesp,", fixed = ",input$fixgwesp,")", sep="")
             if (!any(input$terms == 'gwesp')){
@@ -72,7 +87,7 @@ shinyServer(
     output$dynamicsize <- renderUI({
       selectInput('sizeby',
                   label = 'Size nodes according to:',
-                  c('None' = 1, attr()),
+                  c('None' = 1, numattr()),
                   selectize = FALSE)
     })
     
@@ -93,10 +108,15 @@ shinyServer(
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
-      } 
+      }
+      if (input$sizeby == '1'){
+        size = 1
+      } else { size = input$sizeby }
       nw <- isolate(nw.reac())
+      
       # eventually add vertex.cex = input$sizeby
-      plot.network(nw, displayisolates = input$iso, displaylabels = input$vnames, vertex.col = input$colorby)
+      plot.network(nw, coord = coords(), displayisolates = input$iso, displaylabels = input$vnames, 
+                   vertex.col = input$colorby)
     })
     
     
