@@ -7,8 +7,8 @@ shinyUI(navbarPage('ergm app',
   tabPanel('Plot Network',
    fluidRow(
      column(1, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
-     column(3, h6('Center for Studies in Demography and Ecology')),
-     column(8)),
+     column(2, h6('Center for Studies in Demography and Ecology')),
+     column(9)),
    
     fluidRow(
      column(4,
@@ -47,7 +47,7 @@ shinyUI(navbarPage('ergm app',
                 p('Current ergm formula:',
                   verbatimTextOutput('check1'))
                 )),
-          column(9,     
+            column(9,     
                fluidRow(
                  column(5,
                         conditionalPanel(condition = 'input.dataset.gal.directed == TRUE',
@@ -64,10 +64,6 @@ shinyUI(navbarPage('ergm app',
                         conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
                                          uiOutput('dynamicnodematch')))
                ),
-               fluidRow(
-                 column(3, p('Right hand side of ergm fit formula:')),
-                 column(5, verbatimTextOutput('check1'))
-                 ),
                actionButton('fitButton', 'Fit Model')
           )),
          
@@ -85,8 +81,14 @@ shinyUI(navbarPage('ergm app',
   
           navbarMenu('Diagnostics',
               tabPanel('Goodness of Fit',
-                       
-                       mainPanel(
+                   fluidRow(
+                       column(3,
+                              wellPanel(
+                                p('Current network:', verbatimTextOutput('currentdataset')),
+                                p('Current ergm formula:',
+                                  verbatimTextOutput('check1'))
+                              )),     
+                       column(9,
                        p('Test how well your model fits the original data by choosing 
                          a network statistic that is not in the model, and comparing 
                          the value of this statistic observed in the original network 
@@ -104,27 +106,44 @@ shinyUI(navbarPage('ergm app',
                          column(4, actionButton('gofButton', 'Run'))),
                        verbatimTextOutput('gof.summary'),  
                        plotOutput('gofplot'))
-                       ),
+                       )),
               
               tabPanel('MCMC Diagnostics',
-                       verbatimTextOutput('diagnostics'))
-              ),
+                       fluidRow(
+                         column(3,
+                                wellPanel(
+                                  p('Current network:', verbatimTextOutput('currentdataset')),
+                                  p('Current ergm formula:',
+                                    verbatimTextOutput('check1'))
+                                )),     
+                         column(9,
+                       verbatimTextOutput('diagnostics')))
+              )),
   
           tabPanel('Simulations',
                    fluidRow(
-                     column(6,
-                            numericInput('nsims',
-                                         label = 'Number of simulations:',
-                                         min = 1,
-                                         value = 1)),
-                     column(4,
-                            actionButton('simButton', 'Simulate'))),
-                   verbatimTextOutput('sim.summary'),
-                   numericInput('this.sim',
-                                label = 'Choose a simulation to plot',
-                                min = 1,
-                                value = 1),
-                   plotOutput('simplot'))
+                     column(3,
+                            wellPanel(
+                              p('Current network:', verbatimTextOutput('currentdataset')),
+                              p('Current ergm formula:',
+                                verbatimTextOutput('check1'))
+                            )),     
+                     column(9,
+                   
+                         fluidRow(
+                           column(6,
+                                  numericInput('nsims',
+                                               label = 'Number of simulations:',
+                                               min = 1,
+                                               value = 1)),
+                           column(4,
+                                  actionButton('simButton', 'Simulate'))),
+                         verbatimTextOutput('sim.summary'),
+                         numericInput('this.sim',
+                                      label = 'Choose a simulation to plot',
+                                      min = 1,
+                                      value = 1),
+                         plotOutput('simplot'))))
                   
     
     )
