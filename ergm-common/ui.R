@@ -4,6 +4,9 @@ library(shiny)
 library(statnet)
 
 shinyUI(fluidPage(
+  fluidRow(
+    column(2, img(src = 'csdelogo_crop.png', height = 75, width = 75)),
+    column(4, h4('Center for Studies in Demography and Ecology'))),
   titlePanel('ERGM App for sample networks'),
   p("This app is based on the ergm-mesa app, but will have more networks to choose from and more features."),
   sidebarLayout(
