@@ -25,7 +25,7 @@ shinyServer(
 #' ---------------------------------
 #' These expressions contain most of the code from the ergm package
 #' that we will be using. Objects created with a reactive expression
-#' can be accessed from any other reactive expression or a render function
+#' can be accessed from any other reactive expression or render functions
 #' and they only get re-run when their values are outdated. Since many of 
 #' our render functions will be calling the same ergm objects, using 
 #' reactive expressions will help the app run much faster.
