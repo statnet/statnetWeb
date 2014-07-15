@@ -15,10 +15,11 @@ shinyServer(
     data(kapferer)
     data(sampson)
     
-    dir.terms <- c('mutual', 'idegree', 'odegree')
-    undir.terms <- c('degree', 'b1degree', 'b2degree', 'mindegree', 'triangles')
-    bothdir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
-                       'absdiff', 'gwesp') 
+    dir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
+                   'absdiff', 'gwesp', 'mutual', 'idegree', 'odegree')
+    undir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
+                     'absdiff', 'gwesp', 'degree', 'b1degree', 'b2degree', 
+                     'mindegree', 'triangles')
     
 
 #' Reactive Expressions
@@ -171,7 +172,8 @@ shinyServer(
       if (input$goButton == 0){
         return()
       }
-      nw <- isolate(nw.reac())
+      input$goButton
+      nw <- isolate({nw.reac()})
       #scale size of nodes onto range between .7 and 3.5
       minsize <- min(get.vertex.attribute(nw,input$sizeby))
       maxsize <- max(get.vertex.attribute(nw,input$sizeby))
@@ -182,7 +184,6 @@ shinyServer(
       }
       
       
-      # default of size 1 doesn't work
       plot.network(nw, coord = coords(), 
                    displayisolates = input$iso, 
                    displaylabels = input$vnames, 
@@ -198,20 +199,19 @@ shinyServer(
       nw <- isolate(nw.reac())
       return(nw)
     })
-    
-    output$dirlistofterms <- renderUI({
-                       selectInput('terms',label = 'Choose term(s):',
-                                   c(dir.terms, bothdir.terms),
-                                   selected='edges',
-                                   multiple=TRUE, 
-                                   selectize = FALSE)
-    })
-    output$undirlistofterms <- renderUI({
-                       selectInput('terms',label = 'Choose term(s):',
-                                   c(undir.terms, bothdir.terms),
-                                   selected='edges',
-                                   multiple=TRUE, 
-                                   selectize = FALSE)
+
+
+    output$listofterms <- renderUI({
+      if(nw.reac()$gal$directed){
+        current.terms <- c(dir.terms)
+      } else {
+        current.terms <- c(undir.terms)
+      }
+      selectInput('terms',label = 'Choose term(s):',
+                  current.terms,
+                  selected='edges',
+                  multiple=TRUE, 
+                  selectize = FALSE)
     })
     
     output$modelfit <- renderPrint({
@@ -259,7 +259,7 @@ shinyServer(
       } else { 
         size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
       }
-      #use plot display options from sidebar
+      #need new plot display options on sidebar
       #add sizing option eventually    
           
       if (nsims == 1){
