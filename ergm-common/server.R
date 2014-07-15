@@ -32,6 +32,7 @@ shinyServer(
     
     nw.reac <- reactive({eval(parse(text = input$dataset))})
     nodes <- reactive({nw.reac()$gal$n}) #number of nodes in nw
+    coords <- reactive({plot.network(eval(parse(text = input$dataset)))})
     
     #list of attributes in nw
     attr <- reactive({
@@ -101,6 +102,8 @@ shinyServer(
     
     model1.gof2 <- reactive({gof(gof.form())})
     
+    sim.coords.1 <- reactive({plot.network(model1.sim.reac())})
+    sim.coords.2 <- reactive({plot.network(model1.sim.reac()[[input$this.sim]])})
     
 
 #' Output Expressions
@@ -173,7 +176,8 @@ shinyServer(
       } else { size = input$sizeby }
       nw <- isolate(nw.reac())
       # default of size 1 doesn't work
-      plot.network(nw, displayisolates = input$iso, 
+      plot.network(nw, coord = coords(), 
+                   displayisolates = input$iso, 
                    displaylabels = input$vnames, 
                    vertex.col = input$colorby,
                    vertex.cex = size)
@@ -234,6 +238,7 @@ shinyServer(
       }
       nw <- isolate(nw.reac())
       nsims <- isolate(input$nsims)
+      model1.sim <- isolate(model1.sim.reac()) 
       
       #can't plot simulation number greater than total sims
       if(input$this.sim > nsims){
@@ -241,13 +246,16 @@ shinyServer(
       }      
       #use plot display options from sidebar
       #add sizing option eventually    
-      model1.sim <- isolate(model1.sim.reac())     
+          
       if (nsims == 1){
-        plot(model1.sim, displayisolates = input$iso, 
+        
+        plot(model1.sim, coord = sim.coords.1(), 
+             displayisolates = input$iso, 
              displaylabels = input$vnames, 
              vertex.col = input$colorby)
       } else {
         plot(model1.sim[[input$this.sim]], 
+             coord = sim.coords.2(),
              displayisolates = input$iso, 
              displaylabels = input$vnames, 
              vertex.col = input$colorby)
