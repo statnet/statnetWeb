@@ -5,11 +5,6 @@ library(statnet)
 
 shinyUI(navbarPage('ergm app',
   tabPanel('Plot Network',
-   fluidRow(
-     column(1, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
-     column(2, h6('Center for Studies in Demography and Ecology')),
-     column(9)),
-   
     fluidRow(
      column(4,
       wellPanel(
@@ -32,7 +27,11 @@ shinyUI(navbarPage('ergm app',
                           label = 'Display vertex names?',
                           value = FALSE),
             uiOutput('dynamiccolor'),
-            uiOutput('dynamicsize'))),
+            uiOutput('dynamicsize')),
+      fluidRow(
+        column(3, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
+        column(5, h6('Center for Studies in Demography and Ecology'))
+        )),
                   
      column(8, 
             plotOutput('nwplot'),
