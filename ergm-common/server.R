@@ -71,7 +71,7 @@ shinyServer(
       dterms})
     
     nodematch.terms <- reactive({
-      nterms <- paste("nodematch(",input$choosenodematch,")", sep="")
+      nterms <- paste("nodematch('",input$choosenodematch,"')", sep="")
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
       }
