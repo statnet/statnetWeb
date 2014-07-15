@@ -111,14 +111,20 @@ shinyServer(
       if (input$goButton == 0){
         return()
       }
+      nw <- isolate(nw.reac())
+      minsize <- min(get.vertex.attribute(nw,input$sizeby))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
       if (input$sizeby == '1'){
         size = 1
-      } else { size = input$sizeby }
-      nw <- isolate(nw.reac())
+      } else {
+        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7
+      }
       
       # eventually add vertex.cex = input$sizeby
-      plot.network(nw, coord = coords(), displayisolates = input$iso, displaylabels = input$vnames, 
-                   vertex.col = input$colorby)
+      plot.network(nw, coord = coords(), displayisolates = input$iso, 
+                   displaylabels = input$vnames, 
+                   vertex.col = input$colorby, 
+                   vertex.cex = size)
     })
     
     
@@ -162,23 +168,32 @@ shinyServer(
       }
       nw <- isolate(nw.reac())
       nsims <- isolate(input$nsims)
+      model1.sim <- isolate(model1.sim.reac()) 
       
       #can't plot simulation number greater than total sims
       if(input$this.sim > nsims){
         return()
-      }      
-      #use plot display options from sidebar
-      #add sizing option eventually    
-      model1.sim <- isolate(model1.sim.reac())     
+      }
+      
+      #sizing
+      minsize <- min(get.vertex.attribute(nw,input$sizeby))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
+      if (input$sizeby == '1'){
+        size = 1
+      } else {
+        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7
+      }    
+          
       if (nsims == 1){
         coords <- plot.network(model1.sim)
         plot.network(model1.sim, coord = sim.coords.1(), displayisolates = input$iso,
-                     displaylabels = input$vnames, vertex.col = input$colorby)
+                     displaylabels = input$vnames, vertex.col = input$colorby,
+                     vertex.cex = size)
       } else {
         coords <- plot.network(model1.sim[[input$this.sim]])
         plot.network(model1.sim[[input$this.sim]], coord = sim.coords.2(), 
                      displayisolates = input$iso, displaylabels = input$vnames,
-                     vertex.col = input$colorby)
+                     vertex.col = input$colorby, vertex.cex = size)
       }
     })
     
