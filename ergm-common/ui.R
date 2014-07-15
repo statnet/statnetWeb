@@ -52,13 +52,13 @@ shinyUI(navbarPage('ergm app',
                  column(5,
                         uiOutput('listofterms')),
                  column(4,
-                        conditionalPanel(condition = 'input.terms2.indexOf("gwesp") > -1', 
+                        conditionalPanel(condition = 'input.terms.indexOf("gwesp") > -1', 
                                          numericInput('choosegwesp', label = 'pick alpha for gwesp',
                                                       value = 0, min = 0),
                                          checkboxInput('fixgwesp', label = 'fixed?', value = TRUE)),
-                        conditionalPanel(condition = 'input.terms2.indexOf("degree") > -1',
+                        conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
                                          uiOutput('dynamicdegree')),
-                        conditionalPanel(condition = 'input.terms2.indexOf("nodematch") > -1',
+                        conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
                                          uiOutput('dynamicnodematch')))
                ),
                actionButton('fitButton', 'Fit Model')
@@ -66,10 +66,7 @@ shinyUI(navbarPage('ergm app',
          
            br(),
            tags$hr(),
-           p('The output of the model fitting process and the summary of the model
-             fit is below. Pay attention to the coefficient estimates and 
-             significance for each term.'),
-           br(),
+           h4('Model Summary'),
            p('Check for model degeneracy in the "Diagnostics" tab.'),
            br(),
            verbatimTextOutput('modelfit')     
