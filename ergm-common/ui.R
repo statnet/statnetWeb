@@ -68,66 +68,68 @@ shinyUI(navbarPage('ergm app',
                actionButton('fitButton', 'Fit Model')
           )),
          
-         br(),
-         tags$hr(),
-         p('The output of the model fitting process and the summary of the model
-           fit is below. Pay attention to the coefficient estimates and 
-           significance for each term.'),
-         br(),
-         p('Check for model degeneracy in the "Diagnostics" tab.'),
-         br(),
-         verbatimTextOutput('modelfit')     
+           br(),
+           tags$hr(),
+           p('The output of the model fitting process and the summary of the model
+             fit is below. Pay attention to the coefficient estimates and 
+             significance for each term.'),
+           br(),
+           p('Check for model degeneracy in the "Diagnostics" tab.'),
+           br(),
+           verbatimTextOutput('modelfit')     
           
           ),
-  
-          navbarMenu('Diagnostics',
-              tabPanel('Goodness of Fit',
-                   fluidRow(
+   
+         navbarMenu('Diagnostics',
+            tabPanel('Goodness of Fit',
+                 fluidRow(
+                     column(3,
+                            wellPanel(
+                              p('Current network:'),
+                              verbatimTextOutput('currentdataset2'),
+                              p('Current ergm formula:'),
+                              verbatimTextOutput('check2')
+                            )),     
+                     column(9,
+                     p('Test how well your model fits the original data by choosing 
+                       a network statistic that is not in the model, and comparing 
+                       the value of this statistic observed in the original network 
+                       to the distribution of values you get in simulated networks from 
+                       your model.'),
+                     p('If you do not specify a term the default formula for undirected 
+                       networks is ', code('~ degree + espartners + distance'), 'and for 
+                       directed networks is ', code('~ idegree + odegree + espartners + 
+                                                    distance'), '.'),
+                     fluidRow(
+                       column(6, selectInput('gofterm', 'Goodness of Fit Term:',
+                                             c(Default='', 'degree', 'distance', 'espartners', 
+                                               'dspartners', 'triadcensus', 'model'),
+                                             selectize = FALSE)),
+                       column(4, actionButton('gofButton', 'Run'))),
+                     verbatimTextOutput('gof.summary'),  
+                     plotOutput('gofplot'))
+                     )),
+            
+            tabPanel('MCMC Diagnostics',
+                     fluidRow(
                        column(3,
                               wellPanel(
-                                p('Current network:', verbatimTextOutput('currentdataset')),
+                                p('Current network:', verbatimTextOutput('currentdataset3')),
                                 p('Current ergm formula:',
-                                  verbatimTextOutput('check1'))
+                                  verbatimTextOutput('check3'))
                               )),     
                        column(9,
-                       p('Test how well your model fits the original data by choosing 
-                         a network statistic that is not in the model, and comparing 
-                         the value of this statistic observed in the original network 
-                         to the distribution of values you get in simulated networks from 
-                         your model.'),
-                       p('If you do not specify a term the default formula for undirected 
-                         networks is ', code('~ degree + espartners + distance'), 'and for 
-                         directed networks is ', code('~ idegree + odegree + espartners + 
-                                                      distance'), '.'),
-                       fluidRow(
-                         column(6, selectInput('gofterm', 'Goodness of Fit Term:',
-                                               c(Default='', 'degree', 'distance', 'espartners', 
-                                                 'dspartners', 'triadcensus', 'model'),
-                                               selectize = FALSE)),
-                         column(4, actionButton('gofButton', 'Run'))),
-                       verbatimTextOutput('gof.summary'),  
-                       plotOutput('gofplot'))
-                       )),
-              
-              tabPanel('MCMC Diagnostics',
-                       fluidRow(
-                         column(3,
-                                wellPanel(
-                                  p('Current network:', verbatimTextOutput('currentdataset')),
-                                  p('Current ergm formula:',
-                                    verbatimTextOutput('check1'))
-                                )),     
-                         column(9,
-                       verbatimTextOutput('diagnostics')))
-              )),
+                     verbatimTextOutput('diagnostics')))
+            )
+            ),
   
           tabPanel('Simulations',
                    fluidRow(
                      column(3,
                             wellPanel(
-                              p('Current network:', verbatimTextOutput('currentdataset')),
+                              p('Current network:', verbatimTextOutput('currentdataset4')),
                               p('Current ergm formula:',
-                                verbatimTextOutput('check1'))
+                                verbatimTextOutput('check4'))
                             )),     
                      column(9,
                    

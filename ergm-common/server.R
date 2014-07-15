@@ -108,14 +108,30 @@ shinyServer(
 #' Every piece of content that gets displayed in the app has to be
 #' rendered by the appropriate `render*` function. Most of the render
 #' functions here call reactive objects that were created above.
-    
+    #can't use single output twice?
     output$check1 <- renderPrint({
       ergm.terms()
     })
-    
     output$currentdataset <- renderPrint({
-      input$goButton
-      isolate(input$dataset)
+      input$dataset
+    })
+    output$check2 <- renderPrint({
+      ergm.terms()
+    })
+    output$currentdataset2 <- renderPrint({
+      input$dataset
+    })
+    output$check3 <- renderPrint({
+      ergm.terms()
+    })
+    output$currentdataset3 <- renderPrint({
+      input$dataset
+    })
+    output$check4 <- renderPrint({
+      ergm.terms()
+    })
+    output$currentdataset4 <- renderPrint({
+      input$dataset
     })
     
     output$dynamiccolor <- renderUI({
