@@ -185,12 +185,10 @@ shinyServer(
       }    
           
       if (nsims == 1){
-        coords <- plot.network(model1.sim)
         plot.network(model1.sim, coord = sim.coords.1(), displayisolates = input$iso,
                      displaylabels = input$vnames, vertex.col = input$colorby,
                      vertex.cex = size)
       } else {
-        coords <- plot.network(model1.sim[[input$this.sim]])
         plot.network(model1.sim[[input$this.sim]], coord = sim.coords.2(), 
                      displayisolates = input$iso, displaylabels = input$vnames,
                      vertex.col = input$colorby, vertex.cex = size)
