@@ -171,10 +171,17 @@ shinyServer(
       if (input$goButton == 0){
         return()
       }
+      nw <- isolate(nw.reac())
+      #scale size of nodes onto range between .7 and 3.5
+      minsize <- min(get.vertex.attribute(nw,input$sizeby))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
       if (input$sizeby == '1'){
         size = 1
-      } else { size = input$sizeby }
-      nw <- isolate(nw.reac())
+      } else { 
+        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+      }
+      
+      
       # default of size 1 doesn't work
       plot.network(nw, coord = coords(), 
                    displayisolates = input$iso, 
@@ -243,7 +250,15 @@ shinyServer(
       #can't plot simulation number greater than total sims
       if(input$this.sim > nsims){
         return()
-      }      
+      } 
+      #scale size of nodes onto range between .7 and 3.5
+      minsize <- min(get.vertex.attribute(nw,input$sizeby))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
+      if (input$sizeby == '1'){
+        size = 1
+      } else { 
+        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+      }
       #use plot display options from sidebar
       #add sizing option eventually    
           
@@ -252,13 +267,15 @@ shinyServer(
         plot(model1.sim, coord = sim.coords.1(), 
              displayisolates = input$iso, 
              displaylabels = input$vnames, 
-             vertex.col = input$colorby)
+             vertex.col = input$colorby,
+             vertex.cex = size)
       } else {
         plot(model1.sim[[input$this.sim]], 
              coord = sim.coords.2(),
              displayisolates = input$iso, 
              displaylabels = input$vnames, 
-             vertex.col = input$colorby)
+             vertex.col = input$colorby,
+             vertex.cex = size)
       }
     })
     
