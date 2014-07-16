@@ -3,6 +3,12 @@
 library(shiny)
 library(statnet)
 
+customTextInput<-function (inputId, label, value="",...) {
+  tagList(tags$label(label, `for` = inputId), tags$input(id = inputId,
+                                                         type="text",
+                                                         value=value,...))
+}
+
 shinyUI(navbarPage('ergm app',
   tabPanel('Plot Network',
     fluidRow(
@@ -40,36 +46,39 @@ shinyUI(navbarPage('ergm app',
     ),
                   
       tabPanel('Fit Model',
-          fluidRow(
-            column(3,
-              wellPanel(
-                p('Current network:', verbatimTextOutput('currentdataset')),
-                p('Current ergm formula:',
-                  verbatimTextOutput('check1'))
-                )),
-            column(9,     
-               fluidRow(
-                 column(5,
-                        uiOutput('listofterms')),
-                 column(4,
-                        conditionalPanel(condition = 'input.terms.indexOf("gwesp") > -1', 
-                                         numericInput('choosegwesp', label = 'pick alpha for gwesp',
-                                                      value = 0, min = 0),
-                                         checkboxInput('fixgwesp', label = 'fixed?', value = TRUE)),
-                        conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
-                                         uiOutput('dynamicdegree')),
-                        conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
-                                         uiOutput('dynamicnodematch')))
-               ),
-               actionButton('fitButton', 'Fit Model')
-          )),
+         fluidRow(
+            column(2,
+               p('Current network:', verbatimTextOutput('currentdataset'))),
+            column(10,
+               p('Current ergm formula:',
+                  verbatimTextOutput('check1')))
+          ),     
+         fluidRow(
+           column(3,
+                  uiOutput('listofterms')),
+           
+           conditionalPanel(condition = 'input.terms.indexOf("gwesp") > -1', 
+                            column(2,
+                                   customTextInput('choosegwesp', 
+                                                label = 'Input alpha for gwesp',
+                                                value = 0, class='input-small'),
+                                   checkboxInput('fixgwesp', label = 'fixed?', 
+                                                 value = TRUE))),
+           conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
+                            column(3,
+                                   uiOutput('dynamicdegree'))),
+           conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
+                            column(3,
+                                   uiOutput('dynamicnodematch')))
+         ),
+         actionButton('fitButton', 'Fit Model'),
          
-           br(),
-           tags$hr(),
-           h4('Model Summary'),
-           p('Check for model degeneracy in the "Diagnostics" tab.'),
-           br(),
-           verbatimTextOutput('modelfit')     
+         br(),
+         tags$hr(),
+         h4('Model Summary'),
+         p('Check for model degeneracy in the "Diagnostics" tab.'),
+         br(),
+         verbatimTextOutput('modelfit')     
           
           ),
    

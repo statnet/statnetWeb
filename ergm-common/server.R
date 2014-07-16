@@ -47,7 +47,7 @@ shinyServer(
     undir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
                      'absdiff', 'gwesp', 'degree', 'b1degree', 'b2degree', 
                      'mindegree', 'triangles')
-    
+
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -266,7 +266,7 @@ shinyServer(
     output$dynamicdegree <- renderUI({
       selectInput('choosedegree', 
                   label = 'Choose degree(s)',
-                  paste(0:(as.numeric(nodes())-1)),
+                  choices=paste(0:(as.numeric(nodes())-1)),
                   multiple = TRUE,
                   selectize = FALSE)
     })
