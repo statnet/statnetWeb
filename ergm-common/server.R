@@ -118,12 +118,19 @@ shinyServer(
     model1.reac <- reactive({ergm(ergm.formula())})
     
     #use default gof formula
-    model1.gof1 <- reactive({gof(model1.reac())})
+    model1.gof <- reactive({ 
+      if(input$gofterm == ''){
+        model1.gof <- gof(model1.reac())
+      } else {
+        gof.form <- formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))
+        model1.gof <- gof(gof.form)
+      }
+      model1.gof})
     
     #use gof term that user specifies
-    gof.form <- reactive({
-      formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))})
-    model1.gof2 <- reactive({gof(gof.form())})
+    #gof.form <- reactive({
+    #  })
+    #model1.gof2 <- reactive({gof(gof.form())})
 
     model1.sim.reac <- reactive({
       simulate(model1.reac(), nsim = input$nsims)})
@@ -307,12 +314,8 @@ shinyServer(
                  "Run" to use the default formula'))
       }
       
-      isolate(if (input$gofterm == ''){
-        model1.gof <- model1.gof1()
-      } else {
-        model1.gof <-model1.gof2()})
       
-      return(model1.gof)
+      return(model1.gof())
       })
     
     
@@ -326,13 +329,12 @@ shinyServer(
       }
       
       isolate(if (input$gofterm == ''){
-        model1.gof <- model1.gof1()
         par(mfrow=c(1,3))
       } else {
         par(mfrow=c(1,1))
-        model1.gof <- model1.gof2()})
+      })
       
-      plot.gofobject(model1.gof)
+      plot.gofobject(model1.gof())
       par(mfrow=c(1,1))
     })
 
