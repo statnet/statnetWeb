@@ -223,7 +223,7 @@ shinyServer(
     #summary of network attributes
     output$attr <- renderPrint({
       if (input$goButton == 0){
-        return('Please choose a sample dataset from the side panel')
+        return(cat('Please choose a sample dataset from the side panel'))
       }
       nw <- isolate(nw.reac())
       return(nw)
@@ -247,7 +247,7 @@ shinyServer(
 
 #+ fitmodel1, eval=FALSE
     output$currentdataset <- renderPrint({
-      input$dataset
+      cat(input$dataset)
     })
 
     output$listofterms <- renderUI({
@@ -286,15 +286,12 @@ shinyServer(
 #'  
 #+ fitmodel2, eval=FALSE
     output$check1 <- renderPrint({
-      ergm.terms()
+      cat(ergm.terms())
     })
     
     output$modelfit <- renderPrint({
-      if (input$goButton == 0){
-        return('Please choose a sample dataset from the side panel')
-      }
-      else if (input$fitButton == 0){
-        return('Please choose term(s) for the model')
+      if (input$fitButton == 0){
+        return(cat('Please choose term(s) for the model'))
       }
       model1 <- isolate(model1.reac())
       return(summary(model1))
@@ -315,16 +312,16 @@ shinyServer(
 #' on the page we can output the text of the gof object and the plot of the gof object.
 #+ eval=FALSE
     output$currentdataset2 <- renderPrint({
-      input$dataset
+      cat(input$dataset)
     })
 
     output$check2 <- renderPrint({
-      ergm.terms()
+      cat(ergm.terms())
     })
     
     output$gof.summary <- renderPrint({
       if (input$gofButton == 0){
-        return(p('Choose a term for checking the goodness-of-fit, or just click
+        return(cat('Choose a term for checking the goodness-of-fit, or just click
                  "Run" to use the default formula'))
       }
       
@@ -357,16 +354,16 @@ shinyServer(
 #+ eval=FALSE
 
     output$check3 <- renderPrint({
-      ergm.terms()
+      cat(ergm.terms())
     })
     output$currentdataset3 <- renderPrint({
-      input$dataset
+      cat(input$dataset)
     })
     
     output$diagnostics <- renderPrint({
       model1 <- model1.reac()
       if (is.null(model1$sample)){
-        return('MCMC did not run to fit this model')
+        return(cat('MCMC did not run to fit this model'))
       } else {
         mcmc.diagnostics(model1)
       }
@@ -384,19 +381,16 @@ shinyServer(
 #' from the 'Network Plot' tab.
 #+ eval=FALSE
     output$check4 <- renderPrint({
-      ergm.terms()
+      cat(ergm.terms())
     })
     output$currentdataset4 <- renderPrint({
-      input$dataset
+      cat(input$dataset)
     })
     
 
     output$sim.summary <- renderPrint({
-      if (input$goButton == 0){
-        return('Please choose a sample dataset from the side panel')
-      }
-      else if (input$simButton == 0){
-        return("You haven't clicked 'Simulate' yet!")
+      if (input$simButton == 0){
+        return(cat("You haven't clicked 'Simulate' yet!"))
       }
       model1.sim <- isolate(model1.sim.reac())
       return(summary(model1.sim))
