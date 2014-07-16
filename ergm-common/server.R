@@ -141,7 +141,7 @@ shinyServer(
 #' reactive objects that were created above. I have divided the output objects
 #' into sections depending on what tab of the app they are called from.
 #'    
-#' **Plot Network**  
+#' **Plot Network** 
 #' 
 #' Because the menu options for coloring/sizing the nodes on a network plot 
 #' depend on which network has been selected, we have to dynamically render 
@@ -162,8 +162,15 @@ shinyServer(
                   c('None' = 1, numattr()),
                   selectize = FALSE)
     })
+#' The network plot takes display options from the sidebar of the ui. Even though 
+#' I set the value of the 'None' option in the `sizeby` menu (above) as `1`, it gets
+#' coerced into the string `'1'` by the rest of the strings in the vector of menu 
+#' options. The variable `size` takes the value 1 if the user wants all the nodes
+#' to be the same size, and otherwise maps the values of the numeric attributes into 
+#' the range between .7 and 3.5 using the formula $y = (x-a)/(b-a) * (d-c) + c$, where
+#' $x$ is the input in some range $[a,b]$ and $y$ is the output in range $[c,d]$.
 
-
+#+ eval=FALSE
     output$nwplot <- renderPlot({
       if (input$goButton == 0){
         return()
@@ -186,7 +193,7 @@ shinyServer(
                    vertex.cex = size)
     })
 
-
+    #summary of network attributes
     output$attr <- renderPrint({
       if (input$goButton == 0){
         return('Please choose a sample dataset from the side panel')
@@ -194,34 +201,41 @@ shinyServer(
       nw <- isolate(nw.reac())
       return(nw)
     })
-########################################
-    output$check1 <- renderPrint({
-      ergm.terms()
-    })
+
+#' **Fit Model**
+#' 
+#' The user is only allowed to change the dataset on the first tab; on the
+#' following tabs I output the current dataset as a reminder of what network
+#' they are working with. 
+#' 
+#' Like the coloring and sizing options in the network plot, the `selectInput`
+#' menus for creating an ergm formula must be dynamically rendered. Right now 
+#' the total list of terms available is from the statnet
+#' [list of common terms](http://statnet.csde.washington.edu/EpiModel/nme/2014/d2-ergmterms.html).
+#' The terms that the user sees in the menu depends on whether the current 
+#' network is directed or undirected (future: bipartite/independent).
+#' 
+#' The `selectInput` menus for `degree` and `nodematch` (more coming soon) depend
+#' on the number of nodes in the network and the vertex attributes, respectively.
+
+#+ fitmodel1, eval=FALSE
     output$currentdataset <- renderPrint({
       input$dataset
     })
-    output$check2 <- renderPrint({
-      ergm.terms()
+
+    output$listofterms <- renderUI({
+      if(nw.reac()$gal$directed){
+        current.terms <- c(dir.terms)
+      } else {
+        current.terms <- c(undir.terms)
+      }
+      selectInput('terms',label = 'Choose term(s):',
+                  current.terms,
+                  selected='edges',
+                  multiple=TRUE, 
+                  selectize = FALSE)
     })
-    output$currentdataset2 <- renderPrint({
-      input$dataset
-    })
-    output$check3 <- renderPrint({
-      ergm.terms()
-    })
-    output$currentdataset3 <- renderPrint({
-      input$dataset
-    })
-    output$check4 <- renderPrint({
-      ergm.terms()
-    })
-    output$currentdataset4 <- renderPrint({
-      input$dataset
-    })
-    
-    
-    
+
     output$dynamicdegree <- renderUI({
       selectInput('choosedegree', 
                   label = 'Choose degree(s)',
@@ -237,24 +251,15 @@ shinyServer(
                   multiple = TRUE,
                   selectize = FALSE)
     })
-    
-    
-    
-    
 
-
-
-    output$listofterms <- renderUI({
-      if(nw.reac()$gal$directed){
-        current.terms <- c(dir.terms)
-      } else {
-        current.terms <- c(undir.terms)
-      }
-      selectInput('terms',label = 'Choose term(s):',
-                  current.terms,
-                  selected='edges',
-                  multiple=TRUE, 
-                  selectize = FALSE)
+#' Below I output the current formulation of the ergm 
+#' model so the user can clearly see how their menu selections change the model.
+#' Since `ergm.terms()` is a reactive object, it will automatically update when
+#' the user clicks on menu options.
+#'  
+#+ fitmodel2, eval=FALSE
+    output$check1 <- renderPrint({
+      ergm.terms()
     })
     
     output$modelfit <- renderPrint({
@@ -267,8 +272,101 @@ shinyServer(
       model1 <- isolate(model1.reac())
       return(summary(model1))
     })
+
+#' **Diagnostics**
+#' 
+#' *Goodness of Fit*
+#' 
+#' Again, I output the current dataset and the ergm formula for the user to verify.
+#' One drawback of the `navbarPage` layout option (we specified this in the top of
+#' `ui.R`) is that you can't specify certain elements or panels to show up on 
+#' multiple pages. Furthermore, as far as I can tell, Shiny will not let you use 
+#' the same piece of output from `server.R` twice in `ui.R`. Therefore, 
+#' `output$currentdataset2` and `output$check2` are the same as `output$currentdataset`
+#' and `output$check1` with different names.
+#' 
+#' In the reactive section above I created two 
+#+ eval=FALSE
+    output$currentdataset2 <- renderPrint({
+      input$dataset
+    })
+
+    output$check2 <- renderPrint({
+      ergm.terms()
+    })
+    
+    output$gof.summary <- renderPrint({
+      if (input$goButton == 0){
+        return('Please choose a sample dataset from the side panel')
+      }
+      else if (input$fitButton == 0){
+        return('Please choose term(s) for the model on the "Fit Model" tab')
+      } 
+      else if (input$gofButton == 0){
+        return(p('Choose a term for checking the goodness-of-fit, or just click
+                 "Run" to use the default formula'))
+      }
+      
+      isolate(if (input$gofterm == ''){
+        model1.gof <- model1.gof1()
+      } else {
+        model1.gof <-model1.gof2()})
+      
+      return(model1.gof)
+      })
     
     
+    output$gofplot <- renderPlot({   
+      if (input$goButton == 0){
+        return()
+      } else if (input$fitButton == 0){
+        return()
+      } else if (input$gofButton == 0){
+        return()
+      }
+      
+      isolate(if (input$gofterm == ''){
+        model1.gof <- model1.gof1()
+        par(mfrow=c(1,3))
+      } else {
+        par(mfrow=c(1,1))
+        model1.gof <- model1.gof2()})
+      
+      plot.gofobject(model1.gof)
+      par(mfrow=c(1,1))
+    })
+
+#' *MCMC Diagnostics*
+#' 
+#+ eval=FALSE
+
+    output$check3 <- renderPrint({
+      ergm.terms()
+    })
+    output$currentdataset3 <- renderPrint({
+      input$dataset
+    })
+    
+    output$diagnostics <- renderPrint({
+      model1 <- model1.reac()
+      if (is.null(model1$sample)){
+        return('MCMC did not run to fit this model')
+      } else {
+        mcmc.diagnostics(model1)
+      }
+    })
+
+#' **Simulations**
+#' 
+#+ eval=FALSE
+    output$check4 <- renderPrint({
+      ergm.terms()
+    })
+    output$currentdataset4 <- renderPrint({
+      input$dataset
+    })
+    
+
     output$sim.summary <- renderPrint({
       if (input$goButton == 0){
         return('Please choose a sample dataset from the side panel')
@@ -322,55 +420,5 @@ shinyServer(
       }
     })
     
-    
-    output$gof.summary <- renderPrint({
-      if (input$goButton == 0){
-        return('Please choose a sample dataset from the side panel')
-      }
-      else if (input$fitButton == 0){
-        return('Please choose term(s) for the model on the "Fit Model" tab')
-      } 
-      else if (input$gofButton == 0){
-        return(p('Choose a term for checking the goodness-of-fit, or just click
-                 "Run" to use the default formula'))
-      }
-      
-      isolate(if (input$gofterm == ''){
-        model1.gof <- model1.gof1()
-      } else {
-        model1.gof <-model1.gof2()})
-      
-      return(model1.gof)
-      })
-    
-    
-    output$gofplot <- renderPlot({   
-      if (input$goButton == 0){
-        return()
-      } else if (input$fitButton == 0){
-        return()
-      } else if (input$gofButton == 0){
-        return()
-      }
-      
-      isolate(if (input$gofterm == ''){
-        model1.gof <- model1.gof1()
-        par(mfrow=c(1,3))
-      } else {
-        par(mfrow=c(1,1))
-        model1.gof <- model1.gof2()})
-      
-      plot.gofobject(model1.gof)
-      par(mfrow=c(1,1))
-    })
-    
-    output$diagnostics <- renderPrint({
-      model1 <- model1.reac()
-      if (is.null(model1$sample)){
-        return('MCMC did not run to fit this model')
-      } else {
-        mcmc.diagnostics(model1)
-      }
-    })
     
   })
