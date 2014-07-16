@@ -1,6 +1,27 @@
-#' ergm-common, server.R
-#' ======================
+#' ---
+#' title: "ergm-common, server.R"
+#' author: "Emily Beylerian"
+#' ---
+#' ergm-common
+#' ============
+#' server.R
+#' =========
 
+#' **Before reading this document:** The Shiny app "ergm-common" is not contained in a
+#' single R Script. Within the folder "ergm-common" the script `ui.R` controls the 
+#' layout and appearance of the app, the script `server.R` controls the content that
+#' gets displayed in the app, and the folder "www" contains auxiliary files (just a
+#' .png file right now). If you are unfamiliar with Shiny apps, it may be more 
+#' natural and helpful to start with the documentation for `ui.R` and then move on to
+#' `server.R`.
+#' 
+#' Every `server.R` script contains an unnamed function inside a call to `shinyServer`.
+#' The job of the unnamed function is to take input elements from the user and define
+#' output elements that will be displayed in the app. For more information on how this
+#' works, see [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/).
+#' 
+#' Also notice that in this block of code we loaded the shiny and statnet packages 
+#' (outside of `shinyServer`) and loaded all of the datasets we might need.
 #+ eval=FALSE
 #make sure that both shiny and statnet packages are loaded
 library(shiny)
@@ -153,7 +174,6 @@ shinyServer(
 #' Because the menu options for coloring/sizing the nodes on a network plot 
 #' depend on which network has been selected, we have to dynamically render 
 #' these input menus, rather than statically defining them in `ui.R`.  
-#' including 
 #' 
 #+ eval=FALSE
     output$dynamiccolor <- renderUI({
@@ -280,9 +300,7 @@ shinyServer(
       return(summary(model1))
     })
 
-#' **Diagnostics**
-#' 
-#' *Goodness of Fit*
+#' **Diagnostics - Goodness of Fit**
 #' 
 #' Again, I output the current dataset and the ergm formula for the user to verify.
 #' One drawback of the `navbarPage` layout option (we specified this in the top of
@@ -292,7 +310,9 @@ shinyServer(
 #' `output$currentdataset2` and `output$check2` are the same as `output$currentdataset`
 #' and `output$check1` with different names.
 #' 
-#' In the reactive section above I created two 
+#' In the reactive section above the creation of `model1.gof` depends on the term the 
+#' user inputs. After checking that the user has already clicked the `actionButton`
+#' on the page we can output the text of the gof object and the plot of the gof object.
 #+ eval=FALSE
     output$currentdataset2 <- renderPrint({
       input$dataset
@@ -303,42 +323,36 @@ shinyServer(
     })
     
     output$gof.summary <- renderPrint({
-      if (input$goButton == 0){
-        return('Please choose a sample dataset from the side panel')
-      }
-      else if (input$fitButton == 0){
-        return('Please choose term(s) for the model on the "Fit Model" tab')
-      } 
-      else if (input$gofButton == 0){
+      if (input$gofButton == 0){
         return(p('Choose a term for checking the goodness-of-fit, or just click
                  "Run" to use the default formula'))
       }
       
-      
-      return(model1.gof())
+      return(isolate(model1.gof()))
       })
     
     
     output$gofplot <- renderPlot({   
-      if (input$goButton == 0){
-        return()
-      } else if (input$fitButton == 0){
-        return()
-      } else if (input$gofButton == 0){
+      if (input$gofButton == 0){
         return()
       }
-      
-      isolate(if (input$gofterm == ''){
+      if (input$gofterm == ''){
         par(mfrow=c(1,3))
       } else {
         par(mfrow=c(1,1))
-      })
+      }
       
-      plot.gofobject(model1.gof())
+      isolate(plot.gofobject(model1.gof()))
       par(mfrow=c(1,1))
     })
 
-#' *MCMC Diagnostics*
+#' **Diagnostics - MCMC Diagnostics**
+#' 
+#' When using the `mcmc.diagnostics` function in the command line, the printed 
+#' diagnostics and plots all output together. In Shiny, the `renderPrint` function
+#' can capture all the printed output without the plot, but `renderPlot` cannot 
+#' capture the plot. For now, we only display the printed output (unitl `mcmc.diagnostics`
+#' has an option to separate the plot).
 #' 
 #+ eval=FALSE
 
@@ -360,6 +374,14 @@ shinyServer(
 
 #' **Simulations**
 #' 
+#' On this page the user can choose how many simulations of the model to run. The 
+#' reactive object `model1.sim.reac` contains all the simulations, which we can output
+#' a summary of and choose one simulation at a time to plot. *Note:* when the user
+#' chooses to simulate one network, `model1.sim.reac()` is a reactive object of class
+#' network. When the user chooses to simulate multiple networks, `model1.sim.reac()`
+#' contains a list of the generated networks. This is why we have to split up the plot
+#' command in an if-statement. The rest of the display options should look familiar
+#' from the 'Network Plot' tab.
 #+ eval=FALSE
     output$check4 <- renderPrint({
       ergm.terms()
