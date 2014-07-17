@@ -46,8 +46,12 @@ shinyServer(
                    'absdiff', 'gwesp', 'mutual', 'idegree', 'odegree')
     undir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
                      'absdiff', 'gwesp', 'degree', 'b1degree', 'b2degree', 
-                     'mindegree', 'triangles')
-
+                     'mindegree', 'triangle')
+    unip.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov', 
+                    'absdiff', 'mutual','degree', 'idegree', 'odegree', 'mindegree',
+                    'triangle', 'gwesp')
+    bip.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov', 
+                   'absdiff', 'mutual', 'b1degree', 'b2degree')
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -257,15 +261,19 @@ shinyServer(
 #' on the number of nodes in the network and the vertex attributes, respectively.
 
 #+ fitmodel1, eval=FALSE
-    output$currentdataset <- renderPrint({
+    output$currentdataset1 <- renderPrint({
       cat(input$dataset)
     })
 
     output$listofterms <- renderUI({
-      if(nw.reac()$gal$directed){
-        current.terms <- c(dir.terms)
-      } else {
-        current.terms <- c(undir.terms)
+      if(nw.reac()$gal$directed & nw.reac()$gal$bipartite){
+        current.terms <- intersect(dir.terms, bip.terms)
+      } else if(nw.reac()$gal$directed) {
+        current.terms <- intersect(dir.terms, unip.terms)
+      } else if(nw.reac()$gal$bipartite){
+        current.terms <- intersect(undir.terms, bip.terms)
+      } else if(!nw.reac()$gal$bipartite & !nw.reac()$gal$bipartite){
+        current.terms <- intersect(undir.terms, unip.terms)
       }
       selectInput('terms',label = 'Choose term(s):',
                   current.terms,
@@ -296,7 +304,7 @@ shinyServer(
 #' the user clicks on menu options.
 #'  
 #+ fitmodel2, eval=FALSE
-    output$check1 <- renderPrint({
+    output$checkterms1 <- renderPrint({
       cat(ergm.terms())
     })
     
@@ -326,7 +334,7 @@ shinyServer(
       cat(input$dataset)
     })
 
-    output$check2 <- renderPrint({
+    output$checkterms2 <- renderPrint({
       cat(ergm.terms())
     })
     
@@ -364,7 +372,7 @@ shinyServer(
 #' 
 #+ eval=FALSE
 
-    output$check3 <- renderPrint({
+    output$checkterms3 <- renderPrint({
       cat(ergm.terms())
     })
     output$currentdataset3 <- renderPrint({
@@ -391,7 +399,7 @@ shinyServer(
 #' command in an if-statement. The rest of the display options should look familiar
 #' from the 'Network Plot' tab.
 #+ eval=FALSE
-    output$check4 <- renderPrint({
+    output$checkterms4 <- renderPrint({
       cat(ergm.terms())
     })
     output$currentdataset4 <- renderPrint({
@@ -401,19 +409,35 @@ shinyServer(
 
     output$sim.summary <- renderPrint({
       if (input$simButton == 0){
-        return(cat("You haven't clicked 'Simulate' yet!"))
+        return()
       }
       model1.sim <- isolate(model1.sim.reac())
+      if (input$nsims == 1){
+        return(model1.sim)
+      }
       return(summary(model1.sim))
+    })
+
+    output$dynamiccolor2 <- renderUI({
+      selectInput('colorby2',
+                  label = 'Color nodes according to:',
+                  c('None' = 2, attr()),
+                  selectize = FALSE)
+    })
+    
+    output$dynamicsize2 <- renderUI({
+      selectInput('sizeby2',
+                  label = 'Size nodes according to:',
+                  c('None' = 1, numattr()),
+                  selectize = FALSE)
     })
     
     
     output$simplot <- renderPlot({
-      input$goButton
       if(input$simButton == 0){
         return()
       }
-      nw <- isolate(nw.reac())
+      nw <- nw.reac()
       nsims <- isolate(input$nsims)
       model1.sim <- isolate(model1.sim.reac()) 
       
@@ -422,12 +446,12 @@ shinyServer(
         return()
       } 
       #scale size of nodes onto range between .7 and 3.5
-      minsize <- min(get.vertex.attribute(nw,input$sizeby))
-      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
-      if (input$sizeby == '1'){
+      minsize <- min(get.vertex.attribute(nw,input$sizeby2))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
+      if (input$sizeby2 == '1'){
         size = 1
       } else { 
-        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+        size = (get.vertex.attribute(nw,input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
       }
       #need new plot display options on sidebar
       #add sizing option eventually    
@@ -435,16 +459,16 @@ shinyServer(
       if (nsims == 1){
         
         plot(model1.sim, coord = sim.coords.1(), 
-             displayisolates = input$iso, 
-             displaylabels = input$vnames, 
-             vertex.col = input$colorby,
+             displayisolates = input$iso2, 
+             displaylabels = input$vnames2, 
+             vertex.col = input$colorby2,
              vertex.cex = size)
       } else {
         plot(model1.sim[[input$this.sim]], 
              coord = sim.coords.2(),
-             displayisolates = input$iso, 
-             displaylabels = input$vnames, 
-             vertex.col = input$colorby,
+             displayisolates = input$iso2, 
+             displaylabels = input$vnames2, 
+             vertex.col = input$colorby2,
              vertex.cex = size)
       }
     })

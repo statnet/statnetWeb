@@ -48,10 +48,10 @@ shinyUI(navbarPage('ergm app',
       tabPanel('Fit Model',
          fluidRow(
             column(2,
-               p('Current network:', verbatimTextOutput('currentdataset'))),
+               p('Current network:', verbatimTextOutput('currentdataset1'))),
             column(10,
                p('Current ergm formula:',
-                  verbatimTextOutput('check1')))
+                  verbatimTextOutput('checkterms1')))
           ),     
          fluidRow(
            column(3,
@@ -84,15 +84,22 @@ shinyUI(navbarPage('ergm app',
    
          navbarMenu('Diagnostics',
             tabPanel('Goodness of Fit',
-                 fluidRow(
-                     column(3,
-                            wellPanel(
-                              p('Current network:'),
-                              verbatimTextOutput('currentdataset2'),
-                              p('Current ergm formula:'),
-                              verbatimTextOutput('check2')
-                            )),     
-                     column(9,
+                     fluidRow(
+                       column(2,
+                              p('Current network:', verbatimTextOutput('currentdataset2'))),
+                       column(10,
+                              p('Current ergm formula:',
+                                verbatimTextOutput('checkterms2')))
+                      ),     
+                     fluidRow(
+                       column(3, selectInput('gofterm', 'Goodness of Fit Term:',
+                                             c(Default='', 'degree', 'distance', 'espartners', 
+                                               'dspartners', 'triadcensus', 'model'),
+                                             selectize = FALSE))),
+                     fluidRow(
+                        column(3, actionButton('gofButton', 'Run'))),
+                     br(),
+                     tags$hr(),
                      p('Test how well your model fits the original data by choosing 
                        a network statistic that is not in the model, and comparing 
                        the value of this statistic observed in the original network 
@@ -102,53 +109,80 @@ shinyUI(navbarPage('ergm app',
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
                                                     distance'), '.'),
-                     fluidRow(
-                       column(6, selectInput('gofterm', 'Goodness of Fit Term:',
-                                             c(Default='', 'degree', 'distance', 'espartners', 
-                                               'dspartners', 'triadcensus', 'model'),
-                                             selectize = FALSE)),
-                       column(4, actionButton('gofButton', 'Run'))),
+                     
                      verbatimTextOutput('gof.summary'),  
-                     plotOutput('gofplot'))
-                     )),
+                     plotOutput('gofplot')
+                     ),
             
             tabPanel('MCMC Diagnostics',
                      fluidRow(
-                       column(3,
-                              wellPanel(
-                                p('Current network:', verbatimTextOutput('currentdataset3')),
-                                p('Current ergm formula:',
-                                  verbatimTextOutput('check3'))
-                              )),     
-                       column(9,
-                     verbatimTextOutput('diagnostics')))
+                       column(2,
+                              p('Current network:', verbatimTextOutput('currentdataset3'))),
+                       column(10,
+                              p('Current ergm formula:',
+                                verbatimTextOutput('checkterms3')))
+                     ),     
+                     br(),
+                     tags$hr(),
+                     verbatimTextOutput('diagnostics')
             )
             ),
   
           tabPanel('Simulations',
                    fluidRow(
-                     column(3,
-                            wellPanel(
-                              p('Current network:', verbatimTextOutput('currentdataset4')),
-                              p('Current ergm formula:',
-                                verbatimTextOutput('check4'))
-                            )),     
-                     column(9,
+                     column(2,
+                            p('Current network:', verbatimTextOutput('currentdataset4'))),
+                     column(10,
+                            p('Current ergm formula:',
+                              verbatimTextOutput('checkterms4')))
+                   ),
+                   br(),
+                   tags$hr(),
                    
-                         fluidRow(
-                           column(6,
-                                  numericInput('nsims',
-                                               label = 'Number of simulations:',
-                                               min = 1,
-                                               value = 1)),
-                           column(4,
-                                  actionButton('simButton', 'Simulate'))),
-                         verbatimTextOutput('sim.summary'),
-                         numericInput('this.sim',
-                                      label = 'Choose a simulation to plot',
-                                      min = 1,
-                                      value = 1),
-                         plotOutput('simplot'))))
+                   fluidRow(
+                     column(3,
+                            numericInput('nsims',
+                                         label = 'Number of simulations:',
+                                         min = 1,
+                                         value = 1)      
+                     ),
+                     column(4, offset=2,
+                            numericInput('this.sim',
+                                        label = 'Choose a simulation to plot',
+                                        min = 1,
+                                        value = 1)
+                            )
+                   ),
+                   fluidRow( 
+                     column(3,
+                            actionButton('simButton', 'Simulate'),
+                            br(),
+                            br(),
+                            verbatimTextOutput('sim.summary')
+                            ),  
+                     column(7,
+                            plotOutput('simplot')
+                            ),
+                     column(8, offset = 3,
+                            br(),
+                            
+                            wellPanel(
+                              fluidRow(h5('Display Options')),
+                              fluidRow(column(3,
+                                checkboxInput('iso2',
+                                              label = 'Display isolates?', 
+                                              value = TRUE),
+                                checkboxInput('vnames2',
+                                              label = 'Display vertex names?',
+                                              value = FALSE)),
+                              column(3,
+                                uiOutput('dynamiccolor2')),
+                              column(3,
+                                uiOutput('dynamicsize2')))
+                              )
+                            )
+                     )
+                   )
                   
     
     )
