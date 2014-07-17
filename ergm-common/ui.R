@@ -139,20 +139,49 @@ shinyUI(navbarPage('ergm app',
                    br(),
                    tags$hr(),
                    
-                         fluidRow(
-                           column(3,
-                                  numericInput('nsims',
-                                               label = 'Number of simulations:',
-                                               min = 1,
-                                               value = 1)),
-                           column(4,
-                                  actionButton('simButton', 'Simulate'))),
-                         verbatimTextOutput('sim.summary'),
-                         numericInput('this.sim',
-                                      label = 'Choose a simulation to plot',
-                                      min = 1,
-                                      value = 1),
-                         plotOutput('simplot'))
+                   fluidRow(
+                     column(3,
+                            numericInput('nsims',
+                                         label = 'Number of simulations:',
+                                         min = 1,
+                                         value = 1)      
+                     ),
+                     column(4, offset=2,
+                            numericInput('this.sim',
+                                        label = 'Choose a simulation to plot',
+                                        min = 1,
+                                        value = 1)
+                            )
+                   ),
+                   fluidRow( 
+                     column(3,
+                            actionButton('simButton', 'Simulate'),
+                            br(),
+                            br(),
+                            verbatimTextOutput('sim.summary')
+                            ),  
+                     column(7,
+                            plotOutput('simplot')
+                            ),
+                     column(8, offset = 3,
+                            br(),
+                            
+                            wellPanel(
+                              h5('Display Options'),
+                              column(3,
+                                checkboxInput('iso2',
+                                              label = 'Display isolates?', 
+                                              value = TRUE),
+                                checkboxInput('vnames2',
+                                              label = 'Display vertex names?',
+                                              value = FALSE)),
+                              column(3,
+                                uiOutput('dynamiccolor2')),
+                              column(3,
+                                uiOutput('dynamicsize2')))
+                            )
+                     )
+                   )
                   
     
     )

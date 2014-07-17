@@ -390,19 +390,35 @@ shinyServer(
 
     output$sim.summary <- renderPrint({
       if (input$simButton == 0){
-        return(cat("You haven't clicked 'Simulate' yet!"))
+        return()
       }
       model1.sim <- isolate(model1.sim.reac())
+      if (input$nsims == 1){
+        return(model1.sim)
+      }
       return(summary(model1.sim))
+    })
+
+    output$dynamiccolor2 <- renderUI({
+      selectInput('colorby2',
+                  label = 'Color nodes according to:',
+                  c('None' = 2, attr()),
+                  selectize = FALSE)
+    })
+    
+    output$dynamicsize2 <- renderUI({
+      selectInput('sizeby2',
+                  label = 'Size nodes according to:',
+                  c('None' = 1, numattr()),
+                  selectize = FALSE)
     })
     
     
     output$simplot <- renderPlot({
-      input$goButton
       if(input$simButton == 0){
         return()
       }
-      nw <- isolate(nw.reac())
+      nw <- nw.reac()
       nsims <- isolate(input$nsims)
       model1.sim <- isolate(model1.sim.reac()) 
       
@@ -411,12 +427,12 @@ shinyServer(
         return()
       } 
       #scale size of nodes onto range between .7 and 3.5
-      minsize <- min(get.vertex.attribute(nw,input$sizeby))
-      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
-      if (input$sizeby == '1'){
+      minsize <- min(get.vertex.attribute(nw,input$sizeby2))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
+      if (input$sizeby2 == '1'){
         size = 1
       } else { 
-        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+        size = (get.vertex.attribute(nw,input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
       }
       #need new plot display options on sidebar
       #add sizing option eventually    
@@ -424,16 +440,16 @@ shinyServer(
       if (nsims == 1){
         
         plot(model1.sim, coord = sim.coords.1(), 
-             displayisolates = input$iso, 
-             displaylabels = input$vnames, 
-             vertex.col = input$colorby,
+             displayisolates = input$iso2, 
+             displaylabels = input$vnames2, 
+             vertex.col = input$colorby2,
              vertex.cex = size)
       } else {
         plot(model1.sim[[input$this.sim]], 
              coord = sim.coords.2(),
-             displayisolates = input$iso, 
-             displaylabels = input$vnames, 
-             vertex.col = input$colorby,
+             displayisolates = input$iso2, 
+             displaylabels = input$vnames2, 
+             vertex.col = input$colorby2,
              vertex.cex = size)
       }
     })
