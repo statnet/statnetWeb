@@ -62,19 +62,30 @@ shinyServer(
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
-    nw.reac <- reactive({eval(parse(text = input$dataset))})
+    nw.reac <- reactive({
+				input$goButton
+				isolate(eval(parse(text = input$dataset)))
+			})
     #number of nodes in nw
-    nodes <- reactive({nw.reac()$gal$n}) 
+    nodes <- reactive({
+				input$goButton
+				isolate(nw.reac()$gal$n)}) 
     #get coordinates to plot network with
-    coords <- reactive({plot.network(eval(parse(text = input$dataset)))})
+    coords <- reactive({
+				input$goButton
+				isolate(plot.network(eval(parse(text = input$dataset))))})
     
     #list of vertex attributes in nw
     attr <- reactive({
-      attr <- c()
+				
+	  input$goButton
+  
+	  attr <- c()
       if(input$dataset != ''){      
-        attr<-list.vertex.attributes(nw.reac())
+		  isolate(  attr<-list.vertex.attributes(nw.reac()))
       }
-      attr}) 
+      attr
+  }) 
     
     #numeric attributes only (for size menu)
     numattr <- reactive({
