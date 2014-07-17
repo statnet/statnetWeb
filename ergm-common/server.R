@@ -46,8 +46,12 @@ shinyServer(
                    'absdiff', 'gwesp', 'mutual', 'idegree', 'odegree')
     undir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
                      'absdiff', 'gwesp', 'degree', 'b1degree', 'b2degree', 
-                     'mindegree', 'triangles')
-
+                     'mindegree', 'triangle')
+    unip.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov', 
+                    'absdiff', 'mutual','degree', 'idegree', 'odegree', 'mindegree',
+                    'triangle', 'gwesp')
+    bip.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov', 
+                   'absdiff', 'mutual', 'b1degree', 'b2degree')
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -251,10 +255,14 @@ shinyServer(
     })
 
     output$listofterms <- renderUI({
-      if(nw.reac()$gal$directed){
-        current.terms <- c(dir.terms)
-      } else {
-        current.terms <- c(undir.terms)
+      if(nw.reac()$gal$directed & nw.reac()$gal$bipartite){
+        current.terms <- intersect(dir.terms, bip.terms)
+      } else if(nw.reac()$gal$directed) {
+        current.terms <- intersect(dir.terms, unip.terms)
+      } else if(nw.reac()$gal$bipartite){
+        current.terms <- intersect(undir.terms, bip.terms)
+      } else if(!nw.reac()$gal$bipartite & !nw.reac()$gal$bipartite){
+        current.terms <- intersect(undir.terms, unip.terms)
       }
       selectInput('terms',label = 'Choose term(s):',
                   current.terms,
