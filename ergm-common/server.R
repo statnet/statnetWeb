@@ -246,7 +246,7 @@ shinyServer(
 #' on the number of nodes in the network and the vertex attributes, respectively.
 
 #+ fitmodel1, eval=FALSE
-    output$currentdataset <- renderPrint({
+    output$currentdataset1 <- renderPrint({
       cat(input$dataset)
     })
 
@@ -285,7 +285,7 @@ shinyServer(
 #' the user clicks on menu options.
 #'  
 #+ fitmodel2, eval=FALSE
-    output$check1 <- renderPrint({
+    output$checkterms1 <- renderPrint({
       cat(ergm.terms())
     })
     
@@ -315,7 +315,7 @@ shinyServer(
       cat(input$dataset)
     })
 
-    output$check2 <- renderPrint({
+    output$checkterms2 <- renderPrint({
       cat(ergm.terms())
     })
     
@@ -353,7 +353,7 @@ shinyServer(
 #' 
 #+ eval=FALSE
 
-    output$check3 <- renderPrint({
+    output$checkterms3 <- renderPrint({
       cat(ergm.terms())
     })
     output$currentdataset3 <- renderPrint({
@@ -380,7 +380,7 @@ shinyServer(
 #' command in an if-statement. The rest of the display options should look familiar
 #' from the 'Network Plot' tab.
 #+ eval=FALSE
-    output$check4 <- renderPrint({
+    output$checkterms4 <- renderPrint({
       cat(ergm.terms())
     })
     output$currentdataset4 <- renderPrint({

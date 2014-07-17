@@ -48,10 +48,10 @@ shinyUI(navbarPage('ergm app',
       tabPanel('Fit Model',
          fluidRow(
             column(2,
-               p('Current network:', verbatimTextOutput('currentdataset'))),
+               p('Current network:', verbatimTextOutput('currentdataset1'))),
             column(10,
                p('Current ergm formula:',
-                  verbatimTextOutput('check1')))
+                  verbatimTextOutput('checkterms1')))
           ),     
          fluidRow(
            column(3,
@@ -89,7 +89,7 @@ shinyUI(navbarPage('ergm app',
                               p('Current network:', verbatimTextOutput('currentdataset2'))),
                        column(10,
                               p('Current ergm formula:',
-                                verbatimTextOutput('check2')))
+                                verbatimTextOutput('checkterms2')))
                       ),     
                      fluidRow(
                        column(3, selectInput('gofterm', 'Goodness of Fit Term:',
@@ -120,7 +120,7 @@ shinyUI(navbarPage('ergm app',
                               p('Current network:', verbatimTextOutput('currentdataset3'))),
                        column(10,
                               p('Current ergm formula:',
-                                verbatimTextOutput('check3')))
+                                verbatimTextOutput('checkterms3')))
                      ),     
                      br(),
                      tags$hr(),
@@ -134,7 +134,7 @@ shinyUI(navbarPage('ergm app',
                             p('Current network:', verbatimTextOutput('currentdataset4'))),
                      column(10,
                             p('Current ergm formula:',
-                              verbatimTextOutput('check4')))
+                              verbatimTextOutput('checkterms4')))
                    ),
                    br(),
                    tags$hr(),
@@ -167,8 +167,8 @@ shinyUI(navbarPage('ergm app',
                             br(),
                             
                             wellPanel(
-                              h5('Display Options'),
-                              column(3,
+                              fluidRow(h5('Display Options')),
+                              fluidRow(column(3,
                                 checkboxInput('iso2',
                                               label = 'Display isolates?', 
                                               value = TRUE),
@@ -179,6 +179,7 @@ shinyUI(navbarPage('ergm app',
                                 uiOutput('dynamiccolor2')),
                               column(3,
                                 uiOutput('dynamicsize2')))
+                              )
                             )
                      )
                    )
