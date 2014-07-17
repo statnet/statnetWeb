@@ -84,15 +84,22 @@ shinyUI(navbarPage('ergm app',
    
          navbarMenu('Diagnostics',
             tabPanel('Goodness of Fit',
-                 fluidRow(
-                     column(3,
-                            wellPanel(
-                              p('Current network:'),
-                              verbatimTextOutput('currentdataset2'),
-                              p('Current ergm formula:'),
-                              verbatimTextOutput('check2')
-                            )),     
-                     column(9,
+                     fluidRow(
+                       column(2,
+                              p('Current network:', verbatimTextOutput('currentdataset2'))),
+                       column(10,
+                              p('Current ergm formula:',
+                                verbatimTextOutput('check2')))
+                      ),     
+                     fluidRow(
+                       column(3, selectInput('gofterm', 'Goodness of Fit Term:',
+                                             c(Default='', 'degree', 'distance', 'espartners', 
+                                               'dspartners', 'triadcensus', 'model'),
+                                             selectize = FALSE))),
+                     fluidRow(
+                        column(3, actionButton('gofButton', 'Run'))),
+                     br(),
+                     tags$hr(),
                      p('Test how well your model fits the original data by choosing 
                        a network statistic that is not in the model, and comparing 
                        the value of this statistic observed in the original network 
@@ -102,41 +109,38 @@ shinyUI(navbarPage('ergm app',
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
                                                     distance'), '.'),
-                     fluidRow(
-                       column(6, selectInput('gofterm', 'Goodness of Fit Term:',
-                                             c(Default='', 'degree', 'distance', 'espartners', 
-                                               'dspartners', 'triadcensus', 'model'),
-                                             selectize = FALSE)),
-                       column(4, actionButton('gofButton', 'Run'))),
+                     
                      verbatimTextOutput('gof.summary'),  
-                     plotOutput('gofplot'))
-                     )),
+                     plotOutput('gofplot')
+                     ),
             
             tabPanel('MCMC Diagnostics',
                      fluidRow(
-                       column(3,
-                              wellPanel(
-                                p('Current network:', verbatimTextOutput('currentdataset3')),
-                                p('Current ergm formula:',
-                                  verbatimTextOutput('check3'))
-                              )),     
-                       column(9,
-                     verbatimTextOutput('diagnostics')))
+                       column(2,
+                              p('Current network:', verbatimTextOutput('currentdataset3'))),
+                       column(10,
+                              p('Current ergm formula:',
+                                verbatimTextOutput('check3')))
+                     ),     
+                     br(),
+                     tags$hr(),
+                     verbatimTextOutput('diagnostics')
             )
             ),
   
           tabPanel('Simulations',
                    fluidRow(
-                     column(3,
-                            wellPanel(
-                              p('Current network:', verbatimTextOutput('currentdataset4')),
-                              p('Current ergm formula:',
-                                verbatimTextOutput('check4'))
-                            )),     
-                     column(9,
+                     column(2,
+                            p('Current network:', verbatimTextOutput('currentdataset4'))),
+                     column(10,
+                            p('Current ergm formula:',
+                              verbatimTextOutput('check4')))
+                   ),
+                   br(),
+                   tags$hr(),
                    
                          fluidRow(
-                           column(6,
+                           column(3,
                                   numericInput('nsims',
                                                label = 'Number of simulations:',
                                                min = 1,
@@ -148,7 +152,7 @@ shinyUI(navbarPage('ergm app',
                                       label = 'Choose a simulation to plot',
                                       min = 1,
                                       value = 1),
-                         plotOutput('simplot'))))
+                         plotOutput('simplot'))
                   
     
     )
