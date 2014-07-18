@@ -1,6 +1,7 @@
 #ergm-common
 #ui.R
 library(shiny)
+library(shinyIncubator)
 library(statnet)
 
 customTextInput<-function (inputId, label, value="",...) {
@@ -9,7 +10,8 @@ customTextInput<-function (inputId, label, value="",...) {
                                                          value=value,...))
 }
 
-shinyUI(navbarPage('ergm app',
+shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm app'),
+#   progressInit(), #need this for progress bar
   tabPanel('Plot Network',
     fluidRow(
      column(4,
@@ -34,9 +36,6 @@ shinyUI(navbarPage('ergm app',
                           value = FALSE),
             uiOutput('dynamiccolor'),
             uiOutput('dynamicsize')),
-      fluidRow(
-        column(7, div('statnet', style = 'font-family: Courier; font-size: 18pt;
-                      font-style: bold'))),
       fluidRow(
         column(3, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
         column(5, h6('Center for Studies in Demography and Ecology'))
@@ -116,7 +115,7 @@ shinyUI(navbarPage('ergm app',
                      column(6,
                             verbatimTextOutput('gof.summary')),  
                      column(6,
-                            plotOutput('gofplot'))
+                            uiOutput('gofplotspace'))
                      ),
             
             tabPanel('MCMC Diagnostics',
@@ -192,7 +191,8 @@ shinyUI(navbarPage('ergm app',
                               )
                             )
                      )
-                   )
+                   ),
+  tabPanel('Help')
                   
     
     )

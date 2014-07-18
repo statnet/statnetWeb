@@ -20,15 +20,17 @@
 #' output elements that will be displayed in the app. For more information on how this
 #' works, see [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/).
 #' 
-#' Also notice that in this block of code we loaded the shiny and statnet packages 
-#' (outside of `shinyServer`) and loaded all of the datasets we might need.
+#' Also notice that in this block of code we loaded the necessary packages (shinyIncubator
+#' contains the functionality for the progress bar) outside of `shinyServer` and 
+#' inside loaded all of the datasets we might need.
 #+ eval=FALSE
-#make sure that both shiny and statnet packages are loaded
+
 library(shiny)
+library(shinyIncubator)
 library(statnet)
 
 shinyServer(
-  function(input, output){
+  function(input, output, session){
     
     #load datasets
     data(ecoli)
@@ -365,6 +367,17 @@ shinyServer(
       
       isolate(plot.gofobject(model1.gof()))
       par(mfrow=c(1,1))
+    })
+
+    output$gofplotspace <- renderUI({
+      input$gofButton
+      gofterm <- isolate(input$gofterm)
+      if (gofterm == ''){
+        gofplotheight = 1000
+      } else {
+        gofplotheight = 400
+      }
+      plotOutput('gofplot', height=gofplotheight)
     })
 
 #' **Diagnostics - MCMC Diagnostics**
