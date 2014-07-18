@@ -318,8 +318,14 @@ shinyServer(
       if (input$fitButton == 0){
         return(cat('Please choose term(s) for the model'))
       }
-      model1 <- isolate(model1.reac())
-      return(summary(model1))
+      model1.reac()
+    })
+
+    output$modelfitsum <- renderPrint({
+      if (input$fitButton == 0){
+        return(cat('Please choose term(s) for the model'))
+      }
+      summary(model1.reac())
     })
 
 #' **Diagnostics - Goodness of Fit**

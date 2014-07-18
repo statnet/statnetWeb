@@ -81,8 +81,12 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
          h4('Model Summary'),
          p('Check for model degeneracy in the "Diagnostics" tab.'),
          br(),
-         verbatimTextOutput('modelfit')     
-          
+         tabsetPanel(
+           tabPanel('Fitting',
+                    verbatimTextOutput('modelfit')),
+           tabPanel('Summary',
+                    verbatimTextOutput('modelfitsum'))
+          )
           ),
    
          navbarMenu('Diagnostics',
