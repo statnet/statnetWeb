@@ -393,6 +393,10 @@ shinyServer(
       }
     })
 
+    output$diagnosticsplot <- renderPlot({
+      plot.ergm(model1.reac())
+    })
+
 #' **Simulations**
 #' 
 #' On this page the user can choose how many simulations of the model to run. The 

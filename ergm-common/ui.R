@@ -124,7 +124,12 @@ shinyUI(navbarPage('ergm app',
                      ),     
                      br(),
                      tags$hr(),
-                     verbatimTextOutput('diagnostics')
+                     tabsetPanel(
+                       tabPanel('Plot',
+                        plotOutput('diagnosticsplot')),
+                       tabPanel('Summary',
+                        verbatimTextOutput('diagnostics'))
+                     )
             )
             ),
   
