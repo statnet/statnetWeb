@@ -82,14 +82,14 @@ shinyServer(
     #list of vertex attributes in nw
     attr <- reactive({
 				
-	  input$goButton
-  
-	  attr <- c()
-      if(input$dataset != ''){      
-		  isolate(  attr<-list.vertex.attributes(nw.reac()))
-      }
-      attr
-  }) 
+    	  input$goButton
+      
+    	  attr <- c()
+          if(input$dataset != ''){      
+    		  isolate(  attr<-list.vertex.attributes(nw.reac()))
+          }
+          attr
+      }) 
     
     #numeric attributes only (for size menu)
     numattr <- reactive({
@@ -151,29 +151,33 @@ shinyServer(
 #' wrapped in a reactive statement.
 
 #+ eval=FALSE 
-    model1.reac <- reactive({ergm(ergm.formula())})
+    model1.reac <- reactive({
+      input$fitButton
+      isolate(ergm(ergm.formula()))})
     
     #use default gof formula
-    model1.gof <- reactive({ 
+    model1.gof <- reactive({
+      input$gofButton
       if(input$gofterm == ''){
         model1.gof <- gof(model1.reac())
       } else {
         gof.form <- formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))
         model1.gof <- gof(gof.form)
       }
-      model1.gof})
+      isolate(model1.gof)})
     
-    #use gof term that user specifies
-    #gof.form <- reactive({
-    #  })
-    #model1.gof2 <- reactive({gof(gof.form())})
 
     model1.sim.reac <- reactive({
-      simulate(model1.reac(), nsim = input$nsims)})
+      input$simButton
+      isolate(simulate(model1.reac(), nsim = input$nsims))})
     
     #get coordinates to plot simulations with
-    sim.coords.1 <- reactive({plot.network(model1.sim.reac())})
-    sim.coords.2 <- reactive({plot.network(model1.sim.reac()[[input$this.sim]])})
+    sim.coords.1 <- reactive({
+      input$simButton
+      isolate(plot.network(model1.sim.reac()))})
+    sim.coords.2 <- reactive({
+      input$simButton
+      isolate(plot.network(model1.sim.reac()[[input$this.sim]]))})
     
 
 #' Output Expressions
@@ -352,7 +356,8 @@ shinyServer(
       if (input$gofButton == 0){
         return()
       }
-      if (input$gofterm == ''){
+      gofterm <- isolate(input$gofterm)
+      if (gofterm == ''){
         par(mfrow=c(1,3))
       } else {
         par(mfrow=c(1,1))
@@ -412,7 +417,7 @@ shinyServer(
         return()
       }
       model1.sim <- isolate(model1.sim.reac())
-      if (input$nsims == 1){
+      if (isolate(input$nsims) == 1){
         return(model1.sim)
       }
       return(summary(model1.sim))
