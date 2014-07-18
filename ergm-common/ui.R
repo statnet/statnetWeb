@@ -35,9 +35,13 @@ shinyUI(navbarPage('ergm app',
             uiOutput('dynamiccolor'),
             uiOutput('dynamicsize')),
       fluidRow(
+        column(7, div('statnet', style = 'font-family: Courier; font-size: 18pt;
+                      font-style: bold'))),
+      fluidRow(
         column(3, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
         column(5, h6('Center for Studies in Demography and Ecology'))
-        )),
+        )
+      ),
                   
      column(8, 
             plotOutput('nwplot'),
@@ -109,9 +113,10 @@ shinyUI(navbarPage('ergm app',
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
                                                     distance'), '.'),
-                     
-                     verbatimTextOutput('gof.summary'),  
-                     plotOutput('gofplot')
+                     column(6,
+                            verbatimTextOutput('gof.summary')),  
+                     column(6,
+                            plotOutput('gofplot'))
                      ),
             
             tabPanel('MCMC Diagnostics',

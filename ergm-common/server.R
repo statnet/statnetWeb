@@ -358,7 +358,7 @@ shinyServer(
       }
       gofterm <- isolate(input$gofterm)
       if (gofterm == ''){
-        par(mfrow=c(1,3))
+        par(mfrow=c(3,1))
       } else {
         par(mfrow=c(1,1))
       }
