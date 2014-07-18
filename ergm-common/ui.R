@@ -72,7 +72,12 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                                    uiOutput('dynamicdegree'))),
            conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
                             column(3,
-                                   uiOutput('dynamicnodematch')))
+                                   uiOutput('dynamicnodematch'))),
+           conditionalPanel(condition = 'input.terms.indexOf("nodemix") > -1',
+                            column(3,
+                                   uiOutput('dynamicnodemix'),
+                                   checkboxInput('nodemixform',label = 'form = "sum"',
+                                                 value = FALSE)))
          ),
          actionButton('fitButton', 'Fit Model'),
          

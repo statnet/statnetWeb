@@ -303,6 +303,13 @@ shinyServer(
                   multiple = TRUE,
                   selectize = FALSE)
     })
+    output$dynamicnodemix <- renderUI({
+      selectInput('choosenodemix',
+                  label = 'Attribute for nodemix',
+                  attr(),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
 
 #' Below I output the current formulation of the ergm 
 #' model so the user can clearly see how their menu selections change the model.
