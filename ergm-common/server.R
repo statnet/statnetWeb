@@ -44,16 +44,16 @@ shinyServer(
 #' that are applicable to a certain network. These don't depend on any user input
 #' and will never change value, so they don't need to be in a reactive expression.
 #+ eval=FALSE    
-    dir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
-                   'absdiff', 'gwesp', 'mutual', 'idegree', 'odegree')
-    undir.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov',
-                     'absdiff', 'gwesp', 'degree', 'b1degree', 'b2degree', 
-                     'mindegree', 'triangle')
-    unip.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov', 
-                    'absdiff', 'mutual','degree', 'idegree', 'odegree', 'mindegree',
-                    'triangle', 'gwesp')
-    bip.terms <- c('edges', 'nodefactor', 'nodematch', 'nodemix', 'nodecov', 
-                   'absdiff', 'mutual', 'b1degree', 'b2degree')
+    dir.terms <- c('absdiff', 'idegree', 'odegree', 'edges', 'gwesp', 'mutual', 
+                   'nodefactor', 'nodematch', 'nodemix', 'nodecov')
+    undir.terms <- c('absdiff', 'b1degree', 'b2degree', 'degree', 'edges', 'gwesp',
+                     'mindegree', 'nodecov', 'nodefactor', 'nodematch', 'nodemix',
+                     'triangle')
+    unip.terms <- c('absdiff', 'degree', 'idegree', 'odegree','edges', 'gwesp', 
+                    'mindegree', 'mutual', 'nodecov', 'nodefactor', 'nodematch',
+                    'nodemix', 'triangle')
+    bip.terms <- c('absdiff', 'b1degree', 'b2degree', 'edges', 'mutual', 'nodefactor',
+                   'nodematch', 'nodemix', 'nodecov')
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -108,6 +108,21 @@ shinyServer(
 #' The following reactive expressions take user input and create vectors that can later
 #' be used as terms in an ergm formula.
 #+ eval=FALSE    
+    absdiff.terms <- reactive({
+      middle <- paste(input$chooseabsdiff, collapse="', '")
+      if (input$absdiffform){
+        aterms <- paste("absdiff(c('",middle,"'), pow=",
+                        input$absdiff.choosepow,", form='sum')", sep="")
+      } else {
+        aterms <- paste("absdiff(c('",middle,"'), pow=",
+                        input$absdiff.choosepow,")", sep="")
+      }
+      if(!any(input$terms == 'absdiff')){
+        aterms <- NULL
+      }
+      aterms
+    })
+
     gwesp.terms <- reactive({
       gterms <- paste("gwesp(",input$choosegwesp,
                       ", fixed = ",input$fixgwesp,")", sep="")
@@ -115,41 +130,140 @@ shinyServer(
         gterms <- NULL
       }
       gterms})
+
+    b1degree.terms <- reactive({
+      bterms <- paste("b1degree(",input$chooseb1degree,")", sep="")
+      if(input$chooseb1degree2 != ''){
+        bterms <- paste("b1degree(c(",input$chooseb1degree2,"))", sep="")
+      }
+      if(!any(input$terms == 'b1degree')){
+        bterms <- NULL
+      }
+      bterms})
+
+    b2degree.terms <- reactive({
+      bterms <- paste("b2degree(",input$chooseb2degree,")", sep="")
+      if(input$chooseb2degree2 != ''){
+        bterms <- paste("b2degree(c(",input$chooseb2degree2,"))", sep="")
+      }
+      if(!any(input$terms == 'b2degree')){
+        bterms <- NULL
+      }
+      bterms})
     
     degree.terms <- reactive({
       dterms <- paste("degree(",input$choosedegree,")", sep="")
+      if(input$choosedegree2 != ''){
+        dterms <- paste("degree(c(",input$choosedegree2,"))", sep="")
+      }
       if(!any(input$terms == 'degree')){
         dterms <- NULL
       }
       dterms})
+
+    idegree.terms <- reactive({
+      dterms <- paste("idegree(",input$chooseidegree,")", sep="")
+      if(input$chooseidegree2 != ''){
+        dterms <- paste("idegree(c(",input$chooseidegree2,"))", sep="")
+      }
+      if(!any(input$terms == 'idegree')){
+        dterms <- NULL
+      }
+      dterms})
+
+    odegree.terms <- reactive({
+      dterms <- paste("odegree(",input$chooseodegree,")", sep="")
+      if(input$chooseodegree2 != ''){
+        dterms <- paste("odegree(c(",input$chooseodegree2,"))", sep="")
+      }
+      if(!any(input$terms == 'odegree')){
+        dterms <- NULL
+      }
+      dterms})
+
+    nodefactor.terms <- reactive({
+      middle <- paste(input$choosenodefactor, collapse="', '")
+      if(input$nodematchform){
+        nterms <- paste("nodefactor(c('",middle,"'), base=",
+                        input$nodefactor.choosebase,", form='sum')", sep="")
+      } else {
+        nterms <- paste("nodefactor(c('",middle,"'), base=",
+                        input$nodefactor.choosebase,")", sep="")
+      }
+      if(!any(input$terms == 'nodefactor')){
+        nterms <- NULL
+      }
+      nterms
+    })
     
     nodematch.terms <- reactive({
-      nterms <- paste("nodematch('",input$choosenodematch,"')", sep="")
+      middle <- paste(input$choosenodematch, collapse="', '")
+      if(input$nodematchform){
+        nterms <- paste("nodematch(c('",middle,"'), form='sum')", sep="")
+      } else {
+        nterms <- paste("nodematch(c('",middle,"'))", sep="")
+      }
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
       }
       nterms})
+    
+    nodemix.terms <- reactive({
+      middle <- paste(input$choosenodemix, collapse="', '")
+      if(input$nodemixform){
+        nterms <- paste("nodemix(c('",middle,
+                        "'), base=",input$nodemix.choosebase,", form='sum')",sep="")
+      } else {
+        nterms <- paste("nodemix(c('",middle,
+                        "'), base=",input$nodemix.choosebase,")",sep="")
+      }
+      if(!any(input$terms == 'nodemix')){
+        nterms <- NULL
+      }
+      nterms
+    })
 
-#' `ergm.terms` is a compilation of all the terms entered, without redundancies,
+    nodecov.terms <- reactive({
+      middle <- paste(input$choosenodecov, collapse="', '")
+      if(input$nodecovform){
+        nterms <- paste("nodecov(c('",middle,
+                        "'), form='sum')",sep="")
+      } else {
+        nterms <- paste("nodecov(c('",middle,
+                        "'))",sep="")
+      }
+      if(!any(input$terms == 'nodecov')){
+        nterms <- NULL
+      }
+      nterms
+    })
+
+
+#' `ergm.terms` is a compilation of all the terms entered,
 #' which we then use to create a complete formula. 
 #' 
 #+ eval=FALSE    
     ergm.terms <- reactive({
       interms <- input$terms
-      if (any(interms == 'gwesp')) {
-        interms <- interms[-which(interms == 'gwesp')]}
-      if (any(interms == 'degree')) {
-        interms <- interms[-which(interms == 'degree')]}
-      if (any(interms == 'nodematch')) {
-        interms <- interms[-which(interms == 'nodematch')]}
-      paste(c(interms, gwesp.terms(), degree.terms(), 
-              nodematch.terms()), sep = '', collapse = '+')})
+      menuterms <- c('absdiff', 'gwesp', 'degree', 'idegree', 'odegree', 'nodecov',
+                     'nodematch', 'nodemix', 'nodefactor', 'b1degree', 'b2degree')
+      #remove terms from formula if they are already counted with their menu options
+      for(i in 1:length(menuterms)){
+        if(any(interms == menuterms[i])){
+          interms <- interms[-which(interms == menuterms[i])]
+        }
+      }
+      paste(c(interms, absdiff.terms(), b1degree.terms(), b2degree.terms(),
+              gwesp.terms(), degree.terms(), idegree.terms(), odegree.terms(),
+              nodefactor.terms(), nodematch.terms(), nodemix.terms(), 
+              nodecov.terms()), sep = '', collapse = '+')
+      })
     
     ergm.formula <- reactive({
       formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
-#' and simulating from it is similar to what we would write in the command line,
+#' and simulating from it is similar to what would be written in the command line,
 #' wrapped in a reactive statement.
 
 #+ eval=FALSE 
@@ -244,7 +358,7 @@ shinyServer(
     #summary of network attributes
     output$attr <- renderPrint({
       if (input$goButton == 0){
-        return(cat('Please choose a sample dataset from the side panel'))
+        return()
       }
       nw <- isolate(nw.reac())
       return(nw)
@@ -295,6 +409,54 @@ shinyServer(
                   multiple = TRUE,
                   selectize = FALSE)
     })
+
+    output$dynamicb1degree <- renderUI({
+      selectInput('chooseb1degree',
+                  label = 'Choose degree(s)',
+                  choices=paste(0:(as.numeric(nodes())-1)),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+
+    output$dynamicb2degree <- renderUI({
+      selectInput('chooseb2degree',
+                  label = 'Choose degree(s)',
+                  choices=paste(0:(as.numeric(nodes())-1)),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+
+    output$dynamicidegree <- renderUI({
+      selectInput('chooseidegree',
+                  label = 'Choose in-degree(s)',
+                  choices=paste(0:(as.numeric(nodes())-1)),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+
+    output$dynamicodegree <- renderUI({
+      selectInput('chooseodegree',
+                  label = 'Choose out-degree(s)',
+                  choices=paste(0:(as.numeric(nodes())-1)),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+
+    output$dynamicabsdiff <- renderUI({
+      selectInput('chooseabsdiff',
+                  label = 'Attribute for absdiff',
+                  numattr(),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+
+    output$dynamicnodefactor <- renderUI({
+      selectInput('choosenodefactor',
+                  label = 'Attribute for nodefactor',
+                  attr(),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
     
     output$dynamicnodematch <- renderUI({
       selectInput('choosenodematch', 
@@ -307,6 +469,13 @@ shinyServer(
       selectInput('choosenodemix',
                   label = 'Attribute for nodemix',
                   attr(),
+                  multiple = TRUE,
+                  selectize = FALSE)
+    })
+    output$dynamicnodecov <- renderUI({
+      selectInput('choosenodecov',
+                  label = 'Attribute for nodecov',
+                  numattr(),
                   multiple = TRUE,
                   selectize = FALSE)
     })
