@@ -12,6 +12,9 @@ customTextInput<-function (inputId, label, value="",...) {
 
 shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm app'),
 #   progressInit(), #need this for progress bar
+
+ 
+
   tabPanel('Plot Network',
     fluidRow(
      column(3,
@@ -54,7 +57,19 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
     ),
                   
       tabPanel('Fit Model',
-         fluidRow(
+          #code to include progress bar when this tab is loading
+               tagList(
+                 tags$head(
+                   tags$link(rel="stylesheet", type="text/css",href="style.css"),
+                   tags$script(type="text/javascript", src = "busy.js")
+                 )
+               ),
+               div(class = "busy",  
+                   p("Calculation in progress.."), 
+                   img(src="ajax-loader.gif")
+               ),      
+               
+          fluidRow(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
             column(10,
@@ -167,6 +182,19 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
    
          navbarMenu('Diagnostics',
             tabPanel('Goodness of Fit',
+                     
+                     #code to include progress bar when this tab is loading
+                     tagList(
+                       tags$head(
+                         tags$link(rel="stylesheet", type="text/css",href="style.css"),
+                         tags$script(type="text/javascript", src = "busy.js")
+                       )
+                     ),
+                     div(class = "busy",  
+                         p("Calculation in progress.."), 
+                         img(src="ajax-loader.gif")
+                     ),  
+                     
                      fluidRow(
                        column(2,
                               p('Current network:', verbatimTextOutput('currentdataset2'))),
@@ -199,6 +227,19 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                      ),
             
             tabPanel('MCMC Diagnostics',
+                     
+                     #code to include progress bar when this tab is loading
+                     tagList(
+                       tags$head(
+                         tags$link(rel="stylesheet", type="text/css",href="style.css"),
+                         tags$script(type="text/javascript", src = "busy.js")
+                       )
+                     ),
+                     div(class = "busy",  
+                         p("Calculation in progress.."), 
+                         img(src="ajax-loader.gif")
+                     ),  
+                     
                      fluidRow(
                        column(2,
                               p('Current network:', verbatimTextOutput('currentdataset3'))),
