@@ -14,8 +14,8 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
 #   progressInit(), #need this for progress bar
   tabPanel('Plot Network',
     fluidRow(
-     column(4,
-      wellPanel(
+     column(3,
+          wellPanel(
             h5('Choose a dataset'),
             selectInput('dataset',
                          label = 'Sample datasets',
@@ -24,28 +24,33 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                            'kapferer','kapferer2','samplike'),
                          selectize = FALSE),
                            br(),
-                           actionButton('goButton', 'Run'),
-            tags$hr(),
-           h5('Display Options'),
-            p('Pay attention to whether these options make sense for your network.'),
-            checkboxInput('iso',
-                          label = 'Display isolates?', 
-                          value = TRUE),
-            checkboxInput('vnames',
-                          label = 'Display vertex names?',
-                          value = FALSE),
-            uiOutput('dynamiccolor'),
-            uiOutput('dynamicsize')),
+                           actionButton('goButton', 'Run')),
+      h5('Network Summary'),
+      verbatimTextOutput('attr'),
       fluidRow(
         column(3, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
-        column(5, h6('Center for Studies in Demography and Ecology'))
+        column(7, h6('Center for Studies in Demography and Ecology'))
         )
       ),
                   
      column(8, 
             plotOutput('nwplot'),
-            h4('Network Summary'),
-            verbatimTextOutput('attr')))
+
+             
+             wellPanel(
+               fluidRow(h5('Display Options')),
+               fluidRow(column(3,
+                               checkboxInput('iso',
+                                             label = 'Display isolates?', 
+                                             value = TRUE),
+                               checkboxInput('vnames',
+                                             label = 'Display vertex names?',
+                                             value = FALSE)),
+                        column(3,
+                               uiOutput('dynamiccolor')),
+                        column(3,
+                               uiOutput('dynamicsize')))))
+      )
     ),
                   
       tabPanel('Fit Model',
@@ -121,9 +126,9 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
                                                     distance'), '.'),
-                     column(6,
+                     column(5,
                             verbatimTextOutput('gof.summary')),  
-                     column(6,
+                     column(7,
                             uiOutput('gofplotspace'))
                      ),
             
@@ -139,7 +144,7 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                      tags$hr(),
                      tabsetPanel(
                        tabPanel('Plot',
-                        plotOutput('diagnosticsplot')),
+                        plotOutput('diagnosticsplot', height = 600)),
                        tabPanel('Summary',
                         verbatimTextOutput('diagnostics'))
                      )
@@ -164,7 +169,7 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                                          min = 1,
                                          value = 1)      
                      ),
-                     column(4, offset=2,
+                     column(8, 
                             numericInput('this.sim',
                                         label = 'Choose a simulation to plot',
                                         min = 1,
@@ -178,11 +183,9 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                             br(),
                             verbatimTextOutput('sim.summary')
                             ),  
-                     column(7,
-                            plotOutput('simplot')
-                            ),
-                     column(8, offset = 3,
-                            br(),
+                     column(8,
+                            plotOutput('simplot'),
+                            
                             
                             wellPanel(
                               fluidRow(h5('Display Options')),
