@@ -224,10 +224,11 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
                                                     distance'), '.'),
+                     fluidRow(
                      column(5,
                             verbatimTextOutput('gof.summary')),  
                      column(7,
-                            uiOutput('gofplotspace'))
+                            uiOutput('gofplotspace')))
                      ),
             
             tabPanel('MCMC Diagnostics',
@@ -316,8 +317,39 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                      )
                    ),
   tabPanel('Help',
+           h4('Resources'),
+           a("statnet Wiki",
+             href = "https://statnet.csde.washington.edu/trac"),
+           br(),
+           a("ergm: Journal of Statistical Software",
+             href = "http://www.jstatsoft.org/v24/i03/"),
+           br(),
+           a("Using ergm: Journal of Statistical Software",
+             href = "http://www.jstatsoft.org/v24/i04/"),
+           br(),
            a("ergm documentation on CRAN", 
-             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf"))
+             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf"),
+           br(),
+           hr(),
+           p("The best way to contact us with questions, comments or suggestions",
+             "is through the", strong("statnet users group"), "listserv."),
+           p("To post and receive messages from this listserv, you need to join.",
+             "Instructions are at:", 
+             a("https://mailman.u.washington.edu/mailman/listinfo/statnet_help",
+               href = "https://mailman.u.washington.edu/mailman/listinfo/statnet_help")),
+           p("You can use the listserv to:"),
+           tags$ul(
+             tags$li("get help from the statnet development team (and other users)"),
+             tags$li("post questions, comments and ideas to other users"),
+             tags$li("be informed about statnet updates"),
+             tags$li("learn about bugs (and bug fixes)")
+             ),
+           p("Once you have joined the list, you can post your questions and comments to",
+             strong("statnet_help@u.washington.edu")),
+           p("A full list of all messages posted to this list is available at",
+             a("https://mailman.u.washington.edu/mailman/private/statnet_help",
+               href = "https://mailman.u.washington.edu/mailman/private/statnet_help"))
+           )
                   
     
     )
