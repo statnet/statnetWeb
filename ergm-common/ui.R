@@ -31,6 +31,10 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
       h5('Network Summary'),
       verbatimTextOutput('attr'),
       fluidRow(
+        
+        column(10, img(src= 'UW.Wordmark_ctr_K.jpg'))
+      ),
+      fluidRow(
         column(3, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
         column(7, h6('Center for Studies in Demography and Ecology'))
         )
@@ -311,7 +315,9 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
                             )
                      )
                    ),
-  tabPanel('Help')
+  tabPanel('Help',
+           a("ergm documentation on CRAN", 
+             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf"))
                   
     
     )
