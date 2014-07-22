@@ -181,7 +181,7 @@ shinyServer(
 
     nodefactor.terms <- reactive({
       middle <- paste(input$choosenodefactor, collapse="', '")
-      if(input$nodematchform){
+      if(input$nodefactorform){
         nterms <- paste("nodefactor(c('",middle,"'), base=",
                         input$nodefactor.choosebase,", form='sum')", sep="")
       } else {
