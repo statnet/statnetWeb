@@ -292,8 +292,8 @@ shinyServer(
       input$simButton
       isolate(plot.network(model1.sim.reac()))})
     sim.coords.2 <- reactive({
-      input$simButton
-      isolate(plot.network(model1.sim.reac()[[input$this.sim]]))})
+      
+      plot.network(model1.sim.reac()[[input$this.sim]])})
     
 
 #' Output Expressions
