@@ -1,7 +1,37 @@
-#ergm-common
-#ui.R
+#' ---
+#' title: "ergm-common, ui.R"
+#' author: "Emily Beylerian"
+#' ---
+#' ergm-common
+#' ============
+#' ui.R
+#' =========
+
+#' **Before reading this document:** The Shiny app "ergm-common" is not contained in a
+#' single R Script. Within the folder "ergm-common" the script `ui.R` controls the 
+#' layout and appearance of the app, the script `server.R` controls the content that
+#' gets displayed in the app, and the folder "www" contains auxiliary files (javascript,
+#' css, and image files). If you are unfamiliar with Shiny apps, it may be more 
+#' natural and helpful to start with the documentation for `ui.R` and then move on to
+#' `server.R`.
+#' 
+#' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp. 
+#' Widgets are elements of the UI that the user can interact with to influence the 
+#' content that the app produces (see examples in the 
+#' [gallery](http://shiny.rstudio.com/gallery/) ). Most
+#' of the time, the built-in functions and widgets in Shiny will be powerful enough to
+#' do what we want, but sometimes we will more directly access HTML tags with `tags$*`.
+#' It is also possible to write the entire UI directly in HTML 
+#' (http://shiny.rstudio.com/articles/html-ui.html). 
+#' 
+#' 
+#' The function `customTextInput` is a manipulation of the `textInput` widget
+#' that allows for smaller input boxes. In addition to all the normal arguments passed
+#' to `textInput`, `class = "input-small"` or `class = "input-mini"` can be specified.
+#' 
+#+ setup, eval=FALSE
+#load necessary packages
 library(shiny)
-library(shinyIncubator)
 library(statnet)
 
 customTextInput<-function (inputId, label, value="",...) {
@@ -10,12 +40,18 @@ customTextInput<-function (inputId, label, value="",...) {
                                                          value=value,...))
 }
 
-shinyUI(navbarPage(title=p(a(span('statnet', style='font-family:Courier'),
+#' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
+#' The first thing to be specified is the type of page to display. The `navbarPage` 
+#' includes a navigation bar at the top of the page and each tab leads to different 
+#' pages of content. Find out more about layout options 
+#' [here](http://shiny.rstudio.com/articles/layout-guide.html)
+#' 
+#'
+#+ eval=FALSE 
+shinyUI(
+  navbarPage(title=p(a(span('statnet', style='font-family:Courier'),
                              href = 'https://statnet.csde.washington.edu/trac'),
                            'ergm app'),
-#   progressInit(), #need this for progress bar
-
- 
 
   tabPanel('Plot Network',
     fluidRow(
