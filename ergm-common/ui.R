@@ -10,7 +10,9 @@ customTextInput<-function (inputId, label, value="",...) {
                                                          value=value,...))
 }
 
-shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm app'),
+shinyUI(navbarPage(title=p(a(span('statnet', style='font-family:Courier'),
+                             href = 'https://statnet.csde.washington.edu/trac'),
+                           'ergm app'),
 #   progressInit(), #need this for progress bar
 
  
@@ -35,8 +37,9 @@ shinyUI(navbarPage(title=p(span('statnet', style='font-family:Courier'),'ergm ap
         column(10, img(src= 'UW.Wordmark_ctr_K.jpg'))
       ),
       fluidRow(
-        column(3, img(src = 'csdelogo_crop.png', height = 50, width = 50)),
-        column(7, h6('Center for Studies in Demography and Ecology'))
+        column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
+                    href = 'https://csde.washington.edu/')),
+        column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/'))
         )
       ),
                   
