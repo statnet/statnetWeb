@@ -406,7 +406,7 @@ shinyServer(
                   current.terms,
                   selected='edges',
                   multiple=TRUE, 
-                  selectize = FALSE)
+                  width = '4cm')
     })
 
     output$dynamicdegree <- renderUI({
@@ -415,7 +415,7 @@ shinyServer(
                   choices=paste(0:(as.numeric(nodes())-1)),
                   selected = 1,
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
     output$dynamicb1degree <- renderUI({
@@ -424,7 +424,7 @@ shinyServer(
                   choices=paste(0:(as.numeric(nodes())-1)),
                   selected = 1,
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
     output$dynamicb2degree <- renderUI({
@@ -433,7 +433,7 @@ shinyServer(
                   choices=paste(0:(as.numeric(nodes())-1)),
                   selected = 1,
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
     output$dynamicidegree <- renderUI({
@@ -442,7 +442,7 @@ shinyServer(
                   choices=paste(0:(as.numeric(nodes())-1)),
                   selected = 1,
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
     output$dynamicodegree <- renderUI({
@@ -451,7 +451,7 @@ shinyServer(
                   choices=paste(0:(as.numeric(nodes())-1)),
                   selected = 1,
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
     output$dynamicabsdiff <- renderUI({
@@ -460,7 +460,7 @@ shinyServer(
                   numattr(),
                   selected = numattr()[1],
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
     output$dynamicnodefactor <- renderUI({
@@ -469,7 +469,7 @@ shinyServer(
                   menuattr(),
                   selected = menuattr()[1],
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
     
     output$dynamicnodematch <- renderUI({
@@ -478,7 +478,7 @@ shinyServer(
                   menuattr(),
                   selected = menuattr()[1],
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
     output$dynamicnodemix <- renderUI({
       selectInput('choosenodemix',
@@ -486,7 +486,7 @@ shinyServer(
                   menuattr(),
                   selected = menuattr()[1],
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
     output$dynamicnodecov <- renderUI({
       selectInput('choosenodecov',
@@ -494,7 +494,7 @@ shinyServer(
                   numattr(),
                   selected = numattr()[1],
                   multiple = TRUE,
-                  selectize = FALSE)
+                  width = '3cm')
     })
 
 #' Below I output the current formulation of the ergm 

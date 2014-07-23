@@ -49,7 +49,7 @@ customTextInput<-function (inputId, label, value="",...) {
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(title=p(a(span('statnet', style='font-family:Courier'),
+  navbarPage(title=p(a(span('statnet  ', style='font-family:Courier'),
                              href = 'https://statnet.csde.washington.edu/trac'),
                            'ergm app'),
 
@@ -130,16 +130,18 @@ shinyUI(
            column(3,
                   uiOutput('listofterms')),
            conditionalPanel(condition = 'input.terms.indexOf("absdiff") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicabsdiff'),
                                    customTextInput('absdiff.choosepow',
                                                    label = 'pow = ',
-                                                   value = '1', class='input-small')
-#                                    checkboxInput('absdiffform', label='form = "sum"',
-#                                                  value = FALSE)
+                                                   value = '1', class='input-small'),
+                                   customTextInput('absdiffform', label='form = ',
+                                                 value = '', class='input-small',
+                                                 helpText("For valued ergms only.",
+                                                          "Options are 'sum' or 'nonzero'"))
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicdegree'),
                                    customTextInput('choosedegree2',
                                                    label = 'OR, input your own',
@@ -148,7 +150,7 @@ shinyUI(
                                                             "input will be prioritized"))
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("b1degree") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicb1degree'),
                                    customTextInput('chooseb1degree2',
                                                    label = 'OR, input your own',
@@ -157,7 +159,7 @@ shinyUI(
                                                             "input will be prioritized"))
                             )),
            conditionalPanel(condition = 'input.terms.indexOf("b2degree") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicb2degree'),
                                    customTextInput('chooseb2degree2',
                                                    label = 'OR, input your own',
@@ -166,7 +168,7 @@ shinyUI(
                                                             "input will be prioritized"))
                             )),
            conditionalPanel(condition = 'input.terms.indexOf("idegree") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicidegree'),
                                    customTextInput('chooseidegree2',
                                                    label = 'OR, input your own',
@@ -174,7 +176,7 @@ shinyUI(
                                                    helpText("If entered, custom user",
                                                             "input will be prioritized")))),
            conditionalPanel(condition = 'input.terms.indexOf("odegree") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicodegree'),
                                    customTextInput('chooseodegree2',
                                                    label = 'OR, input your own',
@@ -189,13 +191,13 @@ shinyUI(
                                    checkboxInput('fixgwesp', label = 'fixed?', 
                                                  value = TRUE))),
            conditionalPanel(condition = 'input.terms.indexOf("nodecov") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicnodecov')
 #                                    checkboxInput('nodecovform', label='form = "sum"',
 #                                                  value = FALSE)
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("nodefactor") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicnodefactor'),
                                    customTextInput('nodefactor.choosebase',
                                                    label = 'base = ',
@@ -204,14 +206,14 @@ shinyUI(
 #                                                  value = FALSE)
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicnodematch'),
                                    customTextInput('nodematchkeep', label = 'keep = ',
                                                    value = '', class='input-small'),
                                    checkboxInput('nodematchdiff', label='diff',
                                                  value = FALSE))),
            conditionalPanel(condition = 'input.terms.indexOf("nodemix") > -1',
-                            column(3,
+                            column(2,
                                    uiOutput('dynamicnodemix'),
                                    customTextInput('nodemix.choosebase',
                                                    label = 'base = ',
