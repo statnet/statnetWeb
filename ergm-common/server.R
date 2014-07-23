@@ -33,7 +33,7 @@ shinyServer(
     #load datasets
     data(ecoli)
     data(florentine)
-    data(fauxhigh)
+    data(faux.magnolia.high)
     data(faux.mesa.high)
     data(kapferer)
     data(sampson)
@@ -196,11 +196,13 @@ shinyServer(
     
     nodematch.terms <- reactive({
       middle <- paste(input$choosenodematch, collapse="', '")
-      if(input$nodematchform){
-        nterms <- paste("nodematch(c('",middle,"'), form='sum')", sep="")
-      } else {
-        nterms <- paste("nodematch(c('",middle,"'))", sep="")
-      }
+#       if(input$nodematchform){
+#         nterms <- paste("nodematch(c('",middle,"'), diff=",
+#                         input$nodematchdiff,", form='sum')", sep="")
+#       } else {
+        nterms <- paste("nodematch(",input$choosenodematch,", diff=", 
+                        input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
+#       }
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
       }
