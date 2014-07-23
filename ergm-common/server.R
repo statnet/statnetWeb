@@ -114,12 +114,12 @@ shinyServer(
 #' be used as terms in an ergm formula.
 #+ eval=FALSE    
     absdiff.terms <- reactive({
-      middle <- paste(input$chooseabsdiff, collapse="', '")
+#       middle <- paste(input$chooseabsdiff, collapse="', '")
 #       if (input$absdiffform){
 #         aterms <- paste("absdiff(c('",middle,"'), pow=",
 #                         input$absdiff.choosepow,", form='sum')", sep="")
 #       } else {
-        aterms <- paste("absdiff(c('",middle,"'), pow=",
+        aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
                         input$absdiff.choosepow,")", sep="")
 #       }
       if(!any(input$terms == 'absdiff')){
@@ -203,13 +203,13 @@ shinyServer(
     
     nodematch.terms <- reactive({
       middle <- paste(input$choosenodematch, collapse="', '")
-#       if(input$nodematchform){
-#         nterms <- paste("nodematch(c('",middle,"'), diff=",
-#                         input$nodematchdiff,", form='sum')", sep="")
-#       } else {
-        nterms <- paste("nodematch(",input$choosenodematch,", diff=", 
+      if(input$nodematchkeep == ''){
+        nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
+                        input$nodematchdiff,")", sep="")
+      } else {
+        nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
                         input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
-#       }
+      }
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
       }
@@ -217,13 +217,13 @@ shinyServer(
     
     nodemix.terms <- reactive({
       middle <- paste(input$choosenodemix, collapse="', '")
-#       if(input$nodemixform){
-#         nterms <- paste("nodemix(c('",middle,
-#                         "'), base=",input$nodemix.choosebase,", form='sum')",sep="")
-#       } else {
+      if(input$nodemix.choosebase == ''){
+        nterms <- paste("nodemix(c('",middle,
+                        "'))",sep="")
+      } else {
         nterms <- paste("nodemix(c('",middle,
                         "'), base=",input$nodemix.choosebase,")",sep="")
-#       }
+      }
       if(!any(input$terms == 'nodemix')){
         nterms <- NULL
       }
@@ -231,13 +231,13 @@ shinyServer(
     })
 
     nodecov.terms <- reactive({
-      middle <- paste(input$choosenodecov, collapse="', '")
+#       middle <- paste(input$choosenodecov, collapse="', '")
 #       if(input$nodecovform){
 #         nterms <- paste("nodecov(c('",middle,
 #                         "'), form='sum')",sep="")
 #       } else {
-        nterms <- paste("nodecov(c('",middle,
-                        "'))",sep="")
+        nterms <- paste("nodecov('",input$choosenodecov,
+                        "')",sep="")
 #       }
       if(!any(input$terms == 'nodecov')){
         nterms <- NULL
@@ -413,6 +413,7 @@ shinyServer(
       selectInput('choosedegree', 
                   label = 'Choose degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
+                  selected = 1,
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -421,6 +422,7 @@ shinyServer(
       selectInput('chooseb1degree',
                   label = 'Choose degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
+                  selected = 1,
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -429,6 +431,7 @@ shinyServer(
       selectInput('chooseb2degree',
                   label = 'Choose degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
+                  selected = 1,
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -437,6 +440,7 @@ shinyServer(
       selectInput('chooseidegree',
                   label = 'Choose in-degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
+                  selected = 1,
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -445,6 +449,7 @@ shinyServer(
       selectInput('chooseodegree',
                   label = 'Choose out-degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
+                  selected = 1,
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -453,6 +458,7 @@ shinyServer(
       selectInput('chooseabsdiff',
                   label = 'Attribute for absdiff',
                   numattr(),
+                  selected = numattr()[1],
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -461,6 +467,7 @@ shinyServer(
       selectInput('choosenodefactor',
                   label = 'Attribute for nodefactor',
                   menuattr(),
+                  selected = menuattr()[1],
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -469,6 +476,7 @@ shinyServer(
       selectInput('choosenodematch', 
                   label = 'Attribute for nodematch',
                   menuattr(),
+                  selected = menuattr()[1],
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -476,6 +484,7 @@ shinyServer(
       selectInput('choosenodemix',
                   label = 'Attribute for nodemix',
                   menuattr(),
+                  selected = menuattr()[1],
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -483,6 +492,7 @@ shinyServer(
       selectInput('choosenodecov',
                   label = 'Attribute for nodecov',
                   numattr(),
+                  selected = numattr()[1],
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -497,6 +507,10 @@ shinyServer(
       cat(ergm.terms())
     })
     
+    output$checkfitsum <- renderPrint({
+      summary(ergm.formula())
+    })
+
     output$modelfit <- renderPrint({
       if (input$fitButton == 0){
         return(cat('Please choose term(s) for the model'))

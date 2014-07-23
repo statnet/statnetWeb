@@ -116,9 +116,16 @@ shinyUI(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
             column(10,
-               p('Current ergm formula:',
-                  verbatimTextOutput('checkterms1')))
-          ),     
+              fluidRow(
+               column(2, p('Current ergm formula:')),
+               column(4, actionButton('fitButton', 'Fit Model'))),
+               verbatimTextOutput('checkterms1'))
+          ),
+         fluidRow(
+           column(10, offset=2,
+                  p('Pre-fit Summary'),
+                  verbatimTextOutput('checkfitsum'))
+           ),
          fluidRow(
            column(3,
                   uiOutput('listofterms')),
@@ -200,7 +207,7 @@ shinyUI(
                             column(3,
                                    uiOutput('dynamicnodematch'),
                                    customTextInput('nodematchkeep', label = 'keep = ',
-                                                   value = 'NULL', class='input-small'),
+                                                   value = '', class='input-small'),
                                    checkboxInput('nodematchdiff', label='diff',
                                                  value = FALSE))),
            conditionalPanel(condition = 'input.terms.indexOf("nodemix") > -1',
@@ -208,13 +215,13 @@ shinyUI(
                                    uiOutput('dynamicnodemix'),
                                    customTextInput('nodemix.choosebase',
                                                    label = 'base = ',
-                                                   value = 'NULL', class='input-small')
+                                                   value = '', class='input-small')
 #                                    checkboxInput('nodemixform',label='form = "sum"',
 #                                                  value = FALSE)
                                    ))
            
          ),
-         actionButton('fitButton', 'Fit Model'),
+         
          
          br(),
          tags$hr(),
