@@ -127,9 +127,10 @@ shinyUI(
                                    uiOutput('dynamicabsdiff'),
                                    customTextInput('absdiff.choosepow',
                                                    label = 'pow = ',
-                                                   value = '1', class='input-small'),
-                                   checkboxInput('absdiffform', label='form = "sum"',
-                                                 value = FALSE))),
+                                                   value = '1', class='input-small')
+#                                    checkboxInput('absdiffform', label='form = "sum"',
+#                                                  value = FALSE)
+                                   )),
            conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
                             column(3,
                                    uiOutput('dynamicdegree'),
@@ -182,17 +183,19 @@ shinyUI(
                                                  value = TRUE))),
            conditionalPanel(condition = 'input.terms.indexOf("nodecov") > -1',
                             column(3,
-                                   uiOutput('dynamicnodecov'),
-                                   checkboxInput('nodecovform', label='form = "sum"',
-                                                 value = FALSE))),
+                                   uiOutput('dynamicnodecov')
+#                                    checkboxInput('nodecovform', label='form = "sum"',
+#                                                  value = FALSE)
+                                   )),
            conditionalPanel(condition = 'input.terms.indexOf("nodefactor") > -1',
                             column(3,
                                    uiOutput('dynamicnodefactor'),
                                    customTextInput('nodefactor.choosebase',
                                                    label = 'base = ',
-                                                   value = '1', class='input-small'),
-                                   checkboxInput('nodefactorform', label='form = "sum"',
-                                                 value = FALSE))),
+                                                   value = '1', class='input-small')
+#                                    checkboxInput('nodefactorform', label='form = "sum"',
+#                                                  value = FALSE)
+                                   )),
            conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
                             column(3,
                                    uiOutput('dynamicnodematch'),
@@ -205,9 +208,10 @@ shinyUI(
                                    uiOutput('dynamicnodemix'),
                                    customTextInput('nodemix.choosebase',
                                                    label = 'base = ',
-                                                   value = 'NULL', class='input-small'),
-                                   checkboxInput('nodemixform',label='form = "sum"',
-                                                 value = FALSE)))
+                                                   value = 'NULL', class='input-small')
+#                                    checkboxInput('nodemixform',label='form = "sum"',
+#                                                  value = FALSE)
+                                   ))
            
          ),
          actionButton('fitButton', 'Fit Model'),

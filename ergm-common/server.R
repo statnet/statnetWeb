@@ -45,10 +45,10 @@ shinyServer(
     dir.terms <- c('absdiff', 'idegree', 'odegree', 'edges', 'gwesp', 'mutual', 
                    'nodefactor', 'nodematch', 'nodemix', 'nodecov')
     undir.terms <- c('absdiff', 'b1degree', 'b2degree', 'degree', 'edges', 'gwesp',
-                     'mindegree', 'nodecov', 'nodefactor', 'nodematch', 'nodemix',
+                     'nodecov', 'nodefactor', 'nodematch', 'nodemix',
                      'triangle')
     unip.terms <- c('absdiff', 'degree', 'idegree', 'odegree','edges', 'gwesp', 
-                    'mindegree', 'mutual', 'nodecov', 'nodefactor', 'nodematch',
+                    'mutual', 'nodecov', 'nodefactor', 'nodematch',
                     'nodemix', 'triangle')
     bip.terms <- c('absdiff', 'b1degree', 'b2degree', 'edges', 'mutual', 'nodefactor',
                    'nodematch', 'nodemix', 'nodecov')
@@ -108,13 +108,13 @@ shinyServer(
 #+ eval=FALSE    
     absdiff.terms <- reactive({
       middle <- paste(input$chooseabsdiff, collapse="', '")
-      if (input$absdiffform){
-        aterms <- paste("absdiff(c('",middle,"'), pow=",
-                        input$absdiff.choosepow,", form='sum')", sep="")
-      } else {
+#       if (input$absdiffform){
+#         aterms <- paste("absdiff(c('",middle,"'), pow=",
+#                         input$absdiff.choosepow,", form='sum')", sep="")
+#       } else {
         aterms <- paste("absdiff(c('",middle,"'), pow=",
                         input$absdiff.choosepow,")", sep="")
-      }
+#       }
       if(!any(input$terms == 'absdiff')){
         aterms <- NULL
       }
@@ -181,13 +181,13 @@ shinyServer(
 
     nodefactor.terms <- reactive({
       middle <- paste(input$choosenodefactor, collapse="', '")
-      if(input$nodefactorform){
-        nterms <- paste("nodefactor(c('",middle,"'), base=",
-                        input$nodefactor.choosebase,", form='sum')", sep="")
-      } else {
+#       if(input$nodefactorform){
+#         nterms <- paste("nodefactor(c('",middle,"'), base=",
+#                         input$nodefactor.choosebase,", form='sum')", sep="")
+#       } else {
         nterms <- paste("nodefactor(c('",middle,"'), base=",
                         input$nodefactor.choosebase,")", sep="")
-      }
+#       }
       if(!any(input$terms == 'nodefactor')){
         nterms <- NULL
       }
@@ -210,13 +210,13 @@ shinyServer(
     
     nodemix.terms <- reactive({
       middle <- paste(input$choosenodemix, collapse="', '")
-      if(input$nodemixform){
-        nterms <- paste("nodemix(c('",middle,
-                        "'), base=",input$nodemix.choosebase,", form='sum')",sep="")
-      } else {
+#       if(input$nodemixform){
+#         nterms <- paste("nodemix(c('",middle,
+#                         "'), base=",input$nodemix.choosebase,", form='sum')",sep="")
+#       } else {
         nterms <- paste("nodemix(c('",middle,
                         "'), base=",input$nodemix.choosebase,")",sep="")
-      }
+#       }
       if(!any(input$terms == 'nodemix')){
         nterms <- NULL
       }
@@ -225,13 +225,13 @@ shinyServer(
 
     nodecov.terms <- reactive({
       middle <- paste(input$choosenodecov, collapse="', '")
-      if(input$nodecovform){
-        nterms <- paste("nodecov(c('",middle,
-                        "'), form='sum')",sep="")
-      } else {
+#       if(input$nodecovform){
+#         nterms <- paste("nodecov(c('",middle,
+#                         "'), form='sum')",sep="")
+#       } else {
         nterms <- paste("nodecov(c('",middle,
                         "'))",sep="")
-      }
+#       }
       if(!any(input$terms == 'nodecov')){
         nterms <- NULL
       }
