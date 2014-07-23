@@ -15,12 +15,22 @@
 #' natural and helpful to start with the documentation for `ui.R` and then move on to
 #' `server.R`.
 #' 
+#' **Basics**
+#' 
 #' Every `server.R` script contains an unnamed function inside a call to `shinyServer`.
 #' The job of the unnamed function is to take input elements from the user and define
 #' output elements that will be displayed in the app. For more information on how this
-#' works, see [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/).
+#' works, see [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/). 
+#' If the function is empty, e.g.
+#' ```
+#' shinyServer(
+#'  function(input,output){})
+#' ```
+#' the UI elements will still be displayed without any dynamic content.
 #' 
-#' Also notice that in this block of code we loaded the necessary packages outside of
+#' **Code**
+#' 
+#' In this block of code we loaded the necessary packages outside of
 #' `shinyServer` and inside loaded all of the datasets we might need.
 #+ eval=FALSE
 
@@ -525,8 +535,8 @@ shinyServer(
     output$checkterms1 <- renderPrint({
       cat(ergm.terms())
     })
-    
-    output$prefitsum <- renderPrint({
+
+    output$prefitsum <- renderPrint({ 
       summary(ergm.formula())
     })
 
@@ -696,9 +706,7 @@ shinyServer(
         size = 1
       } else { 
         size = (get.vertex.attribute(nw,input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
-      }
-      #need new plot display options on sidebar
-      #add sizing option eventually    
+      } 
           
       if (nsims == 1){
         

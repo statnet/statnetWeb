@@ -15,15 +15,28 @@
 #' natural and helpful to start with the documentation for `ui.R` and then move on to
 #' `server.R`.
 #' 
+#' **Basics**
+#' 
 #' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp. 
 #' Widgets are elements of the UI that the user can interact with to influence the 
-#' content that the app produces (see examples in the 
-#' [gallery](http://shiny.rstudio.com/gallery/) ). Most
-#' of the time, the built-in functions and widgets in Shiny will be powerful enough to
-#' do what we want, but sometimes we will more directly access HTML tags with `tags$*`.
-#' It is also possible to write the entire UI directly in HTML 
-#' (http://shiny.rstudio.com/articles/html-ui.html). 
+#' content that the app produces (see widget examples in the 
+#' [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags 
+#' (e.g. `h1`,`p` and `a` below) have built-in functions in Shiny, many others are 
+#' included in the `tags` object (see all the `tags` 
+#' [here](http://shiny.rstudio.com/articles/tag-glossary.html)). 
+#' It is also possible to write the entire UI 
+#' [directly in HTML](http://shiny.rstudio.com/articles/html-ui.html).
 #' 
+#' Even though a `server.R` script is necessary for a functioning and dynamic app,
+#' if the script only contains an empty function in the call to the Shiny server, 
+#' e.g.
+#' ```
+#' shinyServer(
+#'  function(input,output){})
+#' ```
+#' then all the UI elements will still be displayed without any dynamic content.
+#' 
+#' **Code**
 #' 
 #' The function `customTextInput` is a manipulation of the `textInput` widget
 #' that allows for smaller input boxes. In addition to all the normal arguments passed
@@ -40,11 +53,13 @@ customTextInput<-function (inputId, label, value="",...) {
                                                          value=value,...))
 }
 
+
+
 #' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
 #' The first thing to be specified is the type of page to display. The `navbarPage` 
 #' includes a navigation bar at the top of the page and each tab leads to different 
 #' pages of content. Find out more about layout options 
-#' [here](http://shiny.rstudio.com/articles/layout-guide.html)
+#' [here](http://shiny.rstudio.com/articles/layout-guide.html).
 #' 
 #'
 #+ eval=FALSE 
@@ -52,7 +67,21 @@ shinyUI(
   navbarPage(title=p(a(span('statnet  ', style='font-family:Courier'),
                              href = 'https://statnet.csde.washington.edu/trac'),
                            'ergm app'),
-
+#' Within each panel of the navbar, the content can be arranged by nesting rows and
+#' columns. The first argument to `column` is the desired width, where the whole
+#' browser window has a width of 12. Within any column, nested columns set their 
+#' width relative to the parent column. Rows are specified by enclosing elements
+#' in `fluidRow()`. It is often necessary to specify rows even when elements seem like
+#' they should naturally be aligned horizontally, or when a `wellPanel` that is supposed
+#' to hold some content doesn't quite enclose everything correctly.
+#' 
+#' **Plot Network**
+#' 
+#' In the "Plot Network" tab panel, the first call to `column` contains all of the 
+#' elements on the left side of the page (datasets, network summary and logos).
+#' 
+#' 
+#+ eval=FALSE
   tabPanel('Plot Network',
     fluidRow(
      column(3,
@@ -81,8 +110,6 @@ shinyUI(
                   
      column(8, 
             plotOutput('nwplot'),
-
-             
              wellPanel(
                fluidRow(h5('Display Options')),
                fluidRow(column(3,
@@ -98,19 +125,29 @@ shinyUI(
                                uiOutput('dynamicsize')))))
       )
     ),
-                  
+#' **Fit Model**
+#' 
+#' Conditional panels only exist if the javascript expression passed to the condition
+#' argument is true. If the expression is false, nothing inside `conditionalPanel()` 
+#' will appear in the app, nor will it take up space in the interface. In this tab, each
+#' conditional panel contains a menu of options for one of the ergm terms. There is no
+#' javascript function analagous to `is.element` in R, but the JS `indexOf` will return
+#' -1 if an element is not within the specified list. 
+#'
+#' 
+#+ eval=FALSE                  
       tabPanel('Fit Model',
           #code to include progress bar when this tab is loading
-               tagList(
-                 tags$head(
-                   tags$link(rel="stylesheet", type="text/css",href="style.css"),
-                   tags$script(type="text/javascript", src = "busy.js")
-                 )
-               ),
-               div(class = "busy",  
-                   p("Calculation in progress.."), 
-                   img(src="ajax-loader.gif")
-               ),      
+          tagList(
+            tags$head(
+              tags$link(rel="stylesheet", type="text/css",href="style.css"),
+              tags$script(type="text/javascript", src = "busy.js")
+            )
+          ),
+           div(class = "busy", 
+               p("Calculation in progress..."),
+               img(src="ajax-loader.gif")
+           ),      
                
           fluidRow(
             column(2,
@@ -240,19 +277,15 @@ shinyUI(
                     verbatimTextOutput('modelfitsum'))
           )
           ),
-   
+#' **Goodness of Fit**
+#' 
+#+ eval=FALSE   
          navbarMenu('Diagnostics',
             tabPanel('Goodness of Fit',
                      
-                     #code to include progress bar when this tab is loading
-                     tagList(
-                       tags$head(
-                         tags$link(rel="stylesheet", type="text/css",href="style.css"),
-                         tags$script(type="text/javascript", src = "busy.js")
-                       )
-                     ),
-                     div(class = "busy",  
-                         p("Calculation in progress.."), 
+                     #include progress bar when this tab is loading
+                     div(class = "busy", 
+                         p("Calculation in progress..."),
                          img(src="ajax-loader.gif")
                      ),  
                      
@@ -287,18 +320,14 @@ shinyUI(
                      column(7,
                             uiOutput('gofplotspace')))
                      ),
-            
+#' **MCMC Diagnostics**
+#' 
+#+ eval=FALSE            
             tabPanel('MCMC Diagnostics',
                      
-                     #code to include progress bar when this tab is loading
-                     tagList(
-                       tags$head(
-                         tags$link(rel="stylesheet", type="text/css",href="style.css"),
-                         tags$script(type="text/javascript", src = "busy.js")
-                       )
-                     ),
-                     div(class = "busy",  
-                         p("Calculation in progress.."), 
+                     #include progress bar when this tab is loading
+                     div(class = "busy", 
+                         p("Calculation in progress..."),
                          img(src="ajax-loader.gif")
                      ),  
                      
@@ -319,7 +348,9 @@ shinyUI(
                      )
             )
             ),
-  
+#' **Simulations**
+#' 
+#+ eval=FALSE  
           tabPanel('Simulations',
                    fluidRow(
                      column(2,
@@ -373,6 +404,9 @@ shinyUI(
                             )
                      )
                    ),
+#' **Help**
+#' 
+#+ eval=FALSE  
   tabPanel('Help',
            h4('Resources'),
            a("statnet Wiki",
@@ -405,7 +439,11 @@ shinyUI(
              strong("statnet_help@u.washington.edu")),
            p("A full list of all messages posted to this list is available at",
              a("https://mailman.u.washington.edu/mailman/private/statnet_help",
-               href = "https://mailman.u.washington.edu/mailman/private/statnet_help"))
+               href = "https://mailman.u.washington.edu/mailman/private/statnet_help")),
+           br(),
+           hr(),
+           p("This web app is built with", a("Shiny",href="http://shiny.rstudio.com/")),
+           p("Author of app: Emily Beylerian, University of Washington")
            )
                   
     
