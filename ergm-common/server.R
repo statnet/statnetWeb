@@ -114,14 +114,14 @@ shinyServer(
 #' be used as terms in an ergm formula.
 #+ eval=FALSE    
     absdiff.terms <- reactive({
-#       middle <- paste(input$chooseabsdiff, collapse="', '")
-#       if (input$absdiffform){
-#         aterms <- paste("absdiff(c('",middle,"'), pow=",
-#                         input$absdiff.choosepow,", form='sum')", sep="")
-#       } else {
+      if (input$absdiffform == ''){
         aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
                         input$absdiff.choosepow,")", sep="")
-#       }
+      } else {
+        aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
+                        input$absdiff.choosepow,", form='",input$absdiffform,
+                        "')", sep="")
+      }
       if(!any(input$terms == 'absdiff')){
         aterms <- NULL
       }
@@ -188,13 +188,19 @@ shinyServer(
 
     nodefactor.terms <- reactive({
       middle <- paste(input$choosenodefactor, collapse="', '")
-#       if(input$nodefactorform){
-#         nterms <- paste("nodefactor(c('",middle,"'), base=",
-#                         input$nodefactor.choosebase,", form='sum')", sep="")
-#       } else {
+      if((input$nodefactor.choosebase =='')&(input$nodefactorform == '')){
+        nterms <- paste("nodefactor(c('",middle,"'))", sep="")
+      } else if(input$nodefactorform == ''){
         nterms <- paste("nodefactor(c('",middle,"'), base=",
                         input$nodefactor.choosebase,")", sep="")
-#       }
+      } else if(input$nodefactor.choosebase == ''){
+        nterms <- paste("nodefactor(c('",middle,"'), form='",
+                        input$nodefactorform,"')", sep="")
+      } else {
+        nterms <- paste("nodefactor(c('",middle,"'), base=",
+                        input$nodefactor.choosebase,", form='",
+                        input$nodefactorform, "')", sep="")
+      }
       if(!any(input$terms == 'nodefactor')){
         nterms <- NULL
       }
@@ -203,12 +209,19 @@ shinyServer(
     
     nodematch.terms <- reactive({
       middle <- paste(input$choosenodematch, collapse="', '")
-      if(input$nodematchkeep == ''){
+      if((input$nodematchkeep == '')&(input$nodematchform=='')){
         nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
                         input$nodematchdiff,")", sep="")
-      } else {
+      } else if (input$nodematchform == ''){
         nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
                         input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
+      } else if (input$nodematchkeep == ''){
+        nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
+                        input$nodematchdiff,", form='",input$nodematchform,"')", sep="")
+      } else {
+        nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
+                        input$nodematchdiff,", keep=",input$nodematchkeep,
+                        ", form='",input$nodematchform,"')", sep="")
       }
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
@@ -217,12 +230,19 @@ shinyServer(
     
     nodemix.terms <- reactive({
       middle <- paste(input$choosenodemix, collapse="', '")
-      if(input$nodemix.choosebase == ''){
+      if((input$nodemix.choosebase == '') & (input$nodemixform == '')){
         nterms <- paste("nodemix(c('",middle,
                         "'))",sep="")
-      } else {
+      } else if(input$nodemixform == ''){
         nterms <- paste("nodemix(c('",middle,
                         "'), base=",input$nodemix.choosebase,")",sep="")
+      } else if(input$nodemix.choosebase == ''){
+        nterms <- paste("nodemix(c('",middle,
+                        "'), form='",input$nodemixform,"')",sep="") 
+      } else {
+        nterms <- paste("nodemix(c('",middle,
+                        "'), base=",input$nodemix.choosebase,
+                        ", form='",input$nodemixform,"')",sep="")
       }
       if(!any(input$terms == 'nodemix')){
         nterms <- NULL
@@ -231,14 +251,13 @@ shinyServer(
     })
 
     nodecov.terms <- reactive({
-#       middle <- paste(input$choosenodecov, collapse="', '")
-#       if(input$nodecovform){
-#         nterms <- paste("nodecov(c('",middle,
-#                         "'), form='sum')",sep="")
-#       } else {
+      if(input$nodecovform == ''){
         nterms <- paste("nodecov('",input$choosenodecov,
                         "')",sep="")
-#       }
+      } else {
+        nterms <- paste("nodecov('",input$choosenodecov,"', form='",
+                        input$nodecovform,"')",sep="")
+      }
       if(!any(input$terms == 'nodecov')){
         nterms <- NULL
       }
@@ -507,7 +526,7 @@ shinyServer(
       cat(ergm.terms())
     })
     
-    output$checkfitsum <- renderPrint({
+    output$prefitsum <- renderPrint({
       summary(ergm.formula())
     })
 
