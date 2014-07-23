@@ -81,17 +81,24 @@ shinyServer(
     
     #list of vertex attributes in nw
     attr <- reactive({
-				
     	  input$goButton
-      
     	  attr <- c()
           if(input$dataset != ''){      
     		  isolate(  attr<-list.vertex.attributes(nw.reac()))
           }
           attr
-      }) 
+      })
+
+    #don't allow "na" as a vertex attribute in menus on fit tab
+    menuattr <- reactive({
+      menuattr <- attr()
+      if(is.element("na",menuattr)){
+        menuattr <- menuattr[-which("na"==menuattr)]
+      }
+      menuattr
+    })
     
-    #numeric attributes only (for size menu)
+    #numeric attributes only (for size menu, etc.)
     numattr <- reactive({
       numattr <- c()
       if(input$dataset != ''){  
@@ -453,7 +460,7 @@ shinyServer(
     output$dynamicnodefactor <- renderUI({
       selectInput('choosenodefactor',
                   label = 'Attribute for nodefactor',
-                  attr(),
+                  menuattr(),
                   multiple = TRUE,
                   selectize = FALSE)
     })
@@ -461,14 +468,14 @@ shinyServer(
     output$dynamicnodematch <- renderUI({
       selectInput('choosenodematch', 
                   label = 'Attribute for nodematch',
-                  attr(),
+                  menuattr(),
                   multiple = TRUE,
                   selectize = FALSE)
     })
     output$dynamicnodemix <- renderUI({
       selectInput('choosenodemix',
                   label = 'Attribute for nodemix',
-                  attr(),
+                  menuattr(),
                   multiple = TRUE,
                   selectize = FALSE)
     })
