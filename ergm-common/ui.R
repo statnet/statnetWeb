@@ -173,10 +173,8 @@ shinyUI(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
             column(10,
-              fluidRow(
-               column(2, p('Current ergm formula:')),
-               column(4, actionButton('fitButton', 'Fit Model'))),
-               verbatimTextOutput('checkterms1'))
+               column(2, p('Current ergm formula:'),
+               verbatimTextOutput('checkterms1')))
           ),
          fluidRow(
            column(10, offset=2,
@@ -185,7 +183,8 @@ shinyUI(
            ),
          fluidRow(
            column(3,
-                  uiOutput('listofterms')),
+                  uiOutput('listofterms'),
+                  actionButton('fitButton', 'Fit Model')),
            conditionalPanel(condition = 'input.terms.indexOf("absdiff") > -1',
                             column(2,
                                    uiOutput('dynamicabsdiff'),
