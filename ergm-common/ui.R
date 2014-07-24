@@ -70,8 +70,8 @@ customTextInput<-function (inputId, label, value="",...) {
 #+ eval=FALSE 
 shinyUI(
   navbarPage(title=p(a(span('statnet  ', style='font-family:Courier'),
-                             href = 'https://statnet.csde.washington.edu/trac'),
-                           'ergm app'),
+                            href = 'https://statnet.csde.washington.edu/trac',
+                            target = '_blank'), 'ergm app'),
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
 #' browser window has a width of 12. Within any column, nested columns set their 
@@ -116,8 +116,9 @@ shinyUI(
       ),
       fluidRow(
         column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
-                    href = 'https://csde.washington.edu/')),
-        column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/'))
+                    href = 'https://csde.washington.edu/', target = '_blank')),
+        column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
+                    target = '_blank'))
         )
       ),
                   
@@ -434,16 +435,17 @@ shinyUI(
   tabPanel('Help',
            h4('Resources'),
            a("statnet Wiki",
-             href = "https://statnet.csde.washington.edu/trac"),
+             href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
            br(),
            a("ergm: Journal of Statistical Software",
-             href = "http://www.jstatsoft.org/v24/i03/"),
+             href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
            br(),
            a("Using ergm: Journal of Statistical Software",
-             href = "http://www.jstatsoft.org/v24/i04/"),
+             href = "http://www.jstatsoft.org/v24/i04/", target = "_blank"),
            br(),
            a("ergm documentation on CRAN", 
-             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf"),
+             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
+             target = "_blank"),
            br(),
            hr(),
            p("The best way to contact us with questions, comments or suggestions",
@@ -451,7 +453,8 @@ shinyUI(
            p("To post and receive messages from this listserv, you need to join.",
              "Instructions are at:", 
              a("https://mailman.u.washington.edu/mailman/listinfo/statnet_help",
-               href = "https://mailman.u.washington.edu/mailman/listinfo/statnet_help")),
+               href = "https://mailman.u.washington.edu/mailman/listinfo/statnet_help",
+               target = "_blank")),
            p("You can use the listserv to:"),
            tags$ul(
              tags$li("get help from the statnet development team (and other users)"),
@@ -463,10 +466,12 @@ shinyUI(
              strong("statnet_help@u.washington.edu")),
            p("A full list of all messages posted to this list is available at",
              a("https://mailman.u.washington.edu/mailman/private/statnet_help",
-               href = "https://mailman.u.washington.edu/mailman/private/statnet_help")),
+               href = "https://mailman.u.washington.edu/mailman/private/statnet_help",
+               target = "_blank")),
            br(),
            hr(),
-           p("This web app is built with", a("Shiny",href="http://shiny.rstudio.com/")),
+           p("This web app is built with", a("Shiny",href="http://shiny.rstudio.com/",
+                                             target = "_blank")),
            p("Author of app: Emily Beylerian, University of Washington")
            )
                   
