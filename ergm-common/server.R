@@ -387,11 +387,25 @@ shinyServer(
         size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
       }
       
+      if(input$colorby != 2){
+        legendlabels <- unique(get.vertex.attribute(nw, input$colorby))
+        if(is.numeric(legendlabels)){
+          legendlabels <- sort(legendlabels)
+          fill <- legendlabels
+        } else {
+          fill <- 2
+        }
+      }
+      
+      
       plot.network(nw, coord = coords(), 
                    displayisolates = input$iso, 
                    displaylabels = input$vnames, 
                    vertex.col = input$colorby,
                    vertex.cex = size)
+      if(input$colorby != 2){
+        legend('bottomright', legend = legendlabels, fill = fill)
+      }
     })
 
     #summary of network attributes
