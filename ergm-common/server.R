@@ -78,8 +78,15 @@ shinyServer(
 #+ eval=FALSE
     nw.reac <- reactive({
 				input$goButton
-				isolate(eval(parse(text = input$dataset)))
+				nw <- isolate(eval(parse(text = input$dataset)))
+        #if 'bipartite' is not already a network attribute, set to false
+        #this is the case for the samplike network
+        if(!is.element('bipartite',names(nw$gal))){
+          set.network.attribute(nw,'bipartite',FALSE)
+        }
+        nw
 			})
+
     #number of nodes in nw
     nodes <- reactive({
 				input$goButton
@@ -437,7 +444,8 @@ shinyServer(
     output$currentdataset1 <- renderPrint({
       cat(input$dataset)
     })
-
+    
+    
     output$listofterms <- renderUI({
       if(nw.reac()$gal$directed & nw.reac()$gal$bipartite){
         current.terms <- intersect(dir.terms, bip.terms)
