@@ -345,6 +345,9 @@ shinyServer(
 #' Because the menu options for coloring/sizing the nodes on a network plot 
 #' depend on which network has been selected, we have to dynamically render 
 #' these input menus, rather than statically defining them in `ui.R`.  
+#' *Note*, the dynamic widget object for the color menu has been assigned to
+#' `output$dynamiccolor`, but when the user interacts with this menu, the input object
+#' will still be saved in `input$colorby` because that is the widget inputId.
 #' 
 #+ eval=FALSE
     output$dynamiccolor <- renderUI({

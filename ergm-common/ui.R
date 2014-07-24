@@ -18,23 +18,28 @@
 #' **Basics**
 #' 
 #' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp. 
-#' Widgets are elements of the UI that the user can interact with to influence the 
-#' content that the app produces (see widget examples in the 
-#' [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags 
+#' Widgets specific functions in Shiny that correspond to elements of the UI that the
+#' user can interact with to influence the content that the app produces (see widget
+#' examples in the [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags 
 #' (e.g. `h1`,`p` and `a` below) have built-in functions in Shiny, many others are 
 #' included in the `tags` object (see all the `tags` 
 #' [here](http://shiny.rstudio.com/articles/tag-glossary.html)). 
 #' It is also possible to write the entire UI 
 #' [directly in HTML](http://shiny.rstudio.com/articles/html-ui.html).
 #' 
-#' Even though a `server.R` script is necessary for a functioning and dynamic app,
+#' Since the `server.R` script generates all the dynamic content of the app,
 #' if the script only contains an empty function in the call to the Shiny server, 
 #' e.g.
 #' ```
 #' shinyServer(
 #'  function(input,output){})
 #' ```
-#' then all the UI elements will still be displayed without any dynamic content.
+#' then all the UI elements will still be displayed statically without any content.
+#' 
+#' In a functioning app, `server.R` takes input objects and reactively (because the user
+#' might change an input object) creates output objects. In order to display the output
+#' object in the interface so the user can see it, it must be called with an appropriate
+#' output function (`plotOutput`, `textOuput`, `verbatimTextOutput`, etc.) back in `ui.R`. 
 #' 
 #' **Code**
 #' 
@@ -78,7 +83,15 @@ shinyUI(
 #' **Plot Network**
 #' 
 #' In the "Plot Network" tab panel, the first call to `column` contains all of the 
-#' elements on the left side of the page (datasets, network summary and logos).
+#' elements on the left side of the page (datasets, network summary and logos). In the 
+#' middle of the page is the network plot followed by display options. Notice that 
+#' there are no calls to `selectInput` for the options to color code or size the nodes,
+#' even though they appear in the app. Most widget functions are called in `ui.R`, but
+#' this means that all the options passed to them must be static. If the options depend
+#' on user input (the coloring and sizing menus depend on which network the user
+#' selects), the widget must be rendered in `server.R` and output in `ui.R` with 
+#' `iuOutput`.
+#'
 #' 
 #' 
 #+ eval=FALSE
@@ -127,13 +140,11 @@ shinyUI(
     ),
 #' **Fit Model**
 #' 
-#' Conditional panels only exist if the javascript expression passed to the condition
-#' argument is true. If the expression is false, nothing inside `conditionalPanel()` 
-#' will appear in the app, nor will it take up space in the interface. In this tab, each
-#' conditional panel contains a menu of options for one of the ergm terms. There is no
-#' javascript function analagous to `is.element` in R, but the JS `indexOf` will return
-#' -1 if an element is not within the specified list. 
-#'
+#' Since model fitting does not happen instantly, a loading icon will help to assure 
+#' users that the app is still working on producing output. The following code chunk
+#' uses the files `busy.js`, `style.css` and `ajax-loader.gif` located in the directory
+#' `ergm-common/www` to create a loading message. To display the loading message on
+#' subsequent tabs, we only need to include the `div` statement on those tabs.
 #' 
 #+ eval=FALSE                  
       tabPanel('Fit Model',
@@ -147,8 +158,16 @@ shinyUI(
            div(class = "busy", 
                p("Calculation in progress..."),
                img(src="ajax-loader.gif")
-           ),      
-               
+           ),  
+          
+#' Conditional panels only exist if the javascript expression passed to the condition
+#' argument is true. If the expression is false, nothing inside `conditionalPanel()` 
+#' will appear in the app, nor will it take up space in the interface. In this tab, each
+#' conditional panel contains a menu of options for one of the ergm terms. There is no
+#' javascript function analagous to `is.element` in R, but the JS `indexOf` will return
+#' -1 if an element is not within the specified list. 
+#' 
+#+ eval=FALSE                                          
           fluidRow(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
@@ -344,6 +363,11 @@ shinyUI(
                        tabPanel('Plot',
                         plotOutput('diagnosticsplot', height = 600)),
                        tabPanel('Summary',
+                        #include progress bar when this tab is loading
+                        div(class = "busy", 
+                            p("Calculation in progress..."),
+                            img(src="ajax-loader.gif")
+                        ),  
                         verbatimTextOutput('diagnostics'))
                      )
             )
