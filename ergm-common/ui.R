@@ -173,8 +173,8 @@ shinyUI(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
             column(10,
-               column(2, p('Current ergm formula:'),
-               verbatimTextOutput('checkterms1')))
+               p('Current ergm formula:'),
+               verbatimTextOutput('checkterms1'))
           ),
          fluidRow(
            column(10, offset=2,
@@ -343,12 +343,7 @@ shinyUI(
 #' 
 #+ eval=FALSE            
             tabPanel('MCMC Diagnostics',
-                     
-                     #include progress bar when this tab is loading
-                     div(class = "busy", 
-                         p("Calculation in progress..."),
-                         img(src="ajax-loader.gif")
-                     ),  
+  
                      
                      fluidRow(
                        column(2,
@@ -361,6 +356,12 @@ shinyUI(
                      tags$hr(),
                      tabsetPanel(
                        tabPanel('Plot',
+                                
+                                #include progress bar when this tab is loading
+                                div(class = "busy", 
+                                    p("Calculation in progress..."),
+                                    img(src="ajax-loader.gif")
+                                ),
                         plotOutput('diagnosticsplot', height = 600)),
                        tabPanel('Summary',
                         #include progress bar when this tab is loading

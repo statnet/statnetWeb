@@ -324,6 +324,10 @@ shinyServer(
         model1.gof <- gof(gof.form)
       }
       isolate(model1.gof)})
+
+    model1.mcmcdiag <- reactive({
+      mcmc.diagnostics(model1.reac())
+    })
     
 
     model1.sim.reac <- reactive({
@@ -654,6 +658,11 @@ shinyServer(
       cat(input$dataset)
     })
     
+    output$diagnosticsplot <- renderPlot({
+      vpp <- length(model1.reac()$coef)
+      mcmc.diagnostics(model1.reac(), vars.per.page = vpp)
+    })
+    
     output$diagnostics <- renderPrint({
       model1 <- model1.reac()
       if (is.null(model1$sample)){
@@ -663,9 +672,6 @@ shinyServer(
       }
     })
 
-    output$diagnosticsplot <- renderPlot({
-      plot.ergm(model1.reac())
-    })
 
 #' **Simulations**
 #' 
