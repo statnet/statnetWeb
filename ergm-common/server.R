@@ -204,17 +204,16 @@ shinyServer(
       dterms})
 
     nodefactor.terms <- reactive({
-      middle <- paste(input$choosenodefactor, collapse="', '")
       if((input$nodefactor.choosebase =='')&(input$nodefactorform == '')){
-        nterms <- paste("nodefactor(c('",middle,"'))", sep="")
+        nterms <- paste("nodefactor('",input$choosenodefactor,"')", sep="")
       } else if(input$nodefactorform == ''){
-        nterms <- paste("nodefactor(c('",middle,"'), base=",
+        nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
                         input$nodefactor.choosebase,")", sep="")
       } else if(input$nodefactor.choosebase == ''){
-        nterms <- paste("nodefactor(c('",middle,"'), form='",
+        nterms <- paste("nodefactor('",input$choosenodefactor,"', form='",
                         input$nodefactorform,"')", sep="")
       } else {
-        nterms <- paste("nodefactor(c('",middle,"'), base=",
+        nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
                         input$nodefactor.choosebase,", form='",
                         input$nodefactorform, "')", sep="")
       }
