@@ -190,12 +190,7 @@ shinyUI(
                                    uiOutput('dynamicabsdiff'),
                                    customTextInput('absdiff.choosepow',
                                                    label = 'pow = ',
-                                                   value = '1', class='input-small'),
-                                   customTextInput('absdiffform', label='form = ',
-                                                 value = '', class='input-small'
-#                                                  helpText("For valued ergms only.",
-#                                                           "Options are 'sum' or 'nonzero'")
-                                                 )
+                                                   value = '1', class='input-small')
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("degree") > -1',
                             column(2,
@@ -249,25 +244,19 @@ shinyUI(
                                                  value = TRUE))),
            conditionalPanel(condition = 'input.terms.indexOf("nodecov") > -1',
                             column(2,
-                                   uiOutput('dynamicnodecov'),
-                                   customTextInput('nodecovform', label='form = ',
-                                                   value = '', class='input-small')
+                                   uiOutput('dynamicnodecov')
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("nodefactor") > -1',
                             column(2,
                                    uiOutput('dynamicnodefactor'),
                                    customTextInput('nodefactor.choosebase',
                                                    label = 'base = ',
-                                                   value = '1', class='input-small'),
-                                   customTextInput('nodefactorform', label='form = ',
-                                                   value = '', class='input-small')
+                                                   value = '1', class='input-small')
                                    )),
            conditionalPanel(condition = 'input.terms.indexOf("nodematch") > -1',
                             column(2,
                                    uiOutput('dynamicnodematch'),
                                    customTextInput('nodematchkeep', label = 'keep = ',
-                                                   value = '', class='input-small'),
-                                   customTextInput('nodematchform', label='form = ',
                                                    value = '', class='input-small'),
                                    checkboxInput('nodematchdiff', label='diff',
                                                  value = FALSE))),
@@ -276,8 +265,6 @@ shinyUI(
                                    uiOutput('dynamicnodemix'),
                                    customTextInput('nodemix.choosebase',
                                                    label = 'base = ',
-                                                   value = '', class='input-small'),
-                                   customTextInput('nodemixform', label='form = ',
                                                    value = '', class='input-small')
                                    ))
            

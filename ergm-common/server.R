@@ -131,14 +131,8 @@ shinyServer(
 #' be used as terms in an ergm formula.
 #+ eval=FALSE    
     absdiff.terms <- reactive({
-      if (input$absdiffform == ''){
         aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
                         input$absdiff.choosepow,")", sep="")
-      } else {
-        aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
-                        input$absdiff.choosepow,", form='",input$absdiffform,
-                        "')", sep="")
-      }
       if(!any(input$terms == 'absdiff')){
         aterms <- NULL
       }
@@ -204,18 +198,11 @@ shinyServer(
       dterms})
 
     nodefactor.terms <- reactive({
-      if((input$nodefactor.choosebase =='')&(input$nodefactorform == '')){
+      if(input$nodefactor.choosebase ==''){
         nterms <- paste("nodefactor('",input$choosenodefactor,"')", sep="")
-      } else if(input$nodefactorform == ''){
-        nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
-                        input$nodefactor.choosebase,")", sep="")
-      } else if(input$nodefactor.choosebase == ''){
-        nterms <- paste("nodefactor('",input$choosenodefactor,"', form='",
-                        input$nodefactorform,"')", sep="")
       } else {
         nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
-                        input$nodefactor.choosebase,", form='",
-                        input$nodefactorform, "')", sep="")
+                        input$nodefactor.choosebase,")", sep="")
       }
       if(!any(input$terms == 'nodefactor')){
         nterms <- NULL
@@ -225,19 +212,12 @@ shinyServer(
     
     nodematch.terms <- reactive({
       middle <- paste(input$choosenodematch, collapse="', '")
-      if((input$nodematchkeep == '')&(input$nodematchform=='')){
+      if(input$nodematchkeep == ''){
         nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
                         input$nodematchdiff,")", sep="")
-      } else if (input$nodematchform == ''){
-        nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
-                        input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
-      } else if (input$nodematchkeep == ''){
-        nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
-                        input$nodematchdiff,", form='",input$nodematchform,"')", sep="")
       } else {
         nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
-                        input$nodematchdiff,", keep=",input$nodematchkeep,
-                        ", form='",input$nodematchform,"')", sep="")
+                        input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
       }
       if(!any(input$terms == 'nodematch')){
         nterms <- NULL
@@ -246,19 +226,12 @@ shinyServer(
     
     nodemix.terms <- reactive({
       middle <- paste(input$choosenodemix, collapse="', '")
-      if((input$nodemix.choosebase == '') & (input$nodemixform == '')){
+      if(input$nodemix.choosebase == ''){
         nterms <- paste("nodemix(c('",middle,
                         "'))",sep="")
-      } else if(input$nodemixform == ''){
-        nterms <- paste("nodemix(c('",middle,
-                        "'), base=",input$nodemix.choosebase,")",sep="")
-      } else if(input$nodemix.choosebase == ''){
-        nterms <- paste("nodemix(c('",middle,
-                        "'), form='",input$nodemixform,"')",sep="") 
       } else {
         nterms <- paste("nodemix(c('",middle,
-                        "'), base=",input$nodemix.choosebase,
-                        ", form='",input$nodemixform,"')",sep="")
+                        "'), base=",input$nodemix.choosebase,")",sep="")
       }
       if(!any(input$terms == 'nodemix')){
         nterms <- NULL
@@ -267,13 +240,8 @@ shinyServer(
     })
 
     nodecov.terms <- reactive({
-      if(input$nodecovform == ''){
         nterms <- paste("nodecov('",input$choosenodecov,
                         "')",sep="")
-      } else {
-        nterms <- paste("nodecov('",input$choosenodecov,"', form='",
-                        input$nodecovform,"')",sep="")
-      }
       if(!any(input$terms == 'nodecov')){
         nterms <- NULL
       }
