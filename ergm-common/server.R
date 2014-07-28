@@ -398,13 +398,12 @@ shinyServer(
       }
       
       if(input$colorby != 2){
-        legendlabels <- unique(get.vertex.attribute(nw, input$colorby))
-        if(is.numeric(legendlabels)){
-          legendlabels <- sort(legendlabels)
-          fill <- legendlabels
-        } else {
-          fill <- as.color(legendlabels)
+        legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby)))
+        if(is.element("Other", legendlabels)){
+          legendlabels <- legendlabels[-which(legendlabels=="Other")]
+          legendlabels <- c(legendlabels, "Other")
         }
+        fill <- as.color(legendlabels)
       }
       
       
@@ -740,13 +739,12 @@ shinyServer(
       } 
         
       if(input$colorby2 != 2){
-        legendlabels <- unique(get.vertex.attribute(nw, input$colorby2))
-        if(is.numeric(legendlabels)){
-          legendlabels <- sort(legendlabels)
-          fill <- legendlabels
-        } else {
-          fill <- as.color(legendlabels)
+        legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby2)))
+        if(is.element("Other", legendlabels)){
+          legendlabels <- legendlabels[-which(legendlabels=="Other")]
+          legendlabels <- c(legendlabels, "Other")
         }
+        fill <- as.color(legendlabels)
       }
       
       if (nsims == 1){
