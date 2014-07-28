@@ -565,6 +565,7 @@ shinyServer(
     })
 
     output$prefitsum <- renderPrint({ 
+      options(width=150)
       summary(ergm.formula())
     })
 

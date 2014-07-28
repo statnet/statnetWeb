@@ -178,7 +178,7 @@ shinyUI(
           ),
          fluidRow(
            column(10, offset=2,
-                  p('Pre-fit Summary'),
+                  p('Summary Statistics:'),
                   verbatimTextOutput('prefitsum'))
            ),
          fluidRow(
