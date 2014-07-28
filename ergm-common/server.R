@@ -403,7 +403,7 @@ shinyServer(
           legendlabels <- sort(legendlabels)
           fill <- legendlabels
         } else {
-          fill <- 2
+          fill <- as.color(legendlabels)
         }
       }
       
@@ -738,7 +738,17 @@ shinyServer(
       } else { 
         size = (get.vertex.attribute(nw,input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
       } 
-          
+        
+      if(input$colorby2 != 2){
+        legendlabels <- unique(get.vertex.attribute(nw, input$colorby2))
+        if(is.numeric(legendlabels)){
+          legendlabels <- sort(legendlabels)
+          fill <- legendlabels
+        } else {
+          fill <- as.color(legendlabels)
+        }
+      }
+      
       if (nsims == 1){
         
         plot(model1.sim, coord = sim.coords.1(), 
@@ -746,6 +756,9 @@ shinyServer(
              displaylabels = input$vnames2, 
              vertex.col = input$colorby2,
              vertex.cex = size)
+        if(input$colorby2 != 2){
+          legend('bottomright', legend = legendlabels, fill = fill)
+        }
       } else {
         plot(model1.sim[[input$this.sim]], 
              coord = sim.coords.2(),
@@ -753,6 +766,9 @@ shinyServer(
              displaylabels = input$vnames2, 
              vertex.col = input$colorby2,
              vertex.cex = size)
+        if(input$colorby2 != 2){
+          legend('bottomright', legend = legendlabels, fill = fill)
+        }
       }
     })
     
