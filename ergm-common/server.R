@@ -287,6 +287,7 @@ shinyServer(
 #+ eval=FALSE    
     ergm.terms <- reactive({
       interms <- input$terms
+      #all terms with extra menus associated
       menuterms <- c('absdiff', 'gwesp', 'degree', 'idegree', 'odegree', 'nodecov',
                      'nodematch', 'nodemix', 'nodefactor', 'b1degree', 'b2degree')
       #remove terms from formula if they are already counted with their menu options
@@ -297,8 +298,8 @@ shinyServer(
       }
       paste(c(interms, absdiff.terms(), b1degree.terms(), b2degree.terms(),
               gwesp.terms(), degree.terms(), idegree.terms(), odegree.terms(),
-              nodefactor.terms(), nodematch.terms(), nodemix.terms(), 
-              nodecov.terms()), sep = '', collapse = '+')
+              nodecov.terms(), nodefactor.terms(), nodematch.terms(), 
+              nodemix.terms()), sep = '', collapse = '+')
       })
     
     ergm.formula <- reactive({
