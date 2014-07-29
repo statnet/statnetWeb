@@ -331,7 +331,11 @@ shinyUI(
 #' 
 #+ eval=FALSE            
             tabPanel('MCMC Diagnostics',
-  
+  #include progress bar when this tab is loading
+                    div(class = "busy", 
+                        p("Calculation in progress..."),
+                        img(src="ajax-loader.gif")
+                    ),
                      
                      fluidRow(
                        column(2,
@@ -343,20 +347,9 @@ shinyUI(
                      br(),
                      tags$hr(),
                      tabsetPanel(
-                       tabPanel('Plot',
-                                
-                                #include progress bar when this tab is loading
-                                div(class = "busy", 
-                                    p("Calculation in progress..."),
-                                    img(src="ajax-loader.gif")
-                                ),
+                       tabPanel('Plot',   
                         plotOutput('diagnosticsplot', height = 600)),
-                       tabPanel('Summary',
-                        #include progress bar when this tab is loading
-                        div(class = "busy", 
-                            p("Calculation in progress..."),
-                            img(src="ajax-loader.gif")
-                        ),  
+                       tabPanel('Summary', 
                         verbatimTextOutput('diagnostics'))
                      )
             )

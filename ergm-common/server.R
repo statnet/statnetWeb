@@ -612,10 +612,8 @@ shinyServer(
 #' **Diagnostics - MCMC Diagnostics**
 #' 
 #' When using the `mcmc.diagnostics` function in the command line, the printed 
-#' diagnostics and plots all output together. In Shiny, the `renderPrint` function
-#' can capture all the printed output without the plot, but `renderPlot` cannot 
-#' capture the plot. For now, we only display the printed output (unitl `mcmc.diagnostics`
-#' has an option to separate the plot).
+#' diagnostics and plots all output together. Instead of calling `mcmc.diagnositcs`
+#' a reactive object, .
 #' 
 #+ eval=FALSE
 
@@ -632,12 +630,9 @@ shinyServer(
     })
     
     output$diagnostics <- renderPrint({
-      model1 <- model1.reac()
-      if (is.null(model1$sample)){
-        return(cat('MCMC did not run to fit this model'))
-      } else {
-        mcmc.diagnostics(model1)
-      }
+        input$fitButton
+        isolate(mcmc.diagnostics(model1.reac()))
+
     })
 
 
