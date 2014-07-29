@@ -69,6 +69,7 @@ customTextInput<-function (inputId, label, value="",...) {
 #'
 #+ eval=FALSE 
 shinyUI(
+  bootstrapPage(title='statnet - ergm app',
   navbarPage(title=p(a(span('statnet  ', style='font-family:Courier'),
                             href = 'https://statnet.csde.washington.edu/trac',
                             target = '_blank'), 'ergm app'),
@@ -463,6 +464,6 @@ shinyUI(
            )
                   
     
-    )
+    ))
   )
     
