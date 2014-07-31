@@ -3,7 +3,7 @@
 #' author: "Emily Beylerian"
 #' ---
 #' ergm-common
-#' ============
+#' ===========
 #' server.R
 #' =========
 
