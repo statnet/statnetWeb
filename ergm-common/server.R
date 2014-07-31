@@ -628,6 +628,11 @@ shinyServer(
       vpp <- length(model1.reac()$coef)
       mcmc.diagnostics(model1.reac(), vars.per.page = vpp)
     })
+
+    output$diagnosticsplotspace <- renderUI({
+      vpp <- length(model1.reac()$coef)
+      plotOutput('diagnosticsplot', height = vpp*400/3)
+    })
     
     output$diagnostics <- renderPrint({
         input$fitButton

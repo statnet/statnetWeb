@@ -348,7 +348,7 @@ shinyUI(
                      tags$hr(),
                      tabsetPanel(
                        tabPanel('Plot',   
-                        plotOutput('diagnosticsplot', height = 600)),
+                        uiOutput('diagnosticsplotspace')),
                        tabPanel('Summary', 
                         verbatimTextOutput('diagnostics'))
                      )
