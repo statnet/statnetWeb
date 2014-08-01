@@ -76,7 +76,7 @@ shinyServer(
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
-    nw.reac <- reactive({
+    nwreac <- reactive({
 				input$goButton
 				nw <- isolate(eval(parse(text = input$dataset)))
         #if 'bipartite' is not already a network attribute, set to false
@@ -90,7 +90,7 @@ shinyServer(
     #number of nodes in nw
     nodes <- reactive({
 				input$goButton
-				isolate(nw.reac()$gal$n)}) 
+				isolate(nwreac()$gal$n)}) 
     #get coordinates to plot network with
     coords <- reactive({
 				input$goButton
@@ -101,7 +101,7 @@ shinyServer(
     	  input$goButton
     	  attr <- c()
           if(input$dataset != ''){      
-    		  isolate(  attr<-list.vertex.attributes(nw.reac()))
+    		  isolate(  attr<-list.vertex.attributes(nwreac()))
           }
           attr
       })
@@ -120,7 +120,7 @@ shinyServer(
       numattr <- c()
       if(input$dataset != ''){  
         for(i in 1:length(attr())){
-          if(is.numeric(get.vertex.attribute(nw.reac(),attr()[i]))){
+          if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
             numattr <- append(numattr,attr()[i])
           } 
         }} 
@@ -132,7 +132,7 @@ shinyServer(
 #+ eval=FALSE    
     absdiff.terms <- reactive({
         aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
-                        input$absdiff.choosepow,")", sep="")
+                        input$absdiffpow,")", sep="")
       if(!any(input$terms == 'absdiff')){
         aterms <- NULL
       }
@@ -198,11 +198,11 @@ shinyServer(
       dterms})
 
     nodefactor.terms <- reactive({
-      if(input$nodefactor.choosebase ==''){
+      if(input$nodefactorbase ==''){
         nterms <- paste("nodefactor('",input$choosenodefactor,"')", sep="")
       } else {
         nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
-                        input$nodefactor.choosebase,")", sep="")
+                        input$nodefactorbase,")", sep="")
       }
       if(!any(input$terms == 'nodefactor')){
         nterms <- NULL
@@ -226,12 +226,12 @@ shinyServer(
     
     nodemix.terms <- reactive({
       middle <- paste(input$choosenodemix, collapse="', '")
-      if(input$nodemix.choosebase == ''){
+      if(input$nodemixbase == ''){
         nterms <- paste("nodemix(c('",middle,
                         "'))",sep="")
       } else {
         nterms <- paste("nodemix(c('",middle,
-                        "'), base=",input$nodemix.choosebase,")",sep="")
+                        "'), base=",input$nodemixbase,")",sep="")
       }
       if(!any(input$terms == 'nodemix')){
         nterms <- NULL
@@ -271,44 +271,44 @@ shinyServer(
       })
     
     ergm.formula <- reactive({
-      formula(paste('nw.reac() ~ ',ergm.terms(), sep = ''))})
+      formula(paste('nwreac() ~ ',ergm.terms(), sep = ''))})
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
 #' and simulating from it is similar to what would be written in the command line,
 #' wrapped in a reactive statement.
 
 #+ eval=FALSE 
-    model1.reac <- reactive({
+    model1reac <- reactive({
       input$fitButton
       isolate(ergm(ergm.formula()))})
     
     #use default gof formula
-    model1.gof <- reactive({
+    model1gof <- reactive({
       input$gofButton
       if(input$gofterm == ''){
-        model1.gof <- gof(model1.reac())
+        model1gof <- gof(model1reac())
       } else {
-        gof.form <- formula(paste('model1.reac() ~ ', input$gofterm, sep = ''))
-        model1.gof <- gof(gof.form)
+        gofform <- formula(paste('model1reac() ~ ', input$gofterm, sep = ''))
+        model1gof <- gof(gofform)
       }
-      isolate(model1.gof)})
+      isolate(model1gof)})
 
-    model1.mcmcdiag <- reactive({
-      mcmc.diagnostics(model1.reac())
+    model1mcmcdiag <- reactive({
+      mcmc.diagnostics(model1reac())
     })
     
 
-    model1.sim.reac <- reactive({
+    model1simreac <- reactive({
       input$simButton
-      isolate(simulate(model1.reac(), nsim = input$nsims))})
+      isolate(simulate(model1reac(), nsim = input$nsims))})
     
     #get coordinates to plot simulations with
     sim.coords.1 <- reactive({
       input$simButton
-      isolate(plot.network(model1.sim.reac()))})
+      isolate(plot.network(model1simreac()))})
     sim.coords.2 <- reactive({
       
-      plot.network(model1.sim.reac()[[input$this.sim]])})
+      plot.network(model1simreac()[[input$this.sim]])})
     
 
 #' Output Expressions
@@ -356,7 +356,7 @@ shinyServer(
         return()
       }
       input$goButton
-      nw <- isolate({nw.reac()})
+      nw <- isolate({nwreac()})
       #scale size of nodes onto range between .7 and 3.5
       minsize <- min(get.vertex.attribute(nw,input$sizeby))
       maxsize <- max(get.vertex.attribute(nw,input$sizeby))
@@ -391,7 +391,7 @@ shinyServer(
       if (input$goButton == 0){
         return()
       }
-      nw <- isolate(nw.reac())
+      nw <- isolate(nwreac())
       return(nw)
     })
 
@@ -418,13 +418,13 @@ shinyServer(
     
     
     output$listofterms <- renderUI({
-      if(nw.reac()$gal$directed & nw.reac()$gal$bipartite){
+      if(nwreac()$gal$directed & nwreac()$gal$bipartite){
         current.terms <- intersect(dir.terms, bip.terms)
-      } else if(nw.reac()$gal$directed) {
+      } else if(nwreac()$gal$directed) {
         current.terms <- intersect(dir.terms, unip.terms)
-      } else if(nw.reac()$gal$bipartite){
+      } else if(nwreac()$gal$bipartite){
         current.terms <- intersect(undir.terms, bip.terms)
-      } else if(!nw.reac()$gal$bipartite & !nw.reac()$gal$bipartite){
+      } else if(!nwreac()$gal$bipartite & !nwreac()$gal$bipartite){
         current.terms <- intersect(undir.terms, unip.terms)
       }
       selectInput('terms',label = 'Choose term(s):',
@@ -541,14 +541,14 @@ shinyServer(
       if (input$fitButton == 0){
         return(cat('Please choose term(s) for the model'))
       }
-      model1.reac()
+      model1reac()
     })
 
     output$modelfitsum <- renderPrint({
       if (input$fitButton == 0){
         return(cat('Please choose term(s) for the model'))
       }
-      summary(model1.reac())
+      summary(model1reac())
     })
 
 #' **Diagnostics - Goodness of Fit**
@@ -561,7 +561,7 @@ shinyServer(
 #' `output$currentdataset2` and `output$check2` are the same as `output$currentdataset`
 #' and `output$check1` with different names.
 #' 
-#' In the reactive section above the creation of `model1.gof` depends on the term the 
+#' In the reactive section above the creation of `model1gof` depends on the term the 
 #' user inputs. After checking that the user has already clicked the `actionButton`
 #' on the page we can output the text of the gof object and the plot of the gof object.
 #+ eval=FALSE
@@ -573,13 +573,13 @@ shinyServer(
       cat(ergm.terms())
     })
     
-    output$gof.summary <- renderPrint({
+    output$gofsummary <- renderPrint({
       if (input$gofButton == 0){
-        return(cat('Choose a term for checking the goodness-of-fit, or just click
-                 "Run" to use the default formula'))
+        return(cat('Choose a term for checking the goodness-of-fit, or click',
+                 '"Run" to use the default formula'))
       }
       
-      return(isolate(model1.gof()))
+      return(isolate(model1gof()))
       })
     
     
@@ -594,7 +594,7 @@ shinyServer(
         par(mfrow=c(1,1))
       }
       
-      isolate(plot.gofobject(model1.gof()))
+      isolate(plot.gofobject(model1gof()))
       par(mfrow=c(1,1))
     })
 
@@ -625,18 +625,18 @@ shinyServer(
     })
     
     output$diagnosticsplot <- renderPlot({
-      vpp <- length(model1.reac()$coef)
-      mcmc.diagnostics(model1.reac(), vars.per.page = vpp)
+      vpp <- length(model1reac()$coef)
+      mcmc.diagnostics(model1reac(), vars.per.page = vpp)
     })
 
     output$diagnosticsplotspace <- renderUI({
-      vpp <- length(model1.reac()$coef)
+      vpp <- length(model1reac()$coef)
       plotOutput('diagnosticsplot', height = vpp*400/3)
     })
     
     output$diagnostics <- renderPrint({
         input$fitButton
-        isolate(mcmc.diagnostics(model1.reac()))
+        isolate(mcmc.diagnostics(model1reac()))
 
     })
 
@@ -644,10 +644,10 @@ shinyServer(
 #' **Simulations**
 #' 
 #' On this page the user can choose how many simulations of the model to run. The 
-#' reactive object `model1.sim.reac` contains all the simulations, which we can output
+#' reactive object `model1simreac` contains all the simulations, which we can output
 #' a summary of and choose one simulation at a time to plot. *Note:* when the user
-#' chooses to simulate one network, `model1.sim.reac()` is a reactive object of class
-#' network. When the user chooses to simulate multiple networks, `model1.sim.reac()`
+#' chooses to simulate one network, `model1simreac()` is a reactive object of class
+#' network. When the user chooses to simulate multiple networks, `model1simreac()`
 #' contains a list of the generated networks. This is why we have to split up the plot
 #' command in an if-statement. The rest of the display options should look familiar
 #' from the 'Network Plot' tab.
@@ -664,11 +664,11 @@ shinyServer(
       if (input$simButton == 0){
         return()
       }
-      model1.sim <- isolate(model1.sim.reac())
+      model1sim <- isolate(model1simreac())
       if (isolate(input$nsims) == 1){
-        return(model1.sim)
+        return(model1sim)
       }
-      return(summary(model1.sim))
+      return(summary(model1sim))
     })
 
     output$dynamiccolor2 <- renderUI({
@@ -690,9 +690,9 @@ shinyServer(
       if(input$simButton == 0){
         return()
       }
-      nw <- nw.reac()
+      nw <- nwreac()
       nsims <- isolate(input$nsims)
-      model1.sim <- isolate(model1.sim.reac()) 
+      model1sim <- isolate(model1simreac()) 
       
       #can't plot simulation number greater than total sims
       if(input$this.sim > nsims){
@@ -718,7 +718,7 @@ shinyServer(
       
       if (nsims == 1){
         
-        plot(model1.sim, coord = sim.coords.1(), 
+        plot(model1sim, coord = sim.coords.1(), 
              displayisolates = input$iso2, 
              displaylabels = input$vnames2, 
              vertex.col = input$colorby2,
@@ -727,7 +727,7 @@ shinyServer(
           legend('bottomright', legend = legendlabels, fill = fill)
         }
       } else {
-        plot(model1.sim[[input$this.sim]], 
+        plot(model1sim[[input$this.sim]], 
              coord = sim.coords.2(),
              displayisolates = input$iso2, 
              displaylabels = input$vnames2, 

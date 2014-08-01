@@ -189,7 +189,7 @@ shinyUI(
            conditionalPanel(condition = 'input.terms.indexOf("absdiff") > -1',
                             column(2,
                                    uiOutput('dynamicabsdiff'),
-                                   customTextInput('absdiff.choosepow',
+                                   customTextInput('absdiffpow',
                                                    label = 'pow = ',
                                                    value = '1', class='input-small')
                                    )),
@@ -250,7 +250,7 @@ shinyUI(
            conditionalPanel(condition = 'input.terms.indexOf("nodefactor") > -1',
                             column(2,
                                    uiOutput('dynamicnodefactor'),
-                                   customTextInput('nodefactor.choosebase',
+                                   customTextInput('nodefactorbase',
                                                    label = 'base = ',
                                                    value = '1', class='input-small')
                                    )),
@@ -264,7 +264,7 @@ shinyUI(
            conditionalPanel(condition = 'input.terms.indexOf("nodemix") > -1',
                             column(2,
                                    uiOutput('dynamicnodemix'),
-                                   customTextInput('nodemix.choosebase',
+                                   customTextInput('nodemixbase',
                                                    label = 'base = ',
                                                    value = '', class='input-small')
                                    ))
@@ -323,7 +323,7 @@ shinyUI(
                                                     distance'), '.'),
                      fluidRow(
                      column(5,
-                            verbatimTextOutput('gof.summary')),  
+                            verbatimTextOutput('gofsummary')),  
                      column(7,
                             uiOutput('gofplotspace')))
                      ),
