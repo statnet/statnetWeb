@@ -573,7 +573,7 @@ shinyServer(
       cat(ergm.terms())
     })
     
-    output$gof.summary <- renderPrint({
+    output$gofsummary <- renderPrint({
       if (input$gofButton == 0){
         return(cat('Choose a term for checking the goodness-of-fit, or just click
                    "Run" to use the default formula'))

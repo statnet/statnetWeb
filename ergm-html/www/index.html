@@ -21,7 +21,13 @@
     </div>
   </title>
   <link rel="stylesheet" type="text/css" href="style.css"/>
+  <!--links to javascript for loading screen-->
   <script type="text/javascript" src="busy.js"></script>
+  <!--function for fading outdated plots-->
+  <script type="text/javascript">function fadeOld(thingid){
+    document.getElementById(thingid).style.opacity="0.5"
+  }
+  </script>
 </head>
 <body>
 <div class="navbar navbar-static-top">
@@ -163,7 +169,9 @@
       <div class="row-fluid">
         <div class="span3">
           <div id="listofterms" class="shiny-html-output"></div>
-          <button id="fitButton" type="button" class="btn action-button">Fit Model</button>
+          <!--fade out elements that are outdated when fitting new terms-->
+          <button id="fitButton" type="button" class="btn action-button"
+          onclick="fadeOld('gofplot'); fadeOld('gofsummary'); fadeOld('diagnosticsplot')">Fit Model</button>
         </div>
         <div data-display-if="input.terms.indexOf(&quot;absdiff&quot;) &gt; -1">
           <div class="span2">
@@ -331,7 +339,9 @@
       </div>
       <div class="row-fluid">
         <div class="span3">
-          <button id="gofButton" type="button" class="btn action-button">Run</button>
+          <!--reset the opacity of summary when loading new terms (not the best way)-->
+          <button id="gofButton" type="button" class="btn action-button"
+          onclick="document.getElementById('gofsummary').style.opacity='1'">Run</button>
         </div>
       </div>
       <br/>
@@ -350,7 +360,7 @@
       </p>
       <div class="row-fluid">
         <div class="span5">
-          <pre id="gof.summary" class="shiny-text-output"></pre>
+          <pre id="gofsummary" class="shiny-text-output"></pre>
         </div>
         <div class="span7">
           <div id="gofplotspace" class="shiny-html-output"></div>
