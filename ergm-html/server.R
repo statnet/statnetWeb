@@ -575,8 +575,8 @@ shinyServer(
     
     output$gofsummary <- renderPrint({
       if (input$gofButton == 0){
-        return(cat('Choose a term for checking the goodness-of-fit, or just click
-                   "Run" to use the default formula'))
+        return(cat('Choose a term for checking the goodness-of-fit, or click',
+                   '"Run" to use the default formula'))
       }
       
       return(isolate(model1.gof()))
