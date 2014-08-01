@@ -348,13 +348,60 @@ shinyServer(
       input$simButton
       isolate(simulate(model1reac(), nsim = input$nsims))})
     
+#' Currently, the reactive statements that control the sizing/coloring/legend in the 
+#' simulation plots use the attributes from the original network as a point of reference.
+#' If the method for simulating networks changes from applying the same distribution of
+#' attributes, these `get.vertex.attribute` commands for `minsize` and `maxsize`
+#' would also need to change.
+#+ eval=FALSE
+
     #get coordinates to plot simulations with
     sim.coords.1 <- reactive({
       input$simButton
       isolate(plot.network(model1simreac()))})
     sim.coords.2 <- reactive({
+      plot.network(model1simreac()[[input$thissim]])})
+
+    nodesize2 <- reactive({
+      input$goButton
+      nw <- isolate({nwreac()})
+      #scale size of nodes onto range between .7 and 3.5
       
-      plot.network(model1simreac()[[input$this.sim]])})
+      minsize <- min(get.vertex.attribute(nw,input$sizeby2))
+      maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
+      if (input$sizeby2 == '1'){
+        size = 1
+      } else { 
+        if(input$nsims==1){
+        size = (get.vertex.attribute(model1simreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+      }else{
+        size = (get.vertex.attribute(model1simreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+      }}
+      size})
+    
+    legendlabels2 <- reactive({
+      input$goButton
+      nw <- isolate({nwreac()})
+      if(input$colorby2 == 2){
+        legendlabels <- NULL
+      }else{
+        legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby2)))
+        if(is.element("Other", legendlabels)){
+          legendlabels <- legendlabels[-which(legendlabels=="Other")]
+          legendlabels <- c(legendlabels, "Other")
+        }
+      }
+      legendlabels
+    })
+    
+    legendfill2 <- reactive({
+      if(input$colorby2 == 2){
+        legendfill <- NULL
+      } else {
+        legendfill <- as.color(legendlabels2())
+      }
+      legendfill
+    })
     
 
 #' Output Expressions
@@ -738,26 +785,9 @@ shinyServer(
       model1sim <- isolate(model1simreac()) 
       
       #can't plot simulation number greater than total sims
-      if(input$this.sim > nsims){
+      if(input$thissim > nsims){
         return()
       } 
-      #scale size of nodes onto range between .7 and 3.5
-      minsize <- min(get.vertex.attribute(nw,input$sizeby2))
-      maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
-      if (input$sizeby2 == '1'){
-        size = 1
-      } else { 
-        size = (get.vertex.attribute(nw,input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
-      } 
-        
-      if(input$colorby2 != 2){
-        legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby2)))
-        if(is.element("Other", legendlabels)){
-          legendlabels <- legendlabels[-which(legendlabels=="Other")]
-          legendlabels <- c(legendlabels, "Other")
-        }
-        fill <- as.color(legendlabels)
-      }
       
       if (nsims == 1){
         
@@ -765,22 +795,48 @@ shinyServer(
              displayisolates = input$iso2, 
              displaylabels = input$vnames2, 
              vertex.col = input$colorby2,
-             vertex.cex = size)
+             vertex.cex = nodesize2())
         if(input$colorby2 != 2){
-          legend('bottomright', legend = legendlabels, fill = fill)
+          legend('bottomright', legend = legendlabels2(), fill = legendfill2())
         }
       } else {
-        plot(model1sim[[input$this.sim]], 
+        plot(model1sim[[input$thissim]], 
              coord = sim.coords.2(),
              displayisolates = input$iso2, 
              displaylabels = input$vnames2, 
              vertex.col = input$colorby2,
-             vertex.cex = size)
+             vertex.cex = nodesize2())
         if(input$colorby2 != 2){
-          legend('bottomright', legend = legendlabels, fill = fill)
+          legend('bottomright', legend = legendlabels2(), fill = legendfill2())
         }
       }
     })
+
+    output$simplotdownload <- downloadHandler(
+      filename = function(){paste(input$dataset,'simplot.pdf',sep='')},
+      content = function(file){
+        pdf(file=file, height=10, width=10)
+        if(input$nsims == 1){
+        plot(model1simreac(), 
+             coord = sim.coords.1(), 
+             displayisolates = input$iso2, 
+             displaylabels = input$vnames2, 
+             vertex.col = input$colorby2,
+             vertex.cex = nodesize2())
+        }else{
+          plot(model1simreac()[[input$thissim]], 
+               coord = sim.coords.2(), 
+               displayisolates = input$iso2, 
+               displaylabels = input$vnames2, 
+               vertex.col = input$colorby2,
+               vertex.cex = nodesize2())
+        }
+        if(input$colorby2 != 2){
+          legend('bottomright', legend = legendlabels2(), fill = legendfill2())
+        }
+        dev.off()
+      }
+    )
     
     
   })

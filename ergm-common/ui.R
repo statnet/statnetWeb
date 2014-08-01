@@ -379,7 +379,7 @@ shinyUI(
                             actionButton('simButton', 'Simulate')
                      ),
                      column(8, 
-                            numericInput('this.sim',
+                            numericInput('thissim',
                                         label = 'Choose a simulation to plot',
                                         min = 1,
                                         value = 1)
@@ -397,7 +397,9 @@ shinyUI(
                                             label = 'Display vertex names?',
                                             value = FALSE),
                               uiOutput('dynamiccolor2'),
-                              uiOutput('dynamicsize2')
+                              uiOutput('dynamicsize2'),
+                              downloadButton('simplotdownload',
+                                             label = 'Download PDF')
                               )
                             ),  
                      column(8,
