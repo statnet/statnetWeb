@@ -117,14 +117,60 @@ shinyServer(
     
     #numeric attributes only (for size menu, etc.)
     numattr <- reactive({
-      numattr <- c()
-      if(input$dataset != ''){  
-        for(i in 1:length(attr())){
-          if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
-            numattr <- append(numattr,attr()[i])
-          } 
-        }} 
-      numattr})
+        numattr <- c()
+        if(input$dataset != ''){  
+          for(i in 1:length(attr())){
+            if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
+              numattr <- append(numattr,attr()[i])
+            } 
+          }} 
+        numattr})
+  
+      nodesize <- reactive({
+        input$goButton
+        nw <- isolate({nwreac()})
+        #scale size of nodes onto range between .7 and 3.5
+        minsize <- min(get.vertex.attribute(nw,input$sizeby))
+        maxsize <- max(get.vertex.attribute(nw,input$sizeby))
+        if (input$sizeby == '1'){
+          size = 1
+        } else { 
+          size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+        }
+        size})
+
+    legendlabels <- reactive({
+      input$goButton
+      nw <- isolate({nwreac()})
+        if(input$colorby == 2){
+          legendlabels <- NULL
+        }else{
+          legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby)))
+          if(is.element("Other", legendlabels)){
+            legendlabels <- legendlabels[-which(legendlabels=="Other")]
+            legendlabels <- c(legendlabels, "Other")
+          }
+        }
+        legendlabels
+      })
+
+    legendfill <- reactive({
+      if(input$colorby == 2){
+        legendfill <- NULL
+      } else {
+        legendfill <- as.color(legendlabels())
+      }
+      legendfill
+    })
+  
+  #summary of network attributes
+  output$attr <- renderPrint({
+    if (input$goButton == 0){
+      return()
+    }
+    nw <- isolate(nwreac())
+    return(nw)
+    })
     
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
 #' The following reactive expressions take user input and create vectors that can later
@@ -357,34 +403,31 @@ shinyServer(
       }
       input$goButton
       nw <- isolate({nwreac()})
-      #scale size of nodes onto range between .7 and 3.5
-      minsize <- min(get.vertex.attribute(nw,input$sizeby))
-      maxsize <- max(get.vertex.attribute(nw,input$sizeby))
-      if (input$sizeby == '1'){
-        size = 1
-      } else { 
-        size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
-      }
-      
-      if(input$colorby != 2){
-        legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby)))
-        if(is.element("Other", legendlabels)){
-          legendlabels <- legendlabels[-which(legendlabels=="Other")]
-          legendlabels <- c(legendlabels, "Other")
-        }
-        fill <- as.color(legendlabels)
-      }
-      
-      
       plot.network(nw, coord = coords(), 
                    displayisolates = input$iso, 
                    displaylabels = input$vnames, 
                    vertex.col = input$colorby,
-                   vertex.cex = size)
+                   vertex.cex = nodesize())
       if(input$colorby != 2){
-        legend('bottomright', legend = legendlabels, fill = fill)
+        legend('bottomright', legend = legendlabels(), fill = legendfill())
       }
     })
+
+    output$nwplotdownload <- downloadHandler(
+      filename = function(){paste(input$dataset,'plot.pdf',sep='')},
+      content = function(file){
+        pdf(file=file, height=10, width=10)
+        plot(nwreac(), coord = coords(), 
+             displayisolates = input$iso, 
+             displaylabels = input$vnames, 
+             vertex.col = input$colorby,
+             vertex.cex = nodesize())
+        if(input$colorby != 2){
+          legend('bottomright', legend = legendlabels(), fill = legendfill())
+        }
+        dev.off()
+      }
+      )
 
     #summary of network attributes
     output$attr <- renderPrint({

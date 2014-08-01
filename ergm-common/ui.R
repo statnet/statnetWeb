@@ -137,7 +137,9 @@ shinyUI(
                         column(3,
                                uiOutput('dynamiccolor')),
                         column(3,
-                               uiOutput('dynamicsize')))))
+                               uiOutput('dynamicsize')),
+                        column(3,
+                               downloadButton('nwplotdownload', label = "Download PDF")))))
       )
     ),
 #' **Fit Model**
