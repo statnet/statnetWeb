@@ -294,7 +294,7 @@ shinyUI(
                      div(class = "busy", 
                          p("Calculation in progress..."),
                          img(src="ajax-loader.gif")
-                     ),  
+                     ),
                      
                      fluidRow(
                        column(2,
@@ -373,7 +373,8 @@ shinyUI(
                             numericInput('nsims',
                                          label = 'Number of simulations:',
                                          min = 1,
-                                         value = 1)      
+                                         value = 1),
+                            actionButton('simButton', 'Simulate')
                      ),
                      column(8, 
                             numericInput('this.sim',
@@ -384,29 +385,22 @@ shinyUI(
                    ),
                    fluidRow( 
                      column(3,
-                            actionButton('simButton', 'Simulate'),
                             br(),
-                            br(),
-                            verbatimTextOutput('sim.summary')
+                            wellPanel(
+                              h5('Display Options'),
+                              checkboxInput('iso2',
+                                            label = 'Display isolates?', 
+                                            value = TRUE),
+                              checkboxInput('vnames2',
+                                            label = 'Display vertex names?',
+                                            value = FALSE),
+                              uiOutput('dynamiccolor2'),
+                              uiOutput('dynamicsize2')
+                              )
                             ),  
                      column(8,
                             plotOutput('simplot'),
-                            
-                            
-                            wellPanel(
-                              fluidRow(h5('Display Options')),
-                              fluidRow(column(3,
-                                checkboxInput('iso2',
-                                              label = 'Display isolates?', 
-                                              value = TRUE),
-                                checkboxInput('vnames2',
-                                              label = 'Display vertex names?',
-                                              value = FALSE)),
-                              column(3,
-                                uiOutput('dynamiccolor2')),
-                              column(3,
-                                uiOutput('dynamicsize2')))
-                              )
+                            verbatimTextOutput('sim.summary')
                             )
                      )
                    ),
