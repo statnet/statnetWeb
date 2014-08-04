@@ -461,7 +461,7 @@ shinyServer(
     })
 
     output$nwplotdownload <- downloadHandler(
-      filename = function(){paste(input$dataset,'plot.pdf',sep='')},
+      filename = function(){paste(input$dataset,'_plot.pdf',sep='')},
       content = function(file){
         pdf(file=file, height=10, width=10)
         plot(nwreac(), coord = coords(), 
@@ -715,8 +715,7 @@ shinyServer(
     
     output$gofsummary <- renderPrint({
       if (input$gofButton == 0){
-        return(cat('Choose a term for checking the goodness-of-fit, or click',
-                 '"Run" to use the default formula'))
+        return()
       }
       
       return(isolate(model1gof()))
@@ -737,6 +736,21 @@ shinyServer(
       isolate(plot.gofobject(model1gof()))
       par(mfrow=c(1,1))
     })
+
+    output$gofplotdownload <- downloadHandler(
+      filename = function(){paste(input$dataset,'_gof.pdf',sep='')},
+      content = function(file){
+        if(input$gofterm == ''){
+          par(mfrow=c(3,1))
+        } else {
+          par(mfrow=c(1,1))
+        }
+        pdf(file=file, height=4, width=10)
+        plot.gofobject(model1gof())
+        par(mfrow=c(1,1))
+        dev.off()
+      }
+    )
 
     output$gofplotspace <- renderUI({
       input$gofButton
@@ -774,6 +788,16 @@ shinyServer(
       vpp <- length(model1reac()$coef)
       mcmc.diagnostics(model1reac(), vars.per.page = vpp)
     })
+
+    output$mcmcplotdownload <- downloadHandler(
+      vpp <- length(model1reac()$coef),
+      filename = function(){paste(input$dataset,'_mcmc.pdf',sep='')},
+      content = function(file){
+        pdf(file=file, height=vpp*4/3, width=10)
+        mcmc.diagnostics(model1reac(), vars.per.page = vpp)
+        dev.off()
+      }
+    )
 
     output$diagnosticsplotspace <- renderUI({
       vpp <- length(model1reac()$coef)
@@ -875,7 +899,7 @@ shinyServer(
     })
 
     output$simplotdownload <- downloadHandler(
-      filename = function(){paste(input$dataset,'simplot.pdf',sep='')},
+      filename = function(){paste(input$dataset,'_simplot.pdf',sep='')},
       content = function(file){
         pdf(file=file, height=10, width=10)
         if(input$nsims == 1){

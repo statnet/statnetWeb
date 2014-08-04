@@ -139,7 +139,7 @@ shinyUI(
                         column(3,
                                uiOutput('dynamicsize')),
                         column(3,
-                               downloadButton('nwplotdownload', label = "Download PDF")))))
+                               downloadButton('nwplotdownload', label = "Download Plot")))))
       )
     ),
 #' **Fit Model**
@@ -329,7 +329,8 @@ shinyUI(
                      column(5,
                             verbatimTextOutput('gofsummary')),  
                      column(7,
-                            uiOutput('gofplotspace')))
+                            uiOutput('gofplotspace'),
+                            downloadButton('gofplotdownload', label = 'Download Plots')))
                      ),
 #' **MCMC Diagnostics**
 #' 
@@ -352,7 +353,8 @@ shinyUI(
                      tags$hr(),
                      tabsetPanel(
                        tabPanel('Plot',   
-                        uiOutput('diagnosticsplotspace')),
+                        uiOutput('diagnosticsplotspace'),
+                        downloadButton('mcmcplotdownload',label = 'Download Plots')),
                        tabPanel('Summary', 
                         verbatimTextOutput('diagnostics'))
                      )
@@ -401,7 +403,7 @@ shinyUI(
                               uiOutput('dynamiccolor2'),
                               uiOutput('dynamicsize2'),
                               downloadButton('simplotdownload',
-                                             label = 'Download PDF')
+                                             label = 'Download Plot')
                               )
                             ),  
                      column(8,
