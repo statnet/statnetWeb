@@ -502,12 +502,11 @@ shinyServer(
 #' on the number of nodes in the network and the vertex attributes, respectively.
 
 #+ fitmodel1, eval=FALSE
-    output$currentdataset1 <- renderPrint({
-      cat(input$dataset)
-    })
-    
-    
+
     output$listofterms <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       if(nwreac()$gal$directed & nwreac()$gal$bipartite){
         current.terms <- intersect(dir.terms, bip.terms)
       } else if(nwreac()$gal$directed) {
@@ -525,6 +524,9 @@ shinyServer(
     })
 
     output$dynamicdegree <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('choosedegree', 
                   label = 'Choose degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
@@ -534,6 +536,9 @@ shinyServer(
     })
 
     output$dynamicb1degree <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('chooseb1degree',
                   label = 'Choose degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
@@ -543,6 +548,9 @@ shinyServer(
     })
 
     output$dynamicb2degree <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('chooseb2degree',
                   label = 'Choose degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
@@ -552,6 +560,9 @@ shinyServer(
     })
 
     output$dynamicidegree <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('chooseidegree',
                   label = 'Choose in-degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
@@ -561,6 +572,9 @@ shinyServer(
     })
 
     output$dynamicodegree <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('chooseodegree',
                   label = 'Choose out-degree(s)',
                   choices=paste(0:(as.numeric(nodes())-1)),
@@ -570,6 +584,9 @@ shinyServer(
     })
 
     output$dynamicabsdiff <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('chooseabsdiff',
                   label = 'Attribute for absdiff',
                   numattr(),
@@ -579,6 +596,9 @@ shinyServer(
     })
 
     output$dynamicnodefactor <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('choosenodefactor',
                   label = 'Attribute for nodefactor',
                   menuattr(),
@@ -588,6 +608,9 @@ shinyServer(
     })
     
     output$dynamicnodematch <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('choosenodematch', 
                   label = 'Attribute for nodematch',
                   menuattr(),
@@ -596,6 +619,9 @@ shinyServer(
                   width = '3cm')
     })
     output$dynamicnodemix <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('choosenodemix',
                   label = 'Attribute for nodemix',
                   menuattr(),
@@ -604,6 +630,9 @@ shinyServer(
                   width = '3cm')
     })
     output$dynamicnodecov <- renderUI({
+      if(input$goButton==0){
+        return()
+      }
       selectInput('choosenodecov',
                   label = 'Attribute for nodecov',
                   numattr(),
@@ -618,11 +647,24 @@ shinyServer(
 #' the user clicks on menu options.
 #'  
 #+ fitmodel2, eval=FALSE
+    output$currentdataset1 <- renderPrint({
+      if(input$goButton == 0){
+        return()
+      }
+      cat(isolate(input$dataset))
+    })
+
     output$checkterms1 <- renderPrint({
+      if(input$goButton == 0){
+        return()
+      }
       cat(ergm.terms())
     })
 
-    output$prefitsum <- renderPrint({ 
+    output$prefitsum <- renderPrint({
+      if(input$goButton==0 | length(input$terms)==0){
+        return()
+      }
       options(width=150)
       summary(ergm.formula())
     })
@@ -655,12 +697,20 @@ shinyServer(
 #' user inputs. After checking that the user has already clicked the `actionButton`
 #' on the page we can output the text of the gof object and the plot of the gof object.
 #+ eval=FALSE
+    #dataset only updates after goButton on first tab has been clicked
     output$currentdataset2 <- renderPrint({
-      cat(input$dataset)
+      if(input$goButton == 0){
+        return()
+      }
+      cat(isolate(input$dataset))
     })
-
+    
+    #formula only updates after fitButton has been clicked
     output$checkterms2 <- renderPrint({
-      cat(ergm.terms())
+      if(input$fitButton == 0){
+        return()
+      }
+      cat(isolate(ergm.terms()))
     })
     
     output$gofsummary <- renderPrint({
@@ -708,10 +758,16 @@ shinyServer(
 #+ eval=FALSE
 
     output$checkterms3 <- renderPrint({
-      cat(ergm.terms())
+      if(input$fitButton == 0){
+        return()
+      }
+      cat(isolate(ergm.terms()))
     })
     output$currentdataset3 <- renderPrint({
-      cat(input$dataset)
+      if(input$goButton == 0){
+        return()
+      }
+      cat(isolate(input$dataset))
     })
     
     output$diagnosticsplot <- renderPlot({
@@ -743,10 +799,16 @@ shinyServer(
 #' from the 'Network Plot' tab.
 #+ eval=FALSE
     output$checkterms4 <- renderPrint({
-      cat(ergm.terms())
+      if(input$fitButton == 0){
+        return()
+      }
+      cat(isolate(ergm.terms()))
     })
     output$currentdataset4 <- renderPrint({
-      cat(input$dataset)
+      if(input$goButton == 0){
+        return()
+      }
+      cat(isolate(input$dataset))
     })
     
 
