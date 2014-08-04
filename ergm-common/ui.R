@@ -152,13 +152,15 @@ shinyUI(
 #' 
 #+ eval=FALSE                  
       tabPanel('Fit Model',
-          #code to include progress bar when this tab is loading
+          #add javascript in busy.js to head of HTML document
+          #this tagList command can't go directly under navbarPage or shinyUI
           tagList(
             tags$head(
               tags$link(rel="stylesheet", type="text/css",href="style.css"),
               tags$script(type="text/javascript", src = "busy.js")
             )
           ),
+          #include progress bar when this tab is loading
            div(class = "busy", 
                p("Calculation in progress..."),
                img(src="ajax-loader.gif")
