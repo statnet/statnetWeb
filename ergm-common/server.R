@@ -325,7 +325,9 @@ shinyServer(
 
 #+ eval=FALSE 
     model1reac <- reactive({
-      input$fitButton
+      if(input$fitButton == 0){
+        return()
+      }
       isolate(ergm(ergm.formula()))})
     
     #use default gof formula
@@ -805,12 +807,17 @@ shinyServer(
     )
 
     output$diagnosticsplotspace <- renderUI({
+      if(input$fitButton == 0){
+        return()
+      }
       vpp <- length(model1reac()$coef)
       plotOutput('diagnosticsplot', height = vpp*400/3)
     })
     
     output$diagnostics <- renderPrint({
-        input$fitButton
+        if(input$fitButton == 0){
+          return()
+        }
         isolate(mcmc.diagnostics(model1reac()))
 
     })
