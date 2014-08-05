@@ -730,9 +730,6 @@ shinyServer(
     
     
     output$gofplot <- renderPlot({   
-      if (input$gofButton == 0){
-        return()
-      }
       gofterm <- isolate(input$gofterm)
       if (gofterm == ''){
         par(mfrow=c(3,1))
@@ -760,7 +757,9 @@ shinyServer(
     )
 
     output$gofplotspace <- renderUI({
-      input$gofButton
+      if(input$gofButton == 0){
+        return()
+      }
       gofterm <- isolate(input$gofterm)
       if (gofterm == ''){
         gofplotheight = 1000
