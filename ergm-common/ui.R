@@ -281,7 +281,7 @@ shinyUI(
          h4('Model Summary'),
          p('Check for model degeneracy in the "Diagnostics" tab.'),
          br(),
-         tabsetPanel(
+         tabsetPanel(id = 'fittingTabs',
            tabPanel('Fitting',
                     verbatimTextOutput('modelfit')),
            tabPanel('Summary',

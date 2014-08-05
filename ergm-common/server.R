@@ -683,6 +683,11 @@ shinyServer(
       summary(model1reac())
     })
 
+    observe({
+      input$fitButton
+      isolate(updateTabsetPanel(session, 'fittingTabs', selected = 'Fitting'))
+    })
+
 #' **Diagnostics - Goodness of Fit**
 #' 
 #' Again, I output the current dataset and the ergm formula for the user to verify.
