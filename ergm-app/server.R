@@ -40,13 +40,6 @@ library(statnet)
 shinyServer(
   function(input, output, session){
     
-    #load datasets
-    data(ecoli)
-    data(florentine)
-    data(faux.magnolia.high)
-    data(faux.mesa.high)
-    data(kapferer)
-    data(sampson)
     
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input

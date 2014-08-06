@@ -112,35 +112,27 @@ shinyUI(
 #+ eval=FALSE
   tabPanel('Upload',
     fluidRow(
-      column()
-      column(3, wellPanel(
-        h5('OR, Choose a dataset'),
-        selectInput('dataset',
-                    label = 'Sample datasets',
-                    c(Choose = '', 'ecoli1', 'ecoli2', 'faux.magnolia.high',
-                      'faux.mesa.high', 'flobusiness','flomarriage',
-                      'kapferer','kapferer2','samplike'),
-                    selectize = FALSE),
-        br(),
-        actionButton('goButton', 'Run')))
-      
+      column(6, offset=3,
+      wellPanel(
+        fileInput(inputId='rawdata',label='Choose a file')))
+      ),
+    fluidRow(
+     column(3,
+        column(10, img(src= 'UW.Wordmark_ctr_K.jpg')),
+      fluidRow(
+        column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
+                    href = 'https://csde.washington.edu/', target = '_blank')),
+        column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
+                    target = '_blank'))
+        ))
       )),
   tabPanel('Plot Network',
     fluidRow(
      column(3,
           
       h5('Network Summary'),
-      verbatimTextOutput('attr'),
-      fluidRow(
-        
-        column(10, img(src= 'UW.Wordmark_ctr_K.jpg'))
-      ),
-      fluidRow(
-        column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
-                    href = 'https://csde.washington.edu/', target = '_blank')),
-        column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
-                    target = '_blank'))
-        )
+      verbatimTextOutput('attr')
+      
       ),
                   
      column(8, 
