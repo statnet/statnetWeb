@@ -12,17 +12,35 @@ div.busy {
   padding-bottom: 40px;
   padding-right: 30px;
   border-radius: 5px;
+  z-index: 1;
 }
 
-.alert-box {
+/*.alert-box {
     color:#555;
     border-radius:10px;
     font-size:11px;
-    padding:10px 10px 10px 10px;
+    padding:10px 10px 10px 36px;
     margin:10px;
+}*/
+
+.helper-btn {
+    background-color:#FFFFFF;
+    border:1px solid #CECED8;
+    border-radius: 5px;
 }
 
-.helper {
-    background:#ffffff url('www/200px-Icon-round-Question_mark.svg.png') no-repeat 10px 50%;
-    border:1px solid #CECED8;
+div.helper-box { 
+  position:fixed;
+  top: 100px;
+  right: 20px;
+  max-width: 140px;
+  max-height: 250px;
+  display:none;
+  background: #FFFFFF;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px;
+  border:1px solid #CECED8;
+  border-radius: 5px;
+  z-index: 1;
 }

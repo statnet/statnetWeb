@@ -60,11 +60,12 @@ customTextInput<-function (inputId, label, value="",...) {
     tags$input(id = inputId, type="text", value=value,...))
 }
 
+
+
 # This function generates the client-side HTML for a helper button
-helperButton <- function(inputId, text = "") {
+helperButton <- function(id) {
   tagList(
-    tags$button(id=inputId, type="button", class="helper btn",
-                onclick=paste("alert('",text,"')"),
+    tags$button(id=id, type="button", class="helper-btn",
                 tags$img(src= "200px-Icon-round-Question_mark.svg.png",
                          height = 20, width = 20))
   )
@@ -153,11 +154,13 @@ shinyUI(
                                uiOutput('dynamicsize')),
                         column(3,
                                downloadButton('nwplotdownload', label = "Download Plot"))))),
-     helperButton(inputId = 'tab1help', 
-                  text=paste('Start by choosing a sample dataset and editing', 
-                           'the display options. Sequentially move through the', 
-                           'tabs at the top of the page to fit an ergm to the', 
-                           'observed network.'))
+     helperButton(id = 'tab1help'),
+     div(class="helper-box", style="display:none",
+         p('Start by choosing a sample dataset and editing', 
+           'the display options. Sequentially move through the', 
+           'tabs at the top of the page to fit an ergm to the', 
+           'observed network.'))
+
       )
     ),
 #' **Fit Model**
@@ -175,7 +178,8 @@ shinyUI(
           tagList(
             tags$head(
               tags$link(rel="stylesheet", type="text/css",href="style.css"),
-              tags$script(type="text/javascript", src = "busy.js")
+              tags$script(type="text/javascript", src = "busy.js"),
+              tags$script(type="text/javascript", src = "alert.js")
             )
           ),
           #include progress bar when this tab is loading
