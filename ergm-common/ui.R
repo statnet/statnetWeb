@@ -63,18 +63,10 @@ customTextInput<-function (inputId, label, value="",...) {
 # This function generates the client-side HTML for a helper button
 helperButton <- function(inputId, text = "") {
   tagList(
-    # This makes web page load the JS file in the HTML head.
-    # The call to singleton ensures it's only included once
-    # in a page.
-    shiny::singleton(
-      shiny::tags$head(
-        shiny::tags$script(src = "helper-input-binding.js")
-      )
-    ),
-    shiny::tags$button(id = inputId, type = "button",
-                       onclick = paste("alert('",text,"')"),
-                       tags$img(src= "200px-Icon-round-Question_mark.svg.png",
-                                height = 20, width = 20))
+    tags$button(id=inputId, type="button", class="helper btn",
+                onclick=paste("alert('",text,"')"),
+                tags$img(src= "200px-Icon-round-Question_mark.svg.png",
+                         height = 20, width = 20))
   )
 }
 
@@ -162,7 +154,10 @@ shinyUI(
                         column(3,
                                downloadButton('nwplotdownload', label = "Download Plot"))))),
      helperButton(inputId = 'tab1help', 
-                  text='This app guides the user through the process of fitting an exponential random graph model (ergm) to observed network data. The app captures some of the power and flexibility of the statnet suite of R packages in an easy to use interface.')
+                  text=paste('Start by choosing a sample dataset and editing', 
+                           'the display options. Sequentially move through the', 
+                           'tabs at the top of the page to fit an ergm to the', 
+                           'observed network.'))
       )
     ),
 #' **Fit Model**

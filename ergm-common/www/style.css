@@ -13,3 +13,16 @@ div.busy {
   padding-right: 30px;
   border-radius: 5px;
 }
+
+.alert-box {
+    color:#555;
+    border-radius:10px;
+    font-size:11px;
+    padding:10px 10px 10px 10px;
+    margin:10px;
+}
+
+.helper {
+    background:#ffffff url('www/200px-Icon-round-Question_mark.svg.png') no-repeat 10px 50%;
+    border:1px solid #CECED8;
+}
