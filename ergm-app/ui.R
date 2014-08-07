@@ -47,6 +47,10 @@
 #' that allows for smaller input boxes. In addition to all the normal arguments passed
 #' to `textInput`, `class = "input-small"` or `class = "input-mini"` can be specified.
 #' 
+#' Similarly, the `helperButton` function creates a small question mark button. The file
+#' `alert.js` (which is sourced later in this script) specifies that when the user clicks
+#' on a helperButton, a window with tips on how to use the page will appear. The window
+#' disappears the next time the user clicks on the button. 
 #+ setup, eval=FALSE
 #load necessary packages
 library(shiny)
@@ -80,6 +84,9 @@ helperButton <- function(id) {
 #' pages of content. Find out more about layout options 
 #' [here](http://shiny.rstudio.com/articles/layout-guide.html).
 #' 
+#' The only reason we wrap the `navbarPage` in a `bootstrapPage` is to correctly display 
+#' the app title in browser tab (rather than displaying the html from the styling of the 
+#' title in the app).
 #'
 #+ eval=FALSE 
 shinyUI(
@@ -87,6 +94,7 @@ shinyUI(
   navbarPage(title=div(a(span('statnet  ', style='font-family:Courier'),
                             href = 'https://statnet.csde.washington.edu/trac',
                             target = '_blank'),HTML('&nbsp;&nbsp;'), 'ergm app'),
+             
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
 #' browser window has a width of 12. Within any column, nested columns set their 
@@ -95,22 +103,12 @@ shinyUI(
 #' they should naturally be aligned horizontally, or when a `wellPanel` that is supposed
 #' to hold some content doesn't quite enclose everything correctly.
 #' 
-#' **Plot Network**
-#' 
-#' In the "Plot Network" tab panel, the first call to `column` contains all of the 
-#' elements on the left side of the page (datasets, network summary and logos). In the 
-#' middle of the page is the network plot followed by display options. Notice that 
-#' there are no calls to `selectInput` for the options to color code or size the nodes,
-#' even though they appear in the app. Most widget functions are called in `ui.R`, but
-#' this means that all the options passed to them must be static. If the options depend
-#' on user input (the coloring and sizing menus depend on which network the user
-#' selects), the widget must be rendered in `server.R` and output in `ui.R` with 
-#' `iuOutput`.
+#' **Upload Data**
 #'
 #' 
 #' 
 #+ eval=FALSE
-  tabPanel('Upload',
+  tabPanel('Upload Data',
            h3('Upload Observed Network'),
     fluidRow(
       column(3,
@@ -134,6 +132,19 @@ shinyUI(
                            tabPanel('Degree Distribution'))
         )
       )),
+
+#' **Plot Network**
+#' 
+#' Notice that 
+#' there are no calls to `selectInput` for the options to color code or size the nodes,
+#' even though they appear in the app. Most widget functions are called in `ui.R`, but
+#' this means that all the options passed to them must be static. If the options depend
+#' on user input (the coloring and sizing menus depend on which network the user
+#' selects), the widget must be rendered in `server.R` and output in `ui.R` with 
+#' `iuOutput`.
+#' 
+#+ eval=FALSE
+
   tabPanel('Plot Network',
     fluidRow(
      column(3,

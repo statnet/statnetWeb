@@ -28,10 +28,30 @@
 #' ```
 #' the UI elements will still be displayed without any dynamic content.
 #' 
+#' To create dynamic content, we will mainly rely on three types of expressions:
+#' 
+#' *Reactive:* Reactive expressions are expressions that can read reactive values and
+#' call other reactive expressions. Whenever a reactive value changes, any reactive
+#' expressions that depended on it are marked as "invalidated" and will automatically
+#' re-execute if necessary. If a reactive expression is marked as invalidated, any other
+#' reactive expressions that recently called it are also marked as invalidated. In this
+#' way, invalidations ripple through the expressions that depend on each other. Reactive
+#' expressions use lazy evaluation; when their dependencies change, they don't re-execute
+#' right away but rather wait until they are called by someone else.
+#' 
+#' *Observer:* An observer is like a reactive expression in that it can read reactive
+#' values and call reactive expressions, and will automatically re-execute when those
+#' dependencies change. But unlike reactive expressions, it doesn't yield a result and
+#' can't be used as an input to other reactive expressions. Thus, observers are only useful
+#' for their side effects (for example, performing I/O). Observers use eager evaluation;
+#' as soon as their dependencies change, they schedule themselves to re-execute.
+#' 
+#' *Render:* The `render*` functions are responsible for converting content to the form
+#' in which it should be displayed. Before assigning an object to an element of `output`,
+#' it gets passed to the appropriate `render*` function.
+#' 
 #' **Code**
 #' 
-#' First we load the necessary packages and then call `shinyServer`. Any code inside
-#' this call gets run ________.
 #+ eval=FALSE
 
 library(shiny)
@@ -71,6 +91,7 @@ shinyServer(
 #+ eval=FALSE
     nwreac <- reactive({
         #datapath is stored in 4th column of dataframe in input$rawdata
+        #network creates a network object from the input file
 				nw <- network(read.table(paste(input$rawdata[1,4])))
 			})
 
@@ -307,7 +328,6 @@ shinyServer(
 #' Once we have a formula, creating a model object, checking the goodness of fit
 #' and simulating from it is similar to what would be written in the command line,
 #' wrapped in a reactive statement.
-
 #+ eval=FALSE 
     model1reac <- reactive({
       if(input$fitButton == 0){
@@ -399,7 +419,7 @@ shinyServer(
 #'  
 #' **Data Upload**
 #' 
-#+ eval=FALSe
+#+ eval=FALSE
 
 
 output$rawdata <- renderPrint({
@@ -447,7 +467,7 @@ output$rawdata <- renderPrint({
 #' to be the same size, and otherwise maps the values of the numeric attributes into 
 #' the range between .7 and 3.5 using the formula $y = (x-a)/(b-a) * (d-c) + c$, where
 #' $x$ is the input in some range $[a,b]$ and $y$ is the output in range $[c,d]$.
-
+#'
 #+ eval=FALSE
     output$nwplot <- renderPlot({
       if (is.null(input$rawdata)){
@@ -839,7 +859,7 @@ output$rawdata <- renderPrint({
 #' network. When the user chooses to simulate multiple networks, `model1simreac()`
 #' contains a list of the generated networks. This is why we have to split up the plot
 #' command in an if-statement. The rest of the display options should look familiar
-#' from the 'Network Plot' tab.
+#' from the 'Plot Network' tab.
 #+ eval=FALSE
     output$checkterms4 <- renderPrint({
       if(is.null(input$rawdata)){
