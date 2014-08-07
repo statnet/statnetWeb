@@ -197,7 +197,13 @@ shinyUI(
 #' Conditional panels only exist if the javascript expression passed to the condition
 #' argument is true. If the expression is false, nothing inside `conditionalPanel()` 
 #' will appear in the app, nor will it take up space in the interface. In this tab, each
-#' conditional panel contains a menu of options for one of the ergm terms. There is no
+#' conditional panel contains a menu of options for one of the ergm terms and should only
+#' show up if a dataset has been uploaded AND the corresponding term has been chosen from
+#' the terms menu. Checking each of these requirements in javascript is not as 
+#' straightforward as one might think. Rather than checking for null values, to ensure that
+#' a dataset has been uploaded we will check that `input.rawdata` has class "Array".
+#' [This page](http://bonsaiden.github.io/JavaScript-Garden/#types) describes some 
+#' important considerations when equalities, types and classes in javascript. Next, there is no
 #' javascript function analagous to `is.element` in R, but the JS `indexOf` will return
 #' -1 if an element is not within the specified list. 
 #' 
@@ -218,14 +224,14 @@ shinyUI(
            column(3,
                   uiOutput('listofterms'),
                   actionButton('fitButton', 'Fit Model')),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("absdiff") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("absdiff") > -1',
                             column(2,
                                    uiOutput('dynamicabsdiff'),
                                    customTextInput('absdiffpow',
                                                    label = 'pow = ',
                                                    value = '1', class='input-small')
                                    )),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("degree") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("degree") > -1',
                             column(2,
                                    uiOutput('dynamicdegree'),
                                    customTextInput('choosedegree2',
@@ -234,7 +240,7 @@ shinyUI(
                                                    helpText("If entered, custom user",
                                                             "input will be prioritized"))
                                    )),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("b1degree") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("b1degree") > -1',
                             column(2,
                                    uiOutput('dynamicb1degree'),
                                    customTextInput('chooseb1degree2',
@@ -243,7 +249,7 @@ shinyUI(
                                                    helpText("If entered, custom user",
                                                             "input will be prioritized"))
                             )),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("b2degree") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("b2degree") > -1',
                             column(2,
                                    uiOutput('dynamicb2degree'),
                                    customTextInput('chooseb2degree2',
@@ -252,7 +258,7 @@ shinyUI(
                                                    helpText("If entered, custom user",
                                                             "input will be prioritized"))
                             )),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("idegree") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("idegree") > -1',
                             column(2,
                                    uiOutput('dynamicidegree'),
                                    customTextInput('chooseidegree2',
@@ -260,7 +266,7 @@ shinyUI(
                                                    value = NULL, class='input-small',
                                                    helpText("If entered, custom user",
                                                             "input will be prioritized")))),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("odegree") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("odegree") > -1',
                             column(2,
                                    uiOutput('dynamicodegree'),
                                    customTextInput('chooseodegree2',
@@ -268,32 +274,32 @@ shinyUI(
                                                    value = NULL, class='input-small',
                                                    helpText("If entered, custom user",
                                                             "input will be prioritized")))),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("gwesp") > -1', 
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("gwesp") > -1', 
                             column(2,
                                    customTextInput('choosegwesp', 
                                                    label = 'Input alpha for gwesp',
                                                    value = 0, class='input-small'),
                                    checkboxInput('fixgwesp', label = 'fixed?', 
                                                  value = TRUE))),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("nodecov") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("nodecov") > -1',
                             column(2,
                                    uiOutput('dynamicnodecov')
                                    )),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("nodefactor") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("nodefactor") > -1',
                             column(2,
                                    uiOutput('dynamicnodefactor'),
                                    customTextInput('nodefactorbase',
                                                    label = 'base = ',
                                                    value = '1', class='input-small')
                                    )),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("nodematch") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("nodematch") > -1',
                             column(2,
                                    uiOutput('dynamicnodematch'),
                                    customTextInput('nodematchkeep', label = 'keep = ',
                                                    value = '', class='input-small'),
                                    checkboxInput('nodematchdiff', label='diff',
                                                  value = FALSE))),
-           conditionalPanel(condition = 'input.goButton != 0 && input.terms.indexOf("nodemix") > -1',
+           conditionalPanel(condition = 'Object.prototype.toString.call(input.rawdata) == "Array" && input.terms.indexOf("nodemix") > -1',
                             column(2,
                                    uiOutput('dynamicnodemix'),
                                    customTextInput('nodemixbase',

@@ -70,25 +70,25 @@ shinyServer(
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
     nwreac <- reactive({
-				nw <- read.table(paste(input$rawdata))
+        #datapath is stored in 4th column of dataframe in input$rawdata
+				nw <- network(read.table(paste(input$rawdata[1,4])))
 			})
+
+    nwname <- reactive({input$rawdata[1,1]})
 
 
     #number of nodes in nw
     nodes <- reactive({
-				input$goButton
-				isolate(nwreac()$gal$n)}) 
+				nwreac()$gal$n}) 
     #get coordinates to plot network with
     coords <- reactive({
-				input$goButton
-				isolate(plot.network(eval(parse(text = input$dataset))))})
+				plot.network(nwreac())})
     
     #list of vertex attributes in nw
     attr <- reactive({
-    	  input$goButton
     	  attr <- c()
-          if(input$dataset != ''){      
-    		  isolate(  attr<-list.vertex.attributes(nwreac()))
+          if(!is.null(input$rawdata)){      
+    		    attr<-list.vertex.attributes(nwreac())
           }
           attr
       })
@@ -105,7 +105,7 @@ shinyServer(
     #numeric attributes only (for size menu, etc.)
     numattr <- reactive({
         numattr <- c()
-        if(input$dataset != ''){  
+        if(!is.null(input$rawdata)){  
           for(i in 1:length(attr())){
             if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
               numattr <- append(numattr,attr()[i])
@@ -114,8 +114,7 @@ shinyServer(
         numattr})
   
       nodesize <- reactive({
-        input$goButton
-        nw <- isolate({nwreac()})
+        nw <- nwreac()
         #scale size of nodes onto range between .7 and 3.5
         minsize <- min(get.vertex.attribute(nw,input$sizeby))
         maxsize <- max(get.vertex.attribute(nw,input$sizeby))
@@ -127,8 +126,7 @@ shinyServer(
         size})
 
     legendlabels <- reactive({
-      input$goButton
-      nw <- isolate({nwreac()})
+      nw <- nwreac()
         if(input$colorby == 2){
           legendlabels <- NULL
         }else{
@@ -152,10 +150,10 @@ shinyServer(
   
   #summary of network attributes
   output$attr <- renderPrint({
-    if (input$goButton == 0){
+    if (is.null(input$rawdata)){
       return()
     }
-    nw <- isolate(nwreac())
+    nw <- nwreac()
     return(nw)
     })
     
@@ -352,8 +350,7 @@ shinyServer(
       plot.network(model1simreac()[[input$thissim]])})
 
     nodesize2 <- reactive({
-      input$goButton
-      nw <- isolate({nwreac()})
+      nw <- nwreac()
       #scale size of nodes onto range between .7 and 3.5
       
       minsize <- min(get.vertex.attribute(nw,input$sizeby2))
@@ -369,8 +366,7 @@ shinyServer(
       size})
     
     legendlabels2 <- reactive({
-      input$goButton
-      nw <- isolate({nwreac()})
+      nw <- nwreac()
       if(input$colorby2 == 2){
         legendlabels <- NULL
       }else{
@@ -402,7 +398,9 @@ shinyServer(
 #' into sections depending on what tab of the app they are called from.
 #'  
 #' **Data Upload**
+#' 
 #+ eval=FALSe
+
 
 output$rawdata <- renderPrint({
   raw <- matrix(nrow=3,ncol=1)
@@ -452,11 +450,10 @@ output$rawdata <- renderPrint({
 
 #+ eval=FALSE
     output$nwplot <- renderPlot({
-      if (input$goButton == 0){
+      if (is.null(input$rawdata)){
         return()
       }
-      input$goButton
-      nw <- isolate({nwreac()})
+      nw <- nwreac()
       plot.network(nw, coord = coords(), 
                    displayisolates = input$iso, 
                    displaylabels = input$vnames, 
@@ -468,7 +465,7 @@ output$rawdata <- renderPrint({
     })
 
     output$nwplotdownload <- downloadHandler(
-      filename = function(){paste(input$dataset,'_plot.pdf',sep='')},
+      filename = function(){paste(nwname(),'_plot.pdf',sep='')},
       content = function(file){
         pdf(file=file, height=10, width=10)
         plot(nwreac(), coord = coords(), 
@@ -485,8 +482,8 @@ output$rawdata <- renderPrint({
 
     #summary of network attributes
     output$attr <- renderPrint({
-      if (input$goButton == 0){
-        return()
+      if (is.null(input$rawdata)){
+        return(cat('NA'))
       }
       nw <- isolate(nwreac())
       return(nw)
@@ -511,7 +508,7 @@ output$rawdata <- renderPrint({
 #+ fitmodel1, eval=FALSE
 
     output$listofterms <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       if(nwreac()$gal$directed & nwreac()$gal$bipartite){
@@ -531,7 +528,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicdegree <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('choosedegree', 
@@ -543,7 +540,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicb1degree <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('chooseb1degree',
@@ -555,7 +552,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicb2degree <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('chooseb2degree',
@@ -567,7 +564,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicidegree <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('chooseidegree',
@@ -579,7 +576,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicodegree <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('chooseodegree',
@@ -591,7 +588,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicabsdiff <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('chooseabsdiff',
@@ -603,7 +600,7 @@ output$rawdata <- renderPrint({
     })
 
     output$dynamicnodefactor <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('choosenodefactor',
@@ -615,7 +612,7 @@ output$rawdata <- renderPrint({
     })
     
     output$dynamicnodematch <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('choosenodematch', 
@@ -626,7 +623,7 @@ output$rawdata <- renderPrint({
                   width = '3cm')
     })
     output$dynamicnodemix <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('choosenodemix',
@@ -637,7 +634,7 @@ output$rawdata <- renderPrint({
                   width = '3cm')
     })
     output$dynamicnodecov <- renderUI({
-      if(input$goButton==0){
+      if(is.null(input$rawdata)){
         return()
       }
       selectInput('choosenodecov',
@@ -655,22 +652,22 @@ output$rawdata <- renderPrint({
 #'  
 #+ fitmodel2, eval=FALSE
     output$currentdataset1 <- renderPrint({
-      if(input$goButton == 0){
-        return()
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
       }
-      cat(isolate(input$dataset))
+      cat(isolate(input$rawdata[1,1]))
     })
 
     output$checkterms1 <- renderPrint({
-      if(input$goButton == 0){
-        return()
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
       }
       cat(ergm.terms())
     })
 
     output$prefitsum <- renderPrint({
-      if(input$goButton==0 | length(input$terms)==0){
-        return()
+      if(is.null(input$rawdata) | length(input$terms)==0){
+        return(cat('NA'))
       }
       options(width=150)
       summary(ergm.formula())
@@ -711,16 +708,19 @@ output$rawdata <- renderPrint({
 #+ eval=FALSE
     #dataset only updates after goButton on first tab has been clicked
     output$currentdataset2 <- renderPrint({
-      if(input$goButton == 0){
-        return()
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
       }
-      cat(isolate(input$dataset))
+      cat(nwname())
     })
     
     #formula only updates after fitButton has been clicked
     output$checkterms2 <- renderPrint({
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
+      }
       if(input$fitButton == 0){
-        return()
+        return(cat('Please fit a model'))
       }
       cat(isolate(ergm.terms()))
     })
@@ -747,7 +747,7 @@ output$rawdata <- renderPrint({
     })
 
     output$gofplotdownload <- downloadHandler(
-      filename = function(){paste(input$dataset,'_gof.pdf',sep='')},
+      filename = function(){paste(nwname(),'_gof.pdf',sep='')},
       content = function(file){
         if(input$gofterm == ''){
           par(mfrow=c(3,1))
@@ -783,16 +783,19 @@ output$rawdata <- renderPrint({
 #+ eval=FALSE
 
     output$checkterms3 <- renderPrint({
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
+      }
       if(input$fitButton == 0){
-        return()
+        return(cat('Please fit a model'))
       }
       cat(isolate(ergm.terms()))
     })
     output$currentdataset3 <- renderPrint({
-      if(input$goButton == 0){
-        return()
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
       }
-      cat(isolate(input$dataset))
+      cat(nwname())
     })
     
     output$diagnosticsplot <- renderPlot({
@@ -802,7 +805,7 @@ output$rawdata <- renderPrint({
 
     output$mcmcplotdownload <- downloadHandler(
       vpp <- length(model1reac()$coef),
-      filename = function(){paste(input$dataset,'_mcmc.pdf',sep='')},
+      filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
       content = function(file){
         pdf(file=file, height=vpp*4/3, width=10)
         mcmc.diagnostics(model1reac(), vars.per.page = vpp)
@@ -839,22 +842,25 @@ output$rawdata <- renderPrint({
 #' from the 'Network Plot' tab.
 #+ eval=FALSE
     output$checkterms4 <- renderPrint({
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
+      }
       if(input$fitButton == 0){
-        return()
+        return(cat('Please fit a model'))
       }
       cat(isolate(ergm.terms()))
     })
     output$currentdataset4 <- renderPrint({
-      if(input$goButton == 0){
-        return()
+      if(is.null(input$rawdata)){
+        return(cat('Upload a dataset'))
       }
-      cat(isolate(input$dataset))
+      cat(nwname())
     })
     
 
     output$sim.summary <- renderPrint({
       if (input$simButton == 0){
-        return()
+        return(cat(''))
       }
       model1sim <- isolate(model1simreac())
       if (isolate(input$nsims) == 1){
@@ -915,7 +921,7 @@ output$rawdata <- renderPrint({
     })
 
     output$simplotdownload <- downloadHandler(
-      filename = function(){paste(input$dataset,'_simplot.pdf',sep='')},
+      filename = function(){paste(nwname(),'_simplot.pdf',sep='')},
       content = function(file){
         pdf(file=file, height=10, width=10)
         if(input$nsims == 1){
