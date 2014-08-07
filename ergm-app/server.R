@@ -30,8 +30,8 @@
 #' 
 #' **Code**
 #' 
-#' In this block of code we loaded the necessary packages outside of
-#' `shinyServer` and inside loaded all of the datasets we might need.
+#' First we load the necessary packages and then call `shinyServer`. Any code inside
+#' this call gets run ________.
 #+ eval=FALSE
 
 library(shiny)
@@ -70,15 +70,9 @@ shinyServer(
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
     nwreac <- reactive({
-				input$goButton
-				nw <- isolate(eval(parse(text = input$dataset)))
-        #if 'bipartite' is not already a network attribute, set to false
-        #this is the case for the samplike network
-        if(!is.element('bipartite',names(nw$gal))){
-          set.network.attribute(nw,'bipartite',FALSE)
-        }
-        nw
+				nw <- read.table(paste(input$rawdata))
 			})
+
 
     #number of nodes in nw
     nodes <- reactive({
@@ -406,7 +400,25 @@ shinyServer(
 #' and `renderPlot` for plots. Most of the render functions here call 
 #' reactive objects that were created above. I have divided the output objects
 #' into sections depending on what tab of the app they are called from.
-#'    
+#'  
+#' **Data Upload**
+#+ eval=FALSe
+
+output$rawdata <- renderPrint({
+  raw <- matrix(nrow=3,ncol=1)
+  rownames(raw)<-c("name:", "size:", "type:")
+  if(!is.null(input$rawdata)){
+    raw[1,1] <- input$rawdata[1,1]
+    raw[2,1] <- paste(input$rawdata[1,2], " bytes")
+    if(input$rawdata[1,3]==""){
+      raw[3,1] <- "unknown"
+    } else {
+      raw[3,1] <- input$rawdata[1,3]
+    }
+  }
+  write.table(raw, quote=FALSE, col.names=FALSE)})
+
+
 #' **Plot Network** 
 #' 
 #' Because the menu options for coloring/sizing the nodes on a network plot 

@@ -111,20 +111,28 @@ shinyUI(
 #' 
 #+ eval=FALSE
   tabPanel('Upload',
+           h3('Upload Observed Network'),
     fluidRow(
-      column(6, offset=3,
-      wellPanel(
-        fileInput(inputId='rawdata',label='Choose a file')))
-      ),
-    fluidRow(
-     column(3,
-        column(10, img(src= 'UW.Wordmark_ctr_K.jpg')),
-      fluidRow(
-        column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
-                    href = 'https://csde.washington.edu/', target = '_blank')),
-        column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
-                    target = '_blank'))
-        ))
+      column(3,
+             wellPanel(
+               fileInput(inputId='rawdata', label=NULL),
+               verbatimTextOutput('rawdata'),
+               h5('Supported file types'),
+               tags$ul(tags$li('type one'),
+                  tags$li('type two'),
+                  tags$li('type three'),
+                  tags$li('etc...'))),
+             column(10, img(src= 'UW.Wordmark_ctr_K.jpg')),
+             fluidRow(
+               column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
+                           href = 'https://csde.washington.edu/', target = '_blank')),
+               column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
+                           target = '_blank')))),
+      column(9,
+        tabsetPanel(id="datapreview",
+                           tabPanel('Mixing Matrix'),
+                           tabPanel('Degree Distribution'))
+        )
       )),
   tabPanel('Plot Network',
     fluidRow(
