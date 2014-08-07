@@ -103,12 +103,12 @@ shinyUI(
 #' they should naturally be aligned horizontally, or when a `wellPanel` that is supposed
 #' to hold some content doesn't quite enclose everything correctly.
 #' 
-#' **Upload Data**
+#' **Data Upload**
 #'
 #' 
 #' 
 #+ eval=FALSE
-  tabPanel('Upload Data',
+  tabPanel('Data Upload',
            h3('Upload Observed Network'),
     fluidRow(
       column(3,
@@ -126,14 +126,17 @@ shinyUI(
                            href = 'https://csde.washington.edu/', target = '_blank')),
                column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
                            target = '_blank')))),
-      column(9,
-        tabsetPanel(id="datapreview",
-                           tabPanel('Mixing Matrix'),
-                           tabPanel('Degree Distribution'))
-        )
+      column(3,
+             verbatimTextOutput('attr')),
+     helperButton(id = 'tab2help'),
+     div(class="helper-box", style="display:none",
+         p('Upload a file of observed network data (must be of a supported type).', 
+           'Sequentially move through the', 
+           'tabs at the top of the page to fit an ergm to the', 
+           'observed network.'))
       )),
 
-#' **Plot Network**
+#' **Network Plots**
 #' 
 #' Notice that 
 #' there are no calls to `selectInput` for the options to color code or size the nodes,
@@ -145,16 +148,11 @@ shinyUI(
 #' 
 #+ eval=FALSE
 
-  tabPanel('Plot Network',
-    fluidRow(
-     column(3,
-          
-      h5('Network Summary'),
-      verbatimTextOutput('attr')
-      
-      ),
+  tabPanel('Network Plots',
                   
-     column(8, 
+     column(8, offset=2,
+        tabsetPanel(
+          tabPanel('Network Plot',
             plotOutput('nwplot'),
              wellPanel(
                fluidRow(h5('Display Options')),
@@ -171,14 +169,13 @@ shinyUI(
                                uiOutput('dynamicsize')),
                         column(3,
                                downloadButton('nwplotdownload', label = "Download Plot"))))),
-     helperButton(id = 'tab1help'),
+          tabPanel('Mixing Matrix'),
+          tabPanel('Degree Distribution')
+          )),
+     helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
-         p('Start by choosing a sample dataset and editing', 
-           'the display options. Sequentially move through the', 
-           'tabs at the top of the page to fit an ergm to the', 
-           'observed network.'))
-
-      )
+         p('Use the network plots to gain insight to the observed network.', 
+           'Edit the display options below and download a PDF of any of the plots.'))
     ),
 #' **Fit Model**
 #' 
@@ -331,7 +328,8 @@ shinyUI(
                     verbatimTextOutput('modelfit')),
            tabPanel('Summary',
                     verbatimTextOutput('modelfitsum'))
-          )
+          ),
+    helperButton(id = 'tab3help')
           ),
 #' **Goodness of Fit**
 #' 
@@ -375,7 +373,8 @@ shinyUI(
                             verbatimTextOutput('gofsummary')),  
                      column(7,
                             uiOutput('gofplotspace'),
-                            downloadButton('gofplotdownload', label = 'Download Plots')))
+                            downloadButton('gofplotdownload', label = 'Download Plots'))),
+                     helperButton(id = 'tab4help')
                      ),
 #' **MCMC Diagnostics**
 #' 
@@ -402,7 +401,8 @@ shinyUI(
                         downloadButton('mcmcplotdownload',label = 'Download Plots')),
                        tabPanel('Summary', 
                         verbatimTextOutput('diagnostics'))
-                     )
+                     ),
+                  helperButton(id = 'tab5help')
             )
             ),
 #' **Simulations**
@@ -455,7 +455,8 @@ shinyUI(
                             plotOutput('simplot'),
                             verbatimTextOutput('sim.summary')
                             )
-                     )
+                     ),
+                   helperButton(id = 'tab6help')
                    ),
 #' **Help**
 #' 

@@ -24,6 +24,9 @@ div.busy {
 }*/
 
 .helper-btn {
+    position:fixed;
+    top: 60px;
+    right: 20px;
     background-color:#FFFFFF;
     border:1px solid #CECED8;
     border-radius: 5px;
@@ -31,7 +34,7 @@ div.busy {
 
 div.helper-box { 
   position:fixed;
-  top: 100px;
+  top: 90px;
   right: 20px;
   max-width: 140px;
   max-height: 250px;
