@@ -446,7 +446,7 @@ output$attr <- renderPrint({
 })
 
 
-#' **Plot Network** 
+#' **Network Plots** 
 #' 
 #' Because the menu options for coloring/sizing the nodes on a network plot 
 #' depend on which network has been selected, we have to dynamically render 
@@ -509,7 +509,27 @@ output$attr <- renderPrint({
       }
       )
 
+    output$dynamiccolor_dd <- renderUI({
+      selectInput('colorby_dd',
+                  label = 'Color bars according to:',
+                  c('None', menuattr()),
+                  selectize = FALSE)
+    })
+
     output$degreedist <- renderPlot({
+      leg <- FALSE
+      color <- "#3182bd"
+      if(input$colorby_dd != "None"){
+        leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
+        color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
+      }
+      
+      barplot(dd_plotdata(), legend.text = leg, col=color) 
+    })
+
+
+
+    dd_plotdata <- reactive({
       if(is.directed(nwreac())){
         gmode <- "digraph"
       } else {
@@ -522,29 +542,23 @@ output$attr <- renderPrint({
       }
       data <-table(degree(nwreac(), gmode=gmode, cmode=input$cmode, diag=diag,
                           rescale=input$rescale))
-      maxdeg <- max(as.numeric(names(data)))
-      barplot(data) 
-    })
-
-    output$dynamiccmode <- renderUI({
-      if(is.directed(nwreac())){
-        modes <- c('indegree', 'outdegree', 
-                   'freeman (total)' = 'freeman')
-      } else {
-        modes <- c('freeman (total)' = 'freeman')
+      #for color-coded bars
+      maxdeg <- max(as.numeric(names(table(degree(nwreac())))))
+      if(input$colorby_dd != "None"){
+        if(is.directed(nwreac())){
+          if(input$cmode=='indegree'){
+            data <- summary(nwreac() ~ idegree(0:maxdeg, input$colorby_dd))
+          } else if(input$cmode=='outdegree'){
+            data <- summary(nwreac() ~ odegree(0:maxdeg, input$colorby_dd))
+          } else {
+            return('Cannot color code a directed graph using total degree.')
+          }
+        } else {
+          data <- summary(nwreac() ~ degree(0:maxdeg, input$colorby_dd))
+        }
+        data <- t(matrix(data,nrow=maxdeg+1))
       }
-      selectInput('cmode', 
-                  label = 'Type of degree centrality',
-                  choices= modes,
-                  selected='freeman (total)',
-                  selectize=FALSE)
-    })
-
-    output$dynamiccolor_dd <- renderUI({
-      selectInput('colorby_dd',
-                  label = 'Color bars according to:',
-                  c('None' = 2, menuattr()),
-                  selectize = FALSE)
+      data
     })
 
 #' **Fit Model**
