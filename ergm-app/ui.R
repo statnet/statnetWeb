@@ -128,6 +128,13 @@ shinyUI(
                            target = '_blank')))),
       column(3,
              verbatimTextOutput('attr')),
+      column(3,
+             h5('Edit Network Attributes'),
+             uiOutput('changedir'),
+             uiOutput('changehyper'),
+             uiOutput('changeloops'),
+             uiOutput('changemultiplex'),
+             uiOutput('changebipartite')),
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Upload a file of observed network data (must be of a supported type).', 
@@ -149,8 +156,11 @@ shinyUI(
 #+ eval=FALSE
 
   tabPanel('Network Plots',
+     column(3,
+        br(),
+        verbatimTextOutput('attr2')),
                   
-     column(8, offset=2,
+     column(8,
         tabsetPanel(
           tabPanel('Network Plot',
             plotOutput('nwplot'),
@@ -180,7 +190,8 @@ shinyUI(
                               column(3,
                                      selectInput('cmode', 
                                                  label = 'Type of degree centrality',
-                                                 choices= modes,
+                                                 choices= c('indegree','outdegree',
+                                                            'freeman (total)'='freeman'),
                                                  selected='freeman',
                                                  selectize=FALSE)),
                               column(3,

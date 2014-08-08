@@ -56,6 +56,7 @@
 
 library(shiny)
 library(statnet)
+library(RColorBrewer)
 
 shinyServer(
   function(input, output, session){
@@ -89,10 +90,20 @@ shinyServer(
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
+    #initial network - use to set the initial values of network attributes
+    nwinit <- reactive({
+      network(read.table(paste(input$rawdata[1,4])))
+    })
+    #network to do all work with, make changes, plot, etc
     nwreac <- reactive({
         #datapath is stored in 4th column of dataframe in input$rawdata
         #network creates a network object from the input file
 				nw <- network(read.table(paste(input$rawdata[1,4])))
+        set.network.attribute(nw, 'directed', input$dir)
+        set.network.attribute(nw, 'hyper', input$hyper)
+        set.network.attribute(nw, 'loops', input$loops)
+        set.network.attribute(nw, 'bipartite', input$bipartite)
+        set.network.attribute(nw, 'multiple', input$multiplex)
 			})
 
     nwname <- reactive({input$rawdata[1,1]})
@@ -441,10 +452,40 @@ output$attr <- renderPrint({
   if (is.null(input$rawdata)){
     return(cat('NA'))
   }
-  nw <- isolate(nwreac())
+  nw <- nwreac()
   return(nw)
 })
 
+output$changedir <- renderUI({
+  if(is.null(input$rawdata)){
+    return()
+  }
+  checkboxInput('dir', 'directed?', value=is.directed(nwinit()))
+})
+output$changehyper <- renderUI({
+  if(is.null(input$rawdata)){
+    return()
+  }
+  checkboxInput('hyper', 'hyper?', value=is.hyper(nwinit()))
+})
+output$changeloops <- renderUI({
+  if(is.null(input$rawdata)){
+    return()
+  }
+  checkboxInput('loops', 'loops?', value=has.loops(nwinit()))
+})
+output$changemultiplex <- renderUI({
+  if(is.null(input$rawdata)){
+    return()
+  }
+  checkboxInput('multiplex', 'multiplex?', value=is.multiplex(nwinit()))
+})
+output$changebipartite <- renderUI({
+  if(is.null(input$rawdata)){
+    return()
+  }
+  checkboxInput('bipartite', 'bipartite?', value=is.bipartite(nwinit()))
+})
 
 #' **Network Plots** 
 #' 
@@ -456,6 +497,15 @@ output$attr <- renderPrint({
 #' will still be saved in `input$colorby` because that is the widget inputId.
 #' 
 #+ eval=FALSE
+    #summary of network attributes
+    output$attr2 <- renderPrint({
+      if (is.null(input$rawdata)){
+        return(cat('NA'))
+      }
+      nw <- nwreac()
+      return(nw)
+    })
+
     output$dynamiccolor <- renderUI({
       selectInput('colorby',
                   label = 'Color nodes according to:',
