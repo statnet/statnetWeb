@@ -169,8 +169,21 @@ shinyUI(
                                uiOutput('dynamicsize')),
                         column(3,
                                downloadButton('nwplotdownload', label = "Download Plot"))))),
-          tabPanel('Mixing Matrix'),
-          tabPanel('Degree Distribution')
+          tabPanel('Degree Distribution',
+                   plotOutput('degreedist'),
+                   wellPanel(
+                     fluidRow(h5('Display Options')),
+                     fluidRow(column(3,
+                                     checkboxInput('rescale',
+                                                   label = 'Rescale?', 
+                                                   value = FALSE)),
+                              column(3,
+                                     uiOutput('dynamiccmode')),
+                              column(3,
+                                     uiOutput('dynamiccolor_dd')),
+                              column(3,
+                                     downloadButton('degreedistdownload', label = "Download Plot"))))),
+          tabPanel('Mixing Matrix')
           )),
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",

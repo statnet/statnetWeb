@@ -436,6 +436,15 @@ output$rawdata <- renderPrint({
   }
   write.table(raw, quote=FALSE, col.names=FALSE)})
 
+#summary of network attributes
+output$attr <- renderPrint({
+  if (is.null(input$rawdata)){
+    return(cat('NA'))
+  }
+  nw <- isolate(nwreac())
+  return(nw)
+})
+
 
 #' **Plot Network** 
 #' 
@@ -500,13 +509,42 @@ output$rawdata <- renderPrint({
       }
       )
 
-    #summary of network attributes
-    output$attr <- renderPrint({
-      if (is.null(input$rawdata)){
-        return(cat('NA'))
+    output$degreedist <- renderPlot({
+      if(is.directed(nwreac())){
+        gmode <- "digraph"
+      } else {
+        gmode <- "graph"
       }
-      nw <- isolate(nwreac())
-      return(nw)
+      if(has.loops(nwreac())){
+        diag <- TRUE
+      } else {
+        diag <- FALSE
+      }
+      data <-table(degree(nwreac(), gmode=gmode, cmode=input$cmode, diag=diag,
+                          rescale=input$rescale))
+      maxdeg <- max(as.numeric(names(data)))
+      barplot(data) 
+    })
+
+    output$dynamiccmode <- renderUI({
+      if(is.directed(nwreac())){
+        modes <- c('indegree', 'outdegree', 
+                   'freeman (total)' = 'freeman')
+      } else {
+        modes <- c('freeman (total)' = 'freeman')
+      }
+      selectInput('cmode', 
+                  label = 'Type of degree centrality',
+                  choices= modes,
+                  selected='freeman (total)',
+                  selectize=FALSE)
+    })
+
+    output$dynamiccolor_dd <- renderUI({
+      selectInput('colorby_dd',
+                  label = 'Color bars according to:',
+                  c('None' = 2, menuattr()),
+                  selectize = FALSE)
     })
 
 #' **Fit Model**
