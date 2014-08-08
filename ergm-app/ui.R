@@ -115,6 +115,7 @@ shinyUI(
              wellPanel(
                fileInput(inputId='rawdata', label=NULL),
                verbatimTextOutput('rawdata'),
+               checkboxInput('fmh','use fmh?', value=FALSE),
                h5('Supported file types'),
                tags$ul(tags$li('type one'),
                   tags$li('type two'),

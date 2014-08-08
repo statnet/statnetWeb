@@ -58,6 +58,8 @@ library(shiny)
 library(statnet)
 library(RColorBrewer)
 
+data(faux.mesa.high)
+
 shinyServer(
   function(input, output, session){
     
@@ -92,18 +94,26 @@ shinyServer(
 #+ eval=FALSE
     #initial network - use to set the initial values of network attributes
     nwinit <- reactive({
-      network(read.table(paste(input$rawdata[1,4])))
+      nw <- network(read.table(paste(input$rawdata[1,4])))
+      if(input$fmh){
+        nw <- faux.mesa.high
+      }
+      nw
     })
     #network to do all work with, make changes, plot, etc
     nwreac <- reactive({
         #datapath is stored in 4th column of dataframe in input$rawdata
         #network creates a network object from the input file
 				nw <- network(read.table(paste(input$rawdata[1,4])))
+				if(input$fmh){
+				  nw <- faux.mesa.high
+				}
         set.network.attribute(nw, 'directed', input$dir)
         set.network.attribute(nw, 'hyper', input$hyper)
         set.network.attribute(nw, 'loops', input$loops)
         set.network.attribute(nw, 'bipartite', input$bipartite)
         set.network.attribute(nw, 'multiple', input$multiplex)
+        nw
 			})
 
     nwname <- reactive({input$rawdata[1,1]})
@@ -593,7 +603,7 @@ output$changebipartite <- renderUI({
       data <-table(degree(nwreac(), gmode=gmode, cmode=input$cmode, diag=diag,
                           rescale=input$rescale))
       #for color-coded bars
-      maxdeg <- max(as.numeric(names(table(degree(nwreac())))))
+      maxdeg <- max(as.numeric(names(table(degree(nwreac(), gmode=gmode)))))
       if(input$colorby_dd != "None"){
         if(is.directed(nwreac())){
           if(input$cmode=='indegree'){
