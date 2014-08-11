@@ -135,11 +135,14 @@ shinyServer(
           attr
       })
 
-    #don't allow "na" as a vertex attribute in menus on fit tab
+    #don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
     menuattr <- reactive({
       menuattr <- attr()
       if(is.element("na",menuattr)){
         menuattr <- menuattr[-which("na"==menuattr)]
+      }
+      if(is.element("vertex.names",menuattr)){
+        menuattr <- menuattr[-which("vertex.names"==menuattr)]
       }
       menuattr
     })
@@ -189,15 +192,7 @@ shinyServer(
       }
       legendfill
     })
-  
-  #summary of network attributes
-  output$attr <- renderPrint({
-    if (is.null(input$rawdata)){
-      return()
-    }
-    nw <- nwreac()
-    return(nw)
-    })
+
     
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
 #' The following reactive expressions take user input and create vectors that can later
@@ -569,25 +564,14 @@ output$changebipartite <- renderUI({
       }
       )
 
+#DEGREE DISTRIBUTION
+
     output$dynamiccolor_dd <- renderUI({
       selectInput('colorby_dd',
                   label = 'Color bars according to:',
                   c('None', menuattr()),
                   selectize = FALSE)
     })
-
-    output$degreedist <- renderPlot({
-      leg <- FALSE
-      color <- "#3182bd"
-      if(input$colorby_dd != "None"){
-        leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
-        color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
-      }
-      
-      barplot(dd_plotdata(), legend.text = leg, col=color) 
-    })
-
-
 
     dd_plotdata <- reactive({
       if(is.directed(nwreac())){
@@ -617,9 +601,44 @@ output$changebipartite <- renderUI({
           data <- summary(nwreac() ~ degree(0:maxdeg, input$colorby_dd))
         }
         data <- t(matrix(data,nrow=maxdeg+1))
+        colnames(data) <- 0:maxdeg
       }
       data
     })
+
+    output$degreedist <- renderPlot({
+      leg <- FALSE
+      legtitle <- FALSE
+      color <- "#3182bd"
+      if(!is.null(input$colorby_dd)){
+      if(input$colorby_dd != "None"){
+        leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
+        legtitle <- list(title = input$colorby_dd)
+        color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
+      }}
+      
+      barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
+              args.legend=legtitle, col=color) 
+    })
+
+    output$degreedistdownload <- downloadHandler(
+      filename = function(){paste(nwname(),'_degreedist.pdf',sep='')},
+      content = function(file){
+        pdf(file=file, height=10, width=10)
+        leg <- FALSE
+        legtitle <- FALSE
+        color <- "#3182bd"
+        if(!is.null(input$colorby_dd)){
+          if(input$colorby_dd != "None"){
+            leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
+            legtitle <- list(title = input$colorby_dd)
+            color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
+          }}
+        
+        barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
+                args.legend=legtitle, col=color) 
+        dev.off()
+      })
 
 #' **Fit Model**
 #' 
