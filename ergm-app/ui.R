@@ -109,33 +109,59 @@ shinyUI(
 #' 
 #+ eval=FALSE
   tabPanel('Data Upload',
-           h3('Upload Observed Network'),
+         
     fluidRow(
-      column(3,
-             wellPanel(
-               fileInput(inputId='rawdata', label=NULL),
-               verbatimTextOutput('rawdata'),
-               checkboxInput('fmh','use fmh?', value=FALSE),
-               h5('Supported file types'),
-               tags$ul(tags$li('type one'),
-                  tags$li('type two'),
-                  tags$li('type three'),
-                  tags$li('etc...'))),
+      column(8,
+       h4('Construct a Network'),      
+       wellPanel(
+        fluidRow(
+          column(4,
+                  br(),
+                  radioButtons('matrixtype', label='Choose Matrix Type',
+                              choices=c('Adjacency matrix', 
+                                        'Bipartite adjacency matrix',
+                                        'Incidence matrix', 'Edge list'))),
+          column(4,
+                 br(),
+                  p('Choose Network Attributes'),
+                  checkboxInput('dir', 'directed?', value=TRUE),
+                  checkboxInput('hyper', 'hyper?', value=FALSE),
+                  checkboxInput('loops', 'loops?', value=FALSE),
+                  checkboxInput('multiple', 'multiple?', value=FALSE),
+                  checkboxInput('bipartite', 'bipartite?', value=FALSE)         
+                  )
+          )
+       ),
+      
+      h4('Upload a Network'),
+      wellPanel(
+        fluidRow(
+        column(4,
+               radioButtons('filetype',label=h5('Supported file types'),
+                            choices=c('statnet Network object'=1,'.paj file'=2,'.net file'=3))),
+        
+        column(4, fileInput(inputId='rawdata', label=NULL),
+               checkboxInput('fmh','use fmh?', value=FALSE)),
+        column(3, verbatimTextOutput('rawdata'))
+        
+        )),
+      fluidRow(column(4,            
              column(10, img(src= 'UW.Wordmark_ctr_K.jpg')),
              fluidRow(
                column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
                            href = 'https://csde.washington.edu/', target = '_blank')),
                column(7, a(img(src = 'csde_goudy.fw.png'), href = 'https://csde.washington.edu/',
-                           target = '_blank')))),
-      column(3,
-             verbatimTextOutput('attr')),
-      column(3,
-             h5('Edit Network Attributes'),
-             uiOutput('changedir'),
-             uiOutput('changehyper'),
-             uiOutput('changeloops'),
-             uiOutput('changemultiplex'),
-             uiOutput('changebipartite')),
+                           target = '_blank')))))
+      ),
+               
+   column(3,br(),br(),
+#           conditionalPanel(condition='output.attr !== "NA"',
+           verbatimTextOutput('attr')
+#            )
+          ),            
+   
+    
+
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Upload a file of observed network data (must be of a supported type).', 

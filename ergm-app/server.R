@@ -104,15 +104,12 @@ shinyServer(
     nwreac <- reactive({
         #datapath is stored in 4th column of dataframe in input$rawdata
         #network creates a network object from the input file
-				nw <- network(read.table(paste(input$rawdata[1,4])))
+				nw <- network(read.table(paste(input$rawdata[1,4])),
+                      directed=input$dir, hyper=input$hyper, loops=input$loops,
+                      multiple=input$multiple, bipartite=input$bipartite)
 				if(input$fmh){
 				  nw <- faux.mesa.high
 				}
-        set.network.attribute(nw, 'directed', input$dir)
-        set.network.attribute(nw, 'hyper', input$hyper)
-        set.network.attribute(nw, 'loops', input$loops)
-        set.network.attribute(nw, 'bipartite', input$bipartite)
-        set.network.attribute(nw, 'multiple', input$multiplex)
         nw
 			})
 
@@ -461,36 +458,7 @@ output$attr <- renderPrint({
   return(nw)
 })
 
-output$changedir <- renderUI({
-  if(is.null(input$rawdata)){
-    return()
-  }
-  checkboxInput('dir', 'directed?', value=is.directed(nwinit()))
-})
-output$changehyper <- renderUI({
-  if(is.null(input$rawdata)){
-    return()
-  }
-  checkboxInput('hyper', 'hyper?', value=is.hyper(nwinit()))
-})
-output$changeloops <- renderUI({
-  if(is.null(input$rawdata)){
-    return()
-  }
-  checkboxInput('loops', 'loops?', value=has.loops(nwinit()))
-})
-output$changemultiplex <- renderUI({
-  if(is.null(input$rawdata)){
-    return()
-  }
-  checkboxInput('multiplex', 'multiplex?', value=is.multiplex(nwinit()))
-})
-output$changebipartite <- renderUI({
-  if(is.null(input$rawdata)){
-    return()
-  }
-  checkboxInput('bipartite', 'bipartite?', value=is.bipartite(nwinit()))
-})
+
 
 #' **Network Plots** 
 #' 
