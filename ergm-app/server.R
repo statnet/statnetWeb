@@ -838,10 +838,10 @@ output$changebipartite <- renderUI({
       summary(model1reac())
     })
 
-    observe({
-      input$fitButton
-      isolate(updateTabsetPanel(session, 'fittingTabs', selected = 'Fitting'))
-    })
+    #make sure that mcmc iterations output on the fitting tab
+    outputOptions(output, "modelfit",priority=10, suspendWhenHidden=FALSE)
+    outputOptions(output, "modelfitsum",priority=-10)
+    
 
 #' **Diagnostics - Goodness of Fit**
 #' 
