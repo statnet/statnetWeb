@@ -94,38 +94,31 @@ shinyServer(
 #+ eval=FALSE
 
     nwreac <- reactive({
-        #datapath is stored in 4th column of dataframe in input$rawdatafile or
-        #input$rawdatamx
+        #input$rawdatafile comes as a dataframe with name, size, type and datapath
+        #datapath is stored in 4th column of dataframe
         #network creates a network object from the input file
-      if(input$datatabs == 1){
-        if(is.null(input$rawdatafile)){
-				  nw <- NULL
-        } else {
+      
+      if(is.null(input$rawdatafile)){
+				nw <- NULL
+      } else {
+        if(input$filetype == 1){
+          load(paste(input$rawdatafile[1,4]))
+          nw <- get(input$objname)
+        } else if(input$filetype == 2){
           nw <- read.paj(paste(input$rawdatafile[1,4]))
-        }
-      } else if (input$datatabs == 2){
-        if(is.null(input$rawdatamx)){
-          nw <- NULL
-        } else{
+        } else if(input$filetype == 3){
+          nw <- read.paj(paste(input$rawdatafile[1,4]))
+        } else if(input$filetype == 4){
           nw <- network(read.table(paste(input$rawdatamx[1,4])),
-                      directed=input$dir, hyper=input$hyper, loops=input$loops,
-                      multiple=input$multiple, bipartite=input$bipartite)
+                        directed=input$dir, hyper=input$hyper, loops=input$loops,
+                        multiple=input$multiple, bipartite=input$bipartite)
         }
-        
       }
-				if(input$fmh){
-				  nw <- faux.mesa.high
-				}
+       
         nw
 			})
 
-    nwname <- reactive({
-      if(input$datatabs == 1){
-        name <- input$rawdatafile[1,1]
-      } else {
-        name <- input$rawdatamx[1,1]
-      }
-      name})
+    nwname <- reactive({input$rawdatafile[1,1]})
 
 
     #number of nodes in nw

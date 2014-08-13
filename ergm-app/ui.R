@@ -109,47 +109,52 @@ shinyUI(
 #' 
 #+ eval=FALSE
   tabPanel('Data Upload',
-         
+    br(),     
     fluidRow(
       column(8,
         tabsetPanel(id='datatabs',
-          tabPanel('Upload a Network', value=1,
+          tabPanel('Upload Network', value=1,
                    wellPanel(
                      fluidRow(
-                       column(4,
+                       column(3,
                               radioButtons('filetype',label=h5('File type'),
-                                           choices=c('statnet Network object'=1,'.paj file'=2,'.net file'=3))),
-                       
-                       column(4,
+                                           choices=c('statnet network object'=1,'.net file'=2,'.paj file'=3,
+                                                     'relational matrix/array'=4))),
+                       conditionalPanel(condition='input.filetype == 4',
+                           column(3,
+                                  br(),
+                                  radioButtons('matrixtype', label='Choose Matrix Type',
+                                               choices=c('Adjacency matrix', 
+                                                         'Bipartite adjacency matrix',
+                                                         'Incidence matrix', 'Edge list'))),
+                           column(3,
+                                  br(),
+                                  span('Choose Network Attributes'),
+                                  checkboxInput('dir', 'directed?', value=TRUE),
+                                  checkboxInput('hyper', 'hyper?', value=FALSE),
+                                  checkboxInput('loops', 'loops?', value=FALSE),
+                                  checkboxInput('multiple', 'multiple?', value=FALSE),
+                                  checkboxInput('bipartite', 'bipartite?', value=FALSE))
+                       ),
+                       conditionalPanel(condition='input.filetype == 1',
+                           column(3,
+                                  br(),
+                                  textInput('objname', label = 'Name of object'))
+                       ),
+                       column(3,
                               br(),
                               fileInput(inputId='rawdatafile', label=NULL),
-                              verbatimTextOutput('rawdatafile')),
-                       column(2, 
-                              br(),
-                              checkboxInput('fmh','use fmh?', value=FALSE))
+                              verbatimTextOutput('rawdatafile'))
+                       
                      ))
                    ),
-          tabPanel('Construct a Network', value=2,
+          tabPanel('Edit Network', value=2,
                    wellPanel(
                      fluidRow(
-                       column(4,
-                              br(),
-                              radioButtons('matrixtype', label='Choose Matrix Type',
-                                           choices=c('Adjacency matrix', 
-                                                     'Bipartite adjacency matrix',
-                                                     'Incidence matrix', 'Edge list'))),
+                      
                        column(3,
-                              br(),
-                              span('Choose Network Attributes'),
-                              checkboxInput('dir', 'directed?', value=TRUE),
-                              checkboxInput('hyper', 'hyper?', value=FALSE),
-                              checkboxInput('loops', 'loops?', value=FALSE),
-                              checkboxInput('multiple', 'multiple?', value=FALSE),
-                              checkboxInput('bipartite', 'bipartite?', value=FALSE)),
-                       column(3,
-                              br(),
-                              fileInput(inputId='rawdatamx', label=NULL),
-                              verbatimTextOutput('rawdatamx'))
+                              br()
+                              )
                      ))
                    )),
 
@@ -165,9 +170,7 @@ shinyUI(
       ),
                
    column(3,br(),br(),
-#           conditionalPanel(condition='output.attr !== "NA"',
            verbatimTextOutput('attr')
-#            )
           ),            
    
     
@@ -193,10 +196,8 @@ shinyUI(
 #+ eval=FALSE
 
   tabPanel('Network Plots',
-     column(3,
-        br(),
-        verbatimTextOutput('attr2')),
-                  
+    br(), 
+    fluidRow(      
      column(8,
         tabsetPanel(
           tabPanel('Network Plot',
@@ -237,6 +238,10 @@ shinyUI(
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
           tabPanel('Mixing Matrix')
           )),
+     column(3,
+            br(),br(),
+            verbatimTextOutput('attr2'))
+     ),
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Use the network plots to gain insight to the observed network.', 
