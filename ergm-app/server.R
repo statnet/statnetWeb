@@ -94,14 +94,24 @@ shinyServer(
 #+ eval=FALSE
 
     nwreac <- reactive({
-        #datapath is stored in 4th column of dataframe in input$rawdata
+        #datapath is stored in 4th column of dataframe in input$rawdatafile or
+        #input$rawdatamx
         #network creates a network object from the input file
       if(input$datatabs == 1){
-				nw <- read.paj(paste(input$rawdatafile[1,4]))
+        if(is.null(input$rawdatafile)){
+				  nw <- NULL
+        } else {
+          nw <- read.paj(paste(input$rawdatafile[1,4]))
+        }
       } else if (input$datatabs == 2){
-        nw <- network(read.table(paste(input$rawdatamx[1,4])),
+        if(is.null(input$rawdatamx)){
+          nw <- NULL
+        } else{
+          nw <- network(read.table(paste(input$rawdatamx[1,4])),
                       directed=input$dir, hyper=input$hyper, loops=input$loops,
                       multiple=input$multiple, bipartite=input$bipartite)
+        }
+        
       }
 				if(input$fmh){
 				  nw <- faux.mesa.high
@@ -128,9 +138,9 @@ shinyServer(
     #list of vertex attributes in nw
     attr <- reactive({
     	  attr <- c()
-                
+        if(!is.null(nwreac())){        
     		    attr<-list.vertex.attributes(nwreac())
-          
+        }
           attr
       })
 
@@ -149,7 +159,7 @@ shinyServer(
     #numeric attributes only (for size menu, etc.)
     numattr <- reactive({
         numattr <- c()
-        if(!is.null(input$rawdata)){  
+        if(!is.null(nwreac())){  
           for(i in 1:length(attr())){
             if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
               numattr <- append(numattr,attr()[i])
@@ -467,10 +477,7 @@ output$rawdatamx <- renderPrint({
 
 #summary of network attributes
 output$attr <- renderPrint({
-  if (input$datatabs == 1 & is.null(input$rawdatafile)){
-    return(cat('NA'))
-  }
-  if (input$datatabs == 2 & is.null(input$rawdatamx)){
+  if (is.null(nwreac())){
     return(cat('NA'))
   }
   nw <- nwreac()
@@ -491,10 +498,7 @@ output$attr <- renderPrint({
 #+ eval=FALSE
     #summary of network attributes
     output$attr2 <- renderPrint({
-      if (input$datatabs == 1 & is.null(input$rawdatafile)){
-        return(cat('NA'))
-      }
-      if (input$datatabs == 2 & is.null(input$rawdatamx)){
+      if (is.null(nwreac())){
         return(cat('NA'))
       }
       nw <- nwreac()
@@ -524,7 +528,7 @@ output$attr <- renderPrint({
 #'
 #+ eval=FALSE
     output$nwplot <- renderPlot({
-      if (is.null(input$rawdata)){
+      if (is.null(nwreac())){
         return()
       }
       nw <- nwreac()
@@ -597,6 +601,9 @@ output$attr <- renderPrint({
     })
 
     output$degreedist <- renderPlot({
+      if(is.null(nwreac())){
+        return()
+      }
       leg <- FALSE
       legtitle <- FALSE
       color <- "#3182bd"
@@ -649,7 +656,7 @@ output$attr <- renderPrint({
 #+ fitmodel1, eval=FALSE
 
     output$listofterms <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       if(nwreac()$gal$directed & nwreac()$gal$bipartite){
@@ -669,7 +676,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicdegree <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('choosedegree', 
@@ -681,7 +688,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicb1degree <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('chooseb1degree',
@@ -693,7 +700,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicb2degree <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('chooseb2degree',
@@ -705,7 +712,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicidegree <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('chooseidegree',
@@ -717,7 +724,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicodegree <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('chooseodegree',
@@ -729,7 +736,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicabsdiff <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('chooseabsdiff',
@@ -741,7 +748,7 @@ output$attr <- renderPrint({
     })
 
     output$dynamicnodefactor <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('choosenodefactor',
@@ -753,7 +760,7 @@ output$attr <- renderPrint({
     })
     
     output$dynamicnodematch <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('choosenodematch', 
@@ -764,7 +771,7 @@ output$attr <- renderPrint({
                   width = '3cm')
     })
     output$dynamicnodemix <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('choosenodemix',
@@ -775,7 +782,7 @@ output$attr <- renderPrint({
                   width = '3cm')
     })
     output$dynamicnodecov <- renderUI({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return()
       }
       selectInput('choosenodecov',
@@ -793,21 +800,21 @@ output$attr <- renderPrint({
 #'  
 #+ fitmodel2, eval=FALSE
     output$currentdataset1 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
-      cat(isolate(input$rawdata[1,1]))
+      cat(isolate(nwname()))
     })
 
     output$checkterms1 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       cat(ergm.terms())
     })
 
     output$prefitsum <- renderPrint({
-      if(is.null(input$rawdata) | length(input$terms)==0){
+      if(is.null(nwreac()) | length(input$terms)==0){
         return(cat('NA'))
       }
       options(width=150)
@@ -852,7 +859,7 @@ output$attr <- renderPrint({
 #+ eval=FALSE
     #dataset only updates after goButton on first tab has been clicked
     output$currentdataset2 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       cat(nwname())
@@ -860,7 +867,7 @@ output$attr <- renderPrint({
     
     #formula only updates after fitButton has been clicked
     output$checkterms2 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       if(input$fitButton == 0){
@@ -927,7 +934,7 @@ output$attr <- renderPrint({
 #+ eval=FALSE
 
     output$checkterms3 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       if(input$fitButton == 0){
@@ -936,7 +943,7 @@ output$attr <- renderPrint({
       cat(isolate(ergm.terms()))
     })
     output$currentdataset3 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       cat(nwname())
@@ -986,7 +993,7 @@ output$attr <- renderPrint({
 #' from the 'Plot Network' tab.
 #+ eval=FALSE
     output$checkterms4 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       if(input$fitButton == 0){
@@ -995,7 +1002,7 @@ output$attr <- renderPrint({
       cat(isolate(ergm.terms()))
     })
     output$currentdataset4 <- renderPrint({
-      if(is.null(input$rawdata)){
+      if(is.null(nwreac())){
         return(cat('Upload a dataset'))
       }
       cat(nwname())
