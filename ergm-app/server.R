@@ -92,28 +92,30 @@ shinyServer(
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
-    #initial network - use to set the initial values of network attributes
-    nwinit <- reactive({
-      nw <- network(read.table(paste(input$rawdata[1,4])))
-      if(input$fmh){
-        nw <- faux.mesa.high
-      }
-      nw
-    })
-    #network to do all work with, make changes, plot, etc
+
     nwreac <- reactive({
         #datapath is stored in 4th column of dataframe in input$rawdata
         #network creates a network object from the input file
-				nw <- network(read.table(paste(input$rawdata[1,4])),
+      if(input$datatabs == 1){
+				nw <- read.paj(paste(input$rawdatafile[1,4]))
+      } else if (input$datatabs == 2){
+        nw <- network(read.table(paste(input$rawdatamx[1,4])),
                       directed=input$dir, hyper=input$hyper, loops=input$loops,
                       multiple=input$multiple, bipartite=input$bipartite)
+      }
 				if(input$fmh){
 				  nw <- faux.mesa.high
 				}
         nw
 			})
 
-    nwname <- reactive({input$rawdata[1,1]})
+    nwname <- reactive({
+      if(input$datatabs == 1){
+        name <- input$rawdatafile[1,1]
+      } else {
+        name <- input$rawdatamx[1,1]
+      }
+      name})
 
 
     #number of nodes in nw
@@ -126,9 +128,9 @@ shinyServer(
     #list of vertex attributes in nw
     attr <- reactive({
     	  attr <- c()
-          if(!is.null(input$rawdata)){      
+                
     		    attr<-list.vertex.attributes(nwreac())
-          }
+          
           attr
       })
 
@@ -435,23 +437,40 @@ shinyServer(
 #+ eval=FALSE
 
 
-output$rawdata <- renderPrint({
+output$rawdatafile <- renderPrint({
   raw <- matrix(nrow=3,ncol=1)
   rownames(raw)<-c("name:", "size:", "type:")
-  if(!is.null(input$rawdata)){
-    raw[1,1] <- input$rawdata[1,1]
-    raw[2,1] <- paste(input$rawdata[1,2], " bytes")
-    if(input$rawdata[1,3]==""){
+  if(!is.null(input$rawdatafile)){
+    raw[1,1] <- input$rawdatafile[1,1]
+    raw[2,1] <- paste(input$rawdatafile[1,2], " bytes")
+    if(input$rawdatafile[1,3]==""){
       raw[3,1] <- "unknown"
     } else {
-      raw[3,1] <- input$rawdata[1,3]
+      raw[3,1] <- input$rawdatafile[1,3]
+    }
+  }
+  write.table(raw, quote=FALSE, col.names=FALSE)})
+
+output$rawdatamx <- renderPrint({
+  raw <- matrix(nrow=3,ncol=1)
+  rownames(raw)<-c("name:", "size:", "type:")
+  if(!is.null(input$rawdatamx)){
+    raw[1,1] <- input$rawdatamx[1,1]
+    raw[2,1] <- paste(input$rawdatamx[1,2], " bytes")
+    if(input$rawdatamx[1,3]==""){
+      raw[3,1] <- "unknown"
+    } else {
+      raw[3,1] <- input$rawdatamx[1,3]
     }
   }
   write.table(raw, quote=FALSE, col.names=FALSE)})
 
 #summary of network attributes
 output$attr <- renderPrint({
-  if (is.null(input$rawdata)){
+  if (input$datatabs == 1 & is.null(input$rawdatafile)){
+    return(cat('NA'))
+  }
+  if (input$datatabs == 2 & is.null(input$rawdatamx)){
     return(cat('NA'))
   }
   nw <- nwreac()
@@ -472,7 +491,10 @@ output$attr <- renderPrint({
 #+ eval=FALSE
     #summary of network attributes
     output$attr2 <- renderPrint({
-      if (is.null(input$rawdata)){
+      if (input$datatabs == 1 & is.null(input$rawdatafile)){
+        return(cat('NA'))
+      }
+      if (input$datatabs == 2 & is.null(input$rawdatamx)){
         return(cat('NA'))
       }
       nw <- nwreac()

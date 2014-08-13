@@ -112,39 +112,49 @@ shinyUI(
          
     fluidRow(
       column(8,
-       h4('Construct a Network'),      
-       wellPanel(
-        fluidRow(
-          column(4,
-                  br(),
-                  radioButtons('matrixtype', label='Choose Matrix Type',
-                              choices=c('Adjacency matrix', 
-                                        'Bipartite adjacency matrix',
-                                        'Incidence matrix', 'Edge list'))),
-          column(4,
-                 br(),
-                  p('Choose Network Attributes'),
-                  checkboxInput('dir', 'directed?', value=TRUE),
-                  checkboxInput('hyper', 'hyper?', value=FALSE),
-                  checkboxInput('loops', 'loops?', value=FALSE),
-                  checkboxInput('multiple', 'multiple?', value=FALSE),
-                  checkboxInput('bipartite', 'bipartite?', value=FALSE)         
-                  )
-          )
-       ),
+        tabsetPanel(id='datatabs',
+          tabPanel('Upload a Network', value=1,
+                   wellPanel(
+                     fluidRow(
+                       column(4,
+                              radioButtons('filetype',label=h5('File type'),
+                                           choices=c('statnet Network object'=1,'.paj file'=2,'.net file'=3))),
+                       
+                       column(4,
+                              br(),
+                              fileInput(inputId='rawdatafile', label=NULL),
+                              verbatimTextOutput('rawdatafile')),
+                       column(2, 
+                              br(),
+                              checkboxInput('fmh','use fmh?', value=FALSE))
+                     ))
+                   ),
+          tabPanel('Construct a Network', value=2,
+                   wellPanel(
+                     fluidRow(
+                       column(4,
+                              br(),
+                              radioButtons('matrixtype', label='Choose Matrix Type',
+                                           choices=c('Adjacency matrix', 
+                                                     'Bipartite adjacency matrix',
+                                                     'Incidence matrix', 'Edge list'))),
+                       column(3,
+                              br(),
+                              span('Choose Network Attributes'),
+                              checkboxInput('dir', 'directed?', value=TRUE),
+                              checkboxInput('hyper', 'hyper?', value=FALSE),
+                              checkboxInput('loops', 'loops?', value=FALSE),
+                              checkboxInput('multiple', 'multiple?', value=FALSE),
+                              checkboxInput('bipartite', 'bipartite?', value=FALSE)),
+                       column(3,
+                              br(),
+                              fileInput(inputId='rawdatamx', label=NULL),
+                              verbatimTextOutput('rawdatamx'))
+                     ))
+                   )),
+
       
-      h4('Upload a Network'),
-      wellPanel(
-        fluidRow(
-        column(4,
-               radioButtons('filetype',label=h5('Supported file types'),
-                            choices=c('statnet Network object'=1,'.paj file'=2,'.net file'=3))),
-        
-        column(4, fileInput(inputId='rawdata', label=NULL),
-               checkboxInput('fmh','use fmh?', value=FALSE)),
-        column(3, verbatimTextOutput('rawdata'))
-        
-        )),
+      
       fluidRow(column(4,            
              column(10, img(src= 'UW.Wordmark_ctr_K.jpg')),
              fluidRow(
