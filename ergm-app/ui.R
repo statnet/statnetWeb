@@ -109,17 +109,33 @@ shinyUI(
 #' 
 #+ eval=FALSE
   tabPanel('Data Upload',
+           #add javascript in busy.js (for calculation in progress boxes)
+           #and alert.js (for helper boxes) to head of HTML document
+           #this tagList command has to go inside a tabPanel
+           tagList(
+             tags$head(
+               tags$link(rel="stylesheet", type="text/css",href="style.css"),
+               tags$script(type="text/javascript", src = "busy.js"),
+               tags$script(type="text/javascript", src = "alert.js")
+             )
+           ),
     br(),     
     fluidRow(
-      column(8,
+      column(7,
         tabsetPanel(id='datatabs',
           tabPanel('Upload Network', value=1,
                    wellPanel(
                      fluidRow(
-                       column(3,
+                       column(5,
                               radioButtons('filetype',label=h5('File type'),
                                            choices=c('statnet network object'=1,'.net file'=2,'.paj file'=3,
-                                                     'relational matrix/array'=4))),
+                                                     'matrix of relational data'=4))),
+                       column(7,
+                              br(),
+                              fileInput(inputId='rawdatafile', label=NULL),
+                              verbatimTextOutput('rawdatafile'))
+                       ),
+                     fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
                            column(3,
                                   br(),
@@ -140,13 +156,9 @@ shinyUI(
                            column(3,
                                   br(),
                                   textInput('objname', label = 'Name of object'))
-                       ),
-                       column(3,
-                              br(),
-                              fileInput(inputId='rawdatafile', label=NULL),
-                              verbatimTextOutput('rawdatafile'))
-                       
-                     ))
+                       )
+                     )
+                     )
                    ),
           tabPanel('Edit Network', value=2,
                    wellPanel(
@@ -169,7 +181,7 @@ shinyUI(
                            target = '_blank')))))
       ),
                
-   column(3,br(),br(),
+   column(4,br(),br(),
            verbatimTextOutput('attr')
           ),            
    
@@ -198,7 +210,7 @@ shinyUI(
   tabPanel('Network Plots',
     br(), 
     fluidRow(      
-     column(8,
+     column(7,
         tabsetPanel(
           tabPanel('Network Plot',
             plotOutput('nwplot'),
@@ -215,6 +227,7 @@ shinyUI(
                                uiOutput('dynamiccolor')),
                         column(3,
                                uiOutput('dynamicsize')),
+                        br(),
                         column(3,
                                downloadButton('nwplotdownload', label = "Download Plot"))))),
           tabPanel('Degree Distribution',
@@ -234,6 +247,7 @@ shinyUI(
                                                  selectize=FALSE)),
                               column(3,
                                      uiOutput('dynamiccolor_dd')),
+                              br(),
                               column(3,
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
           tabPanel('Mixing Matrix')
@@ -245,8 +259,17 @@ shinyUI(
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Use the network plots to gain insight to the observed network.', 
-           'Edit the display options below and download a PDF of any of the plots.'))
+           'Edit the display options below and download a PDF of any of the plots.')),
+    
+    #include progress box when this tab is loading
+    div(class = "busy", 
+        p("Calculation in progress..."),
+        img(src="ajax-loader.gif")
+        ) 
     ),
+
+    
+
 #' **Fit Model**
 #' 
 #' Since model fitting does not happen instantly, a loading icon will help to assure 
@@ -257,15 +280,7 @@ shinyUI(
 #' 
 #+ eval=FALSE                  
       tabPanel('Fit Model',
-          #add javascript in busy.js to head of HTML document
-          #this tagList command can't go directly under navbarPage or shinyUI
-          tagList(
-            tags$head(
-              tags$link(rel="stylesheet", type="text/css",href="style.css"),
-              tags$script(type="text/javascript", src = "busy.js"),
-              tags$script(type="text/javascript", src = "alert.js")
-            )
-          ),
+
           #include progress bar when this tab is loading
            div(class = "busy", 
                p("Calculation in progress..."),
