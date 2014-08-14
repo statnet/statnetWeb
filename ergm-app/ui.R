@@ -250,7 +250,7 @@ shinyUI(
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
           tabPanel('Mixing Matrix')
           )),
-     column(3,
+     column(4,
             br(),br(),
             verbatimTextOutput('attr2'))
      ),
@@ -414,7 +414,11 @@ shinyUI(
            tabPanel('Summary',
                     verbatimTextOutput('modelfitsum'))
           ),
-    helperButton(id = 'tab3help')
+    helperButton(id = 'tab3help'),
+    div(class="helper-box", style="display:none",
+      p('Add terms to the ergm formula by selecting them from the "terms" menu.', 
+        'The "Fitting" tab shows MCMC iterations (if any) and MLE coefficients,',
+        'while the "Summary" tab shows a comprehensive summary of the model fit.'))
           ),
 #' **Goodness of Fit**
 #' 
@@ -459,7 +463,12 @@ shinyUI(
                      column(7,
                             uiOutput('gofplotspace'),
                             downloadButton('gofplotdownload', label = 'Download Plots'))),
-                     helperButton(id = 'tab4help')
+                     helperButton(id = 'tab4help'),
+                     div(class="helper-box", style="display:none",
+                         p('Test how well your model fits the original data by choosing a network',
+                            'statistic that is not in the model, and comparing the value of this',
+                            'statistic observed in the original network to the distribution of values',
+                            'you get in simulated networks from your model.'))
                      ),
 #' **MCMC Diagnostics**
 #' 
@@ -488,6 +497,7 @@ shinyUI(
                         verbatimTextOutput('diagnostics'))
                      ),
                   helperButton(id = 'tab5help')
+  
             )
             ),
 #' **Simulations**
