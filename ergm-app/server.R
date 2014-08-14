@@ -107,7 +107,7 @@ nwreac <- reactive({
     } else if(input$filetype == 3){
       nw <- read.paj(paste(input$rawdatafile[1,4]))
     } else if(input$filetype == 4){
-      nw <- network(read.table(paste(input$rawdatamx[1,4])),
+      nw <- network(read.table(paste(input$rawdatafile[1,4])),
                     directed=input$dir, hyper=input$hyper, loops=input$loops,
                     multiple=input$multiple, bipartite=input$bipartite)
     }
