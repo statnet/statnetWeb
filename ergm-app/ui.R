@@ -128,7 +128,7 @@ shinyUI(
                      fluidRow(
                        column(5,
                               radioButtons('filetype',label=h5('File type'),
-                                           choices=c('statnet network object'=1,'.net file'=2,'.paj file'=3,
+                                           choices=c('statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
                                                      'matrix of relational data'=4))),
                        column(7,
                               br(),
@@ -156,7 +156,10 @@ shinyUI(
                            column(3,
                                   br(),
                                   textInput('objname', label = 'Name of object'))
-                       )
+                       ),
+                       conditionalPanel(condition='input.filetype == 3',
+                           column(4,
+                                  uiOutput('pajchooser')))
                      )
                      )
                    ),
@@ -174,7 +177,7 @@ shinyUI(
       ),
           
    column(4,br(),br(),
-           verbatimTextOutput('attr')
+           verbatimTextOutput('nwsum')
           )            
     ),
     fluidRow(column(4,            

@@ -105,7 +105,10 @@ nwreac <- reactive({
     } else if(input$filetype == 2){
       nw <- read.paj(paste(input$rawdatafile[1,4]))
     } else if(input$filetype == 3){
-      nw <- read.paj(paste(input$rawdatafile[1,4]))
+      nws <- read.paj(paste(input$rawdatafile[1,4]))
+      if(!is.null(pajnws())){
+        nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+      }
     } else if(input$filetype == 4){
       nw <- network(read.table(paste(input$rawdatafile[1,4])),
                     directed=input$dir, hyper=input$hyper, loops=input$loops,
@@ -114,6 +117,14 @@ nwreac <- reactive({
   }
     nw
 	})
+
+pajnws <- reactive({
+  nws <- NULL
+  if((input$filetype == 3) & (!is.null(input$rawdatafile))){
+    nws <- read.paj(paste(input$rawdatafile[1,4]))
+  }
+  nws
+})
 
 
 nwname <- reactive({input$rawdatafile[1,1]})
@@ -447,8 +458,18 @@ output$rawdatafile <- renderPrint({
   }
   write.table(raw, quote=FALSE, col.names=FALSE)})
 
+output$pajchooser <- renderUI({
+  pajlist <- 'None'
+  if(!is.null(pajnws())){
+    pajlist <- 1:length(pajnws()$networks)
+  names(pajlist) <- names(pajnws()$networks)
+  }
+  selectInput('choosepajnw', label='Choose a network from the Pajek project file',
+              choices = pajlist, selectize=FALSE)
+})
+
 #summary of network attributes
-output$attr <- renderPrint({
+output$nwsum <- renderPrint({
   if (is.null(nwreac())){
     return(cat('NA'))
   }
