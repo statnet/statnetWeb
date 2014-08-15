@@ -168,7 +168,7 @@ shinyUI(
                      fluidRow(
                       
                        column(3,
-                              br()
+                              uiOutput('nwattrchooser')
                               )
                      ))
                    ))

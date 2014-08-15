@@ -92,6 +92,35 @@ shinyServer(
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
+#this reactive expression is only to get the initial values of the network
+nwinit <- reactive({
+  #input$rawdatafile comes as a dataframe with name, size, type and datapath
+  #datapath is stored in 4th column of dataframe
+  #network creates a network object from the input file
+  if(is.null(input$rawdatafile)){
+    nw <- NULL
+  } else {
+    if(input$filetype == 1){
+      load(paste(input$rawdatafile[1,4]))
+      nw <- get(input$objname)
+    } else if(input$filetype == 2){
+      nw <- read.paj(paste(input$rawdatafile[1,4]))
+    } else if(input$filetype == 3){
+      nws <- read.paj(paste(input$rawdatafile[1,4]))
+      if(!is.null(pajnws())){
+        nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+      }
+    } else if(input$filetype == 4){
+      nw <- network(read.table(paste(input$rawdatafile[1,4])),
+                    directed=input$dir, hyper=input$hyper, loops=input$loops,
+                    multiple=input$multiple, bipartite=input$bipartite)
+    }
+  }
+  nw
+})
+
+#this reactive expression will be used throughout the app
+#changes made on the "Edit Network" tab will affect this nw
 nwreac <- reactive({
     #input$rawdatafile comes as a dataframe with name, size, type and datapath
     #datapath is stored in 4th column of dataframe
@@ -114,10 +143,16 @@ nwreac <- reactive({
                     directed=input$dir, hyper=input$hyper, loops=input$loops,
                     multiple=input$multiple, bipartite=input$bipartite)
     }
+    set.network.attribute(nw,'directed',any(input$nwattr=='directed'))
+    set.network.attribute(nw,'hyper',any(input$nwattr=='hyper'))
+    set.network.attribute(nw,'loops',any(input$nwattr=='loops'))
+    set.network.attribute(nw,'multiple',any(input$nwattr=='multiple'))
+    set.network.attribute(nw,'bipartite',any(input$nwattr=='bipartite'))
   }
     nw
 	})
 
+#list of everything in the Pajek project
 pajnws <- reactive({
   nws <- NULL
   if((input$filetype == 3) & (!is.null(input$rawdatafile))){
@@ -126,9 +161,7 @@ pajnws <- reactive({
   nws
 })
 
-
 nwname <- reactive({input$rawdatafile[1,1]})
-
 
 #number of nodes in nw
 nodes <- reactive({
@@ -136,6 +169,11 @@ nodes <- reactive({
 #get coordinates to plot network with
 coords <- reactive({
 		plot.network(nwreac())})
+
+nwattrinit <- reactive({
+  nwattributes <- c('directed','hyper','loops','multiple','bipartite')
+  unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
+})
 
 #list of vertex attributes in nw
 attr <- reactive({
@@ -466,6 +504,15 @@ output$pajchooser <- renderUI({
   }
   selectInput('choosepajnw', label='Choose a network from the Pajek project file',
               choices = pajlist, selectize=FALSE)
+})
+
+output$nwattrchooser <- renderUI({
+  if(is.null(nwattrinit())){
+    return()
+  }
+  checkboxGroupInput('nwattr', label='Network Attributes',
+                     choices=c('directed','hyper','loops','multiple','bipartite'),
+                     selected=which(nwattrinit()))
 })
 
 #summary of network attributes
