@@ -148,6 +148,15 @@ nwreac <- reactive({
     set.network.attribute(nw,'loops',any(input$nwattr=='loops'))
     set.network.attribute(nw,'multiple',any(input$nwattr=='multiple'))
     set.network.attribute(nw,'bipartite',any(input$nwattr=='bipartite'))
+    if(input$delnwattr != ""){
+      delete.network.attribute(nw,input$delnwattr)
+    }
+    if(input$delvattr != ""){
+      delete.vertex.attribute(nw,input$delvattr)
+    }
+    if(input$deleattr != ""){
+      delete.edge.attribute(nw,input$deleattr)
+    }
   }
     nw
 	})
@@ -510,7 +519,7 @@ output$nwattrchooser <- renderUI({
   if(is.null(nwattrinit())){
     return()
   }
-  checkboxGroupInput('nwattr', label='Network Attributes',
+  checkboxGroupInput('nwattr', label=strong('Change Network Attributes'),
                      choices=c('directed','hyper','loops','multiple','bipartite'),
                      selected=which(nwattrinit()))
 })

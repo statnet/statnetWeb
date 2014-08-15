@@ -167,9 +167,13 @@ shinyUI(
                    wellPanel(
                      fluidRow(
                       
-                       column(3,
+                       column(4,
                               uiOutput('nwattrchooser')
-                              )
+                              ),
+                       column(4,strong('Delete Attributes'),
+                              textInput('delnwattr',label='Network attributes'),
+                              textInput('delvattr', label='Vertex attributes'),
+                              textInput('deleattr', label='Edge attributes'))
                      ))
                    ))
 
