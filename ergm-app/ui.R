@@ -137,13 +137,14 @@ shinyUI(
                        ),
                      fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
-                           column(3,
+                           h5('Specify'),
+                           column(4,
                                   br(),
                                   radioButtons('matrixtype', label='Choose Matrix Type',
                                                choices=c('Adjacency matrix', 
                                                          'Bipartite adjacency matrix',
                                                          'Incidence matrix', 'Edge list'))),
-                           column(3,
+                           column(4,
                                   br(),
                                   span('Choose Network Attributes'),
                                   checkboxInput('dir', 'directed?', value=TRUE),
@@ -153,11 +154,13 @@ shinyUI(
                                   checkboxInput('bipartite', 'bipartite?', value=FALSE))
                        ),
                        conditionalPanel(condition='input.filetype == 1',
+                           h5('Specify'),
                            column(3,
                                   br(),
                                   textInput('objname', label = 'Name of object'))
                        ),
                        conditionalPanel(condition='input.filetype == 3',
+                           h5('Specify'),
                            column(4,
                                   uiOutput('pajchooser')))
                      )

@@ -128,26 +128,37 @@ nwreac <- reactive({
   if(is.null(input$rawdatafile)){
 		nw <- NULL
   } else {
+    filepath <- input$rawdatafile[1,4]
+    filename <- input$rawdatafile[1,1]
     if(input$filetype == 1){
-      load(paste(input$rawdatafile[1,4]))
-      nw <- get(input$objname)
+      load(paste(filepath))
+      nw <- "Input network object name (may not be the same as file name)"
+      try(nw <- get(input$objname))
     } else if(input$filetype == 2){
-      nw <- read.paj(paste(input$rawdatafile[1,4]))
+      nw <- "Upload a .net file"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".net"){
+        nw <- read.paj(paste(filepath))
+      }
     } else if(input$filetype == 3){
-      nws <- read.paj(paste(input$rawdatafile[1,4]))
-      if(!is.null(pajnws())){
-        nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+      nw <- "Upload a .paj file"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
+        nws <- read.paj(paste(filepath))
+        if(!is.null(pajnws())){
+          nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+        }
       }
     } else if(input$filetype == 4){
-      nw <- network(read.table(paste(input$rawdatafile[1,4])),
+      nw <- network(read.table(paste(filepath)),
                     directed=input$dir, hyper=input$hyper, loops=input$loops,
                     multiple=input$multiple, bipartite=input$bipartite)
     }
-    set.network.attribute(nw,'directed',any(input$nwattr=='directed'))
-    set.network.attribute(nw,'hyper',any(input$nwattr=='hyper'))
-    set.network.attribute(nw,'loops',any(input$nwattr=='loops'))
-    set.network.attribute(nw,'multiple',any(input$nwattr=='multiple'))
-    set.network.attribute(nw,'bipartite',any(input$nwattr=='bipartite'))
+    if (class(nw)=="network"){
+      set.network.attribute(nw,'directed',any(input$nwattr=='directed'))
+      set.network.attribute(nw,'hyper',any(input$nwattr=='hyper'))
+      set.network.attribute(nw,'loops',any(input$nwattr=='loops'))
+      set.network.attribute(nw,'multiple',any(input$nwattr=='multiple'))
+      set.network.attribute(nw,'bipartite',any(input$nwattr=='bipartite'))
+    }
     if(input$delnwattr != ""){
       delete.network.attribute(nw,input$delnwattr)
     }
@@ -530,6 +541,9 @@ output$nwsum <- renderPrint({
     return(cat('NA'))
   }
   nw <- nwreac()
+  if (class(nw)!="network"){
+    return(cat(nw))
+  }
   return(nw)
 })
 
