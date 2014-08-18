@@ -131,8 +131,13 @@ nwreac <- reactive({
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
     if(input$filetype == 1){
-      load(paste(filepath))
-      nw <- "Input network object name (may not be the same as file name)"
+      nw <- tryCatch({
+        load(paste(filepath))
+        nw <- "Input network object name (may not be the same as file name)"
+        }, error = function(err){
+          return("Chosen file is not an R object")
+        }, finally = NULL
+        )
       try(nw <- get(input$objname))
     } else if(input$filetype == 2){
       nw <- "Upload a .net file"
