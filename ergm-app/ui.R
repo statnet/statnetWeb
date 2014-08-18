@@ -173,6 +173,16 @@ shinyUI(
                        column(4,
                               uiOutput('nwattrchooser')
                               ),
+                       column(4,strong('Set New Attribute'),
+                              radioButtons('newattrtype', label='Choose attribute type',
+                                           choices=c('vertex attribute',
+                                                   'edge attribute',
+                                                   'edge value')),
+                              fileInput(inputId='newattrvalue', label=span('Upload a vector or list of attribute',
+                                'values, or a matrix of edge values.')),
+                              textInput('newattrname', label="New attribute name"),
+                              actionButton('newattrButton', label='Set Attribute')
+                              ),
                        column(4,strong('Delete Attributes'),
                               textInput('delnwattr',label='Network attributes'),
                               textInput('delvattr', label='Vertex attributes'),

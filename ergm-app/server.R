@@ -166,7 +166,7 @@ nwreac <- reactive({
       set.network.attribute(nw,'loops',any(input$nwattr=='loops'))
       set.network.attribute(nw,'multiple',any(input$nwattr=='multiple'))
       set.network.attribute(nw,'bipartite',any(input$nwattr=='bipartite'))
-    }
+    #delete attributes
     if(input$delnwattr != ""){
       delete.network.attribute(nw,input$delnwattr)
     }
@@ -176,9 +176,30 @@ nwreac <- reactive({
     if(input$deleattr != ""){
       delete.edge.attribute(nw,input$deleattr)
     }
+    
+    
+    }
   }
     nw
 	})
+
+#set new attributes
+observe({
+  input$newattrButton
+  if(!is.null(input$rawdatafile) & class(nwreac())=="network" & input$newattrButton != 0){
+    isolate({
+      value <- input$newattrvalue
+      name <- input$newattrname
+      if(input$newattrtype == "vertex attribute"){
+        set.vertex.attribute(nwreac(),name,value)
+      } else if(input$newattrtype == "edge attribute"){
+        set.edge.attribute(nwreac(),name, value)
+      } else if(input$newattrtype == "edge value"){
+        set.edge.value(nwreac(),name,value)
+      }
+      })
+  }
+})
 
 #list of everything in the Pajek project
 pajnws <- reactive({
