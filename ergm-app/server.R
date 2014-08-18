@@ -133,7 +133,7 @@ nwreac <- reactive({
     if(input$filetype == 1){
       nw <- tryCatch({
         load(paste(filepath))
-        nw <- "Input network object name (may not be the same as file name)"
+        nw <- "Input network object name (may be different from file name)"
         }, error = function(err){
           return("Chosen file is not an R object")
         }, finally = NULL
@@ -153,9 +153,12 @@ nwreac <- reactive({
         }
       }
     } else if(input$filetype == 4){
-      nw <- network(read.table(paste(filepath)),
-                    directed=input$dir, hyper=input$hyper, loops=input$loops,
-                    multiple=input$multiple, bipartite=input$bipartite)
+      nw <- "Input the specified type of matrix"
+      try(nw <- network(read.table(paste(filepath)),
+                  directed=input$dir, hyper=input$hyper, loops=input$loops,
+                  multiple=input$multiple, bipartite=input$bipartite))
+      
+      
     }
     if (class(nw)=="network"){
       set.network.attribute(nw,'directed',any(input$nwattr=='directed'))
