@@ -141,7 +141,8 @@ nwreac <- reactive({
       try(nw <- get(input$objname))
     } else if(input$filetype == 2){
       nw <- "Upload a .net file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".net"){
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
+           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
         nw <- read.paj(paste(filepath))
       }
     } else if(input$filetype == 3){
@@ -161,11 +162,9 @@ nwreac <- reactive({
       
     }
     if (class(nw)=="network"){
-      set.network.attribute(nw,'directed',any(input$nwattr=='directed'))
-      set.network.attribute(nw,'hyper',any(input$nwattr=='hyper'))
-      set.network.attribute(nw,'loops',any(input$nwattr=='loops'))
-      set.network.attribute(nw,'multiple',any(input$nwattr=='multiple'))
-      set.network.attribute(nw,'bipartite',any(input$nwattr=='bipartite'))
+      
+
+      
     #delete attributes
     if(input$delnwattr != ""){
       delete.network.attribute(nw,input$delnwattr)
@@ -182,6 +181,17 @@ nwreac <- reactive({
   }
     nw
 	})
+
+#edit nw attributes
+observe({
+  if(!is.null(input$rawdatafile) & class(nwreac())=="network" & !is.null(input$nwattr)){
+    set.network.attribute(nwreac(),'directed',any(input$nwattr==1))
+    set.network.attribute(nwreac(),'hyper',any(input$nwattr==2))
+    set.network.attribute(nwreac(),'loops',any(input$nwattr==3))
+    set.network.attribute(nwreac(),'multiple',any(input$nwattr==4))
+    set.network.attribute(nwreac(),'bipartite',any(input$nwattr==5))
+  }
+})
 
 #set new attributes
 observe({
@@ -221,7 +231,13 @@ coords <- reactive({
 
 nwattrinit <- reactive({
   nwattributes <- c('directed','hyper','loops','multiple','bipartite')
-  unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
+#   unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
+  d <- get.network.attribute(nwinit(),'directed')
+  h <- get.network.attribute(nwinit(),'hyper')
+  l <- get.network.attribute(nwinit(),'loops')
+  m <- get.network.attribute(nwinit(),'multiple')
+  b <- get.network.attribute(nwinit(),'bipartite')
+  return(c(d,h,l,m,b))
 })
 
 #list of vertex attributes in nw
@@ -560,7 +576,7 @@ output$nwattrchooser <- renderUI({
     return()
   }
   checkboxGroupInput('nwattr', label=strong('Change Network Attributes'),
-                     choices=c('directed','hyper','loops','multiple','bipartite'),
+                     choices=c('directed'=1,'hyper'=2,'loops'=3,'multiple'=4,'bipartite'=5),
                      selected=which(nwattrinit()))
 })
 
