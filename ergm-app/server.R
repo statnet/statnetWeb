@@ -92,6 +92,7 @@ shinyServer(
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
+values <- reactiveValues()
 #this reactive expression is only to get the initial values of the network
 nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
@@ -118,6 +119,7 @@ nwinit <- reactive({
   }
   nw
 })
+
 
 #this reactive expression will be used throughout the app
 #changes made on the "Edit Network" tab will affect this nw
@@ -162,9 +164,27 @@ nwreac <- reactive({
       
     }
     if (class(nw)=="network"){
-      
-
-      
+      set.network.attribute(nw,'directed',any(input$nwattr==1))
+      set.network.attribute(nw,'hyper',any(input$nwattr==2))
+      set.network.attribute(nw,'loops',any(input$nwattr==3))
+      set.network.attribute(nw,'multiple',any(input$nwattr==4))
+      set.network.attribute(nw,'bipartite',any(input$nwattr==5))
+    
+    #set new attrs
+    if(input$newattrButton != 0){
+      isolate({
+        value <- input$newattrvalue
+        name <- input$newattrname
+        if(input$newattrtype == "vertex attribute"){
+          set.vertex.attribute(nw,name,value)
+        } else if(input$newattrtype == "edge attribute"){
+          set.edge.attribute(nw,name, value)
+        } else if(input$newattrtype == "edge value"){
+          set.edge.value(nw,name,value)
+        }
+      })
+    }
+    
     #delete attributes
     if(input$delnwattr != ""){
       delete.network.attribute(nw,input$delnwattr)
@@ -176,40 +196,12 @@ nwreac <- reactive({
       delete.edge.attribute(nw,input$deleattr)
     }
     
-    
     }
   }
     nw
 	})
 
-#edit nw attributes
-observe({
-  if(!is.null(input$rawdatafile) & class(nwreac())=="network" & !is.null(input$nwattr)){
-    set.network.attribute(nwreac(),'directed',any(input$nwattr==1))
-    set.network.attribute(nwreac(),'hyper',any(input$nwattr==2))
-    set.network.attribute(nwreac(),'loops',any(input$nwattr==3))
-    set.network.attribute(nwreac(),'multiple',any(input$nwattr==4))
-    set.network.attribute(nwreac(),'bipartite',any(input$nwattr==5))
-  }
-})
 
-#set new attributes
-observe({
-  input$newattrButton
-  if(!is.null(input$rawdatafile) & class(nwreac())=="network" & input$newattrButton != 0){
-    isolate({
-      value <- input$newattrvalue
-      name <- input$newattrname
-      if(input$newattrtype == "vertex attribute"){
-        set.vertex.attribute(nwreac(),name,value)
-      } else if(input$newattrtype == "edge attribute"){
-        set.edge.attribute(nwreac(),name, value)
-      } else if(input$newattrtype == "edge value"){
-        set.edge.value(nwreac(),name,value)
-      }
-      })
-  }
-})
 
 #list of everything in the Pajek project
 pajnws <- reactive({
@@ -579,6 +571,9 @@ output$nwattrchooser <- renderUI({
                      choices=c('directed'=1,'hyper'=2,'loops'=3,'multiple'=4,'bipartite'=5),
                      selected=which(nwattrinit()))
 })
+#allow the checkboxes to update even when hidden so that network 
+#attributes stay current
+outputOptions(output,'nwattrchooser',suspendWhenHidden=FALSE)
 
 #summary of network attributes
 output$nwsum <- renderPrint({
