@@ -686,10 +686,13 @@ dd_plotdata <- reactive({
   } else {
     diag <- FALSE
   }
-  data <-table(degree(nwreac(), gmode=gmode, cmode=input$cmode, diag=diag,
-                      rescale=input$rescale))
+  deg <- degree(nwreac(), gmode=gmode, cmode=input$cmode, diag=diag)
+  data <-tabulate(deg)
+  data <- append(data,sum(deg==0),after=0)
+  maxdeg <- max(deg)
+  names(data) <- paste(0:maxdeg)
   #for color-coded bars
-  maxdeg <- max(as.numeric(names(table(degree(nwreac(), gmode=gmode)))))
+  
   if(input$colorby_dd != "None"){
     if(is.directed(nwreac())){
       if(input$cmode=='indegree'){

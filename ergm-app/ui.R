@@ -253,10 +253,6 @@ shinyUI(
                    wellPanel(
                      fluidRow(h5('Display Options')),
                      fluidRow(column(3,
-                                     checkboxInput('rescale',
-                                                   label = 'Rescale?', 
-                                                   value = FALSE)),
-                              column(3,
                                      selectInput('cmode', 
                                                  label = 'Type of degree centrality',
                                                  choices= c('indegree','outdegree',
