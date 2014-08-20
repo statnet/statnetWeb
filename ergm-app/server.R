@@ -741,8 +741,46 @@ output$degreedistdownload <- downloadHandler(
     barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
             args.legend=legtitle, col=color) 
     dev.off()
-  })
+})
 
+#MIXING MATRIX
+output$mixmxchooser <- renderUI({
+  selectInput('mixmx', label='Choose attribute',
+              choices = menuattr(), selectize = FALSE)
+})
+
+output$mixingmatrix <- renderPrint({
+  mixingmatrix(nwreac(), input$mixmx)
+})
+
+output$gden <- renderText({
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  paste('Density: ',gden(nwreac(), diag=has.loops(nwreac()), mode=gmode))
+})
+
+output$grecip <- renderText({
+  if(input$grecipmeas == ''){
+    return('Reciprocity:')
+  }
+  paste('Reciprocity: ',grecip(nwreac(), measure=input$grecipmeas))
+})
+
+output$gtrans <- renderText({
+  if(input$gtransmeas == ''){
+    return('Transitivity:')
+  }
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  paste('Transitivity: ',gtrans(nwreac(), diag=has.loops(nwreac()), mode=gmode,
+         measure=input$gtransmeas))
+})
 #' **Fit Model**
 #' 
 #' The user is only allowed to change the dataset on the first tab; on the

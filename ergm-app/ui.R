@@ -264,7 +264,34 @@ shinyUI(
                               br(),
                               column(3,
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
-          tabPanel('Mixing Matrix')
+          tabPanel('More',
+                   h5('Mixing Matrix'),
+                   uiOutput('mixmxchooser'),
+                   verbatimTextOutput('mixingmatrix'),
+                   h5('Graph-level descriptive indices'),
+                   wellPanel(fluidRow(
+                     column(6,
+                        span(
+                         textOutput('gden'),
+                         br(),
+                         textOutput('grecip'),
+                         br(),
+                         textOutput('gtrans'), style='font-family:Courier')), 
+                     column(6,
+                          br(),
+                          br(),
+                          selectInput('grecipmeas',label=NULL,
+                               choices=c('Choose reciprocity measure'='','dyadic','dyadic.nonnull','edgewise',
+                                         'edgewise.lrr','correlation'),
+                               selectize=FALSE),
+                          br(),
+                          selectInput('gtransmeas',label=NULL,
+                               choices=c('Choose transitivity measure'='','weak','strong','weakcensus',
+                                         'strongcensus','rank','correlation'),
+                               selectize=FALSE))
+                   )),
+                   
+                   h5('Node-level descriptive indices'))
           )),
      column(4,
             br(),br(),
