@@ -64,6 +64,15 @@ customTextInput<-function (inputId, label, value="",...) {
     tags$input(id = inputId, type="text", value=value,...))
 }
 
+#version of selectInput...shorter box and label inline
+#lapply allows us to add each element of choices as an option in the select menu
+inlineSelectInput<-function (inputId, label, choices,...) {
+  tagList(
+    tags$label(label, `for` = inputId, style="display:inline"), 
+    tags$select(id = inputId, choices=choices,..., style="width:100px",
+                class="shiny-bound-input",
+                lapply(choices, tags$option)))
+}
 
 
 # This function generates the client-side HTML for a helper button
@@ -280,13 +289,13 @@ shinyUI(
                      column(6,
                           br(),
                           br(),
-                          selectInput('grecipmeas',label=NULL,
-                               choices=c('Choose reciprocity measure'='','dyadic','dyadic.nonnull','edgewise',
+                          inlineSelectInput('grecipmeas',label='Reciprocity measure',
+                               choices=c('dyadic','dyadic.nonnull','edgewise',
                                          'edgewise.lrr','correlation'),
                                selectize=FALSE),
                           br(),
-                          selectInput('gtransmeas',label=NULL,
-                               choices=c('Choose transitivity measure'='','weak','strong','weakcensus',
+                          inlineSelectInput('gtransmeas',label='Transitivity measure',
+                               choices=c('weak','strong','weakcensus',
                                          'strongcensus','rank','correlation'),
                                selectize=FALSE))
                    )),
