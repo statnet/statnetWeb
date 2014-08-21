@@ -40,3 +40,13 @@ div.helper-box {
   border-radius: 5px;
   z-index: 1;
 }
+
+.mixmxbox {
+  display:none
+}
+.graphlevelbox {
+  display:none
+}
+.nodelevelbox {
+  display:none
+}

@@ -275,12 +275,13 @@ shinyUI(
                               column(3,
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
           tabPanel('More',
-                   h5('Mixing Matrix'),
+                   h5('Mixing Matrix', class="mixmxtitle"),
                    wellPanel(
                      uiOutput('mixmxchooser'),
-                     verbatimTextOutput('mixingmatrix')
+                     verbatimTextOutput('mixingmatrix'),
+                     class="mixmxbox"
                    ),
-                   h5('Graph-level descriptive indices'),
+                   h5('Graph-level descriptive indices', class="graphleveltitle"),
                    wellPanel(fluidRow(
                      column(4,
                           br(),
@@ -310,9 +311,9 @@ shinyUI(
                                choices=c('weak','strong','weakcensus',
                                          'strongcensus','rank','correlation'),
                                selectize=FALSE))
-                   )),
+                   ), class="graphlevelbox"),
                    
-                   h5('Node-level descriptive indices'),
+                   h5('Node-level descriptive indices', class="nodeleveltitle"),
                    wellPanel(
                      numericInput('nodeind', label='Input node index',value=1,
                                 min=1),
@@ -367,7 +368,7 @@ shinyUI(
                                                         'lower'), style='margin-top:12px;')
                             )
                      
-                     ))
+                     ), class="nodelevelbox")
                    
                    
                    )

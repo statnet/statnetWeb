@@ -743,16 +743,20 @@ output$degreedistdownload <- downloadHandler(
     dev.off()
 })
 
-#MIXING MATRIX
+#MORE
+#since the visibility toggles between two states, set the options to 
+#not suspend the output when hidden
 output$mixmxchooser <- renderUI({
   selectInput('mixmx', label='Choose attribute',
               choices = menuattr(), selectize = FALSE)
 })
+outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
 output$mixingmatrix <- renderPrint({
   if(is.null(nwreac())) return()
   mixingmatrix(nwreac(), input$mixmx)
 })
+outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
 output$gden <- renderText({
   if(is.null(nwreac())) return()
@@ -763,6 +767,7 @@ output$gden <- renderText({
   }
   gden(nwreac(), diag=has.loops(nwreac()), mode=gmode)
 })
+outputOptions(output,'gden',suspendWhenHidden=FALSE)
 
 output$grecip <- renderText({
   if(is.null(nwreac())) return()
@@ -771,6 +776,7 @@ output$grecip <- renderText({
   }
   grecip(nwreac(), measure=input$grecipmeas)
 })
+outputOptions(output,'grecip',suspendWhenHidden=FALSE)
 
 output$gtrans <- renderText({
   if(is.null(nwreac())) return()
@@ -785,6 +791,7 @@ output$gtrans <- renderText({
   gtrans(nwreac(), diag=has.loops(nwreac()), mode=gmode,
          measure=input$gtransmeas)
 })
+outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
 
 output$ndeg <- renderText({
   if(is.null(nwreac())) return()
@@ -796,6 +803,7 @@ output$ndeg <- renderText({
   d <- degree(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
          cmode=input$ndegcmode)
 })
+outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
 output$nbetw <- renderText({
   if(is.null(nwreac())) return()
@@ -807,6 +815,7 @@ output$nbetw <- renderText({
   b <- betweenness(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
                    cmode=input$nbetwcmode)
 })
+outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
 
 output$nclose <- renderText({
   if(is.null(nwreac())) return()
@@ -818,6 +827,7 @@ output$nclose <- renderText({
   c <- closeness(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
                  cmode=input$nclosecmode)
 })
+outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
 output$nstress <- renderText({
   if(is.null(nwreac())) return()
@@ -829,6 +839,7 @@ output$nstress <- renderText({
   s <- stresscent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
                   cmode=input$nstresscmode)
 })
+outputOptions(output,'nstress',suspendWhenHidden=FALSE)
 
 output$ngraphcent <- renderText({
   if(is.null(nwreac())) return()
@@ -840,6 +851,7 @@ output$ngraphcent <- renderText({
   g <- graphcent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
                   cmode=input$ngraphcentcmode)
 })
+outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
 output$nevcent <- renderText({
   if(is.null(nwreac())) return()
@@ -850,6 +862,7 @@ output$nevcent <- renderText({
   }
   e <- evcent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()))
 })
+outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
 
 output$ninfocent <- renderText({
   if(is.null(nwreac())) return()
@@ -861,6 +874,7 @@ output$ninfocent <- renderText({
   i <- infocent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
                  cmode=input$ninfocentcmode)
 })
+outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
 
 #' **Fit Model**
 #' 
