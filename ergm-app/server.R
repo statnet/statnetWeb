@@ -750,10 +750,12 @@ output$mixmxchooser <- renderUI({
 })
 
 output$mixingmatrix <- renderPrint({
+  if(is.null(nwreac())) return()
   mixingmatrix(nwreac(), input$mixmx)
 })
 
 output$gden <- renderText({
+  if(is.null(nwreac())) return()
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -763,6 +765,7 @@ output$gden <- renderText({
 })
 
 output$grecip <- renderText({
+  if(is.null(nwreac())) return()
   if(input$grecipmeas == ''){
     return('Reciprocity:')
   }
@@ -770,6 +773,7 @@ output$grecip <- renderText({
 })
 
 output$gtrans <- renderText({
+  if(is.null(nwreac())) return()
   if(input$gtransmeas == ''){
     return('Transitivity:')
   }
