@@ -567,7 +567,7 @@ output$nwattrchooser <- renderUI({
   if(is.null(nwattrinit())){
     return()
   }
-  checkboxGroupInput('nwattr', label=strong('Change Network Attributes'),
+  checkboxGroupInput('nwattr', label='',
                      choices=c('directed'=1,'hyper'=2,'loops'=3,'multiple'=4,'bipartite'=5),
                      selected=which(nwattrinit()))
 })
