@@ -69,7 +69,8 @@ customTextInput<-function (inputId, label, value="",...) {
 inlineSelectInput<-function (inputId, label, choices,...) {
   tagList(
     tags$label(label, `for` = inputId, style="display:inline"), 
-    tags$select(id = inputId, choices=choices,..., style="width:100px",
+    tags$select(id = inputId, choices=choices,..., 
+                style="width:100px; line-height:20px; font-size:12px",
                 class="shiny-bound-input",
                 lapply(choices, tags$option)))
 }
@@ -300,7 +301,64 @@ shinyUI(
                                selectize=FALSE))
                    )),
                    
-                   h5('Node-level descriptive indices'))
+                   h5('Node-level descriptive indices'),
+                   wellPanel(
+                     numericInput('nodeind', label='Input node index',value=1,
+                                min=1),
+                     tags$hr(),
+                     fluidRow(
+                     column(4,
+                            span(
+                              br(),
+                              p('Degree:'),
+                              p('Betweenness:'),
+                              p('Closeness:'),
+                              p('Stress Centrality:'),
+                              p('(Harary) Graph Centrality:'),
+                              p('Eigenvector Centrality:'),
+                              p('Information Centrality:'),
+                              style='font-size:12px; line-height:20px; margin-botton:10px;')
+                            ),
+                     column(3,
+                        span(
+#                           br(),
+                          p(textOutput('ndeg')),
+                          p(textOutput('nbetw')),
+                          p(textOutput('nclose')),
+                          p(textOutput('nstress')),
+                          p(textOutput('ngraphcent')),
+                          p(textOutput('nevcent')),
+                          p(textOutput('ninfocent')),
+                          style='font-family:Courier; line-height:20px; margin-bottom:10px')
+                            ),
+                     column(5,
+                            tags$u('Type of centrality'),
+                            br(),
+                            inlineSelectInput('ndegcmode', label=NULL,
+                                              choices=c('indegree', 'outdegree', 'freeman')),
+                            inlineSelectInput('nbetwcmode', label=NULL,
+                                              choices=c('directed','undirected',
+                                                        'endpoints','proximalsrc',
+                                                        'proximaltar','proximalsum',
+                                                        'lengthscaled', 'linearscaled')),
+                            inlineSelectInput('nclosecmode', label=NULL,
+                                              choices=c('directed','undirected',
+                                                        'suminvdir','suminvundir',
+                                                        'gil-schmidt')),
+                            inlineSelectInput('nstresscmode', label=NULL,
+                                              choices=c('directed','undirected')),
+                            inlineSelectInput('ngraphcentcmode', label=NULL,
+                                              choices=c('directed', 'undirected')),
+                            br(),br(),
+                            inlineSelectInput('ninfocentcmode',label=NULL,
+                                              choices=c('weak', 'strong', 'upper',
+                                                        'lower'))
+                            )
+                     
+                     ))
+                   
+                   
+                   )
           )),
      column(4,
             br(),br(),

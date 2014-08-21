@@ -785,6 +785,83 @@ output$gtrans <- renderText({
   paste('Transitivity: ',gtrans(nwreac(), diag=has.loops(nwreac()), mode=gmode,
          measure=input$gtransmeas))
 })
+
+output$ndeg <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- degree(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+         cmode=input$ndegcmode)
+})
+
+output$nbetw <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- betweenness(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+                   cmode=input$nbetwcmode)
+})
+
+output$nclose <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- closeness(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+                 cmode=input$nclosecmode)
+})
+
+output$nstress <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- stresscent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+                  cmode=input$nstresscmode)
+})
+
+output$ngraphcent <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- graphcent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+                  cmode=input$ngraphcentcmode)
+})
+
+output$nevcent <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- evcent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()))
+})
+
+output$ninfocent <- renderText({
+  if(is.null(nwreac())) return()
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i <- infocent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+                 cmode=input$ninfocentcmode)
+})
+
 #' **Fit Model**
 #' 
 #' The user is only allowed to change the dataset on the first tab; on the
