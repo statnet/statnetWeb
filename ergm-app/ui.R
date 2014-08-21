@@ -276,26 +276,37 @@ shinyUI(
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
           tabPanel('More',
                    h5('Mixing Matrix'),
-                   uiOutput('mixmxchooser'),
-                   verbatimTextOutput('mixingmatrix'),
+                   wellPanel(
+                     uiOutput('mixmxchooser'),
+                     verbatimTextOutput('mixingmatrix')
+                   ),
                    h5('Graph-level descriptive indices'),
                    wellPanel(fluidRow(
-                     column(6,
+                     column(4,
+                          br(),
+                          span(
+                            p('Reciprocity:',style='padding-top:8px'),
+                            p('Transitivity:'),
+                            p('Density:'),
+                            style='font-size:12px; line-height:26px; margin-top:10px;')
+                        ),
+                     column(3,
                         span(
-                         textOutput('gden'),
-                         br(),
-                         textOutput('grecip'),
-                         br(),
-                         textOutput('gtrans'), style='font-family:Courier')), 
-                     column(6,
+                         #br(),
+                         p(textOutput('grecip'), style='padding-top:16px'),
+                         p(textOutput('gtrans')), 
+                         p(textOutput('gden')),
+                         style='font-family:Courier; line-height:27px; margin-top:10px;')
+                            ),
+                     column(5,
+                          tags$u('Measure'),
                           br(),
-                          br(),
-                          inlineSelectInput('grecipmeas',label='Reciprocity measure',
+                          inlineSelectInput('grecipmeas',label=NULL,
                                choices=c('dyadic','dyadic.nonnull','edgewise',
                                          'edgewise.lrr','correlation'),
-                               selectize=FALSE),
+                               selectize=FALSE, style='margin-top:5px;'),
                           br(),
-                          inlineSelectInput('gtransmeas',label='Transitivity measure',
+                          inlineSelectInput('gtransmeas',label=NULL,
                                choices=c('weak','strong','weakcensus',
                                          'strongcensus','rank','correlation'),
                                selectize=FALSE))
@@ -310,18 +321,18 @@ shinyUI(
                      column(4,
                             span(
                               br(),
-                              p('Degree:'),
+                              p('Degree:',style='padding-top:10px;'),
                               p('Betweenness:'),
                               p('Closeness:'),
                               p('Stress Centrality:'),
                               p('(Harary) Graph Centrality:'),
                               p('Eigenvector Centrality:'),
                               p('Information Centrality:'),
-                              style='font-size:12px; line-height:20px; margin-botton:10px;')
+                              style='font-size:12px; line-height:24px; margin-top:10px;')
                             ),
                      column(3,
-                        span(
-#                           br(),
+                        br(),
+                          span(
                           p(textOutput('ndeg')),
                           p(textOutput('nbetw')),
                           p(textOutput('nclose')),
@@ -329,30 +340,31 @@ shinyUI(
                           p(textOutput('ngraphcent')),
                           p(textOutput('nevcent')),
                           p(textOutput('ninfocent')),
-                          style='font-family:Courier; line-height:20px; margin-bottom:10px')
+                          style='font-family:Courier; line-height:25px;')
                             ),
                      column(5,
-                            tags$u('Type of centrality'),
+                            tags$u('Centrality mode'),
                             br(),
                             inlineSelectInput('ndegcmode', label=NULL,
-                                              choices=c('indegree', 'outdegree', 'freeman')),
+                                              choices=c('indegree', 'outdegree', 'freeman'),
+                                              style='margin-top:5px;'),br(),
                             inlineSelectInput('nbetwcmode', label=NULL,
                                               choices=c('directed','undirected',
                                                         'endpoints','proximalsrc',
                                                         'proximaltar','proximalsum',
-                                                        'lengthscaled', 'linearscaled')),
+                                                        'lengthscaled', 'linearscaled')),br(),
                             inlineSelectInput('nclosecmode', label=NULL,
                                               choices=c('directed','undirected',
                                                         'suminvdir','suminvundir',
-                                                        'gil-schmidt')),
+                                                        'gil-schmidt')),br(),
                             inlineSelectInput('nstresscmode', label=NULL,
-                                              choices=c('directed','undirected')),
+                                              choices=c('directed','undirected')),br(),
                             inlineSelectInput('ngraphcentcmode', label=NULL,
                                               choices=c('directed', 'undirected')),
                             br(),br(),
                             inlineSelectInput('ninfocentcmode',label=NULL,
                                               choices=c('weak', 'strong', 'upper',
-                                                        'lower'))
+                                                        'lower'), style='margin-top:12px;')
                             )
                      
                      ))

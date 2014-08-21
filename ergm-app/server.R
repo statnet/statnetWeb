@@ -761,7 +761,7 @@ output$gden <- renderText({
   } else {
     gmode <- 'graph'
   }
-  paste('Density: ',gden(nwreac(), diag=has.loops(nwreac()), mode=gmode))
+  gden(nwreac(), diag=has.loops(nwreac()), mode=gmode)
 })
 
 output$grecip <- renderText({
@@ -769,7 +769,7 @@ output$grecip <- renderText({
   if(input$grecipmeas == ''){
     return('Reciprocity:')
   }
-  paste('Reciprocity: ',grecip(nwreac(), measure=input$grecipmeas))
+  grecip(nwreac(), measure=input$grecipmeas)
 })
 
 output$gtrans <- renderText({
@@ -782,8 +782,8 @@ output$gtrans <- renderText({
   } else {
     gmode <- 'graph'
   }
-  paste('Transitivity: ',gtrans(nwreac(), diag=has.loops(nwreac()), mode=gmode,
-         measure=input$gtransmeas))
+  gtrans(nwreac(), diag=has.loops(nwreac()), mode=gmode,
+         measure=input$gtransmeas)
 })
 
 output$ndeg <- renderText({
