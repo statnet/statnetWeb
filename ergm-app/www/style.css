@@ -42,11 +42,21 @@ div.helper-box {
 }
 
 .mixmxbox {
-  display:none
+  display:none;
 }
 .graphlevelbox {
-  display:none
+  display:none;
 }
 .nodelevelbox {
-  display:none
+  display:none;
+}
+
+.mixmxtitle {
+  cursor:pointer;
+}
+.graphleveltitle {
+  cursor:pointer;
+}
+.nodeleveltitle {
+  cursor:pointer;
 }

@@ -150,14 +150,15 @@ shinyUI(
                            h5('Specify'),
                            column(4,
                                   br(),
-                                  radioButtons('matrixtype', label='Choose Matrix Type',
+                                  radioButtons('matrixtype', label='Matrix Type',
                                                choices=c('Adjacency matrix', 
                                                          'Bipartite adjacency matrix',
                                                          'Incidence matrix', 'Edge list'))),
-                           column(4,
+                           column(6,
                                   br(),
-                                  span('Choose Network Attributes'),
-                                  checkboxInput('dir', 'directed?', value=TRUE),
+                                  span('Network Attributes'),
+                                  div(checkboxInput('dir', 'directed?', value=TRUE),
+                                       style='padding-top:5px;'),
                                   checkboxInput('hyper', 'hyper?', value=FALSE),
                                   checkboxInput('loops', 'loops?', value=FALSE),
                                   checkboxInput('multiple', 'multiple?', value=FALSE),
@@ -165,13 +166,13 @@ shinyUI(
                        ),
                        conditionalPanel(condition='input.filetype == 1',
                            h5('Specify'),
-                           column(3,
+                           column(6,
                                   br(),
                                   textInput('objname', label = 'Name of object'))
                        ),
                        conditionalPanel(condition='input.filetype == 3',
                            h5('Specify'),
-                           column(4,
+                           column(6,
                                   uiOutput('pajchooser')))
                      )
                      )
@@ -180,10 +181,14 @@ shinyUI(
                    wellPanel(
                      fluidRow(
                       
-                       column(4,strong('Change Network Attributes'),
+                       column(3,strong('Edit Network Attributes'),
                               uiOutput('nwattrchooser')
                               ),
-                       column(4,strong('Set New Attribute'),
+                       column(3,strong('Delete Attributes'),
+                              customTextInput('delnwattr',label='Network attributes',class='input-small'),
+                              customTextInput('delvattr', label='Vertex attributes',class='input-small'),
+                              customTextInput('deleattr', label='Edge attributes',class='input-small')),
+                       column(5,strong('Set New Attribute'),
                               radioButtons('newattrtype', label='Choose attribute type',
                                            choices=c('vertex attribute',
                                                    'edge attribute',
@@ -192,11 +197,8 @@ shinyUI(
                                 'values, or a matrix of edge values.')),
                               textInput('newattrname', label="New attribute name"),
                               actionButton('newattrButton', label='Set Attribute')
-                              ),
-                       column(4,strong('Delete Attributes'),
-                              textInput('delnwattr',label='Network attributes'),
-                              textInput('delvattr', label='Vertex attributes'),
-                              textInput('deleattr', label='Edge attributes'))
+                              )
+                       
                      ))
                    ))
 

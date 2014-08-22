@@ -207,7 +207,10 @@ nwreac <- reactive({
 pajnws <- reactive({
   nws <- NULL
   if((input$filetype == 3) & (!is.null(input$rawdatafile))){
+    filename <- input$rawdatafile[1,1]
+    if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
     nws <- read.paj(paste(input$rawdatafile[1,4]))
+    }
   }
   nws
 })
@@ -559,7 +562,7 @@ output$pajchooser <- renderUI({
     pajlist <- 1:length(pajnws()$networks)
   names(pajlist) <- names(pajnws()$networks)
   }
-  selectInput('choosepajnw', label='Choose a network from the Pajek project file',
+  selectInput('choosepajnw', label='Upload a Pajek project file and choose a network from it',
               choices = pajlist, selectize=FALSE)
 })
 
@@ -688,7 +691,7 @@ dd_plotdata <- reactive({
   names(data) <- paste(0:maxdeg)
   #for color-coded bars
   
-  if(input$colorby_dd != "None"){
+  if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
     if(is.directed(nwreac())){
       if(input$cmode=='indegree'){
         data <- summary(nwreac() ~ idegree(0:maxdeg, input$colorby_dd))
