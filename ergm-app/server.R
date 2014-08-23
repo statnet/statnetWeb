@@ -60,9 +60,12 @@ library(RColorBrewer)
 
 data(faux.mesa.high)
 
+
 shinyServer(
   function(input, output, session){
     
+assign("attrNameToAdd", value='new')
+assign("attrValToAdd", value=c(1:10))    
     
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
@@ -170,31 +173,34 @@ nwreac <- reactive({
       set.network.attribute(nw,'multiple',any(input$nwattr==4))
       set.network.attribute(nw,'bipartite',any(input$nwattr==5))
     
-    #set new attrs
-    if(input$newattrButton != 0){
-      isolate({
-        value <- input$newattrvalue
-        name <- input$newattrname
-        if(input$newattrtype == "vertex attribute"){
-          set.vertex.attribute(nw,name,value)
-        } else if(input$newattrtype == "edge attribute"){
-          set.edge.attribute(nw,name, value)
-        } else if(input$newattrtype == "edge value"){
-          set.edge.value(nw,name,value)
-        }
-      })
-    }
-    
-    #delete attributes
-    if(input$delnwattr != ""){
-      delete.network.attribute(nw,input$delnwattr)
-    }
-    if(input$delvattr != ""){
-      delete.vertex.attribute(nw,input$delvattr)
-    }
-    if(input$deleattr != ""){
-      delete.edge.attribute(nw,input$deleattr)
-    }
+#     #set new attrs
+#     if(!is.null(input$newattrvalue)){
+#       newattrpath <- input$newattrvalue[1,4]
+#       load(paste(newattrpath))
+#       if(input$newattrButton != 0){
+#         isolate({
+#           value <- get(input$newattrvalue[1,1])
+#           name <- input$newattrname
+#           if(input$newattrtype == "vertex attribute"){
+#             set.vertex.attribute(nw,name,value)
+#           } else if(input$newattrtype == "edge attribute"){
+#             set.edge.attribute(nw,name, value)
+#           } else if(input$newattrtype == "edge value"){
+#             set.edge.value(nw,name,value)
+#           }
+#         })
+#       }
+#     }
+#     #delete attributes
+#     if(input$delnwattr != ""){
+#       delete.network.attribute(nw,input$delnwattr)
+#     }
+#     if(input$delvattr != ""){
+#       delete.vertex.attribute(nw,input$delvattr)
+#     }
+#     if(input$deleattr != ""){
+#       delete.edge.attribute(nw,input$deleattr)
+#     }
     
     }
   }
@@ -202,6 +208,29 @@ nwreac <- reactive({
 	})
 
 
+#can't use global variables because they are common to all 
+#sessions using the app, can't find a way to save previous 
+#user inputs though
+observe(
+  if(!is.null(input$newattrvalue)){
+    col <- input$newattrButton[1]
+    path <- input$newattrvalue[1,4]
+  
+      load(paste(path))
+      newval <- get(input$newattrvalue[1,1])
+      attrNameToAdd <- append(attrNameToAdd,input$newattrname)
+      attrValToAdd <- append(attrValToAdd, newval)
+  }, priority = 10
+)
+
+output$newattrtest <- renderPrint({
+  newname <- get('attrNameToAdd')
+  newval <- get('attrValToAdd')
+  list(name=newname, value=newval)
+})
+output$count <- renderPrint({
+  paste(input$newattrButton[1], find("attrNameToAdd"),sep=', ')
+})
 
 #list of everything in the Pajek project
 pajnws <- reactive({
@@ -226,13 +255,7 @@ coords <- reactive({
 
 nwattrinit <- reactive({
   nwattributes <- c('directed','hyper','loops','multiple','bipartite')
-#   unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
-  d <- get.network.attribute(nwinit(),'directed')
-  h <- get.network.attribute(nwinit(),'hyper')
-  l <- get.network.attribute(nwinit(),'loops')
-  m <- get.network.attribute(nwinit(),'multiple')
-  b <- get.network.attribute(nwinit(),'bipartite')
-  return(c(d,h,l,m,b))
+  unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
 })
 
 #list of vertex attributes in nw
