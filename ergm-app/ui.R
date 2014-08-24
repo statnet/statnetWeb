@@ -170,7 +170,6 @@ shinyUI(
                                   span('Network Attributes'),
                                   div(checkboxInput('dir', 'directed?', value=TRUE),
                                        style='padding-top:5px;'),
-                                  checkboxInput('hyper', 'hyper?', value=FALSE),
                                   checkboxInput('loops', 'loops?', value=FALSE),
                                   checkboxInput('multiple', 'multiple?', value=FALSE),
                                   checkboxInput('bipartite', 'bipartite?', value=FALSE))

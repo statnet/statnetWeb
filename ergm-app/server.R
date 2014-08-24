@@ -144,7 +144,7 @@ nwinit <- reactive({
     if(!is.null(input$rawdatafile)){
       nw <- "Input the specified type of matrix"
       try(nw <- network(read.table(paste(filepath)),
-                        directed=input$dir, hyper=input$hyper, loops=input$loops,
+                        directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype))
     }
@@ -206,7 +206,7 @@ nwreac <- reactive({
     if(!is.null(input$rawdatafile)){
       nw <- "Input the specified type of matrix"
       try(nw <- network(read.table(paste(filepath)),
-                  directed=input$dir, hyper=input$hyper, loops=input$loops,
+                  directed=input$dir, loops=input$loops,
                   multiple=input$multiple, bipartite=input$bipartite,
                   matrix.type=input$matrixtype))
       }
@@ -219,7 +219,6 @@ nwreac <- reactive({
   }
     if (class(nw)=="network"){
       set.network.attribute(nw,'directed',any(input$nwattr==1))
-      set.network.attribute(nw,'hyper',any(input$nwattr==2))
       set.network.attribute(nw,'loops',any(input$nwattr==3))
       set.network.attribute(nw,'multiple',any(input$nwattr==4))
       set.network.attribute(nw,'bipartite',any(input$nwattr==5))
@@ -651,7 +650,7 @@ output$nwattrchooser <- renderUI({
     return()
   }
   checkboxGroupInput('nwattr', label='',
-                     choices=c('directed'=1,'hyper'=2,'loops'=3,'multiple'=4,'bipartite'=5),
+                     choices=c('directed'=1,'loops'=3,'multiple'=4,'bipartite'=5),
                      selected=which(nwattrinit()))
 })
 #allow the checkboxes to update even when hidden so that network 
