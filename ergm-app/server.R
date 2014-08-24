@@ -59,6 +59,8 @@ library(statnet)
 library(RColorBrewer)
 
 data(faux.mesa.high)
+data(florentine)
+data(sampson)
 
 
 shinyServer(
@@ -96,6 +98,7 @@ assign("attrValToAdd", value=c(1:10))
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
 values <- reactiveValues()
+
 #this reactive expression is only to get the initial values of the network
 nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
@@ -104,22 +107,53 @@ nwinit <- reactive({
   if(is.null(input$rawdatafile)){
     nw <- NULL
   } else {
-    if(input$filetype == 1){
-      load(paste(input$rawdatafile[1,4]))
-      nw <- get(input$objname)
-    } else if(input$filetype == 2){
-      nw <- read.paj(paste(input$rawdatafile[1,4]))
-    } else if(input$filetype == 3){
-      nws <- read.paj(paste(input$rawdatafile[1,4]))
-      if(!is.null(pajnws())){
-        nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+    filepath <- input$rawdatafile[1,4]
+    filename <- input$rawdatafile[1,1]
+  }
+  if(input$filetype == 1){
+    if(!is.null(input$rawdatafile)){
+      nw <- tryCatch({
+        load(paste(filepath))
+        nw <- "Input network object name (may be different from file name)"
+      }, error = function(err){
+        return("Chosen file is not an R object")
+      }, finally = NULL
+      )
+      try(nw <- get(input$objname))
+    }
+  } else if(input$filetype == 2){
+    if(!is.null(input$rawdatafile)){
+      nw <- "Upload a .net file"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
+           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
+        nw <- read.paj(paste(filepath))
       }
-    } else if(input$filetype == 4){
-      nw <- network(read.table(paste(input$rawdatafile[1,4])),
-                    directed=input$dir, hyper=input$hyper, loops=input$loops,
-                    multiple=input$multiple, bipartite=input$bipartite)
+    }
+  } else if(input$filetype == 3){
+    if(!is.null(input$rawdatafile)){
+      nw <- "Upload a .paj file"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
+        nws <- read.paj(paste(filepath))
+        if(!is.null(pajnws())){
+          nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+        }
+      }
+    }
+  } else if(input$filetype == 4){
+    if(!is.null(input$rawdatafile)){
+      nw <- "Input the specified type of matrix"
+      try(nw <- network(read.table(paste(filepath)),
+                        directed=input$dir, hyper=input$hyper, loops=input$loops,
+                        multiple=input$multiple, bipartite=input$bipartite))
+    }
+    
+  } else if(input$filetype ==5){
+    nw <- eval(parse(text = input$samplenet))
+    if(!is.element('bipartite',names(nw$gal))){
+      set.network.attribute(nw,'bipartite',FALSE)
     }
   }
+
   nw
 })
 
@@ -135,7 +169,9 @@ nwreac <- reactive({
   } else {
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
-    if(input$filetype == 1){
+  }
+  if(input$filetype == 1){
+    if(!is.null(input$rawdatafile)){
       nw <- tryCatch({
         load(paste(filepath))
         nw <- "Input network object name (may be different from file name)"
@@ -144,13 +180,17 @@ nwreac <- reactive({
         }, finally = NULL
         )
       try(nw <- get(input$objname))
-    } else if(input$filetype == 2){
+    }
+  } else if(input$filetype == 2){
+    if(!is.null(input$rawdatafile)){
       nw <- "Upload a .net file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
            substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
         nw <- read.paj(paste(filepath))
       }
-    } else if(input$filetype == 3){
+    }
+  } else if(input$filetype == 3){
+    if(!is.null(input$rawdatafile)){
       nw <- "Upload a .paj file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
         nws <- read.paj(paste(filepath))
@@ -158,14 +198,21 @@ nwreac <- reactive({
           nw <- nws$networks[[as.numeric(input$choosepajnw)]]
         }
       }
-    } else if(input$filetype == 4){
+      }
+  } else if(input$filetype == 4){
+    if(!is.null(input$rawdatafile)){
       nw <- "Input the specified type of matrix"
       try(nw <- network(read.table(paste(filepath)),
                   directed=input$dir, hyper=input$hyper, loops=input$loops,
                   multiple=input$multiple, bipartite=input$bipartite))
+      }
       
-      
+  } else if(input$filetype ==5){
+    nw <- eval(parse(text = input$samplenet))
+    if(!is.element('bipartite',names(nw$gal))){
+      set.network.attribute(nw,'bipartite',FALSE)
     }
+  }
     if (class(nw)=="network"){
       set.network.attribute(nw,'directed',any(input$nwattr==1))
       set.network.attribute(nw,'hyper',any(input$nwattr==2))
@@ -203,7 +250,7 @@ nwreac <- reactive({
 #     }
     
     }
-  }
+  
     nw
 	})
 
@@ -244,7 +291,13 @@ pajnws <- reactive({
   nws
 })
 
-nwname <- reactive({input$rawdatafile[1,1]})
+nwname <- reactive({
+  name <- input$rawdatafile[1,1]
+  if(input$filetype == 5){
+    name <- input$samplenet
+  }
+  name
+  })
 
 #number of nodes in nw
 nodes <- reactive({

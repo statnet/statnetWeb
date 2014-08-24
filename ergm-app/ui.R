@@ -139,11 +139,22 @@ shinyUI(
                        column(5,
                               radioButtons('filetype',label=h5('File type'),
                                            choices=c('statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data'=4))),
-                       column(7,
+                                                     'matrix of relational data'=4, 'pre-loaded sample network'=5))),
+                       conditionalPanel(condition = 'input.filetype < 5',
+                         column(7,
                               br(),
                               fileInput(inputId='rawdatafile', label=NULL),
                               verbatimTextOutput('rawdatafile'))
+                          ),
+                       conditionalPanel(condition = 'input.filetype == 5',
+                              br(),
+                              selectInput('samplenet', label='Choose a network',
+                                          choices=c('faux.mesa.high','flobusiness',
+                                                    'flomarriage','samplike'),
+                                          selectize=FALSE) 
+                                        
+                                        )
+                       
                        ),
                      fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
