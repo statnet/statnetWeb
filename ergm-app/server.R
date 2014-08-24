@@ -132,7 +132,8 @@ nwinit <- reactive({
   } else if(input$filetype == 3){
     if(!is.null(input$rawdatafile)){
       nw <- "Upload a .paj file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
+           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ" ){
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
           nw <- nws$networks[[as.numeric(input$choosepajnw)]]
@@ -144,7 +145,8 @@ nwinit <- reactive({
       nw <- "Input the specified type of matrix"
       try(nw <- network(read.table(paste(filepath)),
                         directed=input$dir, hyper=input$hyper, loops=input$loops,
-                        multiple=input$multiple, bipartite=input$bipartite))
+                        multiple=input$multiple, bipartite=input$bipartite,
+                        matrix.type=input$matrixtype))
     }
     
   } else if(input$filetype ==5){
@@ -192,7 +194,8 @@ nwreac <- reactive({
   } else if(input$filetype == 3){
     if(!is.null(input$rawdatafile)){
       nw <- "Upload a .paj file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
+           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
           nw <- nws$networks[[as.numeric(input$choosepajnw)]]
@@ -204,7 +207,8 @@ nwreac <- reactive({
       nw <- "Input the specified type of matrix"
       try(nw <- network(read.table(paste(filepath)),
                   directed=input$dir, hyper=input$hyper, loops=input$loops,
-                  multiple=input$multiple, bipartite=input$bipartite))
+                  multiple=input$multiple, bipartite=input$bipartite,
+                  matrix.type=input$matrixtype))
       }
       
   } else if(input$filetype ==5){
