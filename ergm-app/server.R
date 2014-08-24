@@ -113,13 +113,13 @@ nwinit <- reactive({
   if(input$filetype == 1){
     if(!is.null(input$rawdatafile)){
       nw <- tryCatch({
-        load(paste(filepath))
-        nw <- "Input network object name (may be different from file name)"
+        obj <- load(paste(filepath))
+        #nw <- "Input network object name (may be different from file name)"
       }, error = function(err){
         return("Chosen file is not an R object")
       }, finally = NULL
       )
-      try(nw <- get(input$objname))
+      try(nw <- get(paste(obj)))
     }
   } else if(input$filetype == 2){
     if(!is.null(input$rawdatafile)){
@@ -173,13 +173,13 @@ nwreac <- reactive({
   if(input$filetype == 1){
     if(!is.null(input$rawdatafile)){
       nw <- tryCatch({
-        load(paste(filepath))
-        nw <- "Input network object name (may be different from file name)"
+        obj <- load(paste(filepath))
+        #nw <- "Input network object name (may be different from file name)"
         }, error = function(err){
           return("Chosen file is not an R object")
         }, finally = NULL
         )
-      try(nw <- get(input$objname))
+      try(nw <- get(obj))
     }
   } else if(input$filetype == 2){
     if(!is.null(input$rawdatafile)){
@@ -263,8 +263,8 @@ observe(
     col <- input$newattrButton[1]
     path <- input$newattrvalue[1,4]
   
-      load(paste(path))
-      newval <- get(input$newattrvalue[1,1])
+      objname <- load(paste(path))
+      newval <- get(objname)
       attrNameToAdd <- append(attrNameToAdd,input$newattrname)
       attrValToAdd <- append(attrValToAdd, newval)
   }, priority = 10

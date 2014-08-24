@@ -175,12 +175,6 @@ shinyUI(
                                   checkboxInput('multiple', 'multiple?', value=FALSE),
                                   checkboxInput('bipartite', 'bipartite?', value=FALSE))
                        ),
-                       conditionalPanel(condition='input.filetype == 1',
-                           h5('Specify'),
-                           column(6,
-                                  br(),
-                                  textInput('objname', label = 'Name of object'))
-                       ),
                        conditionalPanel(condition='input.filetype == 3',
                            h5('Specify'),
                            column(6,
