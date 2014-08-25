@@ -66,8 +66,8 @@ data(sampson)
 shinyServer(
   function(input, output, session){
     
-assign("attrNameToAdd", value='new')
-assign("attrValToAdd", value=c(1:10))    
+attrNamesToAdd <- data.frame(x=numeric(0))
+# attrValsToAdd <- data.frame('newval'=1:205)  
     
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
@@ -256,28 +256,34 @@ nwreac <- reactive({
 	})
 
 
-#can't use global variables because they are common to all 
-#sessions using the app, can't find a way to save previous 
-#user inputs though
-observe(
+#' TO KEEP LIST OF ALL NEW ATTRIBUTES FROM USER
+#' can't use global variables because they are common to all 
+#' sessions using the app, created per session variable inside shinyServer
+#' 
+#' 
+#+ eval=FALSE
+observe({
   if(!is.null(input$newattrvalue)){
-    col <- input$newattrButton[1]
-    path <- input$newattrvalue[1,4]
-  
+  if(input$newattrButton == 0) {return()}
+  isolate({
+      path <- input$newattrvalue[1,4]
       objname <- load(paste(path))
       newval <- get(objname)
-      attrNameToAdd <- append(attrNameToAdd,input$newattrname)
-      attrValToAdd <- append(attrValToAdd, newval)
-  }, priority = 10
-)
+      
+      attrNamesToAdd <- rbind(attrNamesToAdd,input$newattrname)
+#       attrValsToAdd <- cbind(attrValsToAdd, newval)
+    })
+  }
+}, priority = 0)
 
 output$newattrtest <- renderPrint({
-  newname <- get('attrNameToAdd')
-  newval <- get('attrValToAdd')
-  list(name=newname, value=newval)
+  attrNamesToAdd
+#   newname <- get('attrNamesToAdd')
+#   newval <- get('attrValsToAdd')
+#   list(name=newname, value=newval)
 })
 output$count <- renderPrint({
-  paste(input$newattrButton[1], find("attrNameToAdd"),sep=', ')
+  paste(input$newattrButton[1], exists("attrNamesToAdd"),sep=', ')
 })
 
 #list of everything in the Pajek project
