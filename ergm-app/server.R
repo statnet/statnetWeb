@@ -308,6 +308,7 @@ nodes <- reactive({
 coords <- reactive({
 		plot.network(nwreac())})
 
+#returns vector of true/falses
 nwattrinit <- reactive({
   if(!is.network(nwreac())){return()}
   nwattributes <- c('directed','hyper','loops','multiple','bipartite')
@@ -648,7 +649,7 @@ output$pajchooser <- renderUI({
 })
 
 output$nwattrchooser <- renderUI({
-  if(is.null(nwattrinit())){
+  if(!is.network(nwreac())){
     return()
   }
   checkboxGroupInput('nwattr', label='',
@@ -1161,7 +1162,8 @@ output$modelfitsum <- renderPrint({
   summary(model1reac())
 })
 
-#make sure that mcmc iterations output on the fitting tab
+#make sure that mcmc iterations output on the fitting tab by allowing
+#modelfit to update even when other tab is active
 
 #other potential methods were to use onFlush, or to set the priority of
 #observers, but this is the best and least complicated (and the only 
