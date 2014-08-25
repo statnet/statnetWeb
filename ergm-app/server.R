@@ -114,7 +114,6 @@ nwinit <- reactive({
     if(!is.null(input$rawdatafile)){
       nw <- tryCatch({
         obj <- load(paste(filepath))
-        #nw <- "Input network object name (may be different from file name)"
       }, error = function(err){
         return("Chosen file is not an R object")
       }, finally = NULL
@@ -176,7 +175,6 @@ nwreac <- reactive({
     if(!is.null(input$rawdatafile)){
       nw <- tryCatch({
         obj <- load(paste(filepath))
-        #nw <- "Input network object name (may be different from file name)"
         }, error = function(err){
           return("Chosen file is not an R object")
         }, finally = NULL
@@ -304,12 +302,14 @@ nwname <- reactive({
 
 #number of nodes in nw
 nodes <- reactive({
+  if(!is.network(nwreac())){return()}
 		nwreac()$gal$n}) 
 #get coordinates to plot network with
 coords <- reactive({
 		plot.network(nwreac())})
 
 nwattrinit <- reactive({
+  if(!is.network(nwreac())){return()}
   nwattributes <- c('directed','hyper','loops','multiple','bipartite')
   unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
 })
@@ -317,7 +317,7 @@ nwattrinit <- reactive({
 #list of vertex attributes in nw
 attr <- reactive({
 	  attr <- c()
-    if(!is.null(nwreac())){        
+    if(is.network(nwreac())){        
 		    attr<-list.vertex.attributes(nwreac())
     }
       attr
@@ -338,7 +338,7 @@ menuattr <- reactive({
 #numeric attributes only (for size menu, etc.)
 numattr <- reactive({
     numattr <- c()
-    if(!is.null(nwreac())){  
+    if(is.network(nwreac())){  
       for(i in 1:length(attr())){
         if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
           numattr <- append(numattr,attr()[i])
@@ -347,6 +347,7 @@ numattr <- reactive({
     numattr})
 
   nodesize <- reactive({
+    if(!is.network(nwreac())){return()}
     nw <- nwreac()
     #scale size of nodes onto range between .7 and 3.5
     minsize <- min(get.vertex.attribute(nw,input$sizeby))
@@ -359,6 +360,7 @@ numattr <- reactive({
     size})
 
 legendlabels <- reactive({
+  if(!is.network(nwreac())){return()}
   nw <- nwreac()
     if(input$colorby == 2){
       legendlabels <- NULL
@@ -683,7 +685,7 @@ output$nwsum <- renderPrint({
 #+ eval=FALSE
 #summary of network attributes
 output$attr2 <- renderPrint({
-  if (is.null(nwreac())){
+  if (!is.network(nwreac())){
     return(cat('NA'))
   }
   nw <- nwreac()
@@ -713,7 +715,7 @@ output$dynamicsize <- renderUI({
 #'
 #+ eval=FALSE
 output$nwplot <- renderPlot({
-  if (is.null(nwreac())){
+  if (!is.network(nwreac())){
     return()
   }
   nw <- nwreac()
@@ -753,6 +755,9 @@ output$dynamiccolor_dd <- renderUI({
 })
 
 dd_plotdata <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
   if(is.directed(nwreac())){
     gmode <- "digraph"
   } else {
@@ -789,7 +794,7 @@ dd_plotdata <- reactive({
 })
 
 output$degreedist <- renderPlot({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   leg <- FALSE
@@ -835,13 +840,13 @@ output$mixmxchooser <- renderUI({
 outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
 output$mixingmatrix <- renderPrint({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   mixingmatrix(nwreac(), input$mixmx)
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
 output$gden <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -852,7 +857,7 @@ output$gden <- renderText({
 outputOptions(output,'gden',suspendWhenHidden=FALSE)
 
 output$grecip <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(input$grecipmeas == ''){
     return('Reciprocity:')
   }
@@ -861,7 +866,7 @@ output$grecip <- renderText({
 outputOptions(output,'grecip',suspendWhenHidden=FALSE)
 
 output$gtrans <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(input$gtransmeas == ''){
     return('Transitivity:')
   }
@@ -876,7 +881,7 @@ output$gtrans <- renderText({
 outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
 
 output$ndeg <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -888,7 +893,7 @@ output$ndeg <- renderText({
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
 output$nbetw <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -900,7 +905,7 @@ output$nbetw <- renderText({
 outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
 
 output$nclose <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -912,7 +917,7 @@ output$nclose <- renderText({
 outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
 output$nstress <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())){ return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -924,7 +929,7 @@ output$nstress <- renderText({
 outputOptions(output,'nstress',suspendWhenHidden=FALSE)
 
 output$ngraphcent <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -936,7 +941,7 @@ output$ngraphcent <- renderText({
 outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
 output$nevcent <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -947,7 +952,7 @@ output$nevcent <- renderText({
 outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
 
 output$ninfocent <- renderText({
-  if(is.null(nwreac())) return()
+  if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
     gmode <- 'digraph'
   } else {
@@ -977,7 +982,7 @@ outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
 #+ fitmodel1, eval=FALSE
 
 output$listofterms <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   if(nwreac()$gal$directed & nwreac()$gal$bipartite){
@@ -997,7 +1002,7 @@ output$listofterms <- renderUI({
 })
 
 output$dynamicdegree <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('choosedegree', 
@@ -1009,7 +1014,7 @@ output$dynamicdegree <- renderUI({
 })
 
 output$dynamicb1degree <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('chooseb1degree',
@@ -1021,7 +1026,7 @@ output$dynamicb1degree <- renderUI({
 })
 
 output$dynamicb2degree <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('chooseb2degree',
@@ -1033,7 +1038,7 @@ output$dynamicb2degree <- renderUI({
 })
 
 output$dynamicidegree <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('chooseidegree',
@@ -1045,7 +1050,7 @@ output$dynamicidegree <- renderUI({
 })
 
 output$dynamicodegree <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('chooseodegree',
@@ -1057,7 +1062,7 @@ output$dynamicodegree <- renderUI({
 })
 
 output$dynamicabsdiff <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('chooseabsdiff',
@@ -1069,7 +1074,7 @@ output$dynamicabsdiff <- renderUI({
 })
 
 output$dynamicnodefactor <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('choosenodefactor',
@@ -1081,7 +1086,7 @@ output$dynamicnodefactor <- renderUI({
 })
 
 output$dynamicnodematch <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('choosenodematch', 
@@ -1092,7 +1097,7 @@ output$dynamicnodematch <- renderUI({
               width = '3cm')
 })
 output$dynamicnodemix <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('choosenodemix',
@@ -1103,7 +1108,7 @@ output$dynamicnodemix <- renderUI({
               width = '3cm')
 })
 output$dynamicnodecov <- renderUI({
-  if(is.null(nwreac())){
+  if(!is.network(nwreac())){
     return()
   }
   selectInput('choosenodecov',
@@ -1121,21 +1126,21 @@ output$dynamicnodecov <- renderUI({
 #'  
 #+ fitmodel2, eval=FALSE
 output$currentdataset1 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   cat(isolate(nwname()))
 })
 
 output$checkterms1 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   cat(ergm.terms())
 })
 
 output$prefitsum <- renderPrint({
-  if(is.null(nwreac()) | length(input$terms)==0){
+  if(!is.network(nwreac()) | length(input$terms)==0){
     return(cat('NA'))
   }
   options(width=150)
@@ -1182,16 +1187,16 @@ outputOptions(output, "modelfitsum",priority=-10)
 #+ eval=FALSE
 #dataset only updates after goButton on first tab has been clicked
 output$currentdataset2 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   cat(nwname())
 })
 
 #formula only updates after fitButton has been clicked
 output$checkterms2 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
@@ -1258,7 +1263,7 @@ output$gofplotspace <- renderUI({
 
 output$checkterms3 <- renderPrint({
   if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+    return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
@@ -1266,8 +1271,8 @@ output$checkterms3 <- renderPrint({
   cat(isolate(ergm.terms()))
 })
 output$currentdataset3 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   cat(nwname())
 })
@@ -1316,8 +1321,8 @@ output$diagnostics <- renderPrint({
 #' from the 'Plot Network' tab.
 #+ eval=FALSE
 output$checkterms4 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
@@ -1325,8 +1330,8 @@ output$checkterms4 <- renderPrint({
   cat(isolate(ergm.terms()))
 })
 output$currentdataset4 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a dataset'))
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
   }
   cat(nwname())
 })
