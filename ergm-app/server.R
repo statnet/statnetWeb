@@ -62,27 +62,34 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
+#' Saving the following vectors of terms will allow us to only display the terms
+#' that are applicable to a certain network. These don't depend on any user input
+#' and will never change value, so they can be global variables (common to all
+#' shiny sessions).
+#+ eval=FALSE    
+dir.terms <- c('absdiff', 'idegree', 'odegree', 'edges', 'gwesp', 'mutual', 
+               'nodefactor', 'nodematch', 'nodemix', 'nodecov')
+undir.terms <- c('absdiff', 'b1degree', 'b2degree', 'degree', 'edges', 'gwesp',
+                 'nodecov', 'nodefactor', 'nodematch', 'nodemix',
+                 'triangle')
+unip.terms <- c('absdiff', 'degree', 'idegree', 'odegree','edges', 'gwesp', 
+                'mutual', 'nodecov', 'nodefactor', 'nodematch',
+                'nodemix', 'triangle')
+bip.terms <- c('absdiff', 'b1degree', 'b2degree', 'edges', 'mutual', 'nodefactor',
+               'nodematch', 'nodemix', 'nodecov')
 
 shinyServer(
   function(input, output, session){
     
-attrNamesToAdd <- data.frame(x=numeric(0))
+assign('attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+       pos="package:base")
+assign('attrValsToAdd', data.frame(numeric(0)),  
+       pos="package:base")
+
+
 # attrValsToAdd <- data.frame('newval'=1:205)  
     
-#' Saving the following vectors of terms will allow us to only display the terms
-#' that are applicable to a certain network. These don't depend on any user input
-#' and will never change value, so they don't need to be in a reactive expression.
-#+ eval=FALSE    
-    dir.terms <- c('absdiff', 'idegree', 'odegree', 'edges', 'gwesp', 'mutual', 
-                   'nodefactor', 'nodematch', 'nodemix', 'nodecov')
-    undir.terms <- c('absdiff', 'b1degree', 'b2degree', 'degree', 'edges', 'gwesp',
-                     'nodecov', 'nodefactor', 'nodematch', 'nodemix',
-                     'triangle')
-    unip.terms <- c('absdiff', 'degree', 'idegree', 'odegree','edges', 'gwesp', 
-                    'mutual', 'nodecov', 'nodefactor', 'nodematch',
-                    'nodemix', 'triangle')
-    bip.terms <- c('absdiff', 'b1degree', 'b2degree', 'edges', 'mutual', 'nodefactor',
-                   'nodematch', 'nodemix', 'nodecov')
+
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -158,6 +165,24 @@ nwinit <- reactive({
   nw
 })
 
+#number of nodes in nw
+nodes <- reactive({
+  if(!is.network(nwinit())){return()}
+  nwinit()$gal$n
+}) 
+
+#set correct number of rows for the dataframe, so that we can
+#add columns later
+observe({
+  df <- get("attrValsToAdd",pos="package:base")
+  if (is.network(nwinit())){
+    n <- nodes()
+    for (i in 1:n){
+      df <- rbind(df,i)
+    }
+    assign("attrValsToAdd", df, pos="package:base")
+  }
+})
 
 #this reactive expression will be used throughout the app
 #changes made on the "Edit Network" tab will affect this nw
@@ -220,35 +245,7 @@ nwreac <- reactive({
       set.network.attribute(nw,'loops',any(input$nwattr==3))
       set.network.attribute(nw,'multiple',any(input$nwattr==4))
       set.network.attribute(nw,'bipartite',any(input$nwattr==5))
-    
-#     #set new attrs
-#     if(!is.null(input$newattrvalue)){
-#       newattrpath <- input$newattrvalue[1,4]
-#       load(paste(newattrpath))
-#       if(input$newattrButton != 0){
-#         isolate({
-#           value <- get(input$newattrvalue[1,1])
-#           name <- input$newattrname
-#           if(input$newattrtype == "vertex attribute"){
-#             set.vertex.attribute(nw,name,value)
-#           } else if(input$newattrtype == "edge attribute"){
-#             set.edge.attribute(nw,name, value)
-#           } else if(input$newattrtype == "edge value"){
-#             set.edge.value(nw,name,value)
-#           }
-#         })
-#       }
-#     }
-#     #delete attributes
-#     if(input$delnwattr != ""){
-#       delete.network.attribute(nw,input$delnwattr)
-#     }
-#     if(input$delvattr != ""){
-#       delete.vertex.attribute(nw,input$delvattr)
-#     }
-#     if(input$deleattr != ""){
-#       delete.edge.attribute(nw,input$deleattr)
-#     }
+
     
     }
   
@@ -258,32 +255,37 @@ nwreac <- reactive({
 
 #' TO KEEP LIST OF ALL NEW ATTRIBUTES FROM USER
 #' can't use global variables because they are common to all 
-#' sessions using the app, created per session variable inside shinyServer
+#' sessions using the app, instead created per session variable 
+#' inside shinyServer
 #' 
 #' 
 #+ eval=FALSE
+
 observe({
-  if(!is.null(input$newattrvalue)){
-  if(input$newattrButton == 0) {return()}
+  if(input$newattrButton == 0) return()
+    
   isolate({
       path <- input$newattrvalue[1,4]
       objname <- load(paste(path))
       newval <- get(objname)
+      namesofar <- get("attrNamesToAdd", pos="package:base")
+      valsofar <- get("attrValsToAdd", pos="package:base")
       
-      attrNamesToAdd <- rbind(attrNamesToAdd,input$newattrname)
-#       attrValsToAdd <- cbind(attrValsToAdd, newval)
+      assign('attrNamesToAdd', cbind(namesofar,input$newattrname),
+             pos="package:base")
+      assign('attrValsToAdd', cbind(valsofar, newval),
+             pos="package:base")
     })
-  }
-}, priority = 0)
+  
+}, label='observing')
 
-output$newattrtest <- renderPrint({
-  attrNamesToAdd
-#   newname <- get('attrNamesToAdd')
-#   newval <- get('attrValsToAdd')
-#   list(name=newname, value=newval)
+
+output$local <- renderPrint({
+  get('attrNamesToAdd',pos="package:base")
+
 })
 output$count <- renderPrint({
-  paste(input$newattrButton[1], exists("attrNamesToAdd"),sep=', ')
+  paste(input$newattrButton[1], find("attrNamesToAdd"),sep=', ')
 })
 
 #list of everything in the Pajek project
@@ -306,10 +308,6 @@ nwname <- reactive({
   name
   })
 
-#number of nodes in nw
-nodes <- reactive({
-  if(!is.network(nwreac())){return()}
-		nwreac()$gal$n}) 
 #get coordinates to plot network with
 coords <- reactive({
 		plot.network(nwreac())})

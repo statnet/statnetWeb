@@ -205,7 +205,7 @@ shinyUI(
                               )
                        
                      )),
-                   verbatimTextOutput('newattrtest'),
+                   verbatimTextOutput('local'),
                    verbatimTextOutput('count')
                    ))
 
