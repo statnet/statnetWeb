@@ -201,7 +201,7 @@ shinyUI(
                               fileInput(inputId='newattrvalue', label=span('Upload a vector or list of attribute',
                                 'values, or a matrix of edge values.')),
                               textInput('newattrname', label="New attribute name"),
-                              actionButton('newvattrButton', label='Set Attribute')
+                              actionButton('newattrButton', label='Set Attribute')
                               )
                        
                      ))

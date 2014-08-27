@@ -81,14 +81,18 @@ bip.terms <- c('absdiff', 'b1degree', 'b2degree', 'edges', 'mutual', 'nodefactor
 shinyServer(
   function(input, output, session){
     
-assign('attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+assign('v_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
        pos="package:base")
-assign('attrValsToAdd', data.frame(numeric(0)),  
+assign('v_attrValsToAdd', data.frame(numeric(0)),  
        pos="package:base")
-
-
-# attrValsToAdd <- data.frame('newval'=1:205)  
-    
+assign('e_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+       pos="package:base" )
+assign('e_attrValsToAdd', data.frame(numeric(0)),  
+       pos="package:base")
+assign('ev_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+       pos="package:base" )
+assign('ev_attrValsToAdd', data.frame(numeric(0)),  
+       pos="package:base")
 
 
 #' Reactive Expressions
@@ -169,18 +173,98 @@ nwinit <- reactive({
 nodes <- reactive({
   if(!is.network(nwinit())){return()}
   nwinit()$gal$n
-}) 
+})
 
-#set correct number of rows for the dataframe, so that we can
-#add columns later
+#number of edges in nw
+nedges <- reactive({
+  if(!is.network(nwinit())) return()
+  network.edgecount(nwinit())
+})
+
+#set correct number of rows for the value dataframes, 
+#so that we can add columns later
 observe({
-  df <- get("attrValsToAdd",pos="package:base")
+  vdf <- get("v_attrValsToAdd",pos="package:base")
+  edf <- get("e_attrValsToAdd",pos="package:base")
+  evdf <- get("ev_attrValsToAdd",pos="package:base")
   if (is.network(nwinit())){
     n <- nodes()
+    e <- nedges()
     for (i in 1:n){
-      df <- rbind(df,i)
+      vdf <- rbind(vdf,i)
     }
-    assign("attrValsToAdd", df, pos="package:base")
+    for (i in 1:e){
+      edf <- rbind(edf,i)
+      evdf <- rbind(evdf,i)
+    }
+    assign("v_attrValsToAdd", vdf, pos="package:base")
+    assign("e_attrValsToAdd", edf, pos="package:base")
+    assign("ev_attrValsToAdd", evdf, pos="package:base")
+  }
+})
+
+#' TO KEEP LIST OF ALL NEW ATTRIBUTES FROM USER
+#' can't use global variables because they are common to all 
+#' sessions using the app, instead created per session variables 
+#' inside shinyServer
+#' 
+#' 
+#+ eval=FALSE
+
+#add vertex attributes
+observe({
+  if(input$newattrButton == 0) return()
+  if(input$newattrtype == 'vertex attribute'){  
+      isolate({
+          path <- input$newattrvalue[1,4]
+          objname <- load(paste(path))
+          newval <- get(objname)
+          namesofar <- get("v_attrNamesToAdd", pos="package:base")
+          valsofar <- get("v_attrValsToAdd", pos="package:base")
+          
+          assign('v_attrNamesToAdd', cbind(namesofar,input$newattrname),
+                 pos="package:base")
+          assign('v_attrValsToAdd', cbind(valsofar, newval),
+                 pos="package:base")
+        })
+  }
+})
+
+#add edge attributes
+observe({
+  if(input$newattrButton == 0) return()
+  if(input$newattrtype == 'edge attribute'){
+      isolate({
+        path <- input$newattrvalue[1,4]
+        objname <- load(paste(path))
+        newval <- get(objname)
+        namesofar <- get("e_attrNamesToAdd", pos="package:base")
+        valsofar <- get("e_attrValsToAdd", pos="package:base")
+        
+        assign('e_attrNamesToAdd', cbind(namesofar,input$newattrname),
+               pos="package:base")
+        assign('e_attrValsToAdd', cbind(valsofar, newval),
+               pos="package:base")
+      })
+  }
+})
+
+#add edge values
+observe({
+  if(input$newattrButton == 0) return()
+  if(input$newattrtype == 'edge value'){
+    isolate({
+      path <- input$newattrvalue[1,4]
+      objname <- load(paste(path))
+      newval <- get(objname)
+      namesofar <- get("ev_attrNamesToAdd", pos="package:base")
+      valsofar <- get("ev_attrValsToAdd", pos="package:base")
+      
+      assign('ev_attrNamesToAdd', cbind(namesofar,input$newattrname),
+             pos="package:base")
+      assign('ev_attrValsToAdd', cbind(valsofar, newval),
+             pos="package:base")
+    })
   }
 })
 
@@ -195,16 +279,34 @@ nwreac <- reactive({
       set.network.attribute(nw,'multiple',any(input$nwattr==4))
       set.network.attribute(nw,'bipartite',any(input$nwattr==5))
       
-      attrNamesToAdd <- get('attrNamesToAdd',pos='package:base')
-      attrValsToAdd <- get('attrValsToAdd', pos='package:base')
+      v_attrNamesToAdd <- get('v_attrNamesToAdd',pos='package:base')
+      v_attrValsToAdd <- get('v_attrValsToAdd', pos='package:base')
       
-      input$newvattrButton
-      numnew <- dim(attrNamesToAdd)[2]
-      if(numnew > 1){
-        for (j in 2:numnew){
-          newname <- as.character(attrNamesToAdd[1,j])
-          newval <- attrValsToAdd[,j]
-          set.vertex.attribute(nw,newname,newval)
+      input$newattrButton
+      v_numnew <- dim(v_attrNamesToAdd)[2]
+      if(v_numnew > 1){
+        for (j in 2:v_numnew){
+          v_newname <- as.character(v_attrNamesToAdd[1,j])
+          v_newval <- v_attrValsToAdd[,j]
+          set.vertex.attribute(nw,v_newname,v_newval)
+        }
+      }
+      
+      e_numnew <- dim(e_attrNamesToAdd)[2]
+      if(e_numnew > 1){
+        for (j in 2:e_numnew){
+          e_newname <- as.character(e_attrNamesToAdd[1,j])
+          e_newval <- e_attrValsToAdd[,j]
+          set.edge.attribute(nw,e_newname,e_newval)
+        }
+      }
+      
+      ev_numnew <- dim(ev_attrNamesToAdd)[2]
+      if(ev_numnew > 1){
+        for (j in 2:ev_numnew){
+          ev_newname <- as.character(ev_attrNamesToAdd[1,j])
+          ev_newval <- ev_attrValsToAdd[,j]
+          set.edge.value(nw,ev_newname,ev_newval)
         }
       }
     }
@@ -212,32 +314,6 @@ nwreac <- reactive({
     nw
 	})
 
-
-#' TO KEEP LIST OF ALL NEW ATTRIBUTES FROM USER
-#' can't use global variables because they are common to all 
-#' sessions using the app, instead created per session variables 
-#' inside shinyServer
-#' 
-#' 
-#+ eval=FALSE
-
-observe({
-  if(input$newvattrButton == 0) return()
-    
-  isolate({
-      path <- input$newattrvalue[1,4]
-      objname <- load(paste(path))
-      newval <- get(objname)
-      namesofar <- get("attrNamesToAdd", pos="package:base")
-      valsofar <- get("attrValsToAdd", pos="package:base")
-      
-      assign('attrNamesToAdd', cbind(namesofar,input$newattrname),
-             pos="package:base")
-      assign('attrValsToAdd', cbind(valsofar, newval),
-             pos="package:base")
-    })
-  
-}, label='observing')
 
 
 #list of everything in the Pajek project
