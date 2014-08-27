@@ -125,7 +125,7 @@ nwinit <- reactive({
         return("Chosen file is not an R object")
       }, finally = NULL
       )
-      try(nw <- get(paste(obj)))
+      try(nw <- get(obj))
     }
   } else if(input$filetype == 2){
     if(!is.null(input$rawdatafile)){
@@ -139,7 +139,7 @@ nwinit <- reactive({
     if(!is.null(input$rawdatafile)){
       nw <- "Upload a .paj file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ" ){
+           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
           nw <- nws$networks[[as.numeric(input$choosepajnw)]]
@@ -187,66 +187,26 @@ observe({
 #this reactive expression will be used throughout the app
 #changes made on the "Edit Network" tab will affect this nw
 nwreac <- reactive({
-    #input$rawdatafile comes as a dataframe with name, size, type and datapath
-    #datapath is stored in 4th column of dataframe
-    #network creates a network object from the input file
-  if(is.null(input$rawdatafile)){
-		nw <- NULL
-  } else {
-    filepath <- input$rawdatafile[1,4]
-    filename <- input$rawdatafile[1,1]
-  }
-  if(input$filetype == 1){
-    if(!is.null(input$rawdatafile)){
-      nw <- tryCatch({
-        obj <- load(paste(filepath))
-        }, error = function(err){
-          return("Chosen file is not an R object")
-        }, finally = NULL
-        )
-      try(nw <- get(obj))
-    }
-  } else if(input$filetype == 2){
-    if(!is.null(input$rawdatafile)){
-      nw <- "Upload a .net file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
-        nw <- read.paj(paste(filepath))
-      }
-    }
-  } else if(input$filetype == 3){
-    if(!is.null(input$rawdatafile)){
-      nw <- "Upload a .paj file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
-        nws <- read.paj(paste(filepath))
-        if(!is.null(pajnws())){
-          nw <- nws$networks[[as.numeric(input$choosepajnw)]]
-        }
-      }
-      }
-  } else if(input$filetype == 4){
-    if(!is.null(input$rawdatafile)){
-      nw <- "Input the specified type of matrix"
-      try(nw <- network(read.table(paste(filepath)),
-                  directed=input$dir, loops=input$loops,
-                  multiple=input$multiple, bipartite=input$bipartite,
-                  matrix.type=input$matrixtype))
-      }
-      
-  } else if(input$filetype ==5){
-    nw <- eval(parse(text = input$samplenet))
-    if(!is.element('bipartite',names(nw$gal))){
-      set.network.attribute(nw,'bipartite',FALSE)
-    }
-  }
+    nw <- nwinit()
+  
     if (class(nw)=="network"){
       set.network.attribute(nw,'directed',any(input$nwattr==1))
       set.network.attribute(nw,'loops',any(input$nwattr==3))
       set.network.attribute(nw,'multiple',any(input$nwattr==4))
       set.network.attribute(nw,'bipartite',any(input$nwattr==5))
-
-    
+      
+      attrNamesToAdd <- get('attrNamesToAdd',pos='package:base')
+      attrValsToAdd <- get('attrValsToAdd', pos='package:base')
+      
+      input$newvattrButton
+      numnew <- dim(attrNamesToAdd)[2]
+      if(numnew > 1){
+        for (j in 2:numnew){
+          newname <- as.character(attrNamesToAdd[1,j])
+          newval <- attrValsToAdd[,j]
+          set.vertex.attribute(nw,newname,newval)
+        }
+      }
     }
   
     nw
@@ -255,14 +215,14 @@ nwreac <- reactive({
 
 #' TO KEEP LIST OF ALL NEW ATTRIBUTES FROM USER
 #' can't use global variables because they are common to all 
-#' sessions using the app, instead created per session variable 
+#' sessions using the app, instead created per session variables 
 #' inside shinyServer
 #' 
 #' 
 #+ eval=FALSE
 
 observe({
-  if(input$newattrButton == 0) return()
+  if(input$newvattrButton == 0) return()
     
   isolate({
       path <- input$newattrvalue[1,4]
@@ -279,14 +239,6 @@ observe({
   
 }, label='observing')
 
-
-output$local <- renderPrint({
-  get('attrNamesToAdd',pos="package:base")
-
-})
-output$count <- renderPrint({
-  paste(input$newattrButton[1], find("attrNamesToAdd"),sep=', ')
-})
 
 #list of everything in the Pajek project
 pajnws <- reactive({

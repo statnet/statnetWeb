@@ -201,12 +201,10 @@ shinyUI(
                               fileInput(inputId='newattrvalue', label=span('Upload a vector or list of attribute',
                                 'values, or a matrix of edge values.')),
                               textInput('newattrname', label="New attribute name"),
-                              actionButton('newattrButton', label='Set Attribute')
+                              actionButton('newvattrButton', label='Set Attribute')
                               )
                        
-                     )),
-                   verbatimTextOutput('local'),
-                   verbatimTextOutput('count')
+                     ))
                    ))
 
       
