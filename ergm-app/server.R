@@ -268,6 +268,15 @@ observe({
   }
 })
 
+#update textInput
+observe({
+  input$newattrButton
+  isolate({
+    updateTextInput(session, 'newattrname',
+                    label='New attribute name', value='')
+  })
+})
+
 #this reactive expression will be used throughout the app
 #changes made on the "Edit Network" tab will affect this nw
 nwreac <- reactive({
