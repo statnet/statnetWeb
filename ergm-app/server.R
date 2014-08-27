@@ -57,6 +57,7 @@
 library(shiny)
 library(statnet)
 library(RColorBrewer)
+source("chooser.R")
 
 data(faux.mesa.high)
 data(florentine)
@@ -277,9 +278,8 @@ observe({
   })
 })
 
-#this reactive expression will be used throughout the app
-#changes made on the "Edit Network" tab will affect this nw
-nwreac <- reactive({
+#attributes will be added to this network
+nwmid <- reactive({
     nw <- nwinit()
   
     if (class(nw)=="network"){
@@ -322,6 +322,26 @@ nwreac <- reactive({
   
     nw
 	})
+
+#delete desired attributes from this network and use it for future
+#calculations
+nwreac <- reactive({
+  nw <- nwmid()
+  
+  deleteme <- input$deleteattr$right
+  len <- length(deleteme)
+  if(len>=1){
+      for(i in 1:len){
+        if(any(list.vertex.attributes(nw)==deleteme[i])){
+          delete.vertex.attribute(nw,deleteme[i])
+        }
+        if(any(list.edge.attributes(nw)==deleteme[i])){
+          delete.edge.attribute(nw,deleteme[i])
+        }
+      }
+  }
+  nw
+})
 
 
 
@@ -700,6 +720,22 @@ output$nwattrchooser <- renderUI({
 #allow the checkboxes to update even when hidden so that network 
 #attributes stay current
 outputOptions(output,'nwattrchooser',suspendWhenHidden=FALSE)
+
+output$deleteattrchooser <- renderUI({
+  vattr <- list.vertex.attributes(nwmid())
+  eattr <- list.edge.attributes(nwmid())
+  if(is.element("na",vattr)){
+    vattr <- vattr[-which("na"==vattr)]
+  }
+  if(is.element("na",eattr)){
+    eattr <- eattr[-which("na"==eattr)]
+  }
+  attrlist <- c(vattr, eattr)
+  
+  chooserInput('deleteattrs',"Active Attributes","Deleted Attributes",
+               leftChoices=attrlist, rightChoices=c(),multiple=TRUE)
+})
+
 
 #summary of network attributes
 output$nwsum <- renderPrint({

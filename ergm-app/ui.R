@@ -55,6 +55,7 @@
 #load necessary packages
 library(shiny)
 library(statnet)
+source("chooser.R")
 
 #' Functions to create new widgets
 #+ eval=FALSE
@@ -185,14 +186,10 @@ shinyUI(
                    wellPanel(
                      fluidRow(
                       
-                       column(3,strong('Edit Network Attributes'),
+                       column(5,strong('Edit Network Attributes'),
                               uiOutput('nwattrchooser')
                               ),
-                       column(3,strong('Delete Attributes'),
-                              customTextInput('delnwattr',label='Network attributes',class='input-small'),
-                              customTextInput('delvattr', label='Vertex attributes',class='input-small'),
-                              customTextInput('deleattr', label='Edge attributes',class='input-small'),
-                              actionButton('delattrButton', label='Delete Attributes')),
+                       
                        column(5,strong('Set New Attribute'),
                               radioButtons('newattrtype', label='Choose attribute type',
                                            choices=c('vertex attribute',
@@ -204,7 +201,10 @@ shinyUI(
                               actionButton('newattrButton', label='Set Attribute')
                               )
                        
-                     ))
+                     ),
+                     br(),
+                     uiOutput('deleteattrchooser')
+                     )
                    ))
 
       
