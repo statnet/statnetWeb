@@ -780,6 +780,7 @@ output$dynamiccolor <- renderUI({
               c('None' = 2, attr()),
               selectize = FALSE)
 })
+outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE)
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
@@ -787,6 +788,8 @@ output$dynamicsize <- renderUI({
               c('None' = 1, numattr()),
               selectize = FALSE)
 })
+outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
+
 #' The network plot takes display options from the sidebar of the ui. Even though 
 #' I set the value of the 'None' option in the `sizeby` menu (above) as `1`, it gets
 #' coerced into the string `'1'` by the rest of the strings in the vector of menu 
@@ -835,6 +838,7 @@ output$dynamiccolor_dd <- renderUI({
               c('None', menuattr()),
               selectize = FALSE)
 })
+outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE)
 
 dd_plotdata <- reactive({
   if(!is.network(nwreac())){
@@ -1094,6 +1098,7 @@ output$dynamicdegree <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicdegree',suspendWhenHidden=FALSE)
 
 output$dynamicb1degree <- renderUI({
   if(!is.network(nwreac())){
@@ -1106,6 +1111,7 @@ output$dynamicb1degree <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicb1degree',suspendWhenHidden=FALSE)
 
 output$dynamicb2degree <- renderUI({
   if(!is.network(nwreac())){
@@ -1118,6 +1124,7 @@ output$dynamicb2degree <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicb2degree',suspendWhenHidden=FALSE)
 
 output$dynamicidegree <- renderUI({
   if(!is.network(nwreac())){
@@ -1130,6 +1137,7 @@ output$dynamicidegree <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicidegree',suspendWhenHidden=FALSE)
 
 output$dynamicodegree <- renderUI({
   if(!is.network(nwreac())){
@@ -1142,6 +1150,7 @@ output$dynamicodegree <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicodegree',suspendWhenHidden=FALSE)
 
 output$dynamicabsdiff <- renderUI({
   if(!is.network(nwreac())){
@@ -1154,6 +1163,7 @@ output$dynamicabsdiff <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicabsdiff',suspendWhenHidden=FALSE)
 
 output$dynamicnodefactor <- renderUI({
   if(!is.network(nwreac())){
@@ -1166,6 +1176,7 @@ output$dynamicnodefactor <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicnodefactor',suspendWhenHidden=FALSE)
 
 output$dynamicnodematch <- renderUI({
   if(!is.network(nwreac())){
@@ -1178,6 +1189,8 @@ output$dynamicnodematch <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicnodematch',suspendWhenHidden=FALSE)
+
 output$dynamicnodemix <- renderUI({
   if(!is.network(nwreac())){
     return()
@@ -1189,6 +1202,8 @@ output$dynamicnodemix <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicnodemix',suspendWhenHidden=FALSE)
+
 output$dynamicnodecov <- renderUI({
   if(!is.network(nwreac())){
     return()
@@ -1200,6 +1215,7 @@ output$dynamicnodecov <- renderUI({
               multiple = TRUE,
               width = '3cm')
 })
+outputOptions(output,'dynamicnodecov',suspendWhenHidden=FALSE)
 
 #' Below I output the current formulation of the ergm 
 #' model so the user can clearly see how their menu selections change the model.
