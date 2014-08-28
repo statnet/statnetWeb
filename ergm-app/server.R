@@ -332,7 +332,7 @@ nwmid <- reactive({
 nwreac <- reactive({
   nw <- nwmid()
   
-  deleteme <- input$deleteattr$right
+  deleteme <- input$deleteattrs$right
   len <- length(deleteme)
   if(len>=1){
       for(i in 1:len){
@@ -346,7 +346,6 @@ nwreac <- reactive({
   }
   nw
 })
-
 
 
 #list of everything in the Pajek project
@@ -737,7 +736,7 @@ output$deleteattrchooser <- renderUI({
   }
   attrlist <- c(vattr, eattr)
   
-  chooserInput('deleteattrs',"Active Attributes","Deleted Attributes",
+  chooserInput('deleteattrs',"Active Attributes","Inactive Attributes",
                leftChoices=attrlist, rightChoices=c(),multiple=TRUE)
 })
 
