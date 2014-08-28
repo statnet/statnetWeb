@@ -215,8 +215,8 @@ observe({
 #add vertex attributes
 observe({
   if(input$newattrButton == 0) return()
-  if(input$newattrtype == 'vertex attribute'){  
-      isolate({
+  isolate({
+      if(input$newattrtype == 'vertex attribute'){
           path <- input$newattrvalue[1,4]
           objname <- load(paste(path))
           newval <- get(objname)
@@ -227,15 +227,15 @@ observe({
                  pos="package:base")
           assign('v_attrValsToAdd', cbind(valsofar, newval),
                  pos="package:base")
-        })
-  }
+        }
+  })
 })
 
 #add edge attributes
 observe({
   if(input$newattrButton == 0) return()
-  if(input$newattrtype == 'edge attribute'){
-      isolate({
+  isolate({
+    if(input$newattrtype == 'edge attribute'){
         path <- input$newattrvalue[1,4]
         objname <- load(paste(path))
         newval <- get(objname)
@@ -246,15 +246,15 @@ observe({
                pos="package:base")
         assign('e_attrValsToAdd', cbind(valsofar, newval),
                pos="package:base")
-      })
-  }
+      }
+  })
 })
 
 #add edge values
 observe({
   if(input$newattrButton == 0) return()
-  if(input$newattrtype == 'edge value'){
-    isolate({
+  isolate({
+    if(input$newattrtype == 'edge value'){
       path <- input$newattrvalue[1,4]
       objname <- load(paste(path))
       newval <- get(objname)
@@ -265,8 +265,8 @@ observe({
              pos="package:base")
       assign('ev_attrValsToAdd', cbind(valsofar, newval),
              pos="package:base")
-    })
-  }
+    }
+  })
 })
 
 #update textInput
@@ -290,6 +290,10 @@ nwmid <- reactive({
       
       v_attrNamesToAdd <- get('v_attrNamesToAdd',pos='package:base')
       v_attrValsToAdd <- get('v_attrValsToAdd', pos='package:base')
+      e_attrNamesToAdd <- get('e_attrNamesToAdd',pos='package:base')
+      e_attrValsToAdd <- get('e_attrValsToAdd', pos='package:base')
+      ev_attrNamesToAdd <- get('ev_attrNamesToAdd',pos='package:base')
+      ev_attrValsToAdd <- get('ev_attrValsToAdd', pos='package:base')
       
       input$newattrButton
       v_numnew <- dim(v_attrNamesToAdd)[2]
@@ -303,18 +307,18 @@ nwmid <- reactive({
       
       e_numnew <- dim(e_attrNamesToAdd)[2]
       if(e_numnew > 1){
-        for (j in 2:e_numnew){
-          e_newname <- as.character(e_attrNamesToAdd[1,j])
-          e_newval <- e_attrValsToAdd[,j]
+        for (k in 2:e_numnew){
+          e_newname <- as.character(e_attrNamesToAdd[1,k])
+          e_newval <- e_attrValsToAdd[,k]
           set.edge.attribute(nw,e_newname,e_newval)
         }
       }
       
       ev_numnew <- dim(ev_attrNamesToAdd)[2]
       if(ev_numnew > 1){
-        for (j in 2:ev_numnew){
-          ev_newname <- as.character(ev_attrNamesToAdd[1,j])
-          ev_newval <- ev_attrValsToAdd[,j]
+        for (l in 2:ev_numnew){
+          ev_newname <- as.character(ev_attrNamesToAdd[1,l])
+          ev_newval <- ev_attrValsToAdd[,l]
           set.edge.value(nw,ev_newname,ev_newval)
         }
       }
@@ -323,7 +327,7 @@ nwmid <- reactive({
     nw
 	})
 
-#delete desired attributes from this network and use it for future
+#delete unwanted attributes from this network and use it for future
 #calculations
 nwreac <- reactive({
   nw <- nwmid()
