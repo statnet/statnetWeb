@@ -191,14 +191,17 @@ shinyUI(
                               ),
                        
                        column(5,strong('Set New Attribute'),
-                              radioButtons('newattrtype', label='Choose attribute type',
+                              conditionalPanel(condition="output.nwsum != 'NA'",
+                                 radioButtons('newattrtype', label='Choose attribute type',
                                            choices=c('vertex attribute',
                                                    'edge attribute',
                                                    'edge value')),
-                              fileInput(inputId='newattrvalue', label=span('Upload a vector or list of attribute',
-                                'values, or a matrix of edge values.')),
-                              textInput('newattrname', label="New attribute name"),
-                              actionButton('newattrButton', label='Set Attribute')
+                                 fileInput(inputId='newattrvalue', label=span('Upload a vector or list of attribute',
+                                                                              'values, or a matrix of edge values.')),
+                                 textInput('newattrname', label="New attribute name"),
+                                 actionButton('newattrButton', label='Set Attribute')              
+                                 )
+                              
                               )
                        
                      ),

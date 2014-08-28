@@ -726,6 +726,7 @@ output$nwattrchooser <- renderUI({
 outputOptions(output,'nwattrchooser',suspendWhenHidden=FALSE)
 
 output$deleteattrchooser <- renderUI({
+  if(!is.network(nwmid())) return()
   vattr <- list.vertex.attributes(nwmid())
   eattr <- list.edge.attributes(nwmid())
   if(is.element("na",vattr)){
