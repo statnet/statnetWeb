@@ -374,7 +374,7 @@ coords <- reactive({
 
 #returns vector of true/falses
 nwattrinit <- reactive({
-  if(!is.network(nwreac())){return()}
+  if(!is.network(nwinit())){return()}
   nwattributes <- c('directed','hyper','loops','multiple','bipartite')
   unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
 })
@@ -713,7 +713,7 @@ output$pajchooser <- renderUI({
 })
 
 output$nwattrchooser <- renderUI({
-  if(!is.network(nwreac())){
+  if(!is.network(nwinit())){
     return()
   }
   checkboxGroupInput('nwattr', label='',

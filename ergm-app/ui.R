@@ -144,7 +144,7 @@ shinyUI(
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(7,
                               br(),
-                              fileInput(inputId='rawdatafile', label=NULL, accept='text/plain'),
+                              fileInput(inputId='rawdatafile', label=NULL, accept='text'),
                               verbatimTextOutput('rawdatafile'))
                           ),
                        conditionalPanel(condition = 'input.filetype == 5',
