@@ -185,9 +185,11 @@ nedges <- reactive({
 #set correct number of rows for the value dataframes, 
 #so that we can add columns later
 observe({
-  vdf <- get("v_attrValsToAdd",pos="package:base")
-  edf <- get("e_attrValsToAdd",pos="package:base")
-  evdf <- get("ev_attrValsToAdd",pos="package:base")
+  nwinit()
+  #reset dataframes when network changes
+  vdf <- data.frame(numeric(0))
+  edf <- data.frame(numeric(0))
+  evdf <- data.frame(numeric(0))
   if (is.network(nwinit())){
     n <- nodes()
     e <- nedges()
@@ -201,6 +203,13 @@ observe({
     assign("v_attrValsToAdd", vdf, pos="package:base")
     assign("e_attrValsToAdd", edf, pos="package:base")
     assign("ev_attrValsToAdd", evdf, pos="package:base")
+    assign('v_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+           pos="package:base" )
+    assign('e_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+           pos="package:base" )
+    assign('ev_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+           pos="package:base" )
+    
   }
 })
 
