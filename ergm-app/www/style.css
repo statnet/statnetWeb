@@ -29,8 +29,8 @@ div.helper-box {
   position:fixed;
   top: 90px;
   right: 20px;
-  max-width: 140px;
-  max-height: 250px;
+  max-width: 150px;
+  max-height: 300px;
   display:none;
   background: #FFFFFF;
   text-align: left;

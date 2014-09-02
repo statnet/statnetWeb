@@ -228,6 +228,7 @@ shinyUI(
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Upload a file of observed network data (must be of a supported type).', 
+           'Edit, add or delete attributes on the "Edit Network" tab.',
            'Sequentially move through the', 
            'tabs at the top of the page to fit an ergm to the', 
            'observed network.'))
@@ -629,7 +630,13 @@ shinyUI(
                        tabPanel('Summary', 
                         verbatimTextOutput('diagnostics'))
                      ),
-                  helperButton(id = 'tab5help')
+                  helperButton(id = 'tab5help'),
+                  div(class="helper-box", style="display:none",
+                      p('Check for model degeneracy. When a model converges properly',
+                        'the MCMC sample statistics should vary randomly around the',
+                        'observed values at each step, and the difference between the',
+                        'observed and simulated values of the sample statistics should',
+                        'have a roughly bell shaped distribution, centered at 0.'))
   
             )
             ),
@@ -684,7 +691,11 @@ shinyUI(
                             verbatimTextOutput('sim.summary')
                             )
                      ),
-                   helperButton(id = 'tab6help')
+                   helperButton(id = 'tab6help'),
+                   div(class="helper-box", style="display:none",
+                       p('Choose how many simulations to run and click "Simulate".',
+                         'Plot any of the simulations, edit the display',
+                         'options and download a PDF of the plot.'))
                    ),
 #' **Help**
 #' 
