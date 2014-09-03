@@ -457,6 +457,16 @@ legendfill <- reactive({
   legendfill
 })
 
+#' Generate R Documentation for terms
+#+ eval=FALSE
+#
+# doc <- reactive({
+#   term <- input$searchterm
+#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
+#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
+#   cat(paste(term3[match(term,term2)]))
+# })
+
 
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
 #' The following reactive expressions take user input and create vectors that can later
