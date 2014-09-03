@@ -451,6 +451,11 @@ shinyUI(
            column(3,
                   uiOutput('listofterms'),
                   actionButton('fitButton', 'Fit Model')),
+           column(9,
+                  dataTableOutput('termstable'))
+           
+         ),
+         fluidRow(
            conditionalPanel(condition = 'output.nwsum != "NA" && input.terms.indexOf("absdiff") > -1',
                             column(2,
                                    uiOutput('dynamicabsdiff'),

@@ -63,6 +63,8 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
+ergmtermsHelp <- read.csv('C:/Users/ebey/Documents/RHome/ergm-shiny/ergmtermsHelp.csv')
+
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
 #' and will never change value, so they can be global variables (common to all
@@ -1099,12 +1101,16 @@ output$listofterms <- renderUI({
   } else if(!nwreac()$gal$bipartite & !nwreac()$gal$bipartite){
     current.terms <- intersect(undir.terms, unip.terms)
   }
-  selectInput('terms',label = 'Choose term(s):',
+  selectInput('terms',label = 'Choose common term(s):',
               current.terms,
               selected='edges',
               multiple=TRUE, 
               width = '4cm')
 })
+
+output$termstable <- renderDataTable({
+  ergmtermsHelp[,1:3]
+}, options = list(aLengthMenu=c(1,2,3,4,5), iDisplayLength=1))
 
 output$dynamicdegree <- renderUI({
   if(!is.network(nwreac())){
