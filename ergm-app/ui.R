@@ -449,6 +449,7 @@ shinyUI(
            ),
          fluidRow(
            column(3,
+                  radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
                   uiOutput('listofterms'),
                   actionButton('fitButton', 'Fit Model')),
            conditionalPanel(condition = 'output.nwsum != "NA" && input.terms.indexOf("absdiff") > -1',
