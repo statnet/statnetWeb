@@ -452,6 +452,12 @@ shinyUI(
                   radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
                   uiOutput('listofterms'),
                   actionButton('fitButton', 'Fit Model')),
+           column(5,
+                  textInput('searchterm',label='Get details of a term'),
+                  verbatimTextOutput('termdetail'))
+           
+         ),
+         fluidRow(
            conditionalPanel(condition = 'output.nwsum != "NA" && input.terms.indexOf("absdiff") > -1',
                             column(2,
                                    uiOutput('dynamicabsdiff'),

@@ -1115,6 +1115,24 @@ output$listofterms <- renderUI({
   
 })
 
+output$termdetail <- renderPrint({
+  myterm <- input$searchterm
+  allterms <- ergmtermsTable[,1]
+  ind <- match(myterm,allterms)
+  
+  p(paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep=""),
+    ergmtermsTable[ind,3],
+    ergmtermsTable[ind,4]
+    )
+})
+
+# doc <- reactive({
+#   term <- input$searchterm
+#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
+#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
+#   cat(paste(term3[match(term,term2)]))
+# })
+
 output$dynamicdegree <- renderUI({
   if(!is.network(nwreac())){
     return()
