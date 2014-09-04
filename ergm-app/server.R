@@ -63,7 +63,7 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
-ergmtermsHelp <- read.csv('C:/Users/ebey/Documents/RHome/ergm-shiny/ergmtermsHelp.csv')
+ergmtermsTable <- read.csv('C:/Users/ebey/Documents/RHome/ergm-shiny/ergmtermsHelp.csv')
 
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
@@ -459,15 +459,6 @@ legendfill <- reactive({
   legendfill
 })
 
-#' Generate R Documentation for terms
-#+ eval=FALSE
-#
-# doc <- reactive({
-#   term <- input$searchterm
-#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
-#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
-#   cat(paste(term3[match(term,term2)]))
-# })
 
 
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
@@ -1108,9 +1099,6 @@ output$listofterms <- renderUI({
               width = '4cm')
 })
 
-output$termstable <- renderDataTable({
-  ergmtermsHelp[,1:3]
-}, options = list(aLengthMenu=c(1,2,3,4,5), iDisplayLength=1))
 
 output$dynamicdegree <- renderUI({
   if(!is.network(nwreac())){

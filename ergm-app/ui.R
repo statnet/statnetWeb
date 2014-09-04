@@ -139,8 +139,8 @@ shinyUI(
                      fluidRow(
                        column(5,
                               radioButtons('filetype',label=h5('File type'),
-                                           choices=c('statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data'=4, 'pre-loaded sample network'=5))),
+                                           choices=c('pre-loaded sample network'=5, 'statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
+                                                     'matrix of relational data'=4))),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(7,
                               br(),
@@ -450,11 +450,11 @@ shinyUI(
          fluidRow(
            column(3,
                   uiOutput('listofterms'),
-                  actionButton('fitButton', 'Fit Model')),
-           column(9,
-                  dataTableOutput('termstable'))
+                  actionButton('fitButton', 'Fit Model'))
+        
            
          ),
+         br(),
          fluidRow(
            conditionalPanel(condition = 'output.nwsum != "NA" && input.terms.indexOf("absdiff") > -1',
                             column(2,
