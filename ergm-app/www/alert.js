@@ -21,3 +21,16 @@ $(document).ready(function(){
     $(".graphlevelbox").toggle(1000);
   });
 });
+/*
+window.onload = function(){ 
+  //Get submit button
+  var submitbutton = document.getElementById("tfq");
+	//Add listener to submit button
+	if(submitbutton.addEventListener){
+		submitbutton.addEventListener("click", function() {
+			if (submitbutton.value == 'Search for a term'){
+				submitbutton.value = '';
+			}
+		});
+	}
+}*/

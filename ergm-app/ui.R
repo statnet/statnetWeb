@@ -139,8 +139,8 @@ shinyUI(
                      fluidRow(
                        column(5,
                               radioButtons('filetype',label=h5('File type'),
-                                           choices=c('statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data'=4, 'pre-loaded sample network'=5))),
+                                           choices=c('pre-loaded sample network'=5, 'statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
+                                                     'matrix of relational data'=4))),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(7,
                               br(),
@@ -451,10 +451,16 @@ shinyUI(
            column(3,
                   radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
                   uiOutput('listofterms'),
-                  actionButton('fitButton', 'Fit Model')),
-           column(5,
-                  textInput('searchterm',label='Get details of a term'),
-                  verbatimTextOutput('termdetail'))
+                  actionButton('fitButton', 'Fit Model'))
+#            column(8,
+# #                   textInput('searchterm',label='Term documentation',
+# #                             value='Search for a term'),
+#                   tags$div(id="tfheader",
+#                            tags$form(id="tfnewsearch",method="get",action="http://www.google.com",
+#                                      tags$input(type='text',id='tfq',class='tftextinput2',name='q',size='21',
+#                                                 maxlength='120', value='Search for a term'),
+#                                      tags$input(type='submit', value='>',class='tfbutton2'))),
+#                   verbatimTextOutput('termdetail'))
            
          ),
          fluidRow(

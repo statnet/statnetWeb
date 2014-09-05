@@ -1119,7 +1119,9 @@ output$termdetail <- renderPrint({
   myterm <- input$searchterm
   allterms <- ergmtermsTable[,1]
   ind <- match(myterm,allterms)
-  
+  if(!any(input$searchterm==allterms)){
+    return(cat('No matches'))
+  }
   p(paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep=""),
     ergmtermsTable[ind,3],
     ergmtermsTable[ind,4]
