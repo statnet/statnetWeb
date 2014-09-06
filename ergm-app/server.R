@@ -948,7 +948,8 @@ outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
 output$mixingmatrix <- renderPrint({
   if(!is.network(nwreac())) {return()}
-  mixingmatrix(nwreac(), input$mixmx)
+  if(!is.null(input$mixmx)){
+  mixingmatrix(nwreac(), input$mixmx)}
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
