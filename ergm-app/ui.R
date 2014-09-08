@@ -120,14 +120,21 @@ shinyUI(
 #' 
 #+ eval=FALSE
   tabPanel('Data Upload',
-           #add javascript in busy.js (for calculation in progress boxes)
-           #and alert.js (for helper boxes) to head of HTML document
+           #busy.js is for calculation in progress boxes
+           #alert.js is for helper boxes
+           #jquery libraries are loaded from google cdn
            #this tagList command has to go inside a tabPanel
            tagList(
              tags$head(
                tags$link(rel="stylesheet", type="text/css",href="style.css"),
-               tags$script(type="text/javascript", src = "busy.js"),
-               tags$script(type="text/javascript", src = "alert.js")
+               tags$link(rel="stylesheet", type="text/css",href="autocomplete.css"),
+               tags$link(rel="stylesheet", type="text/css",
+                         href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css"),
+               tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"),
+               tags$script(type="text/javascript", src="autocomplete.js"),
+               tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"),
+               tags$script(type="text/javascript", src="busy.js"),
+               tags$script(type="text/javascript", src="alert.js")
              )
            ),
     br(),     
@@ -455,16 +462,16 @@ shinyUI(
            column(3,
                   radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
                   uiOutput('listofterms'),
-                  actionButton('fitButton', 'Fit Model'))
-#            column(8,
-# #                   textInput('searchterm',label='Term documentation',
-# #                             value='Search for a term'),
-#                   tags$div(id="tfheader",
-#                            tags$form(id="tfnewsearch",method="get",action="http://www.google.com",
-#                                      tags$input(type='text',id='tfq',class='tftextinput2',name='q',size='21',
-#                                                 maxlength='120', value='Search for a term'),
-#                                      tags$input(type='submit', value='>',class='tfbutton2'))),
-#                   verbatimTextOutput('termdetail'))
+                  actionButton('fitButton', 'Fit Model')),
+           column(9,
+                  textInput(inputId="termsearch", label="Term documentation"),
+                  wellPanel(span(
+                    strong(textOutput("termname")),
+                    textOutput("termval"),
+                    br(),
+                    textOutput("termdoc"),
+                    style="font-family:Courier;")))
+                  
            
          ),
          fluidRow(

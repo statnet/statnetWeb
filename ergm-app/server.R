@@ -63,7 +63,7 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
-ergmtermsTable <- read.csv('C:/Users/ebey/Documents/RHome/ergm-shiny/ergmtermsHelp.csv')
+ergmtermsTable <- read.csv('www/ergmtermsHelp.csv')
 
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
@@ -463,7 +463,7 @@ legendfill <- reactive({
 #+ eval=FALSE
 #
 # doc <- reactive({
-#   term <- input$searchterm
+#   term <- input$termsearch
 #   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
 #   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
 #   cat(paste(term3[match(term,term2)]))
@@ -1116,21 +1116,39 @@ output$listofterms <- renderUI({
   
 })
 
-output$termdetail <- renderPrint({
-  myterm <- input$searchterm
+output$termname <- renderPrint({
+  myterm <- input$termsearch
   allterms <- ergmtermsTable[,1]
   ind <- match(myterm,allterms)
-  if(!any(input$searchterm==allterms)){
+  if(!any(input$termsearch==allterms)){
     return(cat('No matches'))
   }
-  p(paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep=""),
-    ergmtermsTable[ind,3],
-    ergmtermsTable[ind,4]
-    )
+  name <- paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep="")
+  return(cat(name))
+})
+
+output$termval <- renderPrint({
+  myterm <- input$termsearch
+  allterms <- ergmtermsTable[,1]
+  ind <- match(myterm,allterms)
+  if(!any(input$termsearch==allterms)){
+    return(cat())
+  }
+  return(cat(paste(ergmtermsTable[ind,3])))
+})
+
+output$termdoc <- renderPrint({
+  myterm <- input$termsearch
+  allterms <- ergmtermsTable[,1]
+  ind <- match(myterm,allterms)
+  if(!any(input$termsearch==allterms)){
+    return(cat())
+  }
+  return(cat(paste(ergmtermsTable[ind,4])))
 })
 
 # doc <- reactive({
-#   term <- input$searchterm
+#   term <- input$termsearch
 #   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
 #   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
 #   cat(paste(term3[match(term,term2)]))
