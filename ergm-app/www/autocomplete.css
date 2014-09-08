@@ -5,7 +5,7 @@
  
 /* scroll results */
 .ui-autocomplete {
-    max-height: 250px;
+    max-height: 200px;
     overflow-y: auto;
     /* prevent horizontal scrollbar */
     overflow-x: hidden;
@@ -14,12 +14,12 @@
 }
  
 .ui-autocomplete li {
-    font-size: 16px;
+    font-size: 14px;
 }
  
 /* IE 6 doesn't support max-height
 * we use height instead, but this forces the menu to always be this tall
 */
 * html .ui-autocomplete {
-    height: 250px;
+    height: 200px;
 }

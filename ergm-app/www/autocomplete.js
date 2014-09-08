@@ -1,14 +1,14 @@
 $(function() {
  
     $("#termsearch").autocomplete({
-        source: "www/termnames.txt",
+        source: "termnames.txt",
         minLength: 2,
-        select: function(event, ui) {
+        /*select: function(event, ui) {
             var url = ui.item.id;
             if(url != '#') {
                 location.href = '/blog/' + url;
             }
-        },
+        },*/
  
       
  
