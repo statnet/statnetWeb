@@ -301,34 +301,24 @@ shinyUI(
                    ),
                    h5('Graph-level descriptive indices', class="graphleveltitle"),
                    wellPanel(fluidRow(
-                     column(4,
-                          br(),
-                          span(
-                            p('Reciprocity:',style='padding-top:8px'),
-                            p('Transitivity:'),
-                            p('Density:'),
-                            style='font-size:12px; line-height:26px; margin-top:10px;')
-                        ),
-                     column(3,
-                        span(
-                         #br(),
-                         p(textOutput('grecip'), style='padding-top:16px'),
-                         p(textOutput('gtrans')), 
-                         p(textOutput('gden')),
-                         style='font-family:Courier; line-height:27px; margin-top:10px;')
-                            ),
-                     column(5,
-                          tags$u('Measure'),
-                          br(),
-                          inlineSelectInput('grecipmeas',label=NULL,
-                               choices=c('dyadic','dyadic.nonnull','edgewise',
-                                         'edgewise.lrr','correlation'),
-                               selectize=FALSE, style='margin-top:5px;'),
-                          br(),
-                          inlineSelectInput('gtransmeas',label=NULL,
-                               choices=c('weak','strong','weakcensus',
-                                         'strongcensus','rank','correlation'),
-                               selectize=FALSE, style='margin-top:0px;'))
+                     column(4, offset=7,tags$u('Measure')),
+                     fluidRow(
+                     column(4, p('Reciprocity:', class='stitle')),
+                     column(3, p(textOutput('grecip'), class='snum')),
+                     column(4, inlineSelectInput('grecipmeas',label=NULL,
+                                 choices=c('dyadic','dyadic.nonnull','edgewise',
+                                           'edgewise.lrr','correlation'),
+                                 selectize=FALSE, style='margin-top:5px;'))),
+                     fluidRow(
+                     column(4, p('Transitivity:'), class='stitle'),
+                     column(3, p(textOutput('gtrans'), class='snum')),
+                     column(4, inlineSelectInput('gtransmeas',label=NULL,
+                                    choices=c('weak','strong','weakcensus',
+                                              'strongcensus','rank','correlation'),
+                                    selectize=FALSE, style='margin-top:0px;'))),
+                     fluidRow(
+                     column(4, p('Density:', class='stitle')),
+                     column(3, p(textOutput('gden'), class='snum')))
                    ), class="graphlevelbox"),
                    
                    h5('Node-level descriptive indices', class="nodeleveltitle"),
@@ -337,59 +327,59 @@ shinyUI(
                                 min=1),
                      tags$hr(),
                      fluidRow(
-                     column(4,
-                            span(
-                              br(),
-                              p('Degree:',style='padding-top:10px;'),
-                              p('Betweenness:'),
-                              p('Closeness:'),
-                              p('Stress Centrality:'),
-                              p('(Harary) Graph Centrality:'),
-                              p('Eigenvector Centrality:'),
-                              p('Information Centrality:'),
-                              style='font-size:12px; line-height:24px; margin-top:10px;')
-                            ),
-                     column(3,
-                        br(),
-                          span(
-                          p(textOutput('ndeg')),
-                          p(textOutput('nbetw')),
-                          p(textOutput('nclose')),
-                          p(textOutput('nstress')),
-                          p(textOutput('ngraphcent')),
-                          p(textOutput('nevcent')),
-                          p(textOutput('ninfocent')),
-                          style='font-family:Courier; line-height:25px;')
-                            ),
-                     column(5,
-                            tags$u('Centrality mode'),
-                            br(),
-                            inlineSelectInput('ndegcmode', label=NULL,
-                                              choices=c('indegree', 'outdegree', 'freeman'),
-                                              style='margin-top:5px;'),br(),
-                            inlineSelectInput('nbetwcmode', label=NULL,
-                                              choices=c('directed','undirected',
-                                                        'endpoints','proximalsrc',
-                                                        'proximaltar','proximalsum',
-                                                        'lengthscaled', 'linearscaled'),
-                                              style='margin-top:0px;'),br(),
-                            inlineSelectInput('nclosecmode', label=NULL,
-                                              choices=c('directed','undirected',
-                                                        'suminvdir','suminvundir',
-                                                        'gil-schmidt'),
-                                              style='margin-top:0px;'),br(),
-                            inlineSelectInput('nstresscmode', label=NULL,
-                                              choices=c('directed','undirected'),
-                                              style='margin-top:0px;'),br(),
-                            inlineSelectInput('ngraphcentcmode', label=NULL,
-                                              choices=c('directed', 'undirected'),
-                                              style='margin-top:0px;'),
-                            br(),br(),
-                            inlineSelectInput('ninfocentcmode',label=NULL,
-                                              choices=c('weak', 'strong', 'upper',
-                                                        'lower'), style='margin-top:12px;')
-                            )
-                     
+                       column(4, offset=7, tags$u('Centrality mode')),
+                       fluidRow(
+                         column(4, p('Degree:', class='stitle')),
+                         column(3, p(textOutput('ndeg'), class='snum')),
+                         column(4, inlineSelectInput('ndegcmode', label=NULL,
+                                                     choices=c('indegree', 'outdegree', 'freeman'),
+                                                     style='margin-top:5px;'))
+                         ),
+                       fluidRow(
+                         column(4, p('Betweenness:', class='stitle')),
+                         column(3, p(textOutput('nbetw'), class='snum')),
+                         column(4, inlineSelectInput('nbetwcmode', label=NULL,
+                                                     choices=c('directed','undirected',
+                                                               'endpoints','proximalsrc',
+                                                               'proximaltar','proximalsum',
+                                                               'lengthscaled', 'linearscaled'),
+                                                     style='margin-top:0px;'))
+                         ),
+                       fluidRow(
+                         column(4, p('Closeness:', class='stitle')),
+                         column(3, p(textOutput('nclose'), class='snum')),
+                         column(4, inlineSelectInput('nclosecmode', label=NULL,
+                                                     choices=c('directed','undirected',
+                                                               'suminvdir','suminvundir',
+                                                               'gil-schmidt'),
+                                                     style='margin-top:0px;'))
+                         ),
+                       fluidRow(
+                         column(4, p('Stress Centrality:', class='stitle')),
+                         column(3, p(textOutput('nstress'), class='snum')),
+                         column(4, inlineSelectInput('nstresscmode', label=NULL,
+                                                     choices=c('directed','undirected'),
+                                                     style='margin-top:0px;'))
+                         ),
+                       fluidRow(
+                         column(4, p('(Harary) Graph Centrality:', class='stitle')),
+                         column(3, p(textOutput('ngraphcent'), class='snum')),
+                         column(4, inlineSelectInput('ngraphcentcmode', label=NULL,
+                                                     choices=c('directed', 'undirected'),
+                                                     style='margin-top:0px;'))
+                         ),
+                       fluidRow(
+                         column(4, p('Eigenvector Centrality:', class='stitle')),
+                         column(3, p(textOutput('nevcent'), class='snum')),
+                         column(4, br())
+                         ),
+                       fluidRow(
+                         column(4, p('Information Centrality:', class='stitle')),
+                         column(3, p(textOutput('ninfocent'), class='snum')),
+                         column(4, inlineSelectInput('ninfocentcmode',label=NULL,
+                                                     choices=c('weak', 'strong', 'upper',
+                                                               'lower'), style='margin-top:0px;'))
+                         )
                      ), class="nodelevelbox")
                    
                    
