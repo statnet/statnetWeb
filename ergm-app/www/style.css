@@ -41,25 +41,29 @@ div.helper-box {
   z-index: 1;
 }
 
-.mixmxbox {
-  display:none;
-}
-.graphlevelbox {
-  display:none;
-}
-.nodelevelbox {
+.mixmxbox, .graphlevelbox,
+.nodelevelbox{
   display:none;
 }
 
-.mixmxtitle {
-  cursor:pointer;
-}
-.graphleveltitle {
-  cursor:pointer;
-}
+
+.mixmxtitle, .graphleveltitle,
 .nodeleveltitle {
   cursor:pointer;
 }
+
+.stitle {
+  font-size:12px; 
+  line-height:26px; 
+  margin-top:10px;
+}
+.snum {
+  font-family:Courier;
+  font-size:12px;
+  line-height:27px; 
+  margin-top:10px;
+}
+
 
 div#sourceFields {
 display: none;
@@ -96,3 +100,4 @@ float: right;
 .left, .right {
   width: 150px;
 }
+

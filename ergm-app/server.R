@@ -458,6 +458,18 @@ legendfill <- reactive({
   legendfill
 })
 
+<<<<<<< HEAD
+=======
+#' Generate R Documentation for terms
+#+ eval=FALSE
+#
+# doc <- reactive({
+#   term <- input$termsearch
+#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
+#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
+#   cat(paste(term3[match(term,term2)]))
+# })
+>>>>>>> allterms
 
 
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
@@ -936,7 +948,8 @@ outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
 output$mixingmatrix <- renderPrint({
   if(!is.network(nwreac())) {return()}
-  mixingmatrix(nwreac(), input$mixmx)
+  if(!is.null(input$mixmx)){
+  mixingmatrix(nwreac(), input$mixmx)}
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
@@ -1080,21 +1093,67 @@ output$listofterms <- renderUI({
   if(!is.network(nwreac())){
     return()
   }
-  if(nwreac()$gal$directed & nwreac()$gal$bipartite){
-    current.terms <- intersect(dir.terms, bip.terms)
-  } else if(nwreac()$gal$directed) {
-    current.terms <- intersect(dir.terms, unip.terms)
-  } else if(nwreac()$gal$bipartite){
-    current.terms <- intersect(undir.terms, bip.terms)
-  } else if(!nwreac()$gal$bipartite & !nwreac()$gal$bipartite){
-    current.terms <- intersect(undir.terms, unip.terms)
+  if(input$commonorall == 'Common terms'){
+        
+      if(nwreac()$gal$directed & nwreac()$gal$bipartite){
+        current.terms <- intersect(dir.terms, bip.terms)
+      } else if(nwreac()$gal$directed) {
+        current.terms <- intersect(dir.terms, unip.terms)
+      } else if(nwreac()$gal$bipartite){
+        current.terms <- intersect(undir.terms, bip.terms)
+      } else if(!nwreac()$gal$bipartite & !nwreac()$gal$bipartite){
+        current.terms <- intersect(undir.terms, unip.terms)
+      }
+      
+  } else {
+    current.terms <- ergmtermsTable$name
   }
-  selectInput('terms',label = 'Choose common term(s):',
-              current.terms,
-              selected='edges',
-              multiple=TRUE, 
-              width = '4cm')
+
+  selectInput('terms',label = 'Choose term(s):',
+                  current.terms,
+                  selected='edges',
+                  multiple=TRUE, 
+                  width = '4cm')
+  
 })
+
+output$termname <- renderPrint({
+  myterm <- input$termsearch
+  allterms <- ergmtermsTable[,1]
+  ind <- match(myterm,allterms)
+  if(!any(input$termsearch==allterms)){
+    return(cat('No matches'))
+  }
+  name <- paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep="")
+  return(cat(name))
+})
+
+output$termval <- renderPrint({
+  myterm <- input$termsearch
+  allterms <- ergmtermsTable[,1]
+  ind <- match(myterm,allterms)
+  if(!any(input$termsearch==allterms)){
+    return(cat())
+  }
+  return(cat(paste(ergmtermsTable[ind,3])))
+})
+
+output$termdoc <- renderPrint({
+  myterm <- input$termsearch
+  allterms <- ergmtermsTable[,1]
+  ind <- match(myterm,allterms)
+  if(!any(input$termsearch==allterms)){
+    return(cat())
+  }
+  return(cat(paste(ergmtermsTable[ind,4])))
+})
+
+# doc <- reactive({
+#   term <- input$termsearch
+#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
+#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
+#   cat(paste(term3[match(term,term2)]))
+# })
 
 
 output$dynamicdegree <- renderUI({
