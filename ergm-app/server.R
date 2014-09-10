@@ -97,6 +97,8 @@ assign('ev_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
 assign('ev_attrValsToAdd', data.frame(numeric(0)),  
        pos="package:base")
 
+assign('input_termslist', data.frame(character(0), stringsAsFactors=FALSE),
+       pos="package:base")
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -464,147 +466,148 @@ legendfill <- reactive({
 #' The following reactive expressions take user input and create vectors that can later
 #' be used as terms in an ergm formula.
 #+ eval=FALSE    
-absdiff.terms <- reactive({
-    aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
-                    input$absdiffpow,")", sep="")
-  if(!any(input$terms == 'absdiff')){
-    aterms <- NULL
-  }
-  aterms
-})
-
-gwesp.terms <- reactive({
-  gterms <- paste("gwesp(",input$choosegwesp,
-                  ", fixed = ",input$fixgwesp,")", sep="")
-  if (!any(input$terms == 'gwesp')){
-    gterms <- NULL
-  }
-  gterms})
-
-b1degree.terms <- reactive({
-  bterms <- paste("b1degree(",input$chooseb1degree,")", sep="")
-  if(input$chooseb1degree2 != ''){
-    bterms <- paste("b1degree(c(",input$chooseb1degree2,"))", sep="")
-  }
-  if(!any(input$terms == 'b1degree')){
-    bterms <- NULL
-  }
-  bterms})
-
-b2degree.terms <- reactive({
-  bterms <- paste("b2degree(",input$chooseb2degree,")", sep="")
-  if(input$chooseb2degree2 != ''){
-    bterms <- paste("b2degree(c(",input$chooseb2degree2,"))", sep="")
-  }
-  if(!any(input$terms == 'b2degree')){
-    bterms <- NULL
-  }
-  bterms})
-
-degree.terms <- reactive({
-  dterms <- paste("degree(",input$choosedegree,")", sep="")
-  if(input$choosedegree2 != ''){
-    dterms <- paste("degree(c(",input$choosedegree2,"))", sep="")
-  }
-  if(!any(input$terms == 'degree')){
-    dterms <- NULL
-  }
-  dterms})
-
-idegree.terms <- reactive({
-  dterms <- paste("idegree(",input$chooseidegree,")", sep="")
-  if(input$chooseidegree2 != ''){
-    dterms <- paste("idegree(c(",input$chooseidegree2,"))", sep="")
-  }
-  if(!any(input$terms == 'idegree')){
-    dterms <- NULL
-  }
-  dterms})
-
-odegree.terms <- reactive({
-  dterms <- paste("odegree(",input$chooseodegree,")", sep="")
-  if(input$chooseodegree2 != ''){
-    dterms <- paste("odegree(c(",input$chooseodegree2,"))", sep="")
-  }
-  if(!any(input$terms == 'odegree')){
-    dterms <- NULL
-  }
-  dterms})
-
-nodefactor.terms <- reactive({
-  if(input$nodefactorbase ==''){
-    nterms <- paste("nodefactor('",input$choosenodefactor,"')", sep="")
-  } else {
-    nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
-                    input$nodefactorbase,")", sep="")
-  }
-  if(!any(input$terms == 'nodefactor')){
-    nterms <- NULL
-  }
-  nterms
-})
-
-nodematch.terms <- reactive({
-  middle <- paste(input$choosenodematch, collapse="', '")
-  if(input$nodematchkeep == ''){
-    nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
-                    input$nodematchdiff,")", sep="")
-  } else {
-    nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
-                    input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
-  }
-  if(!any(input$terms == 'nodematch')){
-    nterms <- NULL
-  }
-  nterms})
-
-nodemix.terms <- reactive({
-  middle <- paste(input$choosenodemix, collapse="', '")
-  if(input$nodemixbase == ''){
-    nterms <- paste("nodemix(c('",middle,
-                    "'))",sep="")
-  } else {
-    nterms <- paste("nodemix(c('",middle,
-                    "'), base=",input$nodemixbase,")",sep="")
-  }
-  if(!any(input$terms == 'nodemix')){
-    nterms <- NULL
-  }
-  nterms
-})
-
-nodecov.terms <- reactive({
-    nterms <- paste("nodecov('",input$choosenodecov,
-                    "')",sep="")
-  if(!any(input$terms == 'nodecov')){
-    nterms <- NULL
-  }
-  nterms
-})
+# absdiff.terms <- reactive({
+#     aterms <- paste("absdiff('",input$chooseabsdiff,"', pow=",
+#                     input$absdiffpow,")", sep="")
+#   if(!any(input$terms == 'absdiff')){
+#     aterms <- NULL
+#   }
+#   aterms
+# })
+# 
+# gwesp.terms <- reactive({
+#   gterms <- paste("gwesp(",input$choosegwesp,
+#                   ", fixed = ",input$fixgwesp,")", sep="")
+#   if (!any(input$terms == 'gwesp')){
+#     gterms <- NULL
+#   }
+#   gterms})
+# 
+# b1degree.terms <- reactive({
+#   bterms <- paste("b1degree(",input$chooseb1degree,")", sep="")
+#   if(input$chooseb1degree2 != ''){
+#     bterms <- paste("b1degree(c(",input$chooseb1degree2,"))", sep="")
+#   }
+#   if(!any(input$terms == 'b1degree')){
+#     bterms <- NULL
+#   }
+#   bterms})
+# 
+# b2degree.terms <- reactive({
+#   bterms <- paste("b2degree(",input$chooseb2degree,")", sep="")
+#   if(input$chooseb2degree2 != ''){
+#     bterms <- paste("b2degree(c(",input$chooseb2degree2,"))", sep="")
+#   }
+#   if(!any(input$terms == 'b2degree')){
+#     bterms <- NULL
+#   }
+#   bterms})
+# 
+# degree.terms <- reactive({
+#   dterms <- paste("degree(",input$choosedegree,")", sep="")
+#   if(input$choosedegree2 != ''){
+#     dterms <- paste("degree(c(",input$choosedegree2,"))", sep="")
+#   }
+#   if(!any(input$terms == 'degree')){
+#     dterms <- NULL
+#   }
+#   dterms})
+# 
+# idegree.terms <- reactive({
+#   dterms <- paste("idegree(",input$chooseidegree,")", sep="")
+#   if(input$chooseidegree2 != ''){
+#     dterms <- paste("idegree(c(",input$chooseidegree2,"))", sep="")
+#   }
+#   if(!any(input$terms == 'idegree')){
+#     dterms <- NULL
+#   }
+#   dterms})
+# 
+# odegree.terms <- reactive({
+#   dterms <- paste("odegree(",input$chooseodegree,")", sep="")
+#   if(input$chooseodegree2 != ''){
+#     dterms <- paste("odegree(c(",input$chooseodegree2,"))", sep="")
+#   }
+#   if(!any(input$terms == 'odegree')){
+#     dterms <- NULL
+#   }
+#   dterms})
+# 
+# nodefactor.terms <- reactive({
+#   if(input$nodefactorbase ==''){
+#     nterms <- paste("nodefactor('",input$choosenodefactor,"')", sep="")
+#   } else {
+#     nterms <- paste("nodefactor('",input$choosenodefactor,"', base=",
+#                     input$nodefactorbase,")", sep="")
+#   }
+#   if(!any(input$terms == 'nodefactor')){
+#     nterms <- NULL
+#   }
+#   nterms
+# })
+# 
+# nodematch.terms <- reactive({
+#   middle <- paste(input$choosenodematch, collapse="', '")
+#   if(input$nodematchkeep == ''){
+#     nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
+#                     input$nodematchdiff,")", sep="")
+#   } else {
+#     nterms <- paste("nodematch('",input$choosenodematch,"', diff=", 
+#                     input$nodematchdiff,", keep=",input$nodematchkeep,")", sep="")
+#   }
+#   if(!any(input$terms == 'nodematch')){
+#     nterms <- NULL
+#   }
+#   nterms})
+# 
+# nodemix.terms <- reactive({
+#   middle <- paste(input$choosenodemix, collapse="', '")
+#   if(input$nodemixbase == ''){
+#     nterms <- paste("nodemix(c('",middle,
+#                     "'))",sep="")
+#   } else {
+#     nterms <- paste("nodemix(c('",middle,
+#                     "'), base=",input$nodemixbase,")",sep="")
+#   }
+#   if(!any(input$terms == 'nodemix')){
+#     nterms <- NULL
+#   }
+#   nterms
+# })
+# 
+# nodecov.terms <- reactive({
+#     nterms <- paste("nodecov('",input$choosenodecov,
+#                     "')",sep="")
+#   if(!any(input$terms == 'nodecov')){
+#     nterms <- NULL
+#   }
+#   nterms
+# })
 
 
 #' `ergm.terms` is a compilation of all the terms entered,
 #' which we then use to create a complete formula. 
 #' 
-#+ eval=FALSE    
+#+ eval=FALSE  
+
+observe({
+  if(input$addtermButton==0) return()
+  isolate({
+    valsofar <- get('input_termslist',pos='package:base')
+    newval <- input$terms
+    assign('input_termslist', rbind(valsofar, newval),
+           pos='package:base')
+  })
+})
+
 ergm.terms <- reactive({
-  interms <- input$terms
-  #all terms with extra menus associated
-  menuterms <- c('absdiff', 'gwesp', 'degree', 'idegree', 'odegree', 'nodecov',
-                 'nodematch', 'nodemix', 'nodefactor', 'b1degree', 'b2degree')
-  #remove terms from formula if they are already counted with their menu options
-  for(i in 1:length(menuterms)){
-    if(any(interms == menuterms[i])){
-      interms <- interms[-which(interms == menuterms[i])]
-    }
-  }
-  paste(c(interms, absdiff.terms(), b1degree.terms(), b2degree.terms(),
-          gwesp.terms(), degree.terms(), idegree.terms(), odegree.terms(),
-          nodecov.terms(), nodefactor.terms(), nodematch.terms(), 
-          nodemix.terms()), sep = '', collapse = '+')
+  if(input$addtermButton==0) return('NA')
+  interms <- get('input_termslist', pos='package:base')
+  paste(interms, sep = '+')
   })
 
 ergm.formula <- reactive({
+  if(ergm.terms()=='NA')return()
   formula(paste('nwreac() ~ ',ergm.terms(), sep = ''))})
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
@@ -1097,19 +1100,19 @@ output$listofterms <- renderUI({
     current.terms <- ergmtermsTable$name
   }
 
-  selectInput('terms',label = 'Choose term(s):',
+  selectInput('termdoc',label = 'Choose term(s):',
                   current.terms,
                   selected='edges',
-                  multiple=TRUE, 
-                  width = '4cm')
+                  multiple=FALSE, 
+                  selectize=FALSE)
   
 })
 
 output$termname <- renderPrint({
-  myterm <- input$termsearch
+  myterm <- input$termdoc
   allterms <- ergmtermsTable[,1]
   ind <- match(myterm,allterms)
-  if(!any(input$termsearch==allterms)){
+  if(!any(input$termdoc==allterms)){
     return(cat('No matches'))
   }
   name <- paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep="")
@@ -1117,162 +1120,155 @@ output$termname <- renderPrint({
 })
 
 output$termval <- renderPrint({
-  myterm <- input$termsearch
+  myterm <- input$termdoc
   allterms <- ergmtermsTable[,1]
   ind <- match(myterm,allterms)
-  if(!any(input$termsearch==allterms)){
+  if(!any(input$termdoc==allterms)){
     return(cat())
   }
   return(cat(paste(ergmtermsTable[ind,3])))
 })
 
 output$termdoc <- renderPrint({
-  myterm <- input$termsearch
+  myterm <- input$termdoc
   allterms <- ergmtermsTable[,1]
   ind <- match(myterm,allterms)
-  if(!any(input$termsearch==allterms)){
+  if(!any(input$termdoc==allterms)){
     return(cat())
   }
   return(cat(paste(ergmtermsTable[ind,4])))
 })
 
-# doc <- reactive({
-#   term <- input$termsearch
-#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
-#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
-#   cat(paste(term3[match(term,term2)]))
+
+# output$dynamicdegree <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('choosedegree', 
+#               label = 'Choose degree(s)',
+#               choices=paste(0:(as.numeric(nodes())-1)),
+#               selected = 1,
+#               multiple = TRUE,
+#               width = '3cm')
 # })
-
-
-output$dynamicdegree <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('choosedegree', 
-              label = 'Choose degree(s)',
-              choices=paste(0:(as.numeric(nodes())-1)),
-              selected = 1,
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicdegree',suspendWhenHidden=FALSE)
-
-output$dynamicb1degree <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('chooseb1degree',
-              label = 'Choose degree(s)',
-              choices=paste(0:(as.numeric(nodes())-1)),
-              selected = 1,
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicb1degree',suspendWhenHidden=FALSE)
-
-output$dynamicb2degree <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('chooseb2degree',
-              label = 'Choose degree(s)',
-              choices=paste(0:(as.numeric(nodes())-1)),
-              selected = 1,
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicb2degree',suspendWhenHidden=FALSE)
-
-output$dynamicidegree <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('chooseidegree',
-              label = 'Choose in-degree(s)',
-              choices=paste(0:(as.numeric(nodes())-1)),
-              selected = 1,
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicidegree',suspendWhenHidden=FALSE)
-
-output$dynamicodegree <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('chooseodegree',
-              label = 'Choose out-degree(s)',
-              choices=paste(0:(as.numeric(nodes())-1)),
-              selected = 1,
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicodegree',suspendWhenHidden=FALSE)
-
-output$dynamicabsdiff <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('chooseabsdiff',
-              label = 'Attribute for absdiff',
-              numattr(),
-              selected = numattr()[1],
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicabsdiff',suspendWhenHidden=FALSE)
-
-output$dynamicnodefactor <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('choosenodefactor',
-              label = 'Attribute for nodefactor',
-              menuattr(),
-              selected = menuattr()[1],
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicnodefactor',suspendWhenHidden=FALSE)
-
-output$dynamicnodematch <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('choosenodematch', 
-              label = 'Attribute for nodematch',
-              menuattr(),
-              selected = menuattr()[1],
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicnodematch',suspendWhenHidden=FALSE)
-
-output$dynamicnodemix <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('choosenodemix',
-              label = 'Attribute for nodemix',
-              menuattr(),
-              selected = menuattr()[1],
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicnodemix',suspendWhenHidden=FALSE)
-
-output$dynamicnodecov <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  selectInput('choosenodecov',
-              label = 'Attribute for nodecov',
-              numattr(),
-              selected = numattr()[1],
-              multiple = TRUE,
-              width = '3cm')
-})
-outputOptions(output,'dynamicnodecov',suspendWhenHidden=FALSE)
+# outputOptions(output,'dynamicdegree',suspendWhenHidden=FALSE)
+# 
+# output$dynamicb1degree <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('chooseb1degree',
+#               label = 'Choose degree(s)',
+#               choices=paste(0:(as.numeric(nodes())-1)),
+#               selected = 1,
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicb1degree',suspendWhenHidden=FALSE)
+# 
+# output$dynamicb2degree <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('chooseb2degree',
+#               label = 'Choose degree(s)',
+#               choices=paste(0:(as.numeric(nodes())-1)),
+#               selected = 1,
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicb2degree',suspendWhenHidden=FALSE)
+# 
+# output$dynamicidegree <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('chooseidegree',
+#               label = 'Choose in-degree(s)',
+#               choices=paste(0:(as.numeric(nodes())-1)),
+#               selected = 1,
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicidegree',suspendWhenHidden=FALSE)
+# 
+# output$dynamicodegree <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('chooseodegree',
+#               label = 'Choose out-degree(s)',
+#               choices=paste(0:(as.numeric(nodes())-1)),
+#               selected = 1,
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicodegree',suspendWhenHidden=FALSE)
+# 
+# output$dynamicabsdiff <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('chooseabsdiff',
+#               label = 'Attribute for absdiff',
+#               numattr(),
+#               selected = numattr()[1],
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicabsdiff',suspendWhenHidden=FALSE)
+# 
+# output$dynamicnodefactor <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('choosenodefactor',
+#               label = 'Attribute for nodefactor',
+#               menuattr(),
+#               selected = menuattr()[1],
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicnodefactor',suspendWhenHidden=FALSE)
+# 
+# output$dynamicnodematch <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('choosenodematch', 
+#               label = 'Attribute for nodematch',
+#               menuattr(),
+#               selected = menuattr()[1],
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicnodematch',suspendWhenHidden=FALSE)
+# 
+# output$dynamicnodemix <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('choosenodemix',
+#               label = 'Attribute for nodemix',
+#               menuattr(),
+#               selected = menuattr()[1],
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicnodemix',suspendWhenHidden=FALSE)
+# 
+# output$dynamicnodecov <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   selectInput('choosenodecov',
+#               label = 'Attribute for nodecov',
+#               numattr(),
+#               selected = numattr()[1],
+#               multiple = TRUE,
+#               width = '3cm')
+# })
+# outputOptions(output,'dynamicnodecov',suspendWhenHidden=FALSE)
 
 #' Below I output the current formulation of the ergm 
 #' model so the user can clearly see how their menu selections change the model.
@@ -1291,6 +1287,7 @@ output$checkterms1 <- renderPrint({
   if(!is.network(nwreac())){
     return(cat('Upload a network'))
   }
+  if(ergm.terms()=='NA') return(cat('Add terms to the formula'))
   cat(ergm.terms())
 })
 
@@ -1298,6 +1295,7 @@ output$prefitsum <- renderPrint({
   if(!is.network(nwreac()) | length(input$terms)==0){
     return(cat('NA'))
   }
+  if(ergm.terms()=='NA') return(cat('Add terms to the formula'))
   options(width=150)
   summary(ergm.formula())
 })

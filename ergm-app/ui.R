@@ -461,13 +461,17 @@ shinyUI(
                   uiOutput('listofterms'),
                   actionButton('fitButton', 'Fit Model')),
            column(9,
-                  textInput(inputId="termsearch", label="Term documentation"),
-                  wellPanel(span(
-                    strong(textOutput("termname")),
-                    textOutput("termval"),
-                    br(),
-                    textOutput("termdoc"),
-                    style="font-family:Courier;")))
+                  textInput(inputId="terms", label="Add a term and its arguments",
+                            value="edges"),
+                  actionButton('addtermButton', 'Add term')
+                  ),
+          
+           wellPanel(class= 'docpopup',span(
+            strong(textOutput("termname")),
+            textOutput("termval"),
+            br(),
+            textOutput("termdoc"),
+            style="font-family:Courier;"))
                   
            
          ),
