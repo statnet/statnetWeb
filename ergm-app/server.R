@@ -458,18 +458,6 @@ legendfill <- reactive({
   legendfill
 })
 
-<<<<<<< HEAD
-=======
-#' Generate R Documentation for terms
-#+ eval=FALSE
-#
-# doc <- reactive({
-#   term <- input$termsearch
-#   term2 <- unlist(lapply(ergmtermsHelp,function(x)x[1]))
-#   term3 <- unlist(lapply(ergmtermsHelp,function(x)paste(x[1],x[2],sep=":")))
-#   cat(paste(term3[match(term,term2)]))
-# })
->>>>>>> allterms
 
 
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
