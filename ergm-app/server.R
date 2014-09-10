@@ -342,18 +342,18 @@ nwmid <- reactive({
 nwreac <- reactive({
   nw <- nwmid()
   
-  deleteme <- input$deleteattrs$right
-  len <- length(deleteme)
-  if(len>=1){
-      for(i in 1:len){
-        if(any(list.vertex.attributes(nw)==deleteme[i])){
-          delete.vertex.attribute(nw,deleteme[i])
-        }
-        if(any(list.edge.attributes(nw)==deleteme[i])){
-          delete.edge.attribute(nw,deleteme[i])
-        }
-      }
-  }
+#   deleteme <- input$deleteattrs$right
+#   len <- length(deleteme)
+#   if(len>=1){
+#       for(i in 1:len){
+#         if(any(list.vertex.attributes(nw)==deleteme[i])){
+#           delete.vertex.attribute(nw,deleteme[i])
+#         }
+#         if(any(list.edge.attributes(nw)==deleteme[i])){
+#           delete.edge.attribute(nw,deleteme[i])
+#         }
+#       }
+#   }
   nw
 })
 
@@ -724,20 +724,29 @@ output$pajchooser <- renderUI({
 })
 
 
-output$deleteattrchooser <- renderUI({
+# output$deleteattrchooser <- renderUI({
+#   if(!is.network(nwmid())) return()
+#   vattr <- list.vertex.attributes(nwmid())
+#   eattr <- list.edge.attributes(nwmid())
+#   if(is.element("na",vattr)){
+#     vattr <- vattr[-which("na"==vattr)]
+#   }
+#   if(is.element("na",eattr)){
+#     eattr <- eattr[-which("na"==eattr)]
+#   }
+#   attrlist <- c(vattr, eattr)
+#   
+#   chooserInput('deleteattrs',"Active Attributes","Inactive Attributes",
+#                leftChoices=attrlist, rightChoices=c(),multiple=TRUE)
+# })
+
+output$modifyattrchooser <- renderUI({
   if(!is.network(nwmid())) return()
   vattr <- list.vertex.attributes(nwmid())
   eattr <- list.edge.attributes(nwmid())
-  if(is.element("na",vattr)){
-    vattr <- vattr[-which("na"==vattr)]
-  }
-  if(is.element("na",eattr)){
-    eattr <- eattr[-which("na"==eattr)]
-  }
   attrlist <- c(vattr, eattr)
-  
-  chooserInput('deleteattrs',"Active Attributes","Inactive Attributes",
-               leftChoices=attrlist, rightChoices=c(),multiple=TRUE)
+  selectInput('modifyattrs', label=NULL, choices=attrlist,
+              selectize=FALSE)
 })
 
 

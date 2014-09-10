@@ -211,7 +211,8 @@ shinyUI(
                        
                      ),
                      br(),
-                     uiOutput('deleteattrchooser')
+                     strong('Modify Attributes'),
+                     uiOutput('modifyattrchooser')
                      )
                    ))
 
