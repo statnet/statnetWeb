@@ -186,8 +186,13 @@ shinyUI(
                    wellPanel(
                      fluidRow(
                       
-                       column(5,strong('Edit Network Attributes'),
-                              uiOutput('nwattrchooser')
+                       column(5,strong('Symmetrize'),
+                              radioButtons('symmetrize', label=NULL, 
+                                           choices=c('Do not symmetrize',
+                                                     'upper: Copy upper triangle over lower triangle'='upper',
+                                                     'lower: Copy lower triangle over upper triangle'='lower',
+                                                     'strong: Intersection of ties'='strong',
+                                                     'weak: Union of ties'='weak'))
                               ),
                        
                        column(5,strong('Set New Attribute'),

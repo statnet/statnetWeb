@@ -294,10 +294,9 @@ nwmid <- reactive({
     nw <- nwinit()
   
     if (class(nw)=="network"){
-      set.network.attribute(nw,'directed',any(input$nwattr==1))
-      set.network.attribute(nw,'loops',any(input$nwattr==3))
-      set.network.attribute(nw,'multiple',any(input$nwattr==4))
-      set.network.attribute(nw,'bipartite',any(input$nwattr==5))
+      if(input$symmetrize != "Do not symmetrize"){
+        nw <- network(symmetrize(nw, rule=input$symmetrize))
+      }
       
       v_attrNamesToAdd <- get('v_attrNamesToAdd',pos='package:base')
       v_attrValsToAdd <- get('v_attrValsToAdd', pos='package:base')
@@ -724,17 +723,6 @@ output$pajchooser <- renderUI({
               choices = pajlist, selectize=FALSE)
 })
 
-output$nwattrchooser <- renderUI({
-  if(!is.network(nwinit())){
-    return()
-  }
-  checkboxGroupInput('nwattr', label='',
-                     choices=c('directed'=1,'loops'=3,'multiple'=4,'bipartite'=5),
-                     selected=which(nwattrinit()))
-})
-#allow the checkboxes to update even when hidden so that network 
-#attributes stay current
-outputOptions(output,'nwattrchooser',suspendWhenHidden=FALSE)
 
 output$deleteattrchooser <- renderUI({
   if(!is.network(nwmid())) return()
