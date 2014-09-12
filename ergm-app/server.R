@@ -63,7 +63,8 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
-ergmtermsTable <- read.csv('www/ergmtermsHelp.csv')
+ergmtermsTable <- read.csv(file = 'www/ergmtermsHelp.csv', header = TRUE, 
+                           stringsAsFactors = FALSE, fileEncoding = 'latin1')
 
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
