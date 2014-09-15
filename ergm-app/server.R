@@ -599,9 +599,19 @@ observe({
   })
 })
 
+observe({
+  if(input$resetformulaButton==0) return()
+  isolate({
+    assign('input_termslist', list(), pos='package:base')
+    updateTextInput(session, inputId='terms', value='')
+  })
+})
+
 ergm.terms <- reactive({
-  if(input$addtermButton==0) return('NA')
+  input$resetformulaButton
+  input$addtermButton
   interms <- get('input_termslist', pos='package:base')
+  if(length(interms)==0) return('NA')
   paste(interms, collapse = '+')
   })
 

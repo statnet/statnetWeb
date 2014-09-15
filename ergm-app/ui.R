@@ -461,9 +461,10 @@ shinyUI(
                   uiOutput('listofterms'),
                   actionButton('fitButton', 'Fit Model')),
            column(9,
-                  textInput(inputId="terms", label="Add a term and its arguments",
+                  textInput(inputId="terms", label="Add term(s) and arguments to the formula",
                             value="edges"),
-                  actionButton('addtermButton', 'Add term')
+                  actionButton('addtermButton', 'Add'),
+                  actionButton('resetformulaButton', 'Reset Formula')
                   ),
           
            wellPanel(class= 'docpopup',span(
