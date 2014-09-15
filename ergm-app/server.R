@@ -97,7 +97,7 @@ assign('ev_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
 assign('ev_attrValsToAdd', data.frame(numeric(0)),  
        pos="package:base")
 
-assign('input_termslist', data.frame(character(0), stringsAsFactors=FALSE),
+assign('input_termslist', list(),
        pos="package:base")
 
 #' Reactive Expressions
@@ -113,7 +113,6 @@ assign('input_termslist', data.frame(character(0), stringsAsFactors=FALSE),
 #' objects. For example, to use the reactive list of vertex attributes in the
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
-values <- reactiveValues()
 
 #this reactive expression is only to get the initial values of the network
 nwinit <- reactive({
@@ -603,7 +602,7 @@ observe({
 ergm.terms <- reactive({
   if(input$addtermButton==0) return('NA')
   interms <- get('input_termslist', pos='package:base')
-  paste(interms, sep = '+')
+  paste(interms, collapse = '+')
   })
 
 ergm.formula <- reactive({
