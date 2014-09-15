@@ -456,26 +456,32 @@ shinyUI(
                   verbatimTextOutput('prefitsum'))
            ),
          fluidRow(
-           column(3,
-                  radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
-                  uiOutput('listofterms'),
-                  actionButton('fitButton', 'Fit Model')),
-           column(9,
-                  textInput(inputId="terms", label="Add term(s) and arguments to the formula",
+           column(10,
+                  textInput(inputId="terms", label="Type in term(s) and their arguments. For multiple terms, separate with '+'.",
                             value="edges"),
                   actionButton('addtermButton', 'Add'),
-                  actionButton('resetformulaButton', 'Reset Formula')
+                  actionButton('resetformulaButton', 'Reset Formula'),
+                  actionButton('fitButton', 'Fit Model')
                   ),
-          
-           wellPanel(class= 'docpopup',span(
-            strong(textOutput("termname")),
-            textOutput("termval"),
-            br(),
-            textOutput("termdoc"),
-            style="font-family:Courier;"))
+           column(2,
+                  actionButton('termdocButton', 'Term Documentation'))),
+         wellPanel(class= 'docpopup', 
+          fluidRow(
+              column(3,
+                     h5('Term Documentation'),
+                    radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
+                    uiOutput('listofterms')),
+              column(9, 
+                    span(
+                    strong(textOutput("termname")),
+                    textOutput("termval"),
+                    br(),
+                    textOutput("termdoc"),
+                    style="font-family:Courier;"))
+                  )),
                   
            
-         ),
+         
 #          fluidRow(
 #            conditionalPanel(condition = 'output.nwsum != "NA" && input.terms.indexOf("absdiff") > -1',
 #                             column(2,

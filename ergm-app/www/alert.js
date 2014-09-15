@@ -15,7 +15,10 @@ $(document).ready(function(){
     $(".graphlevelbox").toggle(1000);
   });
 
-
+  $("#termdocButton").click(function(){
+    $(".docpopup").toggle(1000);
+  });
+  
 });
 
 

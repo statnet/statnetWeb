@@ -1110,7 +1110,7 @@ output$listofterms <- renderUI({
     current.terms <- ergmtermsTable$name
   }
 
-  selectInput('termdoc',label = 'Choose term(s):',
+  selectInput('termdoc',label = 'Choose term:',
                   current.terms,
                   selected='edges',
                   multiple=FALSE, 
