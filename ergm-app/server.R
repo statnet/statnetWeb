@@ -593,8 +593,9 @@ legendfill <- reactive({
 #' `ergm.terms` is a compilation of all the terms entered,
 #' which we then use to create a complete formula. 
 #' 
-#+ eval=FALSE  
+#+ eval=FALSE 
 
+#add terms to list as user enters them
 observe({
   if(input$addtermButton==0) return()
   isolate({
@@ -602,6 +603,7 @@ observe({
     newval <- input$terms
     assign('input_termslist', rbind(valsofar, newval),
            pos='package:base')
+    updateTextInput(session, inputId='terms', value='')
   })
 })
 
