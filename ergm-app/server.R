@@ -59,6 +59,13 @@ library(statnet)
 library(RColorBrewer)
 source("chooser.R")
 
+
+#' Loading data and assigning variables outside of the call to `shinyServer`
+#' saves time because this code will not get re-run.These don't depend on any user input
+#' and will never change value, so they can be global variables (common to all
+#' shiny sessions). 
+#+ eval=FALSE 
+
 data(faux.mesa.high)
 data(florentine)
 data(sampson)
@@ -71,21 +78,8 @@ for(i in 1:length(allterms)){
 }
 allterms <- unique(allterms)
 
-#' Saving the following vectors of terms will allow us to only display the terms
-#' that are applicable to a certain network. These don't depend on any user input
-#' and will never change value, so they can be global variables (common to all
-#' shiny sessions).
-#+ eval=FALSE    
-dir.terms <- c('absdiff', 'idegree', 'odegree', 'edges', 'gwesp', 'mutual', 
-               'nodefactor', 'nodematch', 'nodemix', 'nodecov')
-undir.terms <- c('absdiff', 'b1degree', 'b2degree', 'degree', 'edges', 'gwesp',
-                 'nodecov', 'nodefactor', 'nodematch', 'nodemix',
-                 'triangle')
-unip.terms <- c('absdiff', 'degree', 'idegree', 'odegree','edges', 'gwesp', 
-                'mutual', 'nodecov', 'nodefactor', 'nodematch',
-                'nodemix', 'triangle')
-bip.terms <- c('absdiff', 'b1degree', 'b2degree', 'edges', 'mutual', 'nodefactor',
-               'nodematch', 'nodemix', 'nodecov')
+   
+
 
 shinyServer(
   function(input, output, session){
