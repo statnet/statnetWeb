@@ -70,7 +70,7 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
-#create a list of just unique term names
+#create a list of unique term names
 allterms <- search.ergmTerms()
 inds <- gregexpr(pattern='\\(', allterms)
 for(i in 1:length(allterms)){
@@ -84,17 +84,17 @@ allterms <- unique(allterms)
 shinyServer(
   function(input, output, session){
     
-assign('v_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+assign('v_attrNamesToAdd', list(1),
        pos="package:base")
-assign('v_attrValsToAdd', data.frame(numeric(0)),  
+assign('v_attrValsToAdd', list(),  
        pos="package:base")
-assign('e_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+assign('e_attrNamesToAdd', list(1),
        pos="package:base" )
-assign('e_attrValsToAdd', data.frame(numeric(0)),  
+assign('e_attrValsToAdd', list(),  
        pos="package:base")
-assign('ev_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+assign('ev_attrNamesToAdd', list(1),
        pos="package:base" )
-assign('ev_attrValsToAdd', data.frame(numeric(0)),  
+assign('ev_attrValsToAdd', list(),  
        pos="package:base")
 
 assign('input_termslist', list(),
@@ -185,14 +185,14 @@ nedges <- reactive({
   network.edgecount(nwinit())
 })
 
-#set correct number of rows for the value dataframes, 
+#set correct number of rows for the value lists, 
 #so that we can add columns later
 observe({
   nwinit()
-  #reset dataframes when network changes
-  vdf <- data.frame(numeric(0))
-  edf <- data.frame(numeric(0))
-  evdf <- data.frame(numeric(0))
+  #reset lists when network changes
+  vdf <- list()
+  edf <- list()
+  evdf <- list()
   if (is.network(nwinit())){
     n <- nodes()
     e <- nedges()
@@ -206,11 +206,11 @@ observe({
     assign("v_attrValsToAdd", vdf, pos="package:base")
     assign("e_attrValsToAdd", edf, pos="package:base")
     assign("ev_attrValsToAdd", evdf, pos="package:base")
-    assign('v_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+    assign('v_attrNamesToAdd', list(1),
            pos="package:base" )
-    assign('e_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+    assign('e_attrNamesToAdd', list(1),
            pos="package:base" )
-    assign('ev_attrNamesToAdd', data.frame(character(1), stringsAsFactors=FALSE),
+    assign('ev_attrNamesToAdd', list(1),
            pos="package:base" )
     
   }
@@ -307,7 +307,7 @@ nwmid <- reactive({
       ev_attrValsToAdd <- get('ev_attrValsToAdd', pos='package:base')
       
       input$newattrButton
-      v_numnew <- dim(v_attrNamesToAdd)[2]
+      v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
           v_newname <- as.character(v_attrNamesToAdd[1,j])
@@ -316,7 +316,7 @@ nwmid <- reactive({
         }
       }
       
-      e_numnew <- dim(e_attrNamesToAdd)[2]
+      e_numnew <- length(e_attrNamesToAdd)
       if(e_numnew > 1){
         for (k in 2:e_numnew){
           e_newname <- as.character(e_attrNamesToAdd[1,k])
@@ -325,7 +325,7 @@ nwmid <- reactive({
         }
       }
       
-      ev_numnew <- dim(ev_attrNamesToAdd)[2]
+      ev_numnew <- length(ev_attrNamesToAdd)
       if(ev_numnew > 1){
         for (l in 2:ev_numnew){
           ev_newname <- as.character(ev_attrNamesToAdd[1,l])
