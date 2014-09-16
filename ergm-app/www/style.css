@@ -64,6 +64,9 @@ div.helper-box {
   margin-top:10px;
 }
 
+.docpopup {
+  display:none;
+}
 
 div#sourceFields {
 display: none;
