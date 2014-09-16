@@ -469,8 +469,10 @@ shinyUI(
           fluidRow(
               column(3,
                      h5('Term Documentation'),
-                    radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
-                    uiOutput('listofterms')),
+                     radioButtons('matchingorall', label='Choose from:',
+                                  choices=c('Terms compatible with current network',
+                                            'All terms')),
+                     uiOutput('listofterms')),
               column(9, 
                     verbatimTextOutput('termdoc'))
                   )),

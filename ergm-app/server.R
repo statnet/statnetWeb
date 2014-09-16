@@ -1099,8 +1099,19 @@ output$listofterms <- renderUI({
   if(!is.network(nwreac())){
     return()
   }
-  selectInput('termdoc',label = 'Choose term:',
-                  unlist(allterms),
+  if(input$matchingorall == 'All terms'){
+    current.terms <- unlist(allterms)
+  } else {
+    matchterms <- search.ergmTerms(net=nwreac())
+    ind <- gregexpr(pattern='\\(', matchterms)
+    for(i in 1:length(matchterms)){
+      matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[[i]][1]-1)
+    }
+    matchterms <- unique(matchterms)
+    current.terms <- unlist(matchterms)
+  }
+  selectInput('termdoc',label = NULL,
+                  choices = current.terms,
                   multiple=FALSE, 
                   selectize=FALSE)
   
