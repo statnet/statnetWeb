@@ -63,8 +63,13 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
-ergmtermsTable <- read.csv(file = 'www/ergmtermsHelp.csv', header = TRUE, 
-                           stringsAsFactors = FALSE, fileEncoding = 'latin1')
+#create a list of just unique term names
+allterms <- search.ergmTerms()
+inds <- gregexpr(pattern='\\(', allterms)
+for(i in 1:length(allterms)){
+  allterms[i] <- substr(allterms[[i]], start=1, stop=inds[[i]][1]-1)
+}
+allterms <- unique(allterms)
 
 #' Saving the following vectors of terms will allow us to only display the terms
 #' that are applicable to a certain network. These don't depend on any user input
@@ -1094,191 +1099,18 @@ output$listofterms <- renderUI({
   if(!is.network(nwreac())){
     return()
   }
-  if(input$commonorall == 'Common terms'){
-        
-      if(nwreac()$gal$directed & nwreac()$gal$bipartite){
-        current.terms <- intersect(dir.terms, bip.terms)
-      } else if(nwreac()$gal$directed) {
-        current.terms <- intersect(dir.terms, unip.terms)
-      } else if(nwreac()$gal$bipartite){
-        current.terms <- intersect(undir.terms, bip.terms)
-      } else if(!nwreac()$gal$bipartite & !nwreac()$gal$bipartite){
-        current.terms <- intersect(undir.terms, unip.terms)
-      }
-      
-  } else {
-    current.terms <- ergmtermsTable$name
-  }
-
   selectInput('termdoc',label = 'Choose term:',
-                  current.terms,
-                  selected='edges',
+                  unlist(allterms),
                   multiple=FALSE, 
                   selectize=FALSE)
   
 })
 
-output$termname <- renderPrint({
-  myterm <- input$termdoc
-  allterms <- ergmtermsTable[,1]
-  ind <- match(myterm,allterms)
-  if(!any(input$termdoc==allterms)){
-    return(cat('No matches'))
-  }
-  name <- paste(ergmtermsTable[ind,1],ergmtermsTable[ind,2],sep="")
-  return(cat(name))
-})
-
-output$termval <- renderPrint({
-  myterm <- input$termdoc
-  allterms <- ergmtermsTable[,1]
-  ind <- match(myterm,allterms)
-  if(!any(input$termdoc==allterms)){
-    return(cat())
-  }
-  return(cat(paste(ergmtermsTable[ind,3])))
-})
-
 output$termdoc <- renderPrint({
   myterm <- input$termdoc
-  allterms <- ergmtermsTable[,1]
-  ind <- match(myterm,allterms)
-  if(!any(input$termdoc==allterms)){
-    return(cat())
-  }
-  return(cat(paste(ergmtermsTable[ind,4])))
+  search.ergmTerms(name=myterm)
 })
 
-
-# output$dynamicdegree <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('choosedegree', 
-#               label = 'Choose degree(s)',
-#               choices=paste(0:(as.numeric(nodes())-1)),
-#               selected = 1,
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicdegree',suspendWhenHidden=FALSE)
-# 
-# output$dynamicb1degree <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('chooseb1degree',
-#               label = 'Choose degree(s)',
-#               choices=paste(0:(as.numeric(nodes())-1)),
-#               selected = 1,
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicb1degree',suspendWhenHidden=FALSE)
-# 
-# output$dynamicb2degree <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('chooseb2degree',
-#               label = 'Choose degree(s)',
-#               choices=paste(0:(as.numeric(nodes())-1)),
-#               selected = 1,
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicb2degree',suspendWhenHidden=FALSE)
-# 
-# output$dynamicidegree <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('chooseidegree',
-#               label = 'Choose in-degree(s)',
-#               choices=paste(0:(as.numeric(nodes())-1)),
-#               selected = 1,
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicidegree',suspendWhenHidden=FALSE)
-# 
-# output$dynamicodegree <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('chooseodegree',
-#               label = 'Choose out-degree(s)',
-#               choices=paste(0:(as.numeric(nodes())-1)),
-#               selected = 1,
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicodegree',suspendWhenHidden=FALSE)
-# 
-# output$dynamicabsdiff <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('chooseabsdiff',
-#               label = 'Attribute for absdiff',
-#               numattr(),
-#               selected = numattr()[1],
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicabsdiff',suspendWhenHidden=FALSE)
-# 
-# output$dynamicnodefactor <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('choosenodefactor',
-#               label = 'Attribute for nodefactor',
-#               menuattr(),
-#               selected = menuattr()[1],
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicnodefactor',suspendWhenHidden=FALSE)
-# 
-# output$dynamicnodematch <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('choosenodematch', 
-#               label = 'Attribute for nodematch',
-#               menuattr(),
-#               selected = menuattr()[1],
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicnodematch',suspendWhenHidden=FALSE)
-# 
-# output$dynamicnodemix <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('choosenodemix',
-#               label = 'Attribute for nodemix',
-#               menuattr(),
-#               selected = menuattr()[1],
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicnodemix',suspendWhenHidden=FALSE)
-# 
-# output$dynamicnodecov <- renderUI({
-#   if(!is.network(nwreac())){
-#     return()
-#   }
-#   selectInput('choosenodecov',
-#               label = 'Attribute for nodecov',
-#               numattr(),
-#               selected = numattr()[1],
-#               multiple = TRUE,
-#               width = '3cm')
-# })
-# outputOptions(output,'dynamicnodecov',suspendWhenHidden=FALSE)
 
 #' Below I output the current formulation of the ergm 
 #' model so the user can clearly see how their menu selections change the model.

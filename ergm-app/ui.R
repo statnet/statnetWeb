@@ -472,12 +472,7 @@ shinyUI(
                     radioButtons('commonorall',label=NULL,choices=c('Common terms','All terms')),
                     uiOutput('listofterms')),
               column(9, 
-                    span(
-                    strong(textOutput("termname")),
-                    textOutput("termval"),
-                    br(),
-                    textOutput("termdoc"),
-                    style="font-family:Courier;"))
+                    verbatimTextOutput('termdoc'))
                   )),
          
          
