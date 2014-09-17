@@ -496,10 +496,45 @@ shinyUI(
         'of the page). The "Fitting" tab shows MCMC iterations (if any) and MLE coefficients,',
         'while the "Summary" tab shows a comprehensive summary of the model fit.'))
           ),
-#' **Goodness of Fit**
+#' **MCMC Diagnostics**
 #' 
 #+ eval=FALSE   
-         navbarMenu('Diagnostics',
+         navbarMenu('Diagnostics',         
+                    tabPanel('MCMC Diagnostics',
+                             #include progress bar when this tab is loading
+                             div(class = "busy", 
+                                 p("Calculation in progress..."),
+                                 img(src="ajax-loader.gif")
+                             ),
+                             
+                             fluidRow(
+                               column(2,
+                                      p('Current network:', verbatimTextOutput('currentdataset3'))),
+                               column(10,
+                                      p('Current ergm formula:',
+                                        verbatimTextOutput('checkterms3')))
+                             ),     
+                             br(),
+                             tags$hr(),
+                             tabsetPanel(
+                               tabPanel('Plot',   
+                                        uiOutput('diagnosticsplotspace'),
+                                        downloadButton('mcmcplotdownload',label = 'Download Plots')),
+                               tabPanel('Summary', 
+                                        verbatimTextOutput('diagnostics'))
+                             ),
+                             helperButton(id = 'tab5help'),
+                             div(class="helper-box", style="display:none",
+                                 p('Check for model degeneracy. When a model converges properly',
+                                   'the MCMC sample statistics should vary randomly around the',
+                                   'observed values at each step, and the difference between the',
+                                   'observed and simulated values of the sample statistics should',
+                                   'have a roughly bell shaped distribution, centered at 0.'))
+                             
+                    ),
+#' **Goodness of Fit**
+#' 
+#+ eval=FALSE  
             tabPanel('Goodness of Fit',
                      
                      #include progress bar when this tab is loading
@@ -545,42 +580,8 @@ shinyUI(
                             'statistic that is not in the model, and comparing the value of this',
                             'statistic observed in the original network to the distribution of values',
                             'you get in simulated networks from your model.'))
-                     ),
-#' **MCMC Diagnostics**
-#' 
-#+ eval=FALSE            
-            tabPanel('MCMC Diagnostics',
-  #include progress bar when this tab is loading
-                    div(class = "busy", 
-                        p("Calculation in progress..."),
-                        img(src="ajax-loader.gif")
-                    ),
-                     
-                     fluidRow(
-                       column(2,
-                              p('Current network:', verbatimTextOutput('currentdataset3'))),
-                       column(10,
-                              p('Current ergm formula:',
-                                verbatimTextOutput('checkterms3')))
-                     ),     
-                     br(),
-                     tags$hr(),
-                     tabsetPanel(
-                       tabPanel('Plot',   
-                        uiOutput('diagnosticsplotspace'),
-                        downloadButton('mcmcplotdownload',label = 'Download Plots')),
-                       tabPanel('Summary', 
-                        verbatimTextOutput('diagnostics'))
-                     ),
-                  helperButton(id = 'tab5help'),
-                  div(class="helper-box", style="display:none",
-                      p('Check for model degeneracy. When a model converges properly',
-                        'the MCMC sample statistics should vary randomly around the',
-                        'observed values at each step, and the difference between the',
-                        'observed and simulated values of the sample statistics should',
-                        'have a roughly bell shaped distribution, centered at 0.'))
-  
-            )
+                     )
+
             ),
 #' **Simulations**
 #' 
