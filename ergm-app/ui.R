@@ -199,7 +199,9 @@ shinyUI(
                                                      'upper: Copy upper triangle over lower triangle'='upper',
                                                      'lower: Copy lower triangle over upper triangle'='lower',
                                                      'strong: Intersection of ties'='strong',
-                                                     'weak: Union of ties'='weak'))
+                                                     'weak: Union of ties'='weak')),
+                              radioButtons('aftersymm', label='After symmetrizing, network should be:',
+                                           choices=c('directed', 'undirected'))
                               ),
                        
                        column(5,strong('Set New Attribute'),

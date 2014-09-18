@@ -295,8 +295,18 @@ nwmid <- reactive({
     nw <- nwinit()
   
     if (class(nw)=="network"){
+      #preserve initial network attributes and let user choose if directed 
+      #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
-        nw <- network(symmetrize(nw, rule=input$symmetrize))
+        if(input$aftersymm == 'directed'){
+          nw <- network(symmetrize(nw, rule=input$symmetrize), directed=TRUE,
+                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+        } else {
+          nw <- network(symmetrize(nw, rule=input$symmetrize), directed=FALSE,
+                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+        }
       }
       
       v_attrNamesToAdd <- get('v_attrNamesToAdd',pos='package:base')
