@@ -185,11 +185,29 @@ nedges <- reactive({
   network.edgecount(nwinit())
 })
 
+#initial vertex attributes
+vattrinit <- reactive({
+  vattrinit <- c()
+  if(is.network(nwinit())){        
+    vattrinit<-list.vertex.attributes(nwinit())
+  }
+  vattrinit
+})
+
+#matrix of vertex attribute values
+vattrinit.vals <- reactive({
+  m <- matrix(nrow=nodes(),ncol=length(vattrinit()))
+  for(j in 1:length(vattrinit())){
+    m[,j]<-get.vertex.attribute(nwinit(),vattrinit()[j])
+  }
+  m
+})
+
 #set correct number of rows for the value lists, 
 #so that we can add columns later
 observe({
   nwinit()
-  #reset lists when network changes
+  #reset lists when uploaded network changes
   vdf <- list()
   edf <- list()
   evdf <- list()
@@ -307,6 +325,13 @@ nwmid <- reactive({
                         hyper=nwattrinit()[2], loops=nwattrinit()[3],
                         multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         }
+        #add initial vertex attributes back after symmetrizing
+        #can't add edge attributes back because number of edges has changed
+        for(k in 1:length(vattrinit())){
+          attr_names <- vattrinit()
+          attr_matrix <- vattrinit.vals()
+          set.vertex.attribute(nw,attr_names[k],attr_matrix[,k])
+        }
       }
       
       v_attrNamesToAdd <- get('v_attrNamesToAdd',pos='package:base')
@@ -393,6 +418,7 @@ nwname <- reactive({
 coords <- reactive({
 		plot.network(nwreac())})
 
+#initial network attributes
 #returns vector of true/falses
 nwattrinit <- reactive({
   if(!is.network(nwinit())){return()}
@@ -400,7 +426,7 @@ nwattrinit <- reactive({
   unlist(lapply(nwattributes,get.network.attribute,x=nwinit()))
 })
 
-#list of vertex attributes in nw
+#list of all vertex attributes in nw (after adding new)
 attr <- reactive({
 	  attr <- c()
     if(is.network(nwreac())){        
