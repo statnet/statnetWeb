@@ -975,6 +975,25 @@ output$degreedistdownload <- downloadHandler(
     dev.off()
 })
 
+output$geodistplot <- renderPlot({
+  if(!is.network(nwreac())){
+    return()
+  }
+  g <- geodist(nwreac(),inf.replace=0)
+  barplot(g$gdist, beside=TRUE, col="#3182bd", border=NA,
+          xlab = "Vertex Pairs", ylab = "Shortest Path")
+})
+
+output$geodistdownload <- downloadHandler(
+  filename = function(){paste(nwname(),'_geodist.pdf',sep='')},
+  content = function(file){
+    pdf(file=file, height=10, width=15)
+    g <- geodist(nwreac(),inf.replace=0)
+    barplot(g$gdist, beside=TRUE, col="#3182bd", border=NA,
+            xlab = "Vertex Pairs", ylab = "Shortest Path")
+    dev.off()
+  })
+
 #MORE
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden

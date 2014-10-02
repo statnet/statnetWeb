@@ -300,6 +300,16 @@ shinyUI(
                               br(),
                               column(3,
                                      downloadButton('degreedistdownload', label = "Download Plot"))))),
+          tabPanel('Geodesic Distribution',
+                   plotOutput('geodistplot'),
+                   wellPanel(
+                     fluidRow(
+                          column(9, p('A bar with zero height (empty space on the graph)',
+                          'represents a vertex pair that is not connected by',
+                          'any path.')),
+                          column(3,
+                                downloadButton('geodistdownload', label= 'Download Plot'))))
+                   ),
           tabPanel('More',
                    h5('Mixing Matrix', class="mixmxtitle"),
                    wellPanel(
