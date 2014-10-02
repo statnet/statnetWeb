@@ -311,13 +311,15 @@ shinyUI(
                                 downloadButton('geodistdownload', label= 'Download Plot'))))
                    ),
           tabPanel('More',
-                   h5('Mixing Matrix', class="mixmxtitle"),
+                   h5('Mixing Matrix', icon('angle-double-down'), 
+                      class="mixmxtitle"),
                    wellPanel(
                      uiOutput('mixmxchooser'),
                      verbatimTextOutput('mixingmatrix'),
                      class="mixmxbox"
                    ),
-                   h5('Graph-level descriptive indices', class="graphleveltitle"),
+                   h5('Graph-level descriptive indices',
+                      icon('angle-double-down'), class="graphleveltitle"),
                    wellPanel(fluidRow(
 
                      column(4, offset=7,tags$u('Measure')),
@@ -340,7 +342,8 @@ shinyUI(
                      column(3, p(textOutput('gden'), class='snum')))
                    ), class="graphlevelbox"),
                    
-                   h5('Node-level descriptive indices', class="nodeleveltitle"),
+                   h5('Node-level descriptive indices',
+                      icon('angle-double-down'), class="nodeleveltitle"),
                    wellPanel(
                      numericInput('nodeind', label='Input node index',value=1,
                                 min=1),
