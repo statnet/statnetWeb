@@ -297,17 +297,17 @@ shinyUI(
                                                  selectize=FALSE)),
                               column(3,
                                      uiOutput('dynamiccolor_dd')),
-                              column(3,
+                              column(6,
                                      p('Display overlay of expected values?'),
                                      checkboxInput('uniformoverlay', 
                                                    label='uniform graphs conditional on edge count', 
                                                    value=TRUE),
                                      checkboxInput('bernoullioverlay',
                                                    label='Draws from bernoulli graphs with specified tie prob',
-                                                   value=TRUE)),
-                              br(),
-                              column(3,
-                                     downloadButton('degreedistdownload', label = "Download Plot"))))),
+                                                   value=TRUE))
+                     ),
+                     fluidRow(downloadButton('degreedistdownload', label = "Download Plot"))
+                     )),
           tabPanel('Geodesic Distribution',
                    plotOutput('geodistplot'),
                    wellPanel(
