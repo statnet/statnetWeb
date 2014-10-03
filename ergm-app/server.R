@@ -496,7 +496,6 @@ legendfill <- reactive({
 })
 
 
-
 #' Some ergm terms (e.g. `gwesp`, `degree` and `nodematch`) take in their own arguments. 
 #' The following reactive expressions take user input and create vectors that can later
 #' be used as terms in an ergm formula.
@@ -889,6 +888,36 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
+#Data to use for null hypothesis overlays in network plots
+uniformsamples <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
+  if(is.directed(nwreac())){
+    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='digraph',
+                    diag=has.loops(nwreac()))
+  } else {
+    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='graph',
+                    diag=has.loops(nwreac()))
+  }
+  samples
+})
+
+bernoullisamples <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
+  density <- gden(nwreac())
+  if(is.directed(nwreac())){
+    samples <- rgraph(n=nodes(), m=50, mode='digraph', tprob=density,
+                      diag=has.loops(nwreac()))
+  } else {
+    samples <- rgraph(n=nodes(), m=50, mode='graph', tprob=density,
+                      diag=has.loops(nwreac()))
+  }
+  samples
+})
+
 #DEGREE DISTRIBUTION
 
 output$dynamiccolor_dd <- renderUI({
@@ -943,13 +972,9 @@ dd_uniformoverlay <- reactive({
     return()
   }
   if(is.directed(nwreac())){
-    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='digraph',
-                    diag=has.loops(nwreac()))
-    deg <- degree(samples, g=1:50, gmode='digraph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:50, gmode='digraph', cmode=input$cmode)
   } else {
-    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='graph',
-                    diag=has.loops(nwreac()))
-    deg <- degree(samples, g=1:50, gmode='graph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:50, gmode='graph', cmode=input$cmode)
   }
   degreedata <- tabulate(deg)
   degreedata <- append(degreedata, sum(deg==0), after=0)
@@ -963,13 +988,9 @@ dd_bernoullioverlay <- reactive({
   }
   density <- gden(nwreac())
   if(is.directed(nwreac())){
-    samples <- rgraph(n=nodes(), m=50, mode='digraph', tprob=density,
-                      diag=has.loops(nwreac()))
-    deg <- degree(samples, g=1:50, gmode='digraph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:50, gmode='digraph', cmode=input$cmode)
   } else {
-    samples <- rgraph(n=nodes(), m=50, mode='graph', tprob=density,
-                      diag=has.loops(nwreac()))
-    deg <- degree(samples, g=1:50, gmode='graph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:50, gmode='graph', cmode=input$cmode)
   }
   degreedata <- tabulate(deg)
   degreedata <- append(degreedata, sum(deg==0), after=0)
