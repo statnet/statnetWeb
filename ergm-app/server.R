@@ -938,6 +938,25 @@ dd_plotdata <- reactive({
   data
 })
 
+dd_uniformoverlay <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
+  if(is.directed(nwreac())){
+    samples <- rgnm(n=20, nv=nodes(), m=nedges(), mode='digraph',
+                    diag=has.loops(nwreac()))
+    deg <- degree(samples, g=1:20, gmode='digraph', cmode=input$cmode)
+  } else {
+    samples <- rgnm(n=20, nv=nodes(), m=nedges(), mode='graph',
+                    diag=has.loops(nwreac()))
+    deg <- degree(samples, g=1:20, gmode='graph', cmode=input$cmode)
+  }
+  degreedata <- tabulate(deg)
+  degreedata <- append(degreedata, sum(deg==0), after=0)
+  names(degreedata) <- paste(0:max(deg))
+  degreedata <- degreedata/20
+})
+
 output$degreedist <- renderPlot({
   if(!is.network(nwreac())){
     return()
@@ -953,7 +972,8 @@ output$degreedist <- renderPlot({
   }}
   
   barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
-          args.legend=legtitle, col=color) 
+          args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10)) 
+  lines(dd_uniformoverlay(),col='firebrick1', lwd=2)
 })
 
 output$degreedistdownload <- downloadHandler(
