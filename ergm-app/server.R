@@ -943,18 +943,38 @@ dd_uniformoverlay <- reactive({
     return()
   }
   if(is.directed(nwreac())){
-    samples <- rgnm(n=20, nv=nodes(), m=nedges(), mode='digraph',
+    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='digraph',
                     diag=has.loops(nwreac()))
-    deg <- degree(samples, g=1:20, gmode='digraph', cmode=input$cmode)
+    deg <- degree(samples, g=1:50, gmode='digraph', cmode=input$cmode)
   } else {
-    samples <- rgnm(n=20, nv=nodes(), m=nedges(), mode='graph',
+    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='graph',
                     diag=has.loops(nwreac()))
-    deg <- degree(samples, g=1:20, gmode='graph', cmode=input$cmode)
+    deg <- degree(samples, g=1:50, gmode='graph', cmode=input$cmode)
   }
   degreedata <- tabulate(deg)
   degreedata <- append(degreedata, sum(deg==0), after=0)
   names(degreedata) <- paste(0:max(deg))
-  degreedata <- degreedata/20
+  degreedata <- degreedata/50
+})
+
+dd_bernoullioverlay <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
+  density <- gden(nwreac())
+  if(is.directed(nwreac())){
+    samples <- rgraph(n=nodes(), m=50, mode='digraph', tprob=density,
+                      diag=has.loops(nwreac()))
+    deg <- degree(samples, g=1:50, gmode='digraph', cmode=input$cmode)
+  } else {
+    samples <- rgraph(n=nodes(), m=50, mode='graph', tprob=density,
+                      diag=has.loops(nwreac()))
+    deg <- degree(samples, g=1:50, gmode='graph', cmode=input$cmode)
+  }
+  degreedata <- tabulate(deg)
+  degreedata <- append(degreedata, sum(deg==0), after=0)
+  names(degreedata) <- paste(0:max(deg))
+  degreedata <- degreedata/50
 })
 
 output$degreedist <- renderPlot({
@@ -974,7 +994,10 @@ output$degreedist <- renderPlot({
   barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
           args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10))
   if(input$uniformoverlay){
-    lines(dd_uniformoverlay(),col='firebrick1', lwd=2)
+    lines(dd_uniformoverlay(),col='firebrick4', lwd=2)
+  }
+  if(input$bernoullioverlay){
+    lines(dd_bernoullioverlay(),col='orangered', lwd=2)
   }
   
 })
