@@ -972,8 +972,11 @@ output$degreedist <- renderPlot({
   }}
   
   barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
-          args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10)) 
-  lines(dd_uniformoverlay(),col='firebrick1', lwd=2)
+          args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10))
+  if(input$uniformoverlay){
+    lines(dd_uniformoverlay(),col='firebrick1', lwd=2)
+  }
+  
 })
 
 output$degreedistdownload <- downloadHandler(
