@@ -522,7 +522,7 @@ shinyUI(
 #' **MCMC Diagnostics**
 #' 
 #+ eval=FALSE   
-         navbarMenu('Diagnostics',         
+#          navbarMenu('Diagnostics',         
                     tabPanel('MCMC Diagnostics',
                              #include progress bar when this tab is loading
                              div(class = "busy", 
@@ -603,9 +603,9 @@ shinyUI(
                             'statistic that is not in the model, and comparing the value of this',
                             'statistic observed in the original network to the distribution of values',
                             'you get in simulated networks from your model.'))
-                     )
+                     ),
 
-            ),
+#             ),
 #' **Simulations**
 #' 
 #+ eval=FALSE  
