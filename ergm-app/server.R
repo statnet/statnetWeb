@@ -1056,6 +1056,18 @@ gd_uniformoverlay <- reactive({
   distsum/length(gd)
 })
 
+gd_bernoullioverlay <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
+  gd <- geodist(bernoullisamples(),inf.replace=0)
+  distsum = matrix(0, nrow=nodes(), ncol=nodes())
+  for(k in 1:length(gd)){
+    distsum <- distsum + gd[[k]]$gdist
+  }
+  distsum/length(gd)
+})
+
 output$geodistplot <- renderPlot({
   if(!is.network(nwreac())){
     return()
@@ -1065,6 +1077,8 @@ output$geodistplot <- renderPlot({
           xlab = "Vertex Pairs", ylab = "Shortest Path")
   points(c(gd_uniformoverlay()), pch = 46,
           col=adjustcolor('firebrick4', alpha.f = .5))
+  points(c(gd_bernoullioverlay()), pch = 46,
+         col=adjustcolor('orangered', alpha.f = .5))
 })
 
 output$geodistdownload <- downloadHandler(
