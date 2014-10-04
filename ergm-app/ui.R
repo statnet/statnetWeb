@@ -299,10 +299,10 @@ shinyUI(
                                      uiOutput('dynamiccolor_dd')),
                               column(6,
                                      p('Display overlay of expected values?'),
-                                     checkboxInput('uniformoverlay', 
+                                     checkboxInput('uniformoverlay_dd', 
                                                    label='uniform graphs conditional on edge count', 
                                                    value=TRUE),
-                                     checkboxInput('bernoullioverlay',
+                                     checkboxInput('bernoullioverlay_dd',
                                                    label='Draws from bernoulli graphs with specified tie prob',
                                                    value=TRUE))
                      ),
@@ -312,11 +312,20 @@ shinyUI(
                    plotOutput('geodistplot'),
                    wellPanel(
                      fluidRow(
-                          column(9, p('A bar with zero height (empty space on the graph)',
+                              p('Display overlay of expected values?'),
+                              checkboxInput('uniformoverlay_gd', 
+                                            label='uniform graphs conditional on edge count', 
+                                            value=TRUE),
+                              checkboxInput('bernoullioverlay_gd',
+                                            label='Draws from bernoulli graphs with specified tie prob',
+                                            value=TRUE)),
+                     fluidRow(
+                          p(tags$u('Note:'), 'A bar with zero height (empty space on the graph)',
                           'represents a vertex pair that is not connected by',
                           'any path.')),
-                          column(3,
-                                downloadButton('geodistdownload', label= 'Download Plot'))))
+                     fluidRow(
+                          downloadButton('geodistdownload', label= 'Download Plot'))
+                     )
                    ),
           tabPanel('More',
                    h5('Mixing Matrix', icon('angle-double-down'), 

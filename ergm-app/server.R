@@ -1014,10 +1014,10 @@ output$degreedist <- renderPlot({
   
   barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
           args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10))
-  if(input$uniformoverlay){
+  if(input$uniformoverlay_dd){
     lines(dd_uniformoverlay(),col='firebrick4', lwd=2)
   }
-  if(input$bernoullioverlay){
+  if(input$bernoullioverlay_dd){
     lines(dd_bernoullioverlay(),col='orangered', lwd=2)
   }
   
@@ -1075,10 +1075,14 @@ output$geodistplot <- renderPlot({
   g <- geodist(nwreac(),inf.replace=0)
   barplot(g$gdist, beside=TRUE, col="#3182bd", border=NA,
           xlab = "Vertex Pairs", ylab = "Shortest Path")
-  points(c(gd_uniformoverlay()), pch = 46,
-          col=adjustcolor('firebrick4', alpha.f = .5))
-  points(c(gd_bernoullioverlay()), pch = 46,
-         col=adjustcolor('orangered', alpha.f = .5))
+  if(input$uniformoverlay_gd){
+    points(c(gd_uniformoverlay()), pch = 46,
+            col=adjustcolor('firebrick4', alpha.f = .5))
+  }
+  if(input$bernoullioverlay_gd){
+    points(c(gd_bernoullioverlay()), pch = 46,
+          col=adjustcolor('orangered', alpha.f = .5))
+  }
 })
 
 output$geodistdownload <- downloadHandler(
