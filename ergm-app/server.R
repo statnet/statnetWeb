@@ -1042,6 +1042,20 @@ output$degreedistdownload <- downloadHandler(
     dev.off()
 })
 
+#GEODESIC DISTRIBUTION
+
+gd_uniformoverlay <- reactive({
+  if(!is.network(nwreac())){
+    return()
+  }
+  gd <- geodist(uniformsamples(),inf.replace=0)
+  distsum = matrix(0, nrow=nodes(), ncol=nodes())
+  for(k in 1:length(gd)){
+    distsum <- distsum + gd[[k]]$gdist
+  }
+  distsum/length(gd)
+})
+
 output$geodistplot <- renderPlot({
   if(!is.network(nwreac())){
     return()
@@ -1049,6 +1063,8 @@ output$geodistplot <- renderPlot({
   g <- geodist(nwreac(),inf.replace=0)
   barplot(g$gdist, beside=TRUE, col="#3182bd", border=NA,
           xlab = "Vertex Pairs", ylab = "Shortest Path")
+  points(c(gd_uniformoverlay()), pch = 46,
+          col=adjustcolor('firebrick4', alpha.f = .5))
 })
 
 output$geodistdownload <- downloadHandler(
