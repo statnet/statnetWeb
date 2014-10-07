@@ -119,6 +119,16 @@ shinyUI(
 #' 
 #' 
 #+ eval=FALSE
+  tabPanel('Welcome',
+           
+           fluidRow(column(3,            
+                           column(12, img(src= 'UW.Wordmark_ctr_K.jpg', width=200)),
+                           fluidRow(
+                             column(2, a(img(src = 'csdelogo_crop.png', height = 40, width = 40),
+                                         href = 'https://csde.washington.edu/', target = '_blank')),
+                             column(7, a(img(src = 'csde_goudy.fw.png', width=150), href = 'https://csde.washington.edu/',
+                                         target = '_blank')))))
+           ),
   tabPanel('Data Upload',
            #busy.js is for calculation in progress boxes
            #alert.js is for helper boxes
@@ -232,13 +242,6 @@ shinyUI(
            verbatimTextOutput('nwsum')
           )            
     ),
-    fluidRow(column(4,            
-             column(10, img(src= 'UW.Wordmark_ctr_K.jpg', width=240)),
-             fluidRow(
-               column(3, a(img(src = 'csdelogo_crop.png', height = 50, width = 50),
-                           href = 'https://csde.washington.edu/', target = '_blank')),
-               column(7, a(img(src = 'csde_goudy.fw.png', width=180), href = 'https://csde.washington.edu/',
-                           target = '_blank'))))),
 
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
