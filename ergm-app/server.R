@@ -995,7 +995,7 @@ dd_bernoullioverlay <- reactive({
   degreedata <- tabulate(deg)
   degreedata <- append(degreedata, sum(deg==0), after=0)
   names(degreedata) <- paste(0:max(deg))
-  degreedata <- spline(degreedata/50)
+  degreedata <- spline(degreedata/50, n= 4*length(degreedata))
 })
 
 output$degreedist <- renderPlot({
@@ -1059,7 +1059,7 @@ gd_uniformoverlay <- reactive({
   for(k in 1:length(gd)){
     distsum <- distsum + gd[[k]]$gdist
   }
-  sort(distsum/length(gd), decreasing=TRUE)
+  sort(c(distsum/length(gd)), decreasing=TRUE)
 })
 
 gd_bernoullioverlay <- reactive({
@@ -1071,7 +1071,7 @@ gd_bernoullioverlay <- reactive({
   for(k in 1:length(gd)){
     distsum <- distsum + gd[[k]]$gdist
   }
-  sort(distsum/length(gd), decreasing=TRUE)
+  sort(c(distsum/length(gd)), decreasing=TRUE)
 })
 
 output$geodistplot <- renderPlot({
@@ -1079,15 +1079,15 @@ output$geodistplot <- renderPlot({
     return()
   }
   g <- geodist(nwreac(),inf.replace=0)
-  barplot(sort(g$gdist, decreasing=TRUE), beside=TRUE, col="#3182bd", border=NA,
+  barplot(sort(c(g$gdist), decreasing=TRUE),  col="#3182bd", border=NA,
           xlab = "Vertex Pairs", ylab = "Shortest Path")
   if(input$uniformoverlay_gd){
-    points(c(gd_uniformoverlay()), pch = 46,
-            col=adjustcolor('firebrick4', alpha.f = .5))
+    lines(gd_uniformoverlay(), lwd=2,
+            col=adjustcolor('firebrick4', alpha.f = 1))
   }
   if(input$bernoullioverlay_gd){
-    points(c(gd_bernoullioverlay()), pch = 46,
-          col=adjustcolor('orangered', alpha.f = .5))
+    lines(gd_bernoullioverlay(), lwd=2,
+          col=adjustcolor('orangered', alpha.f = 1))
   }
 })
 
@@ -1096,15 +1096,15 @@ output$geodistdownload <- downloadHandler(
   content = function(file){
     pdf(file=file, height=10, width=15)
     g <- geodist(nwreac(),inf.replace=0)
-    barplot(g$gdist, beside=TRUE, col="#3182bd", border=NA,
+    barplot(sort(c(g$gdist), decreasing=TRUE), col="#3182bd", border=NA,
             xlab = "Vertex Pairs", ylab = "Shortest Path")
     if(input$uniformoverlay_gd){
-      points(c(gd_uniformoverlay()), pch = 46,
-             col=adjustcolor('firebrick4', alpha.f = .5))
+      lines(c(gd_uniformoverlay()), lwd=2,
+             col=adjustcolor('firebrick4', alpha.f = 1))
     }
     if(input$bernoullioverlay_gd){
-      points(c(gd_bernoullioverlay()), pch = 46,
-             col=adjustcolor('orangered', alpha.f = .5))
+      lines(c(gd_bernoullioverlay()), lwd=2,
+             col=adjustcolor('orangered', alpha.f = 1))
     }
     dev.off()
   })
