@@ -228,12 +228,15 @@ shinyUI(
                               
                               )
                        
-                     ),
-                     br(),
-                     strong('Modify Attributes'),
-                     uiOutput('modifyattrchooser')
                      )
-                   ))
+                     )
+                   ),
+          tabPanel('Modify Attributes',
+                   wellPanel(
+                     strong('Modify Attributes'),
+                     uiOutput('modifyattrchooser'))
+                   )
+          )
 
       
       ),
