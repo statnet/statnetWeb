@@ -995,7 +995,7 @@ dd_bernoullioverlay <- reactive({
   degreedata <- tabulate(deg)
   degreedata <- append(degreedata, sum(deg==0), after=0)
   names(degreedata) <- paste(0:max(deg))
-  degreedata <- degreedata/50
+  degreedata <- spline(degreedata/50)
 })
 
 output$degreedist <- renderPlot({
@@ -1059,7 +1059,7 @@ gd_uniformoverlay <- reactive({
   for(k in 1:length(gd)){
     distsum <- distsum + gd[[k]]$gdist
   }
-  distsum/length(gd)
+  sort(distsum/length(gd), decreasing=TRUE)
 })
 
 gd_bernoullioverlay <- reactive({
@@ -1071,7 +1071,7 @@ gd_bernoullioverlay <- reactive({
   for(k in 1:length(gd)){
     distsum <- distsum + gd[[k]]$gdist
   }
-  distsum/length(gd)
+  sort(distsum/length(gd), decreasing=TRUE)
 })
 
 output$geodistplot <- renderPlot({
@@ -1079,7 +1079,7 @@ output$geodistplot <- renderPlot({
     return()
   }
   g <- geodist(nwreac(),inf.replace=0)
-  barplot(g$gdist, beside=TRUE, col="#3182bd", border=NA,
+  barplot(sort(g$gdist, decreasing=TRUE), beside=TRUE, col="#3182bd", border=NA,
           xlab = "Vertex Pairs", ylab = "Shortest Path")
   if(input$uniformoverlay_gd){
     points(c(gd_uniformoverlay()), pch = 46,
