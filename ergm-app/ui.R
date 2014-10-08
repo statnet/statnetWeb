@@ -300,7 +300,7 @@ shinyUI(
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Upload a file of observed network data (must be of a supported type).', 
-           'Modify or add attributes on the "Edit Network" tab.',
+           'Add custom attributes or symmetrize on the "Edit Network" tab.',
            'Sequentially move through the', 
            'tabs at the top of the page to fit an ergm to the', 
            'observed network.'))
