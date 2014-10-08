@@ -195,12 +195,12 @@ shinyUI(
           tabPanel('Upload Network', value=1,
                    wellPanel(
                      fluidRow(
-                       column(5,
+                       column(6,
                               radioButtons('filetype',label=h5('File type'),
                                            choices=c('pre-loaded sample network'=5, 'statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
                                                      'matrix of relational data'=4))),
                        conditionalPanel(condition = 'input.filetype < 5',
-                         column(7,
+                         column(6,
                               br(),
                               fileInput(inputId='rawdatafile', label=NULL, accept='text'),
                               verbatimTextOutput('rawdatafile'))
@@ -244,7 +244,7 @@ shinyUI(
                    wellPanel(
                      fluidRow(
                       
-                       column(5,strong('Symmetrize'),
+                       column(6,strong('Symmetrize'),
                               radioButtons('symmetrize', label=NULL, 
                                            choices=c('Do not symmetrize',
                                                      'upper: Copy upper triangle over lower triangle'='upper',
