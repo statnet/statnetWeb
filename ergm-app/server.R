@@ -1181,14 +1181,14 @@ output$prefitsum <- renderPrint({
 
 output$modelfit <- renderPrint({
   if (input$fitButton == 0){
-    return(cat('Please choose term(s) for the model'))
+    return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   model1reac()
 })
 
 output$modelfitsum <- renderPrint({
   if (input$fitButton == 0){
-    return(cat('Please choose term(s) for the model'))
+    return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   summary(model1reac())
 })
