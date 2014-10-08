@@ -284,8 +284,15 @@ shinyUI(
                    ),
           tabPanel('Modify Attributes',
                    wellPanel(
-                     strong('Modify Attributes'),
-                     uiOutput('modifyattrchooser'))
+                     p('In the future we want you to be able to modify',
+                       'the attributes of your network. This will hopefullly',
+                       'include several options:'),
+                     tags$ul(
+                       tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
+                       tags$li('Recoding (mapping a set of attributes onto a new set)'),
+                       tags$li('A conditional transformation (', code('do...if...'),')'))
+                     #uiOutput('modifyattrchooser')
+                     )
                    )
           )
 
