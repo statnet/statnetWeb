@@ -752,10 +752,14 @@ shinyUI(
                              href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
                              target = "_blank")
                          ),
-                         mainPanel( 
-                           br(),
+                         mainPanel(
+                           h5('Help with the app'),
+                           p("This app is maintained on Github. To request new features or report a bug,",
+                             "please interact with the repository:", 
+                             a('https://github.com/Statnet-Summer-Project/ergm-shiny')),
+                           h5('Help with statnet software'),
                            p("The best way to contact us with questions, comments or suggestions",
-                             "is through the", strong("statnet users group"), "listserv."),
+                             "is through the statnet users group listserv."),
                            p("To post and receive messages from this listserv, you need to join.",
                              "Instructions are at:", 
                              a("https://mailman.u.washington.edu/mailman/listinfo/statnet_help",
