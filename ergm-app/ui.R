@@ -499,9 +499,10 @@ shinyUI(
                             value="edges"),
                   actionButton('addtermButton', 'Add'),
                   actionButton('resetformulaButton', 'Reset Formula'),
-                  actionButton('fitButton', 'Fit Model')
+                  fluidRow(actionButton('fitButton', 'Fit Model'))
                   ),
            column(2,
+                  br(),
                   actionButton('termdocButton', 'Term Documentation'))),
          wellPanel(class= 'docpopup', 
           fluidRow(
