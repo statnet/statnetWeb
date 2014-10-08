@@ -362,10 +362,10 @@ shinyUI(
                               column(6,
                                      p('Display overlay of expected values?'),
                                      checkboxInput('uniformoverlay_dd', 
-                                                   label='uniform graphs conditional on edge count', 
+                                                   label='Draws from uniform graphs conditional on edge count', 
                                                    value=FALSE),
                                      checkboxInput('bernoullioverlay_dd',
-                                                   label='Draws from bernoulli graphs with specified tie prob',
+                                                   label='Draws from bernoulli graphs with tie probability equal to density of observed network',
                                                    value=FALSE))
                      ),
                      fluidRow(downloadButton('degreedistdownload', label = "Download Plot"))
@@ -376,10 +376,10 @@ shinyUI(
                      fluidRow(
                               p('Display overlay of expected values?'),
                               checkboxInput('uniformoverlay_gd', 
-                                            label='uniform graphs conditional on edge count', 
+                                            label='Draws from uniform graphs conditional on edge count', 
                                             value=FALSE),
                               checkboxInput('bernoullioverlay_gd',
-                                            label='Draws from bernoulli graphs with specified tie prob',
+                                            label='Draws from bernoulli graphs with tie probability equal to density of observed network',
                                             value=FALSE)),
                      fluidRow(
                           p(tags$u('Note:'), 'A bar with zero height (empty space on the graph)',
