@@ -1386,7 +1386,8 @@ output$gofsummary <- renderPrint({
   })
 
 
-output$gofplot <- renderPlot({   
+output$gofplot <- renderPlot({
+  input$gofButton
   gofterm <- isolate(input$gofterm)
   if (gofterm == ''){
     par(mfrow=c(3,1))
