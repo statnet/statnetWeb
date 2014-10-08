@@ -121,7 +121,7 @@ shinyUI(
 #+ eval=FALSE
   tabPanel('About',
            sidebarLayout(position = 'right',
-             sidebarPanel(width = 5, 
+             sidebarPanel( 
                           h5('Resources'),
                           a("statnet Wiki",
                             href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
@@ -138,12 +138,22 @@ shinyUI(
                             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
                             target = "_blank")
                           ),
-             mainPanel(width = 7, 
+             mainPanel( 
                h5('About'),
                p('This is a prototype web application for the ergm package, which is a member of the',
                  span('statnet',style='font-family:Courier; font-size:12pt; font-weight:bold;'), 
                  'suite of network analysis R packages. To find out more about statnet and the ergm',
                  'package, see the linked resources to the right.'),
+               p("This app is a good introduction to the ergm package for those who are just getting",
+                 "started using statnet, or who are not familiar with programming in R.",
+                 "Advanced users may still want to interact via the command line in order to access",
+                 "the full functionality."),
+               p("To get the most out of the ergm app, move sequentially through the tabs at the top",
+                 "of the page. Click on the", 
+                 tags$img(src= "200px-Icon-round-Question_mark.svg.png",
+                         height = 15, width = 15), 
+                 "icon at the top of any page for guidance."
+                 ),
                h5('Citing statnet'),
                p('If you use statnet, please cite it. All the citation information for statnet',
                  'and the component packages can be found here:'),
