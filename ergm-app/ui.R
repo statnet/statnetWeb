@@ -120,8 +120,38 @@ shinyUI(
 #' 
 #+ eval=FALSE
   tabPanel('About',
-           sidebarLayout(position = 'right',
-             sidebarPanel( 
+           fluidRow(
+                    column(8, 
+                           h5('About'),
+                           p('This is a prototype web application for the ergm package, which is a member of the',
+                             span('statnet',style='font-family:Courier; font-size:12pt; font-weight:bold;'), 
+                             'suite of network analysis R packages. To find out more about statnet and the ergm',
+                             'package, see the linked resources to the right.'),
+                           p("This app is a good introduction to the ergm package for those who are just getting",
+                             "started using statnet, or who are not familiar with programming in R.",
+                             "Advanced users may still want to interact via the command line in order to access",
+                             "the full functionality."),
+                           p("To get the most out of the ergm app, move sequentially through the tabs at the top",
+                             "of the page. Click on the", 
+                             tags$img(src= "200px-Icon-round-Question_mark.svg.png",
+                                      height = 15, width = 15), 
+                             "icon at the top of any page for guidance."
+                           ),
+                           h5('Citing statnet'),
+                           p('If you use statnet, please cite it. All the citation information for statnet',
+                             'and the component packages can be found here:'),
+                           tags$ul(
+                             tags$li(a('Citing statnet', 
+                                       href='https://statnet.csde.washington.edu/trac/wiki/citation%20information',
+                                       target='_blank')),
+                             tags$li(a('License and source code attribution requirements',
+                                       href = 'http://statnet.csde.washington.edu/attribution.shtml',
+                                       target = '_blank')),
+                             tags$li(a('statnet Development Team'),
+                                     href = 'http://statnet.csde.washington.edu/about_us.shtml',
+                                     target = '_blank'))
+                    ),       
+             column(4, wellPanel( 
                           h5('Resources'),
                           a("statnet Wiki",
                             href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
@@ -137,48 +167,16 @@ shinyUI(
                           a("ergm documentation on CRAN", 
                             href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
                             target = "_blank")
-                          ),
-             mainPanel( 
-               h5('About'),
-               p('This is a prototype web application for the ergm package, which is a member of the',
-                 span('statnet',style='font-family:Courier; font-size:12pt; font-weight:bold;'), 
-                 'suite of network analysis R packages. To find out more about statnet and the ergm',
-                 'package, see the linked resources to the right.'),
-               p("This app is a good introduction to the ergm package for those who are just getting",
-                 "started using statnet, or who are not familiar with programming in R.",
-                 "Advanced users may still want to interact via the command line in order to access",
-                 "the full functionality."),
-               p("To get the most out of the ergm app, move sequentially through the tabs at the top",
-                 "of the page. Click on the", 
-                 tags$img(src= "200px-Icon-round-Question_mark.svg.png",
-                         height = 15, width = 15), 
-                 "icon at the top of any page for guidance."
-                 ),
-               h5('Citing statnet'),
-               p('If you use statnet, please cite it. All the citation information for statnet',
-                 'and the component packages can be found here:'),
-               tags$ul(
-                 tags$li(a('Citing statnet', 
-                           href='https://statnet.csde.washington.edu/trac/wiki/citation%20information',
-                           target='_blank')),
-                 tags$li(a('License and source code attribution requirements',
-                           href = 'http://statnet.csde.washington.edu/attribution.shtml',
-                           target = '_blank')),
-                 tags$li(a('statnet Development Team'),
-                         href = 'http://statnet.csde.washington.edu/about_us.shtml',
-                         target = '_blank')),
-               br(),
-               hr(),
-               p("This web app is built with", a("Shiny",href="http://shiny.rstudio.com/",
-                                                 target = "_blank")),
-               p("Author of app: Emily Beylerian")
-               )),
-           fluidRow(column(3,            
-                           fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200)),
-                           fluidRow(a(img(src = 'csdelogo_crop.png', height = 40, width = 40),
-                                         href = 'https://csde.washington.edu/', target = '_blank'),
-                                    a(img(src = 'csde_goudy.fw.png', width=150), href = 'https://csde.washington.edu/',
-                                         target = '_blank'))))
+             ),
+             p("This web app is built with", a("Shiny",href="http://shiny.rstudio.com/",
+                                              target = "_blank")),
+             fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200)),
+             fluidRow(a(img(src = 'csdelogo_crop.png', height = 40, width = 40),
+                       href = 'https://csde.washington.edu/', target = '_blank'),
+                      a(img(src = 'csde_goudy.fw.png', width=150), href = 'https://csde.washington.edu/',
+                       target = '_blank'))
+             )           
+             )
            ),
   tabPanel('Data Upload',
            #busy.js is for calculation in progress boxes
