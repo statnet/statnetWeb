@@ -1057,6 +1057,53 @@ output$gclose <- renderText({
 })
 outputOptions(output,'gclose',suspendWhenHidden=FALSE)
 
+output$gstress <- renderText({
+  if(!is.network(nwreac())){ return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- centralization(nwreac(), stresscent, mode=gmode, diag=has.loops(nwreac()),
+                  cmode=input$gstresscmode)
+})
+outputOptions(output,'gstress',suspendWhenHidden=FALSE)
+
+output$ggraphcent <- renderText({
+  if(!is.network(nwreac())) {return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- centralization(nwreac(), graphcent, mode=gmode, diag=has.loops(nwreac()),
+                 cmode=input$ggraphcentcmode)
+})
+outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
+
+output$gevcent <- renderText({
+  if(!is.network(nwreac())) {return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- centralization(nwreac(), evcent, mode=gmode, diag=has.loops(nwreac()))
+})
+outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
+
+output$ginfocent <- renderText({
+  if(!is.network(nwreac())) {return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i <- centralization(nwreac(), infocent, mode=gmode, diag=has.loops(nwreac()),
+                cmode=input$ginfocentcmode)
+})
+outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
+
 output$ndeg <- renderText({
   if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
