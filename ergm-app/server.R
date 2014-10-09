@@ -808,8 +808,8 @@ dd_plotdata <- reactive({
   data <- append(data,sum(deg==0),after=0)
   maxdeg <- max(deg)
   names(data) <- paste(0:maxdeg)
-  #for color-coded bars
   
+  #for color-coded bars
   if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
     if(is.directed(nwreac())){
       if(input$cmode=='indegree'){
@@ -850,7 +850,6 @@ dd_uniformoverlay <- reactive({
     #complete tabulation of degrees for each draw
   degreemeans <- apply(degreedata, MARGIN=1, FUN=mean)
   names(degreemeans) <- paste(0:max(deg))
-  #degreemeans <- spline(degreemeans, n=4*length(degreemeans))
   degreesd <- apply(degreedata, MARGIN=1, FUN=sd)
   mean_and_sd <- list(degreemeans, degreesd)
 })
@@ -859,16 +858,27 @@ dd_bernoullioverlay <- reactive({
   if(!is.network(nwreac())){
     return()
   }
+  reps = 50
   density <- gden(nwreac())
   if(is.directed(nwreac())){
-    deg <- degree(bernoullisamples(), g=1:50, gmode='digraph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
   } else {
-    deg <- degree(bernoullisamples(), g=1:50, gmode='graph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', cmode=input$cmode)
   }
-  degreedata <- tabulate(deg)
-  degreedata <- append(degreedata, sum(deg==0), after=0)
-  names(degreedata) <- paste(0:max(deg))
-  degreedata <- spline(degreedata/50, n= 4*length(degreedata))
+  #now deg is a matrix where each element is a degree of a node 
+  #each column is a different draw
+  
+  degreedata <- apply(deg, MARGIN=2, FUN=tabulate, nbins=max(deg))
+  #degreedata is matrix holding tabulation of degrees (except isolates)
+  #each column is different draw
+  z <- apply(deg, MARGIN=2, FUN=function(x){sum(x==0)})
+  #tabulation of isolates in each draw
+  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, byrow=TRUE)
+  #complete tabulation of degrees for each draw
+  degreemeans <- apply(degreedata, MARGIN=1, FUN=mean)
+  names(degreemeans) <- paste(0:max(deg))
+  degreesd <- apply(degreedata, MARGIN=1, FUN=sd)
+  mean_and_sd <- list(degreemeans, degreesd)
 })
 
 output$degreedist <- renderPlot({
@@ -886,8 +896,12 @@ output$degreedist <- renderPlot({
   }}
   
   unif_samplemeans <- dd_uniformoverlay()[[1]]
-  maxdeg <- length(unif_samplemeans)-1
   unif_stderrors <- dd_uniformoverlay()[[2]]
+  maxdeg_u <- length(unif_samplemeans)-1
+  
+  bern_samplemeans <- dd_bernoullioverlay()[[1]]
+  bern_stderrors <- dd_bernoullioverlay()[[2]]
+  maxdeg_b <- length(bern_samplemeans)-1
   
   barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
           args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10))
@@ -895,12 +909,17 @@ output$degreedist <- renderPlot({
     lines(unif_samplemeans,col='firebrick4', lwd=1)
     lines(unif_samplemeans+2*unif_stderrors, col='firebrick4', lwd=1, lty=2)
     lines(unif_samplemeans-2*unif_stderrors, col='firebrick4', lwd=1, lty=2)
-    polygon(x=c(1:(maxdeg+1),(maxdeg+1):1), y=c(unif_samplemeans+2*unif_stderrors, 
+    polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_samplemeans+2*unif_stderrors, 
                                     rev(unif_samplemeans-2*unif_stderrors)),
             col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
   }
   if(input$bernoullioverlay_dd){
-    lines(dd_bernoullioverlay(),col='orangered', lwd=2)
+    lines(bern_samplemeans,col='orangered', lwd=1)
+    lines(bern_samplemeans+2*bern_stderrors, col='orangered', lwd=1, lty=2)
+    lines(bern_samplemeans-2*bern_stderrors, col='orangered', lwd=1, lty=2)
+    polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_samplemeans+2*bern_stderrors, 
+                                                rev(bern_samplemeans-2*bern_stderrors)),
+            col=adjustcolor('orangered', alpha.f=.5), border=NA)
   }
   
 })
@@ -949,7 +968,7 @@ gd_bernoullioverlay <- reactive({
     return()
   }
   gd <- geodist(bernoullisamples(),inf.replace=0)
-  distsum = matrix(0, nrow=nodes(), ncol=nodes())
+  distsum <- matrix(0, nrow=nodes(), ncol=nodes())
   for(k in 1:length(gd)){
     distsum <- distsum + gd[[k]]$gdist
   }
@@ -961,8 +980,13 @@ output$geodistplot <- renderPlot({
     return()
   }
   g <- geodist(nwreac(),inf.replace=0)
-  barplot(sort(c(g$gdist), decreasing=TRUE),  col="#3182bd", border=NA,
-          xlab = "Vertex Pairs", ylab = "Shortest Path")
+  gdata <- tabulate(g$gdist)
+  gdata <- append(gdata, sum(g$gdist == 0), after=0)
+  maxgeo <- max(g$gdist)
+  names(gdata) <- paste(0:maxgeo)
+  
+  barplot(gdata,  col="#3182bd", border=NA,
+          xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs")
   if(input$uniformoverlay_gd){
     lines(gd_uniformoverlay(), lwd=2,
             col=adjustcolor('firebrick4', alpha.f = 1))
