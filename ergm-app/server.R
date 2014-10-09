@@ -71,12 +71,13 @@ data(florentine)
 data(sampson)
 
 #create a list of unique term names
-allterms <- search.ergmTerms()
-inds <- gregexpr(pattern='\\(', allterms)
-for(i in 1:length(allterms)){
-  allterms[i] <- substr(allterms[[i]], start=1, stop=inds[[i]][1]-1)
-}
-allterms <- unique(allterms)
+# UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
+# allterms <- search.ergmTerms()
+# inds <- gregexpr(pattern='\\(', allterms)
+# for(i in 1:length(allterms)){
+#   allterms[i] <- substr(allterms[[i]], start=1, stop=inds[[i]][1]-1)
+# }
+# allterms <- unique(allterms)
 
    
 
@@ -839,7 +840,7 @@ dd_uniformoverlay <- reactive({
   degreedata <- tabulate(deg)
   degreedata <- append(degreedata, sum(deg==0), after=0)
   names(degreedata) <- paste(0:max(deg))
-  degreedata <- degreedata/50
+  degreedata <- spline(degreedata/50, n= 4*length(degreedata))
 })
 
 dd_bernoullioverlay <- reactive({
@@ -1120,33 +1121,33 @@ outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
 #' on the number of nodes in the network and the vertex attributes, respectively.
 
 #+ fitmodel1, eval=FALSE
+# UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
+# output$listofterms <- renderUI({
+#   if(!is.network(nwreac())){
+#     return()
+#   }
+#   if(input$matchingorall == 'All terms'){
+#     current.terms <- unlist(allterms)
+#   } else {
+#     matchterms <- search.ergmTerms(net=nwreac())
+#     ind <- gregexpr(pattern='\\(', matchterms)
+#     for(i in 1:length(matchterms)){
+#       matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[[i]][1]-1)
+#     }
+#     matchterms <- unique(matchterms)
+#     current.terms <- unlist(matchterms)
+#   }
+#   selectInput('termdoc',label = NULL,
+#                   choices = current.terms,
+#                   multiple=FALSE, 
+#                   selectize=FALSE)
+#   
+# })
 
-output$listofterms <- renderUI({
-  if(!is.network(nwreac())){
-    return()
-  }
-  if(input$matchingorall == 'All terms'){
-    current.terms <- unlist(allterms)
-  } else {
-    matchterms <- search.ergmTerms(net=nwreac())
-    ind <- gregexpr(pattern='\\(', matchterms)
-    for(i in 1:length(matchterms)){
-      matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[[i]][1]-1)
-    }
-    matchterms <- unique(matchterms)
-    current.terms <- unlist(matchterms)
-  }
-  selectInput('termdoc',label = NULL,
-                  choices = current.terms,
-                  multiple=FALSE, 
-                  selectize=FALSE)
-  
-})
-
-output$termdoc <- renderPrint({
-  myterm <- input$termdoc
-  search.ergmTerms(name=myterm)
-})
+# output$termdoc <- renderPrint({
+#   myterm <- input$termdoc
+#   search.ergmTerms(name=myterm)
+# })
 
 
 #' Below I output the current formulation of the ergm 
