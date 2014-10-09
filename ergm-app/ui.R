@@ -18,7 +18,7 @@
 #' **Basics**
 #' 
 #' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp. 
-#' Widgets specific functions in Shiny that correspond to elements of the UI that the
+#' Widgets are specific functions in Shiny that correspond to elements of the UI that the
 #' user can interact with to influence the content that the app produces (see widget
 #' examples in the [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags 
 #' (e.g. `h1`,`p` and `a` below) have built-in functions in Shiny, many others are 
@@ -43,22 +43,18 @@
 #' 
 #' **Code**
 #' 
-#' The function `customTextInput` is a manipulation of the `textInput` widget
-#' that allows for smaller input boxes. In addition to all the normal arguments passed
-#' to `textInput`, `class = "input-small"` or `class = "input-mini"` can be specified.
-#' 
-#' Similarly, the `helperButton` function creates a small question mark button. The file
-#' `alert.js` (which is sourced later in this script) specifies that when the user clicks
-#' on a helperButton, a window with tips on how to use the page will appear. The window
-#' disappears the next time the user clicks on the button. 
+#' Before the call to `shinyUI`, make sure that necessary packages are loaded
+#' and create any custom widgets that we will use in the app.
 #+ setup, eval=FALSE
-#load necessary packages
+# load necessary packages
 library(shiny)
 library(statnet)
-source("chooser.R")
+#source("chooser.R") #need this for Kirk's widget that moves items left/right
 
 #' Functions to create new widgets
 #+ eval=FALSE
+# version of textInput with more size options
+# specify class = "input-small" or class="input-mini" in addition to other textInput args
 customTextInput<-function (inputId, label, value="",...) {
   tagList(
     tags$label(label, `for` = inputId), 
@@ -77,7 +73,8 @@ inlineSelectInput<-function (inputId, label, choices,...) {
 }
 
 
-# This function generates the client-side HTML for a helper button
+# New helper button widget
+# action when clicking on button is controlled by alert.js (sourced later in script)
 helperButton <- function(id) {
   tagList(
     tags$button(id=id, type="button", class="helper-btn",
@@ -114,9 +111,9 @@ shinyUI(
 #' they should naturally be aligned horizontally, or when a `wellPanel` that is supposed
 #' to hold some content doesn't quite enclose everything correctly.
 #' 
-#' **Data Upload**
-#'
+#' **Front Page (About)**
 #' 
+#' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
   tabPanel('About',
@@ -178,10 +175,24 @@ shinyUI(
              )           
              )
            ),
+#' 
+#' **Data Upload**
+#' 
+#' Before the code for what is displayed on the Data Upload page,
+#' various javaScript and CSS files that will be useful later in the
+#' script are linked. For example, since network plotting and model 
+#' fitting do not happen instantly (especially for large networks),
+#' a loading icon will help to assure users that the app is still working 
+#' on producing output. The file `busy.js` controls the behavior of the 
+#' loading message and `style.css` controls the appearance. To display 
+#' the loading message on subsequent tabs, we only need to include the 
+#' `div` statement within those tabs.
+#+ eval=FALSE
+
   tabPanel('Data Upload',
            #busy.js is for calculation in progress boxes
-           #alert.js is for helper boxes
-           #jquery libraries are loaded from google cdn
+           #alert.js is for helper boxes, term doc box, 
+           #jquery libraries are loaded from google cdn, needed for autocomplete
            #this tagList command has to go inside a tabPanel
            tagList(
              tags$head(
@@ -506,11 +517,6 @@ shinyUI(
 
 #' **Fit Model**
 #' 
-#' Since model fitting does not happen instantly, a loading icon will help to assure 
-#' users that the app is still working on producing output. The following code chunk
-#' uses the files `busy.js`, `style.css` and `ajax-loader.gif` located in the directory
-#' `ergm-common/www` to create a loading message. To display the loading message on
-#' subsequent tabs, we only need to include the `div` statement on those tabs.
 #' 
 #+ eval=FALSE                  
       tabPanel('Fit Model',
