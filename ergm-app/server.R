@@ -1021,6 +1021,42 @@ output$gtrans <- renderText({
 })
 outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
 
+output$gdeg <- renderText({
+  if(!is.network(nwreac())) {return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- centralization(nwreac(), degree, mode=gmode, diag=has.loops(nwreac()),
+              cmode=input$gdegcmode)
+})
+outputOptions(output,'gdeg',suspendWhenHidden=FALSE)
+
+output$gbetw <- renderText({
+  if(!is.network(nwreac())) {return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- centralization(nwreac(), betweenness, mode=gmode, diag=has.loops(nwreac()),
+                   cmode=input$gbetwcmode)
+})
+outputOptions(output,'gbetw',suspendWhenHidden=FALSE)
+
+output$gclose <- renderText({
+  if(!is.network(nwreac())) {return()}
+  if(is.directed(nwreac())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- centralization(nwreac(), closeness, mode=gmode, diag=has.loops(nwreac()),
+                 cmode=input$gclosecmode)
+})
+outputOptions(output,'gclose',suspendWhenHidden=FALSE)
+
 output$ndeg <- renderText({
   if(!is.network(nwreac())) {return()}
   if(is.directed(nwreac())){
