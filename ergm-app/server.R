@@ -832,15 +832,27 @@ dd_uniformoverlay <- reactive({
   if(!is.network(nwreac())){
     return()
   }
+  reps <- 50 #number of draws
   if(is.directed(nwreac())){
-    deg <- degree(uniformsamples(), g=1:50, gmode='digraph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
   } else {
-    deg <- degree(uniformsamples(), g=1:50, gmode='graph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode)
   }
-  degreedata <- tabulate(deg)
-  degreedata <- append(degreedata, sum(deg==0), after=0)
-  names(degreedata) <- paste(0:max(deg))
-  degreedata <- spline(degreedata/50, n= 4*length(degreedata))
+    #now deg is a matrix where each element is a degree of a node 
+    #each column is a different draw
+  
+  degreedata <- apply(deg, MARGIN=2, FUN=tabulate, nbins=max(deg))
+    #degreedata is matrix holding tabulation of degrees (except isolates)
+    #each column is different draw
+  z <- apply(deg, MARGIN=2, FUN=function(x){sum(x==0)})
+    #tabulation of isolates in each draw
+  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, byrow=TRUE)
+    #complete tabulation of degrees for each draw
+  degreemeans <- apply(degreedata, MARGIN=1, FUN=mean)
+  names(degreemeans) <- paste(0:max(deg))
+  #degreemeans <- spline(degreemeans, n=4*length(degreemeans))
+  degreesd <- apply(degreedata, MARGIN=1, FUN=sd)
+  mean_and_sd <- list(degreemeans, degreesd)
 })
 
 dd_bernoullioverlay <- reactive({
@@ -873,10 +885,19 @@ output$degreedist <- renderPlot({
     color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
   }}
   
+  unif_samplemeans <- dd_uniformoverlay()[[1]]
+  maxdeg <- length(unif_samplemeans)-1
+  unif_stderrors <- dd_uniformoverlay()[[2]]
+  
   barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
           args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10))
   if(input$uniformoverlay_dd){
-    lines(dd_uniformoverlay(),col='firebrick4', lwd=2)
+    lines(unif_samplemeans,col='firebrick4', lwd=1)
+    lines(unif_samplemeans+2*unif_stderrors, col='firebrick4', lwd=1, lty=2)
+    lines(unif_samplemeans-2*unif_stderrors, col='firebrick4', lwd=1, lty=2)
+    polygon(x=c(1:(maxdeg+1),(maxdeg+1):1), y=c(unif_samplemeans+2*unif_stderrors, 
+                                    rev(unif_samplemeans-2*unif_stderrors)),
+            col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
   }
   if(input$bernoullioverlay_dd){
     lines(dd_bernoullioverlay(),col='orangered', lwd=2)
