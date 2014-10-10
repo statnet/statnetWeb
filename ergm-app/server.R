@@ -1051,8 +1051,14 @@ output$geodistplot <- renderPlot({
   bern_stderr <- gd_bernoullioverlay()[[2]]
   maxgeo_b <- length(bern_means)-1
   
-  barplot(gdata,  col="#3182bd", border=NA,
-          xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs")
+  #get maximums to set y limits
+  maxfreq <- max(gdata)
+  maxfreq_samples <- max(max(unif_means+2*unif_stderr),
+                         max(bern_means+2*bern_stderr))
+  
+  barplot(gdata,  col="#3182bd",
+          xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs",
+          ylim = c(0,max(maxfreq, maxfreq_samples)))
   if(input$uniformoverlay_gd){
     lines(unif_means, lwd=1, col='firebrick4')
     lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
@@ -1089,8 +1095,14 @@ output$geodistdownload <- downloadHandler(
     bern_stderr <- gd_bernoullioverlay()[[2]]
     maxgeo_b <- length(bern_means)-1
     
-    barplot(gdata,  col="#3182bd", border=NA,
-            xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs")
+    #get maximums to set y limits
+    maxfreq <- max(gdata)
+    maxfreq_samples <- max(max(unif_means+2*unif_stderr),
+                           max(bern_means+2*bern_stderr))
+    
+    barplot(gdata,  col="#3182bd",
+            xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs",
+            ylim = c(0,max(maxfreq, maxfreq_samples)))
     if(input$uniformoverlay_gd){
       lines(unif_means, lwd=1, col='firebrick4')
       lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
