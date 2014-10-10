@@ -944,13 +944,31 @@ output$degreedistdownload <- downloadHandler(
         color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
       }}
     
+    unif_samplemeans <- dd_uniformoverlay()[[1]]
+    unif_stderrors <- dd_uniformoverlay()[[2]]
+    maxdeg_u <- length(unif_samplemeans)-1
+    
+    bern_samplemeans <- dd_bernoullioverlay()[[1]]
+    bern_stderrors <- dd_bernoullioverlay()[[2]]
+    maxdeg_b <- length(bern_samplemeans)-1
+    
     barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
-            args.legend=legtitle, col=color) 
+            args.legend=legtitle, col=color, ylim=c(0,max(dd_plotdata())+10))
     if(input$uniformoverlay_dd){
-      lines(dd_uniformoverlay(),col='firebrick4', lwd=2)
+      lines(unif_samplemeans,col='firebrick4', lwd=1)
+      lines(unif_samplemeans+2*unif_stderrors, col='firebrick4', lwd=1, lty=2)
+      lines(unif_samplemeans-2*unif_stderrors, col='firebrick4', lwd=1, lty=2)
+      polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_samplemeans+2*unif_stderrors, 
+                                                      rev(unif_samplemeans-2*unif_stderrors)),
+              col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
     }
     if(input$bernoullioverlay_dd){
-      lines(dd_bernoullioverlay(),col='orangered', lwd=2)
+      lines(bern_samplemeans,col='orangered', lwd=1)
+      lines(bern_samplemeans+2*bern_stderrors, col='orangered', lwd=1, lty=2)
+      lines(bern_samplemeans-2*bern_stderrors, col='orangered', lwd=1, lty=2)
+      polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_samplemeans+2*bern_stderrors, 
+                                                      rev(bern_samplemeans-2*bern_stderrors)),
+              col=adjustcolor('orangered', alpha.f=.5), border=NA)
     }
     dev.off()
 })
@@ -1042,15 +1060,36 @@ output$geodistdownload <- downloadHandler(
   content = function(file){
     pdf(file=file, height=10, width=15)
     g <- geodist(nwreac(),inf.replace=0)
-    barplot(sort(c(g$gdist), decreasing=TRUE), col="#3182bd", border=NA,
-            xlab = "Vertex Pairs", ylab = "Shortest Path")
+    gdata <- tabulate(g$gdist)
+    gdata <- append(gdata, sum(g$gdist == 0), after=0)
+    maxgeo <- max(g$gdist)
+    names(gdata) <- paste(0:maxgeo)
+    
+    unif_means <- gd_uniformoverlay()[[1]]
+    unif_stderr <- gd_uniformoverlay()[[2]]
+    maxgeo_u <- length(unif_means)-1
+    
+    bern_means <- gd_bernoullioverlay()[[1]]
+    bern_stderr <- gd_bernoullioverlay()[[2]]
+    maxgeo_b <- length(bern_means)-1
+    
+    barplot(gdata,  col="#3182bd", border=NA,
+            xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs")
     if(input$uniformoverlay_gd){
-      lines(c(gd_uniformoverlay()), lwd=2,
-             col=adjustcolor('firebrick4', alpha.f = 1))
+      lines(unif_means, lwd=1, col='firebrick4')
+      lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
+      lines(unif_means-2*unif_stderr, lwd=1, lty=2, col='firebrick4')
+      polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_means+2*unif_stderr, 
+                                                      rev(unif_means-2*unif_stderr)),
+              col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
     }
     if(input$bernoullioverlay_gd){
-      lines(c(gd_bernoullioverlay()), lwd=2,
-             col=adjustcolor('orangered', alpha.f = 1))
+      lines(bern_means, lwd=1, col='orangered')
+      lines(bern_means+2*bern_stderr, lwd=1, lty=2, col='orangered')
+      lines(bern_means-2*bern_stderr, lwd=1, lty=2, col='orangered')
+      polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_means+2*bern_stderr, 
+                                                      rev(bern_means-2*bern_stderr)),
+              col=adjustcolor('orangered', alpha.f=.5), border=NA)
     }
     dev.off()
   })
