@@ -286,14 +286,15 @@ shinyUI(
                                            choices=c('directed', 'undirected'))
                               ),
                        
-                       column(5,strong('Set New Attribute'),
+                       column(5,strong('Import new attribute information'),
                               conditionalPanel(condition="output.nwsum != 'NA'",
                                  radioButtons('newattrtype', label='Choose attribute type',
                                            choices=c('vertex attribute',
                                                    'edge attribute',
                                                    'edge value')),
-                                 fileInput(inputId='newattrvalue', label=span('Upload a vector or list of attribute',
-                                                                              'values, or a matrix of edge values.')),
+                                 fileInput(inputId='newattrvalue', label=span('Upload a vector or list of nodal',
+                                                                              'attributes, a vector or list of edge',
+                                                                              'attributes, or an adjacency matrix of edge values.')),
                                  textInput('newattrname', label="New attribute name"),
                                  actionButton('newattrButton', label='Set Attribute')              
                                  )
@@ -311,7 +312,7 @@ shinyUI(
                      tags$ul(
                        tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
                        tags$li('Recoding (mapping a set of attributes onto a new set)'),
-                       tags$li('A conditional transformation (', code('do...if...'),')'))
+                       tags$li('Conditional transformations (', code('do...if...'),')'))
                      #uiOutput('modifyattrchooser')
                      )
                    )
