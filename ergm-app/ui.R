@@ -715,16 +715,7 @@ shinyUI(
                        column(10,
                               p('Current ergm formula:',
                                 verbatimTextOutput('checkterms2')))
-                      ),     
-                     fluidRow(
-                       column(3, selectInput('gofterm', 'Goodness of Fit Term:',
-                                             c(Default='', 'degree', 'distance', 'espartners', 
-                                               'dspartners', 'triadcensus', 'model'),
-                                             selectize = FALSE))),
-                     fluidRow(
-                        column(3, actionButton('gofButton', 'Run'))),
-                     br(),
-                     tags$hr(),
+                      ), 
                      p('Test how well your model fits the original data by choosing 
                        a network statistic that is not in the model, and comparing 
                        the value of this statistic observed in the original network 
@@ -734,6 +725,15 @@ shinyUI(
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
                                                     distance'), '.'),
+                     fluidRow(
+                       column(3, selectInput('gofterm', 'Goodness of Fit Term:',
+                                             c(Default='', 'degree', 'distance', 'espartners', 
+                                               'dspartners', 'triadcensus', 'model'),
+                                             selectize = FALSE))),
+                     fluidRow(
+                        column(3, actionButton('gofButton', 'Run'))),
+                     br(),
+                     tags$hr(),
                      fluidRow(
                      column(5,
                             verbatimTextOutput('gofsummary')),  
