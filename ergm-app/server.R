@@ -158,6 +158,12 @@ nwinit <- reactive({
   } else if(input$filetype == 4){
     if(!is.null(input$rawdatafile)){
       nw <- "Input the specified type of matrix"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+        try(nw <- network(read.table(paste(filepath), sep=","),
+                          directed=input$dir, loops=input$loops,
+                          multiple=input$multiple, bipartite=input$bipartite,
+                          matrix.type=input$matrixtype))
+      }
       try(nw <- network(read.table(paste(filepath)),
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,

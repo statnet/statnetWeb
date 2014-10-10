@@ -229,7 +229,7 @@ shinyUI(
                        column(6,
                               radioButtons('filetype',label=h5('File type'),
                                            choices=c('pre-loaded sample network'=5, 'statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data'=4))),
+                                                     'matrix of relational data (*.csv or saved R object)'=4))),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(6,
                               br(),
