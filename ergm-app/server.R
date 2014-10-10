@@ -1566,8 +1566,8 @@ output$diagnosticsplotspace <- renderUI({
   if(input$fitButton == 0){
     return()
   }
-  vpp <- length(model1reac()$coef)
-  plotOutput('diagnosticsplot', height = vpp*400/3)
+  vpp <- length(model1reac()$coef) 
+  plotOutput('diagnosticsplot', height = vpp*400/2)
 })
 
 output$diagnostics <- renderPrint({
