@@ -624,9 +624,9 @@ shinyUI(
            column(10,
                   textInput(inputId="terms", label="Type in term(s) and their arguments. For multiple terms, separate with '+'.",
                             value="edges"),
-                  actionButton('addtermButton', 'Add'),
-                  actionButton('resetformulaButton', 'Reset Formula'),
-                  fluidRow(actionButton('fitButton', 'Fit Model'))
+                  actionButton('fitButton', 'Fit Model'),
+                  fluidRow(actionButton('addtermButton', 'Add Term(s)'),
+                           actionButton('resetformulaButton', 'Reset Formula'))
                   ),
            column(2,
                   br(),
