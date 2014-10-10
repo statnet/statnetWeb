@@ -956,11 +956,20 @@ gd_uniformoverlay <- reactive({
     return()
   }
   gd <- geodist(uniformsamples(),inf.replace=0)
-  distsum = matrix(0, nrow=nodes(), ncol=nodes())
-  for(k in 1:length(gd)){
-    distsum <- distsum + gd[[k]]$gdist
+  maxgeo <- max(unlist(gd))
+  reps <- length(gd)
+  gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
+    #list of tabulated geodesics for each draw, except those of 0 length
+  gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
+  for(k in 1:reps){
+    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0), after=0)
   }
-  sort(c(distsum/length(gd)), decreasing=TRUE)
+  
+  geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
+  names(geomeans) <- paste(0:maxgeo)
+  geosd <- apply(gd_data_complete, MARGIN=1, FUN=sd)
+  
+  mean_and_sd <- list(geomeans, geosd)
 })
 
 gd_bernoullioverlay <- reactive({
@@ -968,11 +977,20 @@ gd_bernoullioverlay <- reactive({
     return()
   }
   gd <- geodist(bernoullisamples(),inf.replace=0)
-  distsum <- matrix(0, nrow=nodes(), ncol=nodes())
-  for(k in 1:length(gd)){
-    distsum <- distsum + gd[[k]]$gdist
+  maxgeo <- max(unlist(gd))
+  reps <- length(gd)
+  gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
+  #list of tabulated geodesics for each draw, except those of 0 length
+  gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
+  for(k in 1:reps){
+    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0), after=0)
   }
-  sort(c(distsum/length(gd)), decreasing=TRUE)
+  
+  geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
+  names(geomeans) <- paste(0:maxgeo)
+  geosd <- apply(gd_data_complete, MARGIN=1, FUN=sd)
+  
+  mean_and_sd <- list(geomeans, geosd)
 })
 
 output$geodistplot <- renderPlot({
@@ -985,15 +1003,31 @@ output$geodistplot <- renderPlot({
   maxgeo <- max(g$gdist)
   names(gdata) <- paste(0:maxgeo)
   
+  unif_means <- gd_uniformoverlay()[[1]]
+  unif_stderr <- gd_uniformoverlay()[[2]]
+  maxgeo_u <- length(unif_means)-1
+  
+  bern_means <- gd_bernoullioverlay()[[1]]
+  bern_stderr <- gd_bernoullioverlay()[[2]]
+  maxgeo_b <- length(bern_means)-1
+  
   barplot(gdata,  col="#3182bd", border=NA,
           xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs")
   if(input$uniformoverlay_gd){
-    lines(gd_uniformoverlay(), lwd=2,
-            col=adjustcolor('firebrick4', alpha.f = 1))
+    lines(unif_means, lwd=1, col='firebrick4')
+    lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
+    lines(unif_means-2*unif_stderr, lwd=1, lty=2, col='firebrick4')
+    polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_means+2*unif_stderr, 
+                                                    rev(unif_means-2*unif_stderr)),
+            col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
   }
   if(input$bernoullioverlay_gd){
-    lines(gd_bernoullioverlay(), lwd=2,
-          col=adjustcolor('orangered', alpha.f = 1))
+    lines(bern_means, lwd=1, col='orangered')
+    lines(bern_means+2*bern_stderr, lwd=1, lty=2, col='orangered')
+    lines(bern_means-2*bern_stderr, lwd=1, lty=2, col='orangered')
+    polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_means+2*bern_stderr, 
+                                                    rev(bern_means-2*bern_stderr)),
+            col=adjustcolor('orangered', alpha.f=.5), border=NA)
   }
 })
 
