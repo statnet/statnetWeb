@@ -357,67 +357,69 @@ shinyUI(
     br(), 
     fluidRow(      
      column(7,
-        tabsetPanel(
+        tabsetPanel(id='plottabs',
           tabPanel('Network Plot',
-            plotOutput('nwplot'),
-             wellPanel(
-               fluidRow(h5('Display Options')),
-               fluidRow(column(3,
-                               checkboxInput('iso',
-                                             label = 'Display isolates?', 
-                                             value = TRUE),
-                               checkboxInput('vnames',
-                                             label = 'Display vertex names?',
-                                             value = FALSE)),
-                        column(3,
-                               uiOutput('dynamiccolor')),
-                        column(3,
-                               uiOutput('dynamicsize')),
-                        br(),
-                        column(3,
-                               downloadButton('nwplotdownload', label = "Download Plot"))))),
+            plotOutput('nwplot')
+#              wellPanel(
+#                fluidRow(h5('Display Options')),
+#                fluidRow(column(3,
+#                                checkboxInput('iso',
+#                                              label = 'Display isolates?', 
+#                                              value = TRUE),
+#                                checkboxInput('vnames',
+#                                              label = 'Display vertex names?',
+#                                              value = FALSE)),
+#                         column(3,
+#                                uiOutput('dynamiccolor')),
+#                         column(3,
+#                                uiOutput('dynamicsize')),
+#                         br(),
+#                         column(3,
+#                                downloadButton('nwplotdownload', label = "Download Plot"))))
+            ),
           tabPanel('Degree Distribution',
-                   plotOutput('degreedist'),
-                   wellPanel(
-                     fluidRow(h5('Display Options')),
-                     fluidRow(column(3,
-                                     selectInput('cmode', 
-                                                 label = 'Type of degree centrality',
-                                                 choices= c('indegree','outdegree',
-                                                            'freeman (total)'='freeman'),
-                                                 selected='freeman',
-                                                 selectize=FALSE)),
-                              column(3,
-                                     uiOutput('dynamiccolor_dd')),
-                              column(6,
-                                     p('Display overlay of expected values?'),
-                                     checkboxInput('uniformoverlay_dd', 
-                                                   label='Draws from uniform graphs conditional on edge count', 
-                                                   value=FALSE),
-                                     checkboxInput('bernoullioverlay_dd',
-                                                   label='Draws from bernoulli graphs with tie probability equal to density of observed network',
-                                                   value=FALSE))
-                     ),
-                     fluidRow(downloadButton('degreedistdownload', label = "Download Plot"))
-                     )),
+                   plotOutput('degreedist')
+#                    wellPanel(
+#                      fluidRow(h5('Display Options')),
+#                      fluidRow(column(3,
+#                                      selectInput('cmode', 
+#                                                  label = 'Type of degree centrality',
+#                                                  choices= c('indegree','outdegree',
+#                                                             'freeman (total)'='freeman'),
+#                                                  selected='freeman',
+#                                                  selectize=FALSE)),
+#                               column(3,
+#                                      uiOutput('dynamiccolor_dd')),
+#                               column(6,
+#                                      p('Display overlay of expected values?'),
+#                                      checkboxInput('uniformoverlay_dd', 
+#                                                    label='Draws from uniform graphs conditional on edge count', 
+#                                                    value=FALSE),
+#                                      checkboxInput('bernoullioverlay_dd',
+#                                                    label='Draws from bernoulli graphs with tie probability equal to density of observed network',
+#                                                    value=FALSE))
+#                      ),
+#                      fluidRow(downloadButton('degreedistdownload', label = "Download Plot"))
+#                      )
+                   ),
           tabPanel('Geodesic Distribution',
-                   plotOutput('geodistplot'),
-                   wellPanel(
-                     fluidRow(
-                              p('Display overlay of expected values?'),
-                              checkboxInput('uniformoverlay_gd', 
-                                            label='Draws from uniform graphs conditional on edge count', 
-                                            value=FALSE),
-                              checkboxInput('bernoullioverlay_gd',
-                                            label='Draws from bernoulli graphs with tie probability equal to density of observed network',
-                                            value=FALSE)),
-                     fluidRow(
-                          p(tags$u('Note:'), 'A bar with zero height (empty space on the graph)',
-                          'represents a vertex pair that is not connected by',
-                          'any path.')),
-                     fluidRow(
-                          downloadButton('geodistdownload', label= 'Download Plot'))
-                     )
+                   plotOutput('geodistplot')
+#                    wellPanel(
+#                      fluidRow(
+#                               p('Display overlay of expected values?'),
+#                               checkboxInput('uniformoverlay_gd', 
+#                                             label='Draws from uniform graphs conditional on edge count', 
+#                                             value=FALSE),
+#                               checkboxInput('bernoullioverlay_gd',
+#                                             label='Draws from bernoulli graphs with tie probability equal to density of observed network',
+#                                             value=FALSE)),
+#                      fluidRow(
+#                           p(tags$u('Note:'), 'A bar with zero height (empty space on the graph)',
+#                           'represents a vertex pair that is not connected by',
+#                           'any path.')),
+#                      fluidRow(
+#                           downloadButton('geodistdownload', label= 'Download Plot'))
+#                      )
                    ),
           tabPanel('More',
                    h5('Mixing Matrix', icon('angle-double-down'), 
@@ -569,8 +571,59 @@ shinyUI(
                    )
           )),
      column(4,
-            br(),br(),
+         tabsetPanel(
+           tabPanel('Display Options',
+              wellPanel(
+                    conditionalPanel(condition='input.plottabs == "Network Plot"',
+                                     checkboxInput('iso',
+                                                   label = 'Display isolates', 
+                                                   value = TRUE),
+                                     checkboxInput('vnames',
+                                                   label = 'Display vertex names',
+                                                   value = FALSE),
+                                     br(),
+                                     uiOutput('dynamiccolor'),
+                                     uiOutput('dynamicsize'),
+                                     br(),
+                                     downloadButton('nwplotdownload', label = "Download Plot")),
+                    conditionalPanel(condition='input.plottabs == "Degree Distribution"',
+                                     selectInput('cmode', 
+                                                 label = 'Type of degree centrality',
+                                                 choices= c('indegree','outdegree',
+                                                            'freeman (total)'='freeman'),
+                                                 selected='freeman',
+                                                 selectize=FALSE),
+                                     uiOutput('dynamiccolor_dd'),
+                                     p('Display overlay of expected values:'),
+                                     checkboxInput('uniformoverlay_dd', 
+                                                   label='Draws from uniform graphs conditional on edge count', 
+                                                   value=FALSE),
+                                     checkboxInput('bernoullioverlay_dd',
+                                                   label='Draws from bernoulli graphs with tie probability equal to density of observed network',
+                                                   value=FALSE),
+                                     downloadButton('degreedistdownload', label = "Download Plot")
+                      ),
+                    conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
+                                     p('Display overlay of expected values:'),
+                                     checkboxInput('uniformoverlay_gd', 
+                                                   label='Draws from uniform graphs conditional on edge count', 
+                                                   value=FALSE),
+                                     checkboxInput('bernoullioverlay_gd',
+                                                   label='Draws from bernoulli graphs with tie probability equal to density of observed network',
+                                                   value=FALSE),
+                                     br(),
+                                     downloadButton('geodistdownload', label= 'Download Plot'),
+                                     br(), br(),
+                                     p(tags$u('Note:'), 'In this case a geodesic length of zero',
+                                       'means that a pair of vertices are not connected by',
+                                       'any path.')
+                                     
+                      )
+                    )),
+           tabPanel('Network Summary',
             verbatimTextOutput('attr2'))
+            )
+         )
      ),
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
