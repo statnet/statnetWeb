@@ -228,8 +228,8 @@ shinyUI(
                      fluidRow(
                        column(6,
                               radioButtons('filetype',label=h5('File type'),
-                                           choices=c('pre-loaded sample network'=5, 'statnet network object'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data (*.csv or saved R object)'=4))),
+                                           choices=c('pre-loaded sample network'=5, 'statnet network object (R-object)'=1,'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
+                                                     'matrix of relational data (*.csv or R-object)'=4))),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(6,
                               br(),
@@ -242,9 +242,7 @@ shinyUI(
                                           choices=c('faux.mesa.high','flobusiness',
                                                     'flomarriage','samplike'),
                                           selectize=FALSE) 
-                                        
                                         )
-                       
                        ),
                      fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
@@ -268,7 +266,15 @@ shinyUI(
                            h5('Specify'),
                            column(6,
                                   uiOutput('pajchooser')))
-                     )
+                     )),
+                   wellPanel(
+                     p(tags$u('Notes about filetypes:'), 
+                       tags$ul(
+                         tags$li('An object in your R environment',
+                       'can be saved to a file in the following way', 
+                       code('save(objectname,"newfilename")'),'. By default the file will be saved',
+                       'into the current working directory, but the path to a new location can be',
+                       'specified with the ', code('envir = '), 'argument.')))
                      )
                    ),
           tabPanel('Edit Network', value=2,
