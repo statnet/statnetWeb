@@ -249,6 +249,17 @@ observe({
 #' 
 #+ eval=FALSE
 
+newattrnamereac <- reactive({
+  newname <- ''
+  try({
+    path <- input$newattrvalue[1,4]
+    objname <- load(paste(path))
+    newattrs <- get(objname)
+    newname <- names(newattrs)
+  })
+  newname
+})
+
 #add vertex attributes
 observe({
   if(input$newattrButton == 0) return()
@@ -256,13 +267,18 @@ observe({
       if(input$newattrtype == 'vertex attribute'){
           path <- input$newattrvalue[1,4]
           objname <- load(paste(path))
-          newval <- get(objname)
+          newattrs <- get(objname)
+          newname <- names(newattrs)
           namesofar <- get("v_attrNamesToAdd", pos="package:base")
           valsofar <- get("v_attrValsToAdd", pos="package:base")
+          for(k in 1:length(newname)){
+            namesofar <- cbind(namesofar, newname[[k]])
+            valsofar <- cbind(valsofar, newattrs[[k]])
+          }
           
-          assign('v_attrNamesToAdd', cbind(namesofar,input$newattrname),
+          assign('v_attrNamesToAdd', namesofar,
                  pos="package:base")
-          assign('v_attrValsToAdd', cbind(valsofar, newval),
+          assign('v_attrValsToAdd', valsofar,
                  pos="package:base")
         }
   })
@@ -654,6 +670,10 @@ output$pajchooser <- renderUI({
   }
   selectInput('choosepajnw', label='Upload a Pajek project file and choose a network from it',
               choices = pajlist, selectize=FALSE)
+})
+
+output$newattrname <- renderPrint({
+  cat(newattrnamereac())
 })
 
 output$modifyattrchooser <- renderUI({

@@ -301,7 +301,8 @@ shinyUI(
                                  fileInput(inputId='newattrvalue', label=span('Upload a vector or list of nodal',
                                                                               'attributes, a vector or list of edge',
                                                                               'attributes, or an adjacency matrix of edge values.')),
-                                 textInput('newattrname', label="New attribute name"),
+                                 p('New attribute name(s):'),
+                                 verbatimTextOutput('newattrname'),
                                  actionButton('newattrButton', label='Set Attribute')              
                                  )
                               
