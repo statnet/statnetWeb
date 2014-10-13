@@ -607,6 +607,9 @@ shinyUI(
                                      downloadButton('degreedistdownload', label = "Download Plot")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
+                                     checkboxInput('densplot_gd',
+                                                   label='Density plot',
+                                                   value=FALSE),
                                      p('Display overlay of expected values:'),
                                      checkboxInput('uniformoverlay_gd', 
                                                    label='Draws from uniform graphs conditional on edge count', 
