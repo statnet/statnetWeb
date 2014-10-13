@@ -289,15 +289,19 @@ observe({
   if(input$newattrButton == 0) return()
   isolate({
     if(input$newattrtype == 'edge attribute'){
-        path <- input$newattrvalue[1,4]
-        objname <- load(paste(path))
-        newval <- get(objname)
-        namesofar <- get("e_attrNamesToAdd", pos="package:base")
-        valsofar <- get("e_attrValsToAdd", pos="package:base")
-        
-        assign('e_attrNamesToAdd', cbind(namesofar,input$newattrname),
+      path <- input$newattrvalue[1,4]
+      objname <- load(paste(path))
+      newattrs <- get(objname)
+      newname <- names(newattrs)
+      namesofar <- get("e_attrNamesToAdd", pos="package:base")
+      valsofar <- get("e_attrValsToAdd", pos="package:base")
+      for(k in 1:length(newname)){
+        namesofar <- cbind(namesofar, newname[[k]])
+        valsofar <- cbind(valsofar, newattrs[[k]])
+      }
+        assign('e_attrNamesToAdd', namesofar,
                pos="package:base")
-        assign('e_attrValsToAdd', cbind(valsofar, newval),
+        assign('e_attrValsToAdd', valsofar,
                pos="package:base")
       }
   })
