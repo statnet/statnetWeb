@@ -893,7 +893,9 @@ output$degreedist <- renderPlot({
   }
   leg <- FALSE
   legtitle <- FALSE
+  plotme <- dd_plotdata()
   color <- "#3182bd"
+  ylabel <- "Frequency"
   if(!is.null(input$colorby_dd)){
   if(input$colorby_dd != "None"){
     leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
@@ -903,10 +905,14 @@ output$degreedist <- renderPlot({
   
   unif_samplemeans <- dd_uniformoverlay()[[1]]
   unif_stderr <- dd_uniformoverlay()[[2]]
+  unif_upperline <- unif_samplemeans + 2*unif_stderr
+  unif_lowerline <- unif_samplemeans - 2*unif_stderr
   maxdeg_u <- length(unif_samplemeans)-1
   
   bern_samplemeans <- dd_bernoullioverlay()[[1]]
   bern_stderr <- dd_bernoullioverlay()[[2]]
+  bern_upperline <- bern_samplemeans + 2*bern_stderr
+  bern_lowerline <- bern_samplemeans - 2*bern_stderr
   maxdeg_b <- length(bern_samplemeans)-1
   
   # get maximums for y limits of plot
@@ -915,24 +921,37 @@ output$degreedist <- renderPlot({
   } else {
     maxfreq <- max(dd_plotdata())
   }
-  maxfreq_samples <- max(max(bern_samplemeans + 2*bern_stderr), max(unif_samplemeans + 2*unif_stderr))
+  maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
+  ylimit <- max(maxfreq, maxfreq_samples)
   
-  barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
-          args.legend=legtitle, col=color, ylim=c(0,max(maxfreq,maxfreq_samples)))
+  if(input$densplot){
+    plotme <- dd_plotdata()/sum(dd_plotdata())
+    unif_samplemeans <- unif_samplemeans/sum(unif_samplemeans)
+    unif_upperline <- unif_upperline/sum(unif_upperline)
+    unif_lowerline <- unif_lowerline/sum(unif_lowerline)
+    bern_samplemeans <- bern_samplemeans/sum(bern_samplemeans)
+    bern_upperline <- bern_upperline/sum(bern_upperline)
+    bern_lowerline <- bern_lowerline/sum(bern_lowerline)
+    ylimit <- max(maxfreq/sum(dd_plotdata()) + .05, max(unif_upperline), max(bern_upperline))
+    ylabel <- 'Density'
+  }
+  
+  barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
+          args.legend=legtitle, col=color, ylim=c(0,ylimit))
   if(input$uniformoverlay_dd){
     lines(unif_samplemeans,col='firebrick4', lwd=1)
-    lines(unif_samplemeans+2*unif_stderr, col='firebrick4', lwd=1, lty=2)
-    lines(unif_samplemeans-2*unif_stderr, col='firebrick4', lwd=1, lty=2)
-    polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_samplemeans+2*unif_stderr, 
-                                    rev(unif_samplemeans-2*unif_stderr)),
+    lines(unif_upperline, col='firebrick4', lwd=1, lty=2)
+    lines(unif_lowerline, col='firebrick4', lwd=1, lty=2)
+    polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_upperline, 
+                                    rev(unif_lowerline)),
             col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
   }
   if(input$bernoullioverlay_dd){
     lines(bern_samplemeans,col='orangered', lwd=1)
-    lines(bern_samplemeans+2*bern_stderr, col='orangered', lwd=1, lty=2)
-    lines(bern_samplemeans-2*bern_stderr, col='orangered', lwd=1, lty=2)
-    polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_samplemeans+2*bern_stderr, 
-                                                rev(bern_samplemeans-2*bern_stderr)),
+    lines(bern_upperline, col='orangered', lwd=1, lty=2)
+    lines(bern_lowerline, col='orangered', lwd=1, lty=2)
+    polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_upperline, 
+                                                rev(bern_lowerline)),
             col=adjustcolor('orangered', alpha.f=.5), border=NA)
   }
   
@@ -944,7 +963,9 @@ output$degreedistdownload <- downloadHandler(
     pdf(file=file, height=10, width=10)
     leg <- FALSE
     legtitle <- FALSE
+    plotme <- dd_plotdata()
     color <- "#3182bd"
+    ylabel <- "Frequency"
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
         leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
@@ -954,10 +975,14 @@ output$degreedistdownload <- downloadHandler(
     
     unif_samplemeans <- dd_uniformoverlay()[[1]]
     unif_stderr <- dd_uniformoverlay()[[2]]
+    unif_upperline <- unif_samplemeans + 2*unif_stderr
+    unif_lowerline <- unif_samplemeans - 2*unif_stderr
     maxdeg_u <- length(unif_samplemeans)-1
     
     bern_samplemeans <- dd_bernoullioverlay()[[1]]
     bern_stderr <- dd_bernoullioverlay()[[2]]
+    bern_upperline <- bern_samplemeans + 2*bern_stderr
+    bern_lowerline <- bern_samplemeans - 2*bern_stderr
     maxdeg_b <- length(bern_samplemeans)-1
     
     # get maximums for y limits of plot
@@ -966,24 +991,37 @@ output$degreedistdownload <- downloadHandler(
     } else {
       maxfreq <- max(dd_plotdata())
     }
-    maxfreq_samples <- max(max(bern_samplemeans + 2*bern_stderr), max(unif_samplemeans + 2*unif_stderr))
+    maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
+    ylimit <- max(maxfreq, maxfreq_samples)
     
-    barplot(dd_plotdata(), xlab="Degree", legend.text=leg,
-            args.legend=legtitle, col=color, ylim=c(0,max(maxfreq,maxfreq_samples)))
+    if(input$densplot){
+      plotme <- dd_plotdata()/sum(dd_plotdata())
+      unif_samplemeans <- unif_samplemeans/sum(unif_samplemeans)
+      unif_upperline <- unif_upperline/sum(unif_upperline)
+      unif_lowerline <- unif_lowerline/sum(unif_lowerline)
+      bern_samplemeans <- bern_samplemeans/sum(bern_samplemeans)
+      bern_upperline <- bern_upperline/sum(bern_upperline)
+      bern_lowerline <- bern_lowerline/sum(bern_lowerline)
+      ylimit <- max(maxfreq/sum(dd_plotdata()) + .05, max(unif_upperline), max(bern_upperline))
+      ylabel <- 'Density'
+    }
+    
+    barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
+            args.legend=legtitle, col=color, ylim=c(0,ylimit))
     if(input$uniformoverlay_dd){
       lines(unif_samplemeans,col='firebrick4', lwd=1)
-      lines(unif_samplemeans+2*unif_stderr, col='firebrick4', lwd=1, lty=2)
-      lines(unif_samplemeans-2*unif_stderr, col='firebrick4', lwd=1, lty=2)
-      polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_samplemeans+2*unif_stderr, 
-                                                      rev(unif_samplemeans-2*unif_stderr)),
+      lines(unif_upperline, col='firebrick4', lwd=1, lty=2)
+      lines(unif_lowerline, col='firebrick4', lwd=1, lty=2)
+      polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_upperline, 
+                                                      rev(unif_lowerline)),
               col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
     }
     if(input$bernoullioverlay_dd){
       lines(bern_samplemeans,col='orangered', lwd=1)
-      lines(bern_samplemeans+2*bern_stderr, col='orangered', lwd=1, lty=2)
-      lines(bern_samplemeans-2*bern_stderr, col='orangered', lwd=1, lty=2)
-      polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_samplemeans+2*bern_stderr, 
-                                                      rev(bern_samplemeans-2*bern_stderr)),
+      lines(bern_upperline, col='orangered', lwd=1, lty=2)
+      lines(bern_lowerline, col='orangered', lwd=1, lty=2)
+      polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_upperline, 
+                                                      rev(bern_lowerline)),
               col=adjustcolor('orangered', alpha.f=.5), border=NA)
     }
     dev.off()
