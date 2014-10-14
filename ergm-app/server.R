@@ -676,14 +676,14 @@ output$newattrname <- renderPrint({
   cat(newattrnamereac())
 })
 
-output$modifyattrchooser <- renderUI({
-  if(!is.network(nwmid())) return()
-  vattr <- list.vertex.attributes(nwmid())
-  eattr <- list.edge.attributes(nwmid())
-  attrlist <- c(vattr, eattr)
-  selectInput('modifyattrs', label=NULL, choices=attrlist,
-              selectize=FALSE)
-})
+# output$modifyattrchooser <- renderUI({
+#   if(!is.network(nwmid())) return()
+#   vattr <- list.vertex.attributes(nwmid())
+#   eattr <- list.edge.attributes(nwmid())
+#   attrlist <- c(vattr, eattr)
+#   selectInput('modifyattrs', label=NULL, choices=attrlist,
+#               selectize=FALSE)
+# })
 
 
 #summary of network attributes
