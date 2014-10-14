@@ -1124,7 +1124,7 @@ output$geodistplot <- renderPlot({
   }
   
   barplot(gdata,  col="#3182bd",
-          xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs",
+          xlab = "Geodesic Value", ylab = ylabel,
           ylim = c(0,ylimit))
   if(input$uniformoverlay_gd){
     lines(unif_means, lwd=1, col='firebrick4')
