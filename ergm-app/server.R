@@ -253,9 +253,17 @@ newattrnamereac <- reactive({
   newname <- ''
   try({
     path <- input$newattrvalue[1,4]
-    objname <- load(paste(path))
-    newattrs <- get(objname)
-    newname <- names(newattrs)
+    filename <- input$newattrvalue[1,1]
+
+    if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+      newname <- names(newattrs)
+    } else {
+      objname <- load(paste(path))
+      newattrs <- get(objname)
+      newname <- names(newattrs)
+    }
+    
   })
   newname
 })
@@ -266,9 +274,17 @@ observe({
   isolate({
       if(input$newattrtype == 'vertex attribute'){
           path <- input$newattrvalue[1,4]
-          objname <- load(paste(path))
-          newattrs <- get(objname)
-          newname <- names(newattrs)
+          filename <- input$newattrvalue[1,1]
+          
+          if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+            newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+            newname <- names(newattrs)
+          } else {
+            objname <- load(paste(path))
+            newattrs <- get(objname)
+            newname <- names(newattrs)
+          }
+          
           namesofar <- get("v_attrNamesToAdd", pos="package:base")
           valsofar <- get("v_attrValsToAdd", pos="package:base")
           for(k in 1:length(newname)){
@@ -290,9 +306,17 @@ observe({
   isolate({
     if(input$newattrtype == 'edge attribute'){
       path <- input$newattrvalue[1,4]
-      objname <- load(paste(path))
-      newattrs <- get(objname)
-      newname <- names(newattrs)
+      filename <- input$newattrvalue[1,1]
+      
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+        newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newname <- names(newattrs)
+      } else {
+        objname <- load(paste(path))
+        newattrs <- get(objname)
+        newname <- names(newattrs)
+      }
+
       namesofar <- get("e_attrNamesToAdd", pos="package:base")
       valsofar <- get("e_attrValsToAdd", pos="package:base")
       for(k in 1:length(newname)){
@@ -313,9 +337,16 @@ observe({
   isolate({
     if(input$newattrtype == 'edge value'){
       path <- input$newattrvalue[1,4]
-      objname <- load(paste(path))
-      newattrs <- get(objname)
-      newname <- names(newattrs)
+      filename <- input$newattrvalue[1,1]
+      
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+        newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newname <- names(newattrs)
+      } else {
+        objname <- load(paste(path))
+        newattrs <- get(objname)
+        newname <- names(newattrs)
+      }
       namesofar <- get("ev_attrNamesToAdd", pos="package:base")
       valsofar <- get("ev_attrValsToAdd", pos="package:base")
       j <- length(valsofar)
@@ -673,7 +704,8 @@ output$pajchooser <- renderUI({
 })
 
 output$newattrname <- renderPrint({
-  cat(newattrnamereac())
+  if(!is.null(input$newattrvalue)){
+      cat(newattrnamereac())}
 })
 
 # output$modifyattrchooser <- renderUI({
