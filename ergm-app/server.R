@@ -1166,10 +1166,19 @@ output$geodistdownload <- downloadHandler(
     maxfreq <- max(gdata)
     maxfreq_samples <- max(max(unif_means+2*unif_stderr),
                            max(bern_means+2*bern_stderr))
+    ylimit <- max(maxfreq, maxfreq_samples)
+    ylabel <- "Frequency of Vertex Pairs"
+    
+    #for density plot
+    if(input$densplot_gd){
+      gdata <- gdata/sum(gdata)
+      ylimit <- max(gdata)
+      ylabel <- "Density of Vertex Pairs"
+    }
     
     barplot(gdata,  col="#3182bd",
-            xlab = "Geodesic Value", ylab = "Frequency of Vertex Pairs",
-            ylim = c(0,max(maxfreq, maxfreq_samples)))
+            xlab = "Geodesic Value", ylab = ylabel,
+            ylim = c(0,ylimit))
     if(input$uniformoverlay_gd){
       lines(unif_means, lwd=1, col='firebrick4')
       lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
