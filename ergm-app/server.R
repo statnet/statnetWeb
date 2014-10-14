@@ -946,13 +946,13 @@ output$degreedist <- renderPlot({
   
   if(input$densplot){
     plotme <- dd_plotdata()/sum(dd_plotdata())
-    unif_samplemeans <- unif_samplemeans/sum(unif_samplemeans)
-    unif_upperline <- unif_upperline/sum(unif_upperline)
-    unif_lowerline <- unif_lowerline/sum(unif_lowerline)
-    bern_samplemeans <- bern_samplemeans/sum(bern_samplemeans)
-    bern_upperline <- bern_upperline/sum(bern_upperline)
-    bern_lowerline <- bern_lowerline/sum(bern_lowerline)
-    ylimit <- max(maxfreq/sum(dd_plotdata()) + .05, max(unif_upperline), max(bern_upperline))
+    unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
+    unif_upperline <- unif_upperline/sum(dd_plotdata())
+    unif_lowerline <- unif_lowerline/sum(dd_plotdata())
+    bern_samplemeans <- bern_samplemeans/sum(dd_plotdata())
+    bern_upperline <- bern_upperline/sum(dd_plotdata())
+    bern_lowerline <- bern_lowerline/sum(dd_plotdata())
+    ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
     ylabel <- 'Density'
   }
   
@@ -1016,13 +1016,13 @@ output$degreedistdownload <- downloadHandler(
     
     if(input$densplot){
       plotme <- dd_plotdata()/sum(dd_plotdata())
-      unif_samplemeans <- unif_samplemeans/sum(unif_samplemeans)
-      unif_upperline <- unif_upperline/sum(unif_upperline)
-      unif_lowerline <- unif_lowerline/sum(unif_lowerline)
-      bern_samplemeans <- bern_samplemeans/sum(bern_samplemeans)
-      bern_upperline <- bern_upperline/sum(bern_upperline)
-      bern_lowerline <- bern_lowerline/sum(bern_lowerline)
-      ylimit <- max(maxfreq/sum(dd_plotdata()) + .05, max(unif_upperline), max(bern_upperline))
+      unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
+      unif_upperline <- unif_upperline/sum(dd_plotdata())
+      unif_lowerline <- unif_lowerline/sum(dd_plotdata())
+      bern_samplemeans <- bern_samplemeans/sum(dd_plotdata())
+      bern_upperline <- bern_upperline/sum(dd_plotdata())
+      bern_lowerline <- bern_lowerline/sum(dd_plotdata())
+      ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
       ylabel <- 'Density'
     }
     
@@ -1103,23 +1103,33 @@ output$geodistplot <- renderPlot({
   
   unif_means <- gd_uniformoverlay()[[1]]
   unif_stderr <- gd_uniformoverlay()[[2]]
+  unif_upperline <- unif_means + 2*unif_stderr
+  unif_lowerline <- unif_means - 2*unif_stderr
   maxgeo_u <- length(unif_means)-1
   
   bern_means <- gd_bernoullioverlay()[[1]]
   bern_stderr <- gd_bernoullioverlay()[[2]]
+  bern_upperline <- bern_means + 2*bern_stderr
+  bern_lowerline <- bern_means - 2*bern_stderr
   maxgeo_b <- length(bern_means)-1
   
   #get maximums to set y limits
   maxfreq <- max(gdata)
-  maxfreq_samples <- max(max(unif_means+2*unif_stderr),
-                         max(bern_means+2*bern_stderr))
+  maxfreq_samples <- max(max(unif_upperline),
+                         max(bern_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   ylabel <- "Frequency of Vertex Pairs"
   
   #for density plot
   if(input$densplot_gd){
+    unif_means <- unif_means/sum(gdata)
+    unif_upperline <- unif_upperline/sum(gdata)
+    unif_lowerline <- unif_lowerline/sum(gdata)
+    bern_means <- bern_means/sum(gdata)
+    bern_upperline <- bern_upperline/sum(gdata)
+    bern_lowerline <- bern_lowerline/sum(gdata)
     gdata <- gdata/sum(gdata)
-    ylimit <- max(gdata)
+    ylimit <- max(gdata, bern_upperline, unif_upperline)
     ylabel <- "Density of Vertex Pairs"
   }
   
@@ -1128,18 +1138,18 @@ output$geodistplot <- renderPlot({
           ylim = c(0,ylimit))
   if(input$uniformoverlay_gd){
     lines(unif_means, lwd=1, col='firebrick4')
-    lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
-    lines(unif_means-2*unif_stderr, lwd=1, lty=2, col='firebrick4')
-    polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_means+2*unif_stderr, 
-                                                    rev(unif_means-2*unif_stderr)),
+    lines(unif_upperline, lwd=1, lty=2, col='firebrick4')
+    lines(unif_lowerline, lwd=1, lty=2, col='firebrick4')
+    polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_upperline, 
+                                                    rev(unif_lowerline)),
             col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
   }
   if(input$bernoullioverlay_gd){
     lines(bern_means, lwd=1, col='orangered')
-    lines(bern_means+2*bern_stderr, lwd=1, lty=2, col='orangered')
-    lines(bern_means-2*bern_stderr, lwd=1, lty=2, col='orangered')
-    polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_means+2*bern_stderr, 
-                                                    rev(bern_means-2*bern_stderr)),
+    lines(bern_upperline, lwd=1, lty=2, col='orangered')
+    lines(bern_lowerline, lwd=1, lty=2, col='orangered')
+    polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_upperline, 
+                                                    rev(bern_lowerline)),
             col=adjustcolor('orangered', alpha.f=.5), border=NA)
   }
 })
@@ -1156,23 +1166,33 @@ output$geodistdownload <- downloadHandler(
     
     unif_means <- gd_uniformoverlay()[[1]]
     unif_stderr <- gd_uniformoverlay()[[2]]
+    unif_upperline <- unif_means + 2*unif_stderr
+    unif_lowerline <- unif_means - 2*unif_stderr
     maxgeo_u <- length(unif_means)-1
     
     bern_means <- gd_bernoullioverlay()[[1]]
     bern_stderr <- gd_bernoullioverlay()[[2]]
+    bern_upperline <- bern_means + 2*bern_stderr
+    bern_lowerline <- bern_means - 2*bern_stderr
     maxgeo_b <- length(bern_means)-1
     
     #get maximums to set y limits
     maxfreq <- max(gdata)
-    maxfreq_samples <- max(max(unif_means+2*unif_stderr),
-                           max(bern_means+2*bern_stderr))
+    maxfreq_samples <- max(max(unif_upperline),
+                           max(bern_upperline))
     ylimit <- max(maxfreq, maxfreq_samples)
     ylabel <- "Frequency of Vertex Pairs"
     
     #for density plot
     if(input$densplot_gd){
+      unif_means <- unif_means/sum(gdata)
+      unif_upperline <- unif_upperline/sum(gdata)
+      unif_lowerline <- unif_lowerline/sum(gdata)
+      bern_means <- bern_means/sum(gdata)
+      bern_upperline <- bern_upperline/sum(gdata)
+      bern_lowerline <- bern_lowerline/sum(gdata)
       gdata <- gdata/sum(gdata)
-      ylimit <- max(gdata)
+      ylimit <- max(gdata, bern_upperline, unif_upperline)
       ylabel <- "Density of Vertex Pairs"
     }
     
@@ -1181,18 +1201,18 @@ output$geodistdownload <- downloadHandler(
             ylim = c(0,ylimit))
     if(input$uniformoverlay_gd){
       lines(unif_means, lwd=1, col='firebrick4')
-      lines(unif_means+2*unif_stderr, lwd=1, lty=2, col='firebrick4')
-      lines(unif_means-2*unif_stderr, lwd=1, lty=2, col='firebrick4')
-      polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_means+2*unif_stderr, 
-                                                      rev(unif_means-2*unif_stderr)),
+      lines(unif_upperline, lwd=1, lty=2, col='firebrick4')
+      lines(unif_lowerline, lwd=1, lty=2, col='firebrick4')
+      polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_upperline, 
+                                                      rev(unif_lowerline)),
               col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
     }
     if(input$bernoullioverlay_gd){
       lines(bern_means, lwd=1, col='orangered')
-      lines(bern_means+2*bern_stderr, lwd=1, lty=2, col='orangered')
-      lines(bern_means-2*bern_stderr, lwd=1, lty=2, col='orangered')
-      polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_means+2*bern_stderr, 
-                                                      rev(bern_means-2*bern_stderr)),
+      lines(bern_upperline, lwd=1, lty=2, col='orangered')
+      lines(bern_lowerline, lwd=1, lty=2, col='orangered')
+      polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_upperline, 
+                                                      rev(bern_lowerline)),
               col=adjustcolor('orangered', alpha.f=.5), border=NA)
     }
     dev.off()
