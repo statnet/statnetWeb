@@ -298,9 +298,8 @@ shinyUI(
                                            choices=c('vertex attribute',
                                                    'edge attribute',
                                                    'edge value')),
-                                 fileInput(inputId='newattrvalue', label=span('Upload a vector or list of nodal',
-                                                                              'attributes, a vector or list of edge',
-                                                                              'attributes, or an adjacency matrix of edge values.')),
+                                 fileInput(inputId='newattrvalue', label=span('Upload a named list of the',
+                                                                              'specified attribute type.')),
                                  p('New attribute name(s):'),
                                  verbatimTextOutput('newattrname'),
                                  actionButton('newattrButton', label='Set Attribute')              
