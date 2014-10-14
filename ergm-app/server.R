@@ -314,24 +314,20 @@ observe({
     if(input$newattrtype == 'edge value'){
       path <- input$newattrvalue[1,4]
       objname <- load(paste(path))
-      newval <- get(objname)
+      newattrs <- get(objname)
+      newname <- names(newattrs)
       namesofar <- get("ev_attrNamesToAdd", pos="package:base")
       valsofar <- get("ev_attrValsToAdd", pos="package:base")
-      
-      assign('ev_attrNamesToAdd', cbind(namesofar,input$newattrname),
+      j <- length(valsofar)
+      for(k in 1:length(newname)){
+        namesofar <- cbind(namesofar, newname[[k]])
+        valsofar[[j+k]] <- newattrs[[k]]
+      }
+      assign('ev_attrNamesToAdd', namesofar,
              pos="package:base")
-      assign('ev_attrValsToAdd', cbind(valsofar, newval),
+      assign('ev_attrValsToAdd', valsofar,
              pos="package:base")
     }
-  })
-})
-
-#update textInput
-observe({
-  input$newattrButton
-  isolate({
-    updateTextInput(session, 'newattrname',
-                    label='New attribute name', value='')
   })
 })
 
@@ -391,7 +387,7 @@ nwmid <- reactive({
       if(ev_numnew > 1){
         for (l in 2:ev_numnew){
           ev_newname <- as.character(ev_attrNamesToAdd[1,l])
-          ev_newval <- ev_attrValsToAdd[,l]
+          ev_newval <- ev_attrValsToAdd[[l]]
           set.edge.value(nw,ev_newname,ev_newval)
         }
       }
