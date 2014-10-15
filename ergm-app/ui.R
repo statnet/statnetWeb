@@ -623,8 +623,12 @@ shinyUI(
                                      p(tags$u('Note:'), 'In this case a geodesic length of zero',
                                        'means that a pair of vertices are not connected by',
                                        'any path.')
-                                     
-                      )
+                      ),
+                    conditionalPanel(condition='input.plottabs == "More"',
+                                     p('Subset data by attribute:'),
+                                     uiOutput('subsetting'),
+                                     uiOutput('subsetting2')
+                                     )
                     )),
            tabPanel('Network Summary',
             verbatimTextOutput('attr2'))

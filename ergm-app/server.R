@@ -1014,8 +1014,6 @@ output$degreedist <- renderPlot({
   #save x-coordinates of bars, so that points are centered on bars
   bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
           args.legend=legtitle, col=color, ylim=c(0,ylimit), plot=TRUE)
-  
-
   if(input$uniformoverlay_dd){
     points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
     arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
@@ -1308,6 +1306,25 @@ output$geodistdownload <- downloadHandler(
   })
 
 #MORE
+
+output$subsetting <- renderUI({
+  if(class(nwreac())!='network'){
+    return()
+  }
+  selectInput('subsetattr', label=NULL,
+              choices = c('None', menuattr()), selectize = FALSE)
+})
+outputOptions(output,'subsetting',suspendWhenHidden=FALSE)
+
+output$subsetting2 <- renderUI({
+  if(class(nwreac())!='network' | input$subsetattr == "None"){
+    return()
+  }
+  choices <- sort(unique(get.vertex.attribute(nwreac(),input$subsetattr)))
+  checkboxGroupInput('subsetattrchoice', label=NULL,
+                     choices=choices, selected=NULL)
+})
+
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden
 output$mixmxchooser <- renderUI({
