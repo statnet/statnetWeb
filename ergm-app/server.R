@@ -902,10 +902,8 @@ dd_uniformoverlay <- reactive({
   degreedata <- apply(deg, MARGIN=2, FUN=tabulate, nbins=max(deg))
     #degreedata is matrix holding tabulation of degrees (except isolates)
     #each column is different draw
-  z <- apply(deg, MARGIN=2, FUN=function(x){sum(x==0)})
-    #tabulation of isolates in each draw
-  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, byrow=TRUE)
-    #complete tabulation of degrees for each draw
+  z <- apply(deg, MARGIN=2, FUN=function(x){sum(x==0)}) #tabulation of isolates
+  degreedata <- rbind(z, degreedata) #complete tabulation for each draw
   degreemeans <- apply(degreedata, MARGIN=1, FUN=mean)
   names(degreemeans) <- paste(0:max(deg))
   degreesd <- apply(degreedata, MARGIN=1, FUN=sd)
@@ -970,8 +968,10 @@ output$degreedist <- renderPlot({
   # get maximums for y limits of plot
   if(class(dd_plotdata())=="matrix"){
     maxfreq <- max(colSums(dd_plotdata()))
+    maxdeg_obs <- dim(dd_plotdata())[2]-1
   } else {
     maxfreq <- max(dd_plotdata())
+    maxdeg_obs <- length(dd_plotdata())-1
   }
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
@@ -988,23 +988,43 @@ output$degreedist <- renderPlot({
     ylabel <- 'Density'
   }
   
-  barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
-          args.legend=legtitle, col=color, ylim=c(0,ylimit))
+  # make sure that barplot and lines have the same length
+  maxdeg_total <- max(maxdeg_obs, maxdeg_u, maxdeg_b)
+  if(maxdeg_u < maxdeg_total){
+    unif_samplemeans <- append(unif_samplemeans, rep(0, times=maxdeg_total-maxdeg_u))
+    unif_upperline <- append(unif_upperline, rep(0, times=maxdeg_total-maxdeg_u))
+    unif_lowerline <- append(unif_lowerline, rep(0, times=maxdeg_total-maxdeg_u))
+  } 
+  if(maxdeg_b < maxdeg_total){
+    bern_samplemeans <- append(bern_samplemeans, rep(0, times=maxdeg_total-maxdeg_b))
+    bern_upperline <- append(bern_upperline, rep(0, times=maxdeg_total-maxdeg_b))
+    bern_lowerline <- append(bern_lowerline, rep(0, times=maxdeg_total-maxdeg_b))
+  }
+  if(maxdeg_obs < maxdeg_total){
+    if(class(plotme)=="matrix"){
+      nrows <- dim(plotme)[1]
+      plotme <- cbind(plotme, matrix(0, nrow=nrows, ncol= maxdeg_total-maxdeg_obs))
+      colnames(plotme) <- paste(0:maxdeg_total)
+    } else {
+      plotme <- append(plotme, rep(0,times=maxdeg_total-maxdeg_obs))
+      names(plotme) <- paste(0:maxdeg_total)
+    }
+  }
+  
+  #save x-coordinates of bars, so that points are centered on bars
+  bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
+          args.legend=legtitle, col=color, ylim=c(0,ylimit), plot=TRUE)
+  
+
   if(input$uniformoverlay_dd){
-    lines(unif_samplemeans,col='firebrick4', lwd=1)
-    lines(unif_upperline, col='firebrick4', lwd=1, lty=2)
-    lines(unif_lowerline, col='firebrick4', lwd=1, lty=2)
-    polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_upperline, 
-                                    rev(unif_lowerline)),
-            col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
+    points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
+    arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col='firebrick')
   }
   if(input$bernoullioverlay_dd){
-    lines(bern_samplemeans,col='orangered', lwd=1)
-    lines(bern_upperline, col='orangered', lwd=1, lty=2)
-    lines(bern_lowerline, col='orangered', lwd=1, lty=2)
-    polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_upperline, 
-                                                rev(bern_lowerline)),
-            col=adjustcolor('orangered', alpha.f=.5), border=NA)
+    points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
+    arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col='orangered')
   }
   
 })
@@ -1040,8 +1060,10 @@ output$degreedistdownload <- downloadHandler(
     # get maximums for y limits of plot
     if(class(dd_plotdata())=="matrix"){
       maxfreq <- max(colSums(dd_plotdata()))
+      maxdeg_obs <- dim(dd_plotdata())[2]-1
     } else {
       maxfreq <- max(dd_plotdata())
+      maxdeg_obs <- length(dd_plotdata())-1
     }
     maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
     ylimit <- max(maxfreq, maxfreq_samples)
@@ -1057,24 +1079,43 @@ output$degreedistdownload <- downloadHandler(
       ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
       ylabel <- 'Density'
     }
+    # make sure that barplot and lines have the same length
+    maxdeg_total <- max(maxdeg_obs, maxdeg_u, maxdeg_b)
+    if(maxdeg_u < maxdeg_total){
+      unif_samplemeans <- append(unif_samplemeans, rep(0, times=maxdeg_total-maxdeg_u))
+      unif_upperline <- append(unif_upperline, rep(0, times=maxdeg_total-maxdeg_u))
+      unif_lowerline <- append(unif_lowerline, rep(0, times=maxdeg_total-maxdeg_u))
+    } 
+    if(maxdeg_b < maxdeg_total){
+      bern_samplemeans <- append(bern_samplemeans, rep(0, times=maxdeg_total-maxdeg_b))
+      bern_upperline <- append(bern_upperline, rep(0, times=maxdeg_total-maxdeg_b))
+      bern_lowerline <- append(bern_lowerline, rep(0, times=maxdeg_total-maxdeg_b))
+    }
+    if(maxdeg_obs < maxdeg_total){
+      if(class(plotme)=="matrix"){
+        nrows <- dim(plotme)[1]
+        plotme <- cbind(plotme, matrix(0, nrow=nrows, ncol= maxdeg_total-maxdeg_obs))
+        colnames(plotme) <- paste(0:maxdeg_total)
+      } else {
+        plotme <- append(plotme, rep(0,times=maxdeg_total-maxdeg_obs))
+        names(plotme) <- paste(0:maxdeg_total)
+      }
+    }
     
-    barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
-            args.legend=legtitle, col=color, ylim=c(0,ylimit))
+    #save x-coordinates of bars, so that points are centered on bars
+    bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
+                        args.legend=legtitle, col=color, ylim=c(0,ylimit), plot=TRUE)
+    
+    
     if(input$uniformoverlay_dd){
-      lines(unif_samplemeans,col='firebrick4', lwd=1)
-      lines(unif_upperline, col='firebrick4', lwd=1, lty=2)
-      lines(unif_lowerline, col='firebrick4', lwd=1, lty=2)
-      polygon(x=c(1:(maxdeg_u+1),(maxdeg_u+1):1), y=c(unif_upperline, 
-                                                      rev(unif_lowerline)),
-              col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
+      points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
+      arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col='firebrick')
     }
     if(input$bernoullioverlay_dd){
-      lines(bern_samplemeans,col='orangered', lwd=1)
-      lines(bern_upperline, col='orangered', lwd=1, lty=2)
-      lines(bern_lowerline, col='orangered', lwd=1, lty=2)
-      polygon(x=c(1:(maxdeg_b+1),(maxdeg_b+1):1), y=c(bern_upperline, 
-                                                      rev(bern_lowerline)),
-              col=adjustcolor('orangered', alpha.f=.5), border=NA)
+      points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
+      arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col='orangered')
     }
     dev.off()
 })
