@@ -269,7 +269,7 @@ shinyUI(
                                   uiOutput('pajchooser')))
                      )),
                    wellPanel(
-                     p(tags$u('Notes about filetypes:'), 
+                     p(tags$u('Note about saving R-objects:'), 
                        tags$ul(
                          tags$li('An object in your R environment',
                        'can be saved to a file in the following way', 
@@ -299,7 +299,8 @@ shinyUI(
                                            choices=c('vertex attribute',
                                                    'edge attribute',
                                                    'edge value')),
-                                 fileInput(inputId='newattrvalue', label=span('Upload a named list of the',
+                                 fileInput(inputId='newattrvalue', label=span('Upload a named list (R-object) or a .csv',
+                                                                              'file with headers of the',
                                                                               'specified attribute type.')),
                                  p('New attribute name(s):'),
                                  verbatimTextOutput('newattrname'),
@@ -473,8 +474,7 @@ shinyUI(
                       column(3, p(textOutput('gclose'), class='snum')),
                       column(4, inlineSelectInput('gclosecmode', label=NULL,
                                                  choices=c('directed','undirected',
-                                                           'suminvdir','suminvundir',
-                                                           'gil-schmidt'),
+                                                           'suminvdir','suminvundir'),
                                                  style='margin-top:0px;'))),
                      fluidRow(
                        column(4, p('Stress Centrality:', class='stitle')),
@@ -536,8 +536,7 @@ shinyUI(
                          column(3, p(textOutput('nclose'), class='snum')),
                          column(4, inlineSelectInput('nclosecmode', label=NULL,
                                                      choices=c('directed','undirected',
-                                                               'suminvdir','suminvundir',
-                                                               'gil-schmidt'),
+                                                               'suminvdir','suminvundir'),
                                                      style='margin-top:0px;'))
                          ),
                        fluidRow(
