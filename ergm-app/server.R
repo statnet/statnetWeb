@@ -57,7 +57,9 @@
 library(shiny)
 library(statnet)
 library(RColorBrewer)
-source("chooser.R")
+library(lattice)
+library(latticeExtra)
+#source("chooser.R")
 
 
 #' Loading data and assigning variables outside of the call to `shinyServer`
