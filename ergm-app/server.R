@@ -161,15 +161,23 @@ nwinit <- reactive({
     if(!is.null(input$rawdatafile)){
       nw <- "Input the specified type of matrix"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
-        try(nw <- network(read.table(paste(filepath), sep=","),
+        header <- TRUE
+        row.names<-1
+        if(input$matrixtype == "edgelist"){
+          header <- FALSE
+          row.names<-NULL
+        }
+        try(nw <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row.names),
                           directed=input$dir, loops=input$loops,
                           multiple=input$multiple, bipartite=input$bipartite,
-                          matrix.type=input$matrixtype))
+                          matrix.type=input$matrixtype,
+                          ignore.eval=FALSE, names.eval='edgevalue'))
       }
       try(nw <- network(read.table(paste(filepath)),
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
-                        matrix.type=input$matrixtype))
+                        matrix.type=input$matrixtype,
+                        ignore.eval=FALSE, names.eval='edgevalue'))
     }
     
   } else if(input$filetype ==5){
