@@ -273,7 +273,7 @@ shinyUI(
                        tags$ul(
                          tags$li('An object in your R environment',
                        'can be saved to a file in the following way', 
-                       code('save(objectname,"newfilename")'),'. By default the file will be saved',
+                       code('save(objectname, file="newfilename")'),'. By default the file will be saved',
                        'into the current working directory, but the path to a new location can be',
                        'specified with the ', code('envir = '), 'argument.')))
                      )
