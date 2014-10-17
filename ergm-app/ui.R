@@ -297,6 +297,7 @@ shinyUI(
                               conditionalPanel(condition="output.nwsum != 'NA'",
                                  radioButtons('newattrtype', label='Choose attribute type',
                                            choices=c('vertex attribute',
+                                                     'vertex names',
                                                    'edge attribute',
                                                    'edge value')),
                                  fileInput(inputId='newattrvalue', label=span('Upload a named list (R-object) or a .csv',

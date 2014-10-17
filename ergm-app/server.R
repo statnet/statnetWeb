@@ -228,6 +228,7 @@ observe({
   vdf <- list()
   edf <- list()
   evdf <- list()
+  vertex_names <- list()
   if (is.network(nwinit())){
     n <- nodes()
     e <- nedges()
@@ -247,6 +248,8 @@ observe({
            pos="package:base" )
     assign('ev_attrNamesToAdd', list(1),
            pos="package:base" )
+    
+    assign('vertex_names', vertex_names, pos="package:base")
     
   }
 })
@@ -278,7 +281,27 @@ newattrnamereac <- reactive({
   newname
 })
 
-#add vertex attributes
+#save vertex names
+observe({
+  if(input$newattrButton == 0) return()
+  isolate({
+    if(input$newattrtype == 'vertex names'){
+      path <- input$newattrvalue[1,4]
+      filename <- input$newattrvalue[1,1]
+      
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+        newnames <- read.csv(paste(path), sep=",", header=FALSE, stringsAsFactors=FALSE)
+      } else {
+        objname <- load(paste(path))
+        newnames <- get(objname)
+      }
+      
+      assign('vertex_names', newnames, pos='package:base')
+    }
+  })
+})
+
+#add vertex attributes to list
 observe({
   if(input$newattrButton == 0) return()
   isolate({
@@ -310,7 +333,7 @@ observe({
   })
 })
 
-#add edge attributes
+#add edge attributes to list
 observe({
   if(input$newattrButton == 0) return()
   isolate({
@@ -341,7 +364,7 @@ observe({
   })
 })
 
-#add edge values
+#add edge values to list
 observe({
   if(input$newattrButton == 0) return()
   isolate({
@@ -404,8 +427,12 @@ nwmid <- reactive({
       e_attrValsToAdd <- get('e_attrValsToAdd', pos='package:base')
       ev_attrNamesToAdd <- get('ev_attrNamesToAdd',pos='package:base')
       ev_attrValsToAdd <- get('ev_attrValsToAdd', pos='package:base')
+      vertex_names <- get('vertex_names', pos='package:base')
       
       input$newattrButton
+      
+      network.vertex.names(nw) <- vertex_names
+      
       v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
