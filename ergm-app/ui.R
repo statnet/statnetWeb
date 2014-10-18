@@ -300,9 +300,10 @@ shinyUI(
                                                      'vertex names',
                                                    'edge attribute',
                                                    'edge value')),
-                                 fileInput(inputId='newattrvalue', label=span('Upload a named list (R-object) or a .csv',
-                                                                              'file with headers of the',
-                                                                              'specified attribute type.')),
+                                 fileInput(inputId='newattrvalue', label=span('Upload a list object from R or a .csv',
+                                                                              'file. Click the ** icons',
+                                                                              'for specific requirments for each',
+                                                                              'attribute type.')),
                                  p('New attribute name(s):'),
                                  verbatimTextOutput('newattrname'),
                                  actionButton('newattrButton', label='Set Attribute')              
@@ -338,10 +339,7 @@ shinyUI(
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Upload a file of observed network data (must be of a supported type).', 
-           'Add custom attributes or symmetrize on the "Edit Network" tab.',
-           'Sequentially move through the', 
-           'tabs at the top of the page to fit an ergm to the', 
-           'observed network.'))
+           'Add custom attributes or symmetrize on the "Edit Network" tab.'))
       ),
 
 #' **Network Plots**
