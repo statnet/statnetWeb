@@ -283,6 +283,7 @@ shinyUI(
                      fluidRow(
                       
                        column(6,strong('Symmetrize'),
+                          conditionalPanel(condition="output.nwsum != 'NA'",
                               radioButtons('symmetrize', label=NULL, 
                                            choices=c('Do not symmetrize',
                                                      'upper: Copy upper triangle over lower triangle'='upper',
@@ -291,7 +292,7 @@ shinyUI(
                                                      'weak: Union of ties'='weak')),
                               radioButtons('aftersymm', label='After symmetrizing, network should be:',
                                            choices=c('directed', 'undirected'))
-                              ),
+                              )),
                        
                        column(5,strong('Import new attribute information'),
                               conditionalPanel(condition="output.nwsum != 'NA'",
