@@ -986,7 +986,7 @@ output$degreedist <- renderPlot({
   legtitle <- FALSE
   plotme <- dd_plotdata()
   color <- "#3182bd"
-  ylabel <- "Frequency"
+  ylabel <- "Count of Nodes"
   if(!is.null(input$colorby_dd)){
   if(input$colorby_dd != "None"){
     leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
@@ -1017,7 +1017,7 @@ output$degreedist <- renderPlot({
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   
-  if(input$densplot){
+  if(input$densplot == "Percent of nodes"){
     plotme <- dd_plotdata()/sum(dd_plotdata())
     unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
     unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1026,7 +1026,7 @@ output$degreedist <- renderPlot({
     bern_upperline <- bern_upperline/sum(dd_plotdata())
     bern_lowerline <- bern_lowerline/sum(dd_plotdata())
     ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
-    ylabel <- 'Density'
+    ylabel <- 'Percent of Nodes'
   }
   
   # make sure that barplot and lines have the same length
@@ -1076,7 +1076,7 @@ output$degreedistdownload <- downloadHandler(
     legtitle <- FALSE
     plotme <- dd_plotdata()
     color <- "#3182bd"
-    ylabel <- "Frequency"
+    ylabel <- "Count of Nodes"
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
         leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
@@ -1107,7 +1107,7 @@ output$degreedistdownload <- downloadHandler(
     maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
     ylimit <- max(maxfreq, maxfreq_samples)
     
-    if(input$densplot){
+    if(input$densplot == 'Percent of nodes'){
       plotme <- dd_plotdata()/sum(dd_plotdata())
       unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
       unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1116,7 +1116,7 @@ output$degreedistdownload <- downloadHandler(
       bern_upperline <- bern_upperline/sum(dd_plotdata())
       bern_lowerline <- bern_lowerline/sum(dd_plotdata())
       ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
-      ylabel <- 'Density'
+      ylabel <- 'Percent of Nodes'
     }
     # make sure that barplot and lines have the same length
     maxdeg_total <- max(maxdeg_obs, maxdeg_u, maxdeg_b)
@@ -1225,10 +1225,10 @@ output$geodistplot <- renderPlot({
   bern_lowerline <- bern_means - 2*bern_stderr
   maxgeo_b <- length(bern_means)-1
 
-  ylabel <- "Frequency of Vertex Pairs"
+  ylabel <- "Count of Vertex Pairs"
   
   #for density plot
-  if(input$densplot_gd){
+  if(input$densplot_gd == "Percent of vertex pairs"){
     unif_means <- unif_means/sum(gdata)
     unif_upperline <- unif_upperline/sum(gdata)
     unif_lowerline <- unif_lowerline/sum(gdata)
@@ -1237,7 +1237,7 @@ output$geodistplot <- renderPlot({
     bern_lowerline <- bern_lowerline/sum(gdata)
     gdata <- gdata/sum(gdata)
     ylimit <- max(gdata, bern_upperline, unif_upperline)
-    ylabel <- "Density of Vertex Pairs"
+    ylabel <- "Percent of Vertex Pairs"
   }
   #get maximums to set y limits
   ylimit <- max(gdata, bern_upperline, unif_upperline)
@@ -1309,10 +1309,10 @@ output$geodistdownload <- downloadHandler(
     maxfreq_samples <- max(max(unif_upperline),
                            max(bern_upperline))
     ylimit <- max(maxfreq, maxfreq_samples)
-    ylabel <- "Frequency of Vertex Pairs"
+    ylabel <- "Count of Vertex Pairs"
     
     #for density plot
-    if(input$densplot_gd){
+    if(input$densplot_gd == "Percent of vertex pairs"){
       unif_means <- unif_means/sum(gdata)
       unif_upperline <- unif_upperline/sum(gdata)
       unif_lowerline <- unif_lowerline/sum(gdata)
@@ -1321,7 +1321,7 @@ output$geodistdownload <- downloadHandler(
       bern_lowerline <- bern_lowerline/sum(gdata)
       gdata <- gdata/sum(gdata)
       ylimit <- max(gdata, bern_upperline, unif_upperline)
-      ylabel <- "Density of Vertex Pairs"
+      ylabel <- "Percent of Vertex Pairs"
     }
     
     barplot(gdata,  col="#3182bd",
