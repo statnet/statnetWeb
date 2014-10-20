@@ -1172,11 +1172,11 @@ gd_uniformoverlay <- reactive({
     #list of tabulated geodesics for each draw, except those of 0 length
   gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0), after=0)
+    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0))
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
-  names(geomeans) <- paste(0:maxgeo)
+  names(geomeans) <- c(paste(1:maxgeo), "INF")
   geosd <- apply(gd_data_complete, MARGIN=1, FUN=sd)
   
   mean_and_sd <- list(geomeans, geosd)
@@ -1193,11 +1193,11 @@ gd_bernoullioverlay <- reactive({
   #list of tabulated geodesics for each draw, except those of 0 length
   gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0), after=0)
+    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0))
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
-  names(geomeans) <- paste(0:maxgeo)
+  names(geomeans) <- c(paste(1:maxgeo), "INF")
   geosd <- apply(gd_data_complete, MARGIN=1, FUN=sd)
   
   mean_and_sd <- list(geomeans, geosd)
@@ -1209,9 +1209,9 @@ output$geodistplot <- renderPlot({
   }
   g <- geodist(nwreac(),inf.replace=0)
   gdata <- tabulate(g$gdist)
-  gdata <- append(gdata, sum(g$gdist == 0), after=0)
+  gdata <- append(gdata, sum(g$gdist == 0))
   maxgeo <- length(gdata)-1
-  names(gdata) <- paste(0:maxgeo)
+  names(gdata) <- c(paste(1:maxgeo), "INF")
   
   unif_means <- gd_uniformoverlay()[[1]]
   unif_stderr <- gd_uniformoverlay()[[2]]
@@ -1245,18 +1245,18 @@ output$geodistplot <- renderPlot({
   # make sure that barplot and lines have the same length
   maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
   if(maxgeo_u < maxgeo_total){
-    unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u))
-    unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u))
-    unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u))
+    unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_means)-1)
+    unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_upperline)-1)
+    unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_lowerline)-1)
   } 
   if(maxgeo_b < maxgeo_total){
-    bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b))
-    bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b))
-    bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b))
+    bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_means)-1)
+    bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_upperline)-1)
+    bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_lowerline)-1)
   }
   if(maxgeo < maxgeo_total){
-    gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo))
-    names(gdata) <- paste(0:maxgeo_total)
+    gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
+    names(gdata) <- c(paste(1:maxgeo_total), "INF")
     
   }
   
