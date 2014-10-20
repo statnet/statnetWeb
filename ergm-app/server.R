@@ -181,9 +181,13 @@ nwinit <- reactive({
     }
     
   } else if(input$filetype ==5){
-    nw <- eval(parse(text = input$samplenet))
-    if(!is.element('bipartite',names(nw$gal))){
-      set.network.attribute(nw,'bipartite',FALSE)
+    if(input$samplenet == "None"){
+      nw <- NULL
+    } else {
+      nw <- eval(parse(text = input$samplenet))
+      if(!is.element('bipartite',names(nw$gal))){
+        set.network.attribute(nw,'bipartite',FALSE)
+      }
     }
   }
 

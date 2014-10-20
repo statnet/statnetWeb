@@ -240,7 +240,7 @@ shinyUI(
                        conditionalPanel(condition = 'input.filetype == 5',
                               br(),
                               selectInput('samplenet', label='Choose a network',
-                                          choices=c('faux.mesa.high','flobusiness',
+                                          choices=c('None','faux.mesa.high','flobusiness',
                                                     'flomarriage','samplike'),
                                           selectize=FALSE) 
                                         )
