@@ -45,7 +45,8 @@ div.helper-box {
   cursor:pointer;
 }
 
-div#filetypebox {
+div#filetypebox1,
+div#filetypebox2 {
   position:absolute;
   z-index: 10;
   display:none;

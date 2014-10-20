@@ -3,8 +3,12 @@ $(document).ready(function(){
     $(".helper-box").toggle(500);
   });
   
-  $("#filetypehelper").click(function(){
-    $("#filetypebox").toggle(500);
+  $("#filetypehelper1").click(function(){
+    $("#filetypebox1").toggle(500);
+  });
+  
+  $("#filetypehelper2").click(function(){
+    $("#filetypebox2").toggle(500);
   });
   
   $(".mixmxtitle").click(function(){
