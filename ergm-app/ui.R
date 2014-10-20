@@ -340,12 +340,13 @@ shinyUI(
                      )
                    )
           )
-
-      
       ),
           
-   column(4,br(),br(),
-           verbatimTextOutput('nwsum')
+   column(4,
+          tabsetPanel(
+            tabPanel('Network Summary',
+                     verbatimTextOutput('nwsum')
+                     ))
           )            
     ),
 
