@@ -1267,18 +1267,14 @@ output$geodistplot <- renderPlot({
   
   if(input$uniformoverlay_gd){
     points(x=bar_axis-.1, y=unif_means,col='firebrick', lwd=1, pch=18)
-    #arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
-           #code=3, length=0.1, angle=90, col='firebrick')
+    arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col='firebrick')
   }
   if(input$bernoullioverlay_gd){
     points(x=bar_axis+.1, y=bern_means,col='orangered', lwd=1, pch=18)
-    #arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
-           #code=3, length=0.1, angle=90, col='orangered')
+    arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col='orangered')
   }
-  
-  barplot(gdata,  col="#3182bd",
-          xlab = "Geodesic Value", ylab = ylabel,
-          ylim = c(0,ylimit))
   
 })
 
