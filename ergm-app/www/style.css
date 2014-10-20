@@ -38,7 +38,26 @@ div.helper-box {
   padding: 5px;
   border:1px solid #CECED8;
   border-radius: 5px;
-  z-index: 1;
+  z-index: 10;
+}
+
+.helper {
+  cursor:pointer;
+}
+
+div#filetypebox {
+  position:absolute;
+  z-index: 10;
+  display:none;
+  max-width: 400px;
+  max-height: 300px;
+  background: #FFFFFF;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px;
+  border:1px solid #CECED8;
+  border-radius: 5px;
+  z-index: 10;
 }
 
 .mixmxbox, .graphlevelbox,
