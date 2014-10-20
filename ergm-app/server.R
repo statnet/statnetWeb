@@ -294,7 +294,7 @@ observe({
       filename <- input$newattrvalue[1,1]
       
       if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
-        newnames <- read.csv(paste(path), sep=",", header=FALSE, stringsAsFactors=FALSE)
+        newnames <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
       } else {
         objname <- load(paste(path))
         newnames <- get(objname)
