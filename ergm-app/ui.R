@@ -638,11 +638,7 @@ shinyUI(
                                                    label='Draws from bernoulli graphs with tie probability equal to density of observed network',
                                                    value=FALSE),
                                      br(),
-                                     downloadButton('geodistdownload', label= 'Download Plot'),
-                                     br(), br(),
-                                     p(tags$u('Note:'), 'In this case a geodesic length of zero',
-                                       'means that a pair of vertices are not connected by',
-                                       'any path.')
+                                     downloadButton('geodistdownload', label= 'Download Plot')
                       ),
                     conditionalPanel(condition='input.plottabs == "More"',
                                      p('Subset data by attribute:'),
