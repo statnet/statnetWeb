@@ -986,8 +986,10 @@ output$degreedist <- renderPlot({
   color <- "#3182bd"
   ylabel <- "Count of Nodes"
   ltext <- c()
-  lcol <- c()
-  lfill <- c()
+  lcol <- c() #color for lines
+  lty <- c()
+  lpch <- c()
+  lfill <- c() #color for boxes
   lborder <- c()
   ltitle <- NULL
   if(!is.null(input$colorby_dd)){
@@ -996,8 +998,10 @@ output$degreedist <- renderPlot({
     color <- brewer.pal(ncolors,"Blues")[1:ncolors]
     ltext <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
     ltext <- append(ltext, "")
-    lcol <- c(color, 0)
-    lborder <- append(lborder, c(rep("black", times=ncolors),"#FFFFFF"))
+    lfill <- c(color, 0)
+    lborder <- append(lborder, c(rep("black", times=ncolors), 0))
+    lty <- rep(0, times=ncolors+1)
+    lpch <- rep(26, times=ncolors+1)
     ltitle <- input$colorby_dd
   }}
   
@@ -1068,7 +1072,10 @@ output$degreedist <- renderPlot({
            code=3, length=0.1, angle=90, col='firebrick')
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "firebrick")
-    lborder <- append(lborder, "black")
+    lty <- append(lty, 1)
+    lpch <- append(lpch, 18)
+    lfill <- append(lfill, 0)
+    lborder <- append(lborder, 0)
   }
   if(input$bernoullioverlay_dd){
     points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
@@ -1076,10 +1083,20 @@ output$degreedist <- renderPlot({
            code=3, length=0.1, angle=90, col='orangered')
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "orangered")
-    lborder <- append(lborder, "black")
+    lty <- append(lty, 1)
+    lpch <- append(lpch, 18)
+    lfill <- append(lfill, 0)
+    lborder <- append(lborder, 0)
   }
   if(input$colorby_dd != "None" | input$uniformoverlay_dd | input$bernoullioverlay_dd){
-    legend(x="topright", legend=ltext, title=ltitle, fill=lcol, border=lborder, bty="n")
+    if(input$uniformoverlay_dd | input$bernoullioverlay_dd){
+      lmerge <- TRUE
+    } else {
+      lmerge <-FALSE
+      lpch <-NULL
+    }
+    legend(x="topright", legend=ltext, title=ltitle, fill=lfill, border=lborder,
+           col=lcol, lty= lty, pch=lpch, bty="n", merge=lmerge)
   }
 })
 
@@ -1091,18 +1108,22 @@ output$degreedistdownload <- downloadHandler(
     color <- "#3182bd"
     ylabel <- "Count of Nodes"
     ltext <- c()
-    lcol <- c()
+    lcol <- c() #color for lines
+    lty <- c()
+    lpch <- c()
+    lfill <- c() #color for boxes
     lborder <- c()
     ltitle <- NULL
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
         ncolors <- dim(dd_plotdata())[1]
         color <- brewer.pal(ncolors,"Blues")[1:ncolors]
-        ltext <- append(ltext, sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd))))
+        ltext <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
         ltext <- append(ltext, "")
-        lcol <- append(lcol, color)
-        lcol <- append(lcol, "#FFFFFF")
-        lborder <- append(lborder, c(rep("black", times=ncolors),"#FFFFFF"))
+        lfill <- c(color, 0)
+        lborder <- append(lborder, c(rep("black", times=ncolors), 0))
+        lty <- rep(0, times=ncolors+1)
+        lpch <- rep(26, times=ncolors+1)
         ltitle <- input$colorby_dd
       }}
     
@@ -1173,7 +1194,10 @@ output$degreedistdownload <- downloadHandler(
              code=3, length=0.1, angle=90, col='firebrick')
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "firebrick")
-      lborder <- append(lborder, "black")
+      lty <- append(lty, 1)
+      lpch <- append(lpch, 18)
+      lfill <- append(lfill, 0)
+      lborder <- append(lborder, 0)
     }
     if(input$bernoullioverlay_dd){
       points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
@@ -1181,10 +1205,20 @@ output$degreedistdownload <- downloadHandler(
              code=3, length=0.1, angle=90, col='orangered')
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "orangered")
-      lborder <- append(lborder, "black")
+      lty <- append(lty, 1)
+      lpch <- append(lpch, 18)
+      lfill <- append(lfill, 0)
+      lborder <- append(lborder, 0)
     }
     if(input$colorby_dd != "None" | input$uniformoverlay_dd | input$bernoullioverlay_dd){
-      legend(x="topright", legend=ltext, title=ltitle, fill=lcol, border=lborder, bty="n")
+      if(input$uniformoverlay_dd | input$bernoullioverlay_dd){
+        lmerge <- TRUE
+      } else {
+        lmerge <-FALSE
+        lpch <-NULL
+      }
+      legend(x="topright", legend=ltext, title=ltitle, fill=lfill, border=lborder,
+             col=lcol, lty= lty, pch=lpch, bty="n", merge=lmerge)
     }
     dev.off()
 })
