@@ -10,6 +10,14 @@ $(document).ready(function(){
   $("#filetypehelper2").click(function(){
     $("#filetypebox2").toggle(500);
   });
+    
+  $("#cughelper_dd").click(function(){
+    $("#cughelperbox_dd").toggle(500);
+  });
+      
+  $("#brghelper_dd").click(function(){
+    $("#brghelperbox_dd").toggle(500);
+  });
   
   $(".mixmxtitle").click(function(){
     $(".mixmxbox").toggle(1000);

@@ -617,13 +617,30 @@ shinyUI(
                                      radioButtons('densplot', label='Y-axis measurement',
                                                   choices = c("Count of nodes", "Percent of nodes"),
                                                    selected="Count of nodes"),
-                                     p('Display overlay of expected values:'),
-                                     checkboxInput('uniformoverlay_dd', 
-                                                   label='Draws from uniform graphs conditional on edge count', 
-                                                   value=FALSE),
-                                     checkboxInput('bernoullioverlay_dd',
-                                                   label='Draws from bernoulli graphs with tie probability equal to density of observed network',
-                                                   value=FALSE),
+                                     p('Expected values of null models:'),
+                                     fluidRow(
+                                       column(10,
+                                              checkboxInput('uniformoverlay_dd', 
+                                                     label='Conditional uniform graphs (CUG)', 
+                                                     value=FALSE)
+                                              ),
+                                       
+                                        span(icon('question-circle'), id="cughelper_dd", class="helper",
+                                             div(id="cughelperbox_dd", 
+                                                 "Draws from a density-conditioned distribution of uniform random graphs.",
+                                                 "The mean degree distribution and 95% confidence intervals are plotted."))),
+                                     fluidRow(
+                                       column(10,
+                                              checkboxInput('bernoullioverlay_dd',
+                                                     label='Bernoulli random graphs (BRG)',
+                                                     value=FALSE)
+                                              ),
+                                       span(icon('question-circle'), id="brghelper_dd", class="helper",
+                                            div(id="brghelperbox_dd",
+                                                "Draws from bernoulli random graphs where the tie probability",
+                                                "is equal to the density of the observed network. The mean degree",
+                                                "distribution and 95% confidence intervals are plotted."))),
+                                     br(),
                                      downloadButton('degreedistdownload', label = "Download Plot")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
