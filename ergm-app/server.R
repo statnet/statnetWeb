@@ -1347,7 +1347,8 @@ output$geodistplot <- renderPlot({
     lcol <- append(lcol, "orangered")
   }
   if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-    legend(x="topright", legend=ltext, col=lcol, lwd=1, inset=c(.12,0), bty="n")
+    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, merge=TRUE,
+           inset=c(.12,0), bty="n")
   }
   
 })
@@ -1358,9 +1359,9 @@ output$geodistdownload <- downloadHandler(
     pdf(file=file, height=10, width=15)
     g <- geodist(nwreac(),inf.replace=0)
     gdata <- tabulate(g$gdist)
-    gdata <- append(gdata, sum(g$gdist == 0), after=0)
-    maxgeo <- max(g$gdist)
-    names(gdata) <- paste(0:maxgeo)
+    gdata <- append(gdata, sum(g$gdist == 0))
+    maxgeo <- length(gdata)-1
+    names(gdata) <- c(paste(1:maxgeo), "INF")
     
     unif_means <- gd_uniformoverlay()[[1]]
     unif_stderr <- gd_uniformoverlay()[[2]]
@@ -1374,11 +1375,6 @@ output$geodistdownload <- downloadHandler(
     bern_lowerline <- bern_means - 2*bern_stderr
     maxgeo_b <- length(bern_means)-1
     
-    #get maximums to set y limits
-    maxfreq <- max(gdata)
-    maxfreq_samples <- max(max(unif_upperline),
-                           max(bern_upperline))
-    ylimit <- max(maxfreq, maxfreq_samples)
     ylabel <- "Count of Vertex Pairs"
     
     #for density plot
@@ -1393,25 +1389,52 @@ output$geodistdownload <- downloadHandler(
       ylimit <- max(gdata, bern_upperline, unif_upperline)
       ylabel <- "Percent of Vertex Pairs"
     }
+    #get maximums to set y limits
+    ylimit <- max(gdata, bern_upperline, unif_upperline)
     
-    barplot(gdata,  col="#3182bd",
-            xlab = "Geodesic Value", ylab = ylabel,
-            ylim = c(0,ylimit))
+    # make sure that barplot and lines have the same length
+    maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
+    if(maxgeo_u < maxgeo_total){
+      unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_means)-1)
+      unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_upperline)-1)
+      unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_lowerline)-1)
+    } 
+    if(maxgeo_b < maxgeo_total){
+      bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_means)-1)
+      bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_upperline)-1)
+      bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_lowerline)-1)
+    }
+    if(maxgeo < maxgeo_total){
+      gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
+      names(gdata) <- c(paste(1:maxgeo_total), "INF")
+      
+    }
+    
+    ltext <- c()
+    lcol <- c()
+    
+    #save x-coordinates of bars, so that points are centered on bars
+    bar_axis <- barplot(gdata,  col="#3182bd",
+                        xlab = "Geodesic Value", ylab = ylabel,
+                        ylim = c(0,ylimit), plot=TRUE)
+    
     if(input$uniformoverlay_gd){
-      lines(unif_means, lwd=1, col='firebrick4')
-      lines(unif_upperline, lwd=1, lty=2, col='firebrick4')
-      lines(unif_lowerline, lwd=1, lty=2, col='firebrick4')
-      polygon(x=c(1:(maxgeo_u+1),(maxgeo_u+1):1), y=c(unif_upperline, 
-                                                      rev(unif_lowerline)),
-              col=adjustcolor('firebrick4', alpha.f=.5), border=NA)
+      points(x=bar_axis-.1, y=unif_means,col='firebrick', lwd=1, pch=18)
+      arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col='firebrick')
+      ltext <- append(ltext, "CUG")
+      lcol <- append(lcol, "firebrick")
     }
     if(input$bernoullioverlay_gd){
-      lines(bern_means, lwd=1, col='orangered')
-      lines(bern_upperline, lwd=1, lty=2, col='orangered')
-      lines(bern_lowerline, lwd=1, lty=2, col='orangered')
-      polygon(x=c(1:(maxgeo_b+1),(maxgeo_b+1):1), y=c(bern_upperline, 
-                                                      rev(bern_lowerline)),
-              col=adjustcolor('orangered', alpha.f=.5), border=NA)
+      points(x=bar_axis+.1, y=bern_means,col='orangered', lwd=1, pch=18)
+      arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col='orangered')
+      ltext <- append(ltext, "BRG")
+      lcol <- append(lcol, "orangered")
+    }
+    if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
+      legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, merge=TRUE,
+             inset=c(.12,0), bty="n")
     }
     dev.off()
   })
