@@ -232,7 +232,6 @@ observe({
   vdf <- list()
   edf <- list()
   evdf <- list()
-  vertex_names <- list()
   if (is.network(nwinit())){
     n <- nodes()
     e <- nedges()
@@ -253,7 +252,7 @@ observe({
     assign('ev_attrNamesToAdd', list(1),
            pos="package:base" )
     
-    assign('vertex_names', vertex_names, pos="package:base")
+    assign('vertex_names', network.vertex.names(nwinit()), pos="package:base")
     
   }
 })
@@ -431,12 +430,13 @@ nwmid <- reactive({
       e_attrValsToAdd <- get('e_attrValsToAdd', pos='package:base')
       ev_attrNamesToAdd <- get('ev_attrNamesToAdd',pos='package:base')
       ev_attrValsToAdd <- get('ev_attrValsToAdd', pos='package:base')
-      vertex_names <- get('vertex_names', pos='package:base')
+      
       
       input$newattrButton
-      
-      network.vertex.names(nw) <- vertex_names
-      
+      try({
+        vertex_names <- get('vertex_names', pos='package:base')
+        network.vertex.names(nw) <- vertex_names
+      })
       v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
