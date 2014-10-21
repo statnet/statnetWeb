@@ -982,16 +982,23 @@ output$degreedist <- renderPlot({
   if(!is.network(nwreac())){
     return()
   }
-  leg <- FALSE
-  legtitle <- FALSE
   plotme <- dd_plotdata()
   color <- "#3182bd"
   ylabel <- "Count of Nodes"
+  ltext <- c()
+  lcol <- c()
+  lfill <- c()
+  lborder <- c()
+  ltitle <- NULL
   if(!is.null(input$colorby_dd)){
   if(input$colorby_dd != "None"){
-    leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
-    legtitle <- list(title = input$colorby_dd)
-    color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
+    ncolors <- dim(dd_plotdata())[1]
+    color <- brewer.pal(ncolors,"Blues")[1:ncolors]
+    ltext <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
+    ltext <- append(ltext, "")
+    lcol <- c(color, 0)
+    lborder <- append(lborder, c(rep("black", times=ncolors),"#FFFFFF"))
+    ltitle <- input$colorby_dd
   }}
   
   unif_samplemeans <- dd_uniformoverlay()[[1]]
@@ -1053,35 +1060,50 @@ output$degreedist <- renderPlot({
   }
   
   #save x-coordinates of bars, so that points are centered on bars
-  bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
-          args.legend=legtitle, col=color, ylim=c(0,ylimit), plot=TRUE)
+  bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
+                      col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
     points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
     arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
            code=3, length=0.1, angle=90, col='firebrick')
+    ltext <- append(ltext, "CUG")
+    lcol <- append(lcol, "firebrick")
+    lborder <- append(lborder, "black")
   }
   if(input$bernoullioverlay_dd){
     points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
     arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
            code=3, length=0.1, angle=90, col='orangered')
+    ltext <- append(ltext, "BRG")
+    lcol <- append(lcol, "orangered")
+    lborder <- append(lborder, "black")
   }
-  
+  if(input$colorby_dd != "None" | input$uniformoverlay_dd | input$bernoullioverlay_dd){
+    legend(x="topright", legend=ltext, title=ltitle, fill=lcol, border=lborder, bty="n")
+  }
 })
 
 output$degreedistdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_degreedist.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=10)
-    leg <- FALSE
-    legtitle <- FALSE
     plotme <- dd_plotdata()
     color <- "#3182bd"
     ylabel <- "Count of Nodes"
+    ltext <- c()
+    lcol <- c()
+    lborder <- c()
+    ltitle <- NULL
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
-        leg <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
-        legtitle <- list(title = input$colorby_dd)
-        color <- brewer.pal(dim(dd_plotdata())[1],"Blues")
+        ncolors <- dim(dd_plotdata())[1]
+        color <- brewer.pal(ncolors,"Blues")[1:ncolors]
+        ltext <- append(ltext, sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd))))
+        ltext <- append(ltext, "")
+        lcol <- append(lcol, color)
+        lcol <- append(lcol, "#FFFFFF")
+        lborder <- append(lborder, c(rep("black", times=ncolors),"#FFFFFF"))
+        ltitle <- input$colorby_dd
       }}
     
     unif_samplemeans <- dd_uniformoverlay()[[1]]
@@ -1107,7 +1129,7 @@ output$degreedistdownload <- downloadHandler(
     maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
     ylimit <- max(maxfreq, maxfreq_samples)
     
-    if(input$densplot == 'Percent of nodes'){
+    if(input$densplot == "Percent of nodes"){
       plotme <- dd_plotdata()/sum(dd_plotdata())
       unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
       unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1118,6 +1140,7 @@ output$degreedistdownload <- downloadHandler(
       ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
       ylabel <- 'Percent of Nodes'
     }
+    
     # make sure that barplot and lines have the same length
     maxdeg_total <- max(maxdeg_obs, maxdeg_u, maxdeg_b)
     if(maxdeg_u < maxdeg_total){
@@ -1142,19 +1165,26 @@ output$degreedistdownload <- downloadHandler(
     }
     
     #save x-coordinates of bars, so that points are centered on bars
-    bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel, legend.text=leg,
-                        args.legend=legtitle, col=color, ylim=c(0,ylimit), plot=TRUE)
-    
-    
+    bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
+                        col=color, ylim=c(0,ylimit), plot=TRUE)
     if(input$uniformoverlay_dd){
       points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
       arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
              code=3, length=0.1, angle=90, col='firebrick')
+      ltext <- append(ltext, "CUG")
+      lcol <- append(lcol, "firebrick")
+      lborder <- append(lborder, "black")
     }
     if(input$bernoullioverlay_dd){
       points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
       arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
              code=3, length=0.1, angle=90, col='orangered')
+      ltext <- append(ltext, "BRG")
+      lcol <- append(lcol, "orangered")
+      lborder <- append(lborder, "black")
+    }
+    if(input$colorby_dd != "None" | input$uniformoverlay_dd | input$bernoullioverlay_dd){
+      legend(x="topright", legend=ltext, title=ltitle, fill=lcol, border=lborder, bty="n")
     }
     dev.off()
 })
