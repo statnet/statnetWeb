@@ -19,6 +19,14 @@ $(document).ready(function(){
     $("#brghelperbox_dd").toggle(500);
   });
   
+  $("#cughelper_gd").click(function(){
+    $("#cughelperbox_gd").toggle(500);
+  });
+      
+  $("#brghelper_gd").click(function(){
+    $("#brghelperbox_gd").toggle(500);
+  });
+  
   $(".mixmxtitle").click(function(){
     $(".mixmxbox").toggle(1000);
   });
