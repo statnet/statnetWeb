@@ -72,6 +72,8 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
+options(digits=3)
+
 #create a list of unique term names
 # UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
 # allterms <- search.ergmTerms()
