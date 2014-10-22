@@ -850,10 +850,11 @@ output$nwplot <- renderPlot({
     return()
   }
   nw <- nwreac()
+  color <- adjustcolor(vcol(), alpha.f = input$transp)
   plot.network(nw, coord = coords(), 
                displayisolates = input$iso, 
                displaylabels = input$vnames, 
-               vertex.col = vcol(),
+               vertex.col = color,
                vertex.cex = nodesize())
   if(input$colorby != 2){
     legend('bottomright', legend = legendlabels(), fill = legendfill())
@@ -864,11 +865,13 @@ output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=10)
-    plot(nwreac(), coord = coords(), 
-         displayisolates = input$iso, 
-         displaylabels = input$vnames, 
-         vertex.col = input$colorby,
-         vertex.cex = nodesize())
+    nw <- nwreac()
+    color <- adjustcolor(vcol(), alpha.f = input$transp)
+    plot.network(nw, coord = coords(), 
+                 displayisolates = input$iso, 
+                 displaylabels = input$vnames, 
+                 vertex.col = color,
+                 vertex.cex = nodesize())
     if(input$colorby != 2){
       legend('bottomright', legend = legendlabels(), fill = legendfill())
     }
