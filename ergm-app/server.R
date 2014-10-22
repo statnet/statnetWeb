@@ -566,6 +566,32 @@ numattr <- reactive({
     }
     size})
 
+vcol <- reactive({
+  if(!is.network(nwreac())){return()}
+  nw <- nwreac()
+  if(input$colorby ==2){
+    vcol <- 2
+  } else {
+    full_list <- get.vertex.attribute(nw,input$colorby)
+    short_list <- sort(unique(full_list))
+    if(is.element("Other", short_list)){ #to be consistent with order of legend
+      short_list <- short_list[-which(short_list=="Other")]
+      short_list <- c(short_list, "Other")
+    }
+    if(length(short_list)>9){
+      stop('Only 9 colors are available')
+    }
+    full_list <- match(full_list, short_list) #each elt is an integer 1-9
+    pal <- brewer.pal(9, "Set1")
+    assigncolor <- function(x){
+      switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
+             pal[6], pal[7], pal[8], pal[9])
+    }
+    vcol <- sapply(X = full_list, FUN = assigncolor)
+  }
+  vcol
+})
+
 legendlabels <- reactive({
   if(!is.network(nwreac())){return()}
   nw <- nwreac()
@@ -585,7 +611,9 @@ legendfill <- reactive({
   if(input$colorby == 2){
     legendfill <- NULL
   } else {
-    legendfill <- as.color(legendlabels())
+    n <- length(legendlabels())
+    pal <- brewer.pal(9, "Set1")
+    legendfill <- pal[1:n]
   }
   legendfill
 })
@@ -825,7 +853,7 @@ output$nwplot <- renderPlot({
   plot.network(nw, coord = coords(), 
                displayisolates = input$iso, 
                displaylabels = input$vnames, 
-               vertex.col = input$colorby,
+               vertex.col = vcol(),
                vertex.cex = nodesize())
   if(input$colorby != 2){
     legend('bottomright', legend = legendlabels(), fill = legendfill())
