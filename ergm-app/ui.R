@@ -636,7 +636,7 @@ shinyUI(
      helperButton(id = 'tab2help'),
      div(class="helper-box", style="display:none",
          p('Use the network plots to gain insight to the observed network.', 
-           'Edit the display options below and download a PDF of any of the plots.')),
+           'Edit the display options in the panel on the right and download a PDF of any of the plots.')),
     
     #include progress box when this tab is loading
     div(class = "busy", 
@@ -728,9 +728,9 @@ shinyUI(
           ),
     helperButton(id = 'tab3help'),
     div(class="helper-box", style="display:none",
-      p('Consult the "Term Documentation" box to learn about each term and its arguments',
-        '(the box can be collapsed or expanded with the button on the right', 
-        'of the page). The "Fitting" tab shows MCMC iterations (if any) and MLE coefficients,',
+      p('Create an ergm formula by typing terms into the text box.',
+        'Notice the summary statistics populate for each term added to the formula. ',
+        'After fitting the model, the "Fitting" tab will show MCMC iterations (if any) and MLE coefficients,',
         'while the "Summary" tab shows a comprehensive summary of the model fit.'))
           ),
 #' **MCMC Diagnostics**
