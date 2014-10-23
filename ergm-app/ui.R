@@ -391,18 +391,17 @@ shinyUI(
                    plotOutput('geodistplot')
                    ),
           tabPanel('More',
-                   h5('Mixing Matrix', icon('angle-double-down'), 
-                      class="mixmxtitle"),
-                   wellPanel(
+                   h5('Mixing Matrix', icon('angle-double-left'), 
+                      id="mixmxtitle"),
+                   wellPanel(id="mixmxbox",
                      uiOutput('mixmxchooser'),
-                     verbatimTextOutput('mixingmatrix'),
-                     class="mixmxbox"
+                     verbatimTextOutput('mixingmatrix')
                    ),
                    h5('Graph-level descriptive indices',
-                      icon('angle-double-down'), class="graphleveltitle"),
-                   wellPanel(fluidRow(
-
-                     column(4, offset=7,tags$u('Measure')),
+                      icon('angle-double-left'), id="graphleveltitle"),
+                   wellPanel(id="graphlevelbox",
+                     fluidRow(
+                      column(4, offset=7,tags$u('Measure')),
                      fluidRow(
                       column(4, p('Reciprocity:', class='stitle')),
                       column(3, p(textOutput('grecip'), class='snum')),
@@ -471,11 +470,11 @@ shinyUI(
                      )
                      
                      
-                   ), class="graphlevelbox"),
+                   )),
                    
                    h5('Node-level descriptive indices',
-                      icon('angle-double-down'), class="nodeleveltitle"),
-                   wellPanel(
+                      icon('angle-double-left'), id="nodeleveltitle"),
+                   wellPanel(id="nodelevelbox",
                      numericInput('nodeind', label='Input node index',value=1,
                                 min=1),
                      tags$hr(),
@@ -532,7 +531,7 @@ shinyUI(
                                                      choices=c('weak', 'strong', 'upper',
                                                                'lower'), style='margin-top:0px;'))
                          )
-                     ), class="nodelevelbox")
+                     ))
                    
                    
                    )

@@ -65,14 +65,14 @@ div#brghelperbox_gd {
   z-index: 10;
 }
 
-.mixmxbox, .graphlevelbox,
-.nodelevelbox{
+#mixmxbox, #graphlevelbox,
+#nodelevelbox {
   display:none;
 }
 
 
-.mixmxtitle, .graphleveltitle,
-.nodeleveltitle {
+#mixmxtitle, #graphleveltitle,
+#nodeleveltitle {
   cursor:pointer;
 }
 

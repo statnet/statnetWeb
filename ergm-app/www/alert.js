@@ -27,16 +27,19 @@ $(document).ready(function(){
     $("#brghelperbox_gd").toggle(500);
   });
   
-  $(".mixmxtitle").click(function(){
-    $(".mixmxbox").toggle(1000);
+  $("#mixmxtitle").click(function(){
+    $("#mixmxbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
   
-  $(".nodeleveltitle").click(function(){
-    $(".nodelevelbox").toggle(1000);
+  $("#nodeleveltitle").click(function(){
+    $("#nodelevelbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
 
-  $(".graphleveltitle").click(function(){
-    $(".graphlevelbox").toggle(1000);
+  $("#graphleveltitle").click(function(){
+    $("#graphlevelbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
 
   $("#termdocButton").click(function(){
