@@ -615,7 +615,7 @@ legendfill <- reactive({
   } else {
     n <- length(legendlabels())
     pal <- brewer.pal(9, "Set1")
-    legendfill <- pal[1:n]
+    legendfill <- adjustcolor(pal[1:n], alpha.f = input$transp)
   }
   legendfill
 })
@@ -718,6 +718,37 @@ nodesize2 <- reactive({
   }}
   size})
 
+vcol2 <- reactive({
+  if(!is.network(nwreac())){return()}
+  input$simButton
+  isolate(nsim <- input$nsims)
+  if(input$colorby2 ==2){
+    vcol <- 2
+  } else {
+    if(nsim == 1){
+      full_list <- get.vertex.attribute(model1simreac(),input$colorby2)
+    } else {
+      full_list <- get.vertex.attribute(model1simreac()[[input$thissim]],input$colorby2)
+    }
+    short_list <- sort(unique(full_list))
+    if(is.element("Other", short_list)){ #to be consistent with order of legend
+      short_list <- short_list[-which(short_list=="Other")]
+      short_list <- c(short_list, "Other")
+    }
+    if(length(short_list)>9){
+      stop('Only 9 colors are available')
+    }
+    full_list <- match(full_list, short_list) #each elt is an integer 1-9
+    pal <- brewer.pal(9, "Set1")
+    assigncolor <- function(x){
+      switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
+             pal[6], pal[7], pal[8], pal[9])
+    }
+    vcol <- sapply(X = full_list, FUN = assigncolor)
+  }
+  vcol
+})
+
 legendlabels2 <- reactive({
   nw <- nwreac()
   if(input$colorby2 == 2){
@@ -736,7 +767,9 @@ legendfill2 <- reactive({
   if(input$colorby2 == 2){
     legendfill <- NULL
   } else {
-    legendfill <- as.color(legendlabels2())
+    pal <- brewer.pal(9, "Set1")
+    n <- length(legendlabels2())
+    legendfill <- adjustcolor(pal[1:n], alpha.f = input$transp2)
   }
   legendfill
 })
@@ -2028,12 +2061,13 @@ output$simplot <- renderPlot({
     return()
   } 
   
+  color <- adjustcolor(vcol2(), alpha.f = input$transp2)
+  
   if (nsims == 1){
-    
     plot(model1sim, coord = sim.coords.1(), 
          displayisolates = input$iso2, 
          displaylabels = input$vnames2, 
-         vertex.col = input$colorby2,
+         vertex.col = color,
          vertex.cex = nodesize2())
     if(input$colorby2 != 2){
       legend('bottomright', legend = legendlabels2(), fill = legendfill2())
@@ -2043,7 +2077,7 @@ output$simplot <- renderPlot({
          coord = sim.coords.2(),
          displayisolates = input$iso2, 
          displaylabels = input$vnames2, 
-         vertex.col = input$colorby2,
+         vertex.col = color,
          vertex.cex = nodesize2())
     if(input$colorby2 != 2){
       legend('bottomright', legend = legendlabels2(), fill = legendfill2())
@@ -2055,19 +2089,20 @@ output$simplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_simplot.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=10)
+    color <- adjustcolor(vcol2(), alpha.f = input$transp2)
     if(input$nsims == 1){
     plot(model1simreac(), 
          coord = sim.coords.1(), 
          displayisolates = input$iso2, 
          displaylabels = input$vnames2, 
-         vertex.col = input$colorby2,
+         vertex.col = color,
          vertex.cex = nodesize2())
     }else{
       plot(model1simreac()[[input$thissim]], 
            coord = sim.coords.2(), 
            displayisolates = input$iso2, 
            displaylabels = input$vnames2, 
-           vertex.col = input$colorby2,
+           vertex.col = color,
            vertex.cex = nodesize2())
     }
     if(input$colorby2 != 2){
