@@ -72,6 +72,8 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 
+options(digits=3)
+
 #create a list of unique term names
 # UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
 # allterms <- search.ergmTerms()
@@ -850,10 +852,11 @@ output$nwplot <- renderPlot({
     return()
   }
   nw <- nwreac()
+  color <- adjustcolor(vcol(), alpha.f = input$transp)
   plot.network(nw, coord = coords(), 
                displayisolates = input$iso, 
                displaylabels = input$vnames, 
-               vertex.col = vcol(),
+               vertex.col = color,
                vertex.cex = nodesize())
   if(input$colorby != 2){
     legend('bottomright', legend = legendlabels(), fill = legendfill())
@@ -864,11 +867,13 @@ output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=10)
-    plot(nwreac(), coord = coords(), 
-         displayisolates = input$iso, 
-         displaylabels = input$vnames, 
-         vertex.col = input$colorby,
-         vertex.cex = nodesize())
+    nw <- nwreac()
+    color <- adjustcolor(vcol(), alpha.f = input$transp)
+    plot.network(nw, coord = coords(), 
+                 displayisolates = input$iso, 
+                 displaylabels = input$vnames, 
+                 vertex.col = color,
+                 vertex.cex = nodesize())
     if(input$colorby != 2){
       legend('bottomright', legend = legendlabels(), fill = legendfill())
     }
@@ -1257,18 +1262,23 @@ gd_uniformoverlay <- reactive({
   if(!is.network(nwreac())){
     return()
   }
-  gd <- geodist(uniformsamples(),inf.replace=0)
-  maxgeo <- max(unlist(gd))
+  gd <- geodist(uniformsamples(), count.paths=FALSE, inf.replace=NA)
+  maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
-  gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
-    #list of tabulated geodesics for each draw, except those of 0 length
-  gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0))
+    gd[[k]]$gdist[is.na(gd[[k]]$gdist)] <- Inf
+  }
+  gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
+    #list of tabulated geodesics for each draw, except those of 0 or Inf length
+  gd_data_complete <- matrix(0, nrow=maxgeo+2, ncol=reps)
+  for(k in 1:reps){
+    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0), after=0)
+    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == Inf))
+    gd_data_complete[,k] <- gd_data[[k]]
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
-  names(geomeans) <- c(paste(1:maxgeo), "INF")
+  names(geomeans) <- c(paste(0:maxgeo), "Inf")
   geosd <- apply(gd_data_complete, MARGIN=1, FUN=sd)
   
   mean_and_sd <- list(geomeans, geosd)
@@ -1278,18 +1288,23 @@ gd_bernoullioverlay <- reactive({
   if(!is.network(nwreac())){
     return()
   }
-  gd <- geodist(bernoullisamples(),inf.replace=0)
-  maxgeo <- max(unlist(gd))
+  gd <- geodist(bernoullisamples(), count.paths=FALSE, inf.replace=NA)
+  maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
-  gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
-  #list of tabulated geodesics for each draw, except those of 0 length
-  gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data_complete[,k] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0))
+    gd[[k]]$gdist[is.na(gd[[k]]$gdist)] <- Inf
+  }
+  gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
+  #list of tabulated geodesics for each draw, except those of 0 or Inf length
+  gd_data_complete <- matrix(0, nrow=maxgeo+2, ncol=reps)
+  for(k in 1:reps){
+    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == 0), after=0)
+    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == Inf))
+    gd_data_complete[,k] <- gd_data[[k]]
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
-  names(geomeans) <- c(paste(1:maxgeo), "INF")
+  names(geomeans) <- c(paste(1:maxgeo), "Inf")
   geosd <- apply(gd_data_complete, MARGIN=1, FUN=sd)
   
   mean_and_sd <- list(geomeans, geosd)
@@ -1299,23 +1314,25 @@ output$geodistplot <- renderPlot({
   if(!is.network(nwreac())){
     return()
   }
-  g <- geodist(nwreac(),inf.replace=0)
+  g <- geodist(nwreac(),inf.replace=NA)
   gdata <- tabulate(g$gdist)
-  gdata <- append(gdata, sum(g$gdist == 0))
-  maxgeo <- length(gdata)-1
-  names(gdata) <- c(paste(1:maxgeo), "INF")
+  gdata <- append(gdata, sum(g$gdist == 0, na.rm=TRUE), after=0)
+  g$gdist[is.na(g$gdist)] <- Inf
+  gdata <- append(gdata, sum(g$gdist == Inf))
+  maxgeo <- length(gdata)-2
+  names(gdata) <- c(paste(0:maxgeo), "Inf")
   
   unif_means <- gd_uniformoverlay()[[1]]
   unif_stderr <- gd_uniformoverlay()[[2]]
   unif_upperline <- unif_means + 2*unif_stderr
   unif_lowerline <- unif_means - 2*unif_stderr
-  maxgeo_u <- length(unif_means)-1
+  maxgeo_u <- length(unif_means)-2
   
   bern_means <- gd_bernoullioverlay()[[1]]
   bern_stderr <- gd_bernoullioverlay()[[2]]
   bern_upperline <- bern_means + 2*bern_stderr
   bern_lowerline <- bern_means - 2*bern_stderr
-  maxgeo_b <- length(bern_means)-1
+  maxgeo_b <- length(bern_means)-2
 
   ylabel <- "Count of Vertex Pairs"
   
@@ -1348,7 +1365,7 @@ output$geodistplot <- renderPlot({
   }
   if(maxgeo < maxgeo_total){
     gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
-    names(gdata) <- c(paste(1:maxgeo_total), "INF")
+    names(gdata) <- c(paste(0:maxgeo_total), "Inf")
     
   }
   
