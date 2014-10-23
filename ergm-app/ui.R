@@ -678,26 +678,30 @@ shinyUI(
           fluidRow(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
-            column(10,
-               p('Current ergm formula:'),
-               verbatimTextOutput('checkterms1'))
+            column(8,
+                   p("Type in term(s) and their arguments. For multiple terms, separate with '+'."),
+                   textInput(inputId="terms", label=NULL,
+                             value="edges"),
+                   actionButton('fitButton', 'Fit Model'),
+                   fluidRow(actionButton('addtermButton', 'Add Term(s)'),
+                            actionButton('resetformulaButton', 'Reset Formula'))
+            ),
+            column(2,
+                   br(),br(),
+                   actionButton('termdocButton', 'Term Documentation'))
+            
+            
           ),
          fluidRow(
-           column(10, offset=2,
+           column(12,
+                  p('Current ergm formula:'),
+                  verbatimTextOutput('checkterms1'))),
+        fluidRow(
+           column(12,
                   p('Summary Statistics:'),
                   verbatimTextOutput('prefitsum'))
            ),
-         fluidRow(
-           column(10,
-                  textInput(inputId="terms", label="Type in term(s) and their arguments. For multiple terms, separate with '+'.",
-                            value="edges"),
-                  actionButton('fitButton', 'Fit Model'),
-                  fluidRow(actionButton('addtermButton', 'Add Term(s)'),
-                           actionButton('resetformulaButton', 'Reset Formula'))
-                  ),
-           column(2,
-                  br(),
-                  actionButton('termdocButton', 'Term Documentation'))),
+
          wellPanel(class= 'docpopup', 
           fluidRow(
               column(3,
