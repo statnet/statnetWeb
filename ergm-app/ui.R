@@ -842,42 +842,44 @@ shinyUI(
                    tags$hr(),
                    
                    fluidRow(
-                     column(3,
-                            numericInput('nsims',
-                                         label = 'Number of simulations:',
-                                         min = 1,
-                                         value = 1),
-                            actionButton('simButton', 'Simulate')
-                     ),
-                     column(8, 
-                            numericInput('thissim',
-                                        label = 'Choose a simulation to plot',
-                                        min = 1,
-                                        value = 1)
+                     column(7,
+                        fluidRow(
+                            column(4,
+                                numericInput('nsims',
+                                             label = 'Number of simulations:',
+                                             min = 1,
+                                             value = 1),
+                                actionButton('simButton', 'Simulate')
+                              ),    
+                            column(8, 
+                                numericInput('thissim',
+                                            label = 'Choose a simulation to plot',
+                                            min = 1,
+                                            value = 1)
+                            )),  
+                        column(12,
+                            plotOutput('simplot')
                             )
-                   ),
-                   fluidRow( 
-                     column(3,
-                            br(),
-                            wellPanel(
-                              h5('Display Options'),
-                              checkboxInput('iso2',
-                                            label = 'Display isolates?', 
-                                            value = TRUE),
-                              checkboxInput('vnames2',
-                                            label = 'Display vertex names?',
-                                            value = FALSE),
-                              uiOutput('dynamiccolor2'),
-                              uiOutput('dynamicsize2'),
-                              downloadButton('simplotdownload',
-                                             label = 'Download Plot')
+                        ),
+                   column(4,
+                            tabsetPanel(
+                              tabPanel('Display Options',
+                                       wellPanel(
+                                         checkboxInput('iso2',
+                                                       label = 'Display isolates?', 
+                                                       value = TRUE),
+                                         checkboxInput('vnames2',
+                                                       label = 'Display vertex names?',
+                                                       value = FALSE),
+                                         uiOutput('dynamiccolor2'),
+                                         uiOutput('dynamicsize2'),
+                                         downloadButton('simplotdownload',
+                                                        label = 'Download Plot'))
+                                ),
+                              tabPanel('Simulation Summary',
+                                        verbatimTextOutput('sim.summary'))
                               )
-                            ),  
-                     column(8,
-                            plotOutput('simplot'),
-                            verbatimTextOutput('sim.summary')
-                            )
-                     ),
+                     )),
                    helperButton(id = 'tab6help'),
                    div(class="helper-box", style="display:none",
                        p('Choose how many simulations to run and click "Simulate".',
