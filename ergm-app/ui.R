@@ -688,10 +688,31 @@ shinyUI(
             ),
             column(2,
                    br(),br(),
-                   actionButton('termdocButton', 'Term Documentation'))
-            
-            
+                   actionButton('termdocButton', 'Term Documentation')),
+          
+         column(5,offset=6,
+                div(class= 'docpopup', 
+                    fluidRow(
+                      column(3,
+                             h5('Term Documentation')
+#                              radioButtons('matchingorall', label='Choose from:',
+#                                           choices=c('Terms compatible with current network',
+#                                                     'All terms')),
+#                              uiOutput('listofterms')
+                             ),
+                      column(9, 
+                             p("After the next release of statnet (coming soon!), you will be able to",
+                               "read the documentation for any of the ergm terms inside this popup box.",
+                               "Until then, documentation can be accessed from the R command line using",
+                               code('help("ergm-terms")'), "or in ", a("this paper", 
+                                                                       href="http://www.jstatsoft.org/v24/i04/paper",
+                                                                       target="_blank"))
+                             #verbatimTextOutput('termdoc')
+                      )))
+                )
           ),
+
+            
          fluidRow(
            column(12,
                   p('Current ergm formula:'),
@@ -701,19 +722,6 @@ shinyUI(
                   p('Summary Statistics:'),
                   verbatimTextOutput('prefitsum'))
            ),
-
-         wellPanel(class= 'docpopup', 
-          fluidRow(
-              column(3,
-                     h5('Term Documentation'),
-                     radioButtons('matchingorall', label='Choose from:',
-                                  choices=c('Terms compatible with current network',
-                                            'All terms')),
-                     uiOutput('listofterms')),
-              column(9, 
-                    verbatimTextOutput('termdoc'))
-                  )),
-         
          
          br(),
          tags$hr(),

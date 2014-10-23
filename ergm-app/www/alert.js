@@ -40,7 +40,7 @@ $(document).ready(function(){
   });
 
   $("#termdocButton").click(function(){
-    $(".docpopup").toggle(1000);
+    $(".docpopup").toggle(500);
   });
   
 });
