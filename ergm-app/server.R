@@ -472,7 +472,7 @@ nwmid <- reactive({
 
 #delete unwanted attributes from this network and use it for future
 #calculations
-nwreac <- reactive({
+network <- reactive({
   nw <- nwmid()
   
 #   deleteme <- input$deleteattrs$right
@@ -513,7 +513,7 @@ nwname <- reactive({
 
 #get coordinates to plot network with
 coords <- reactive({
-		plot.network(nwreac())})
+		plot.network(network())})
 
 #initial network attributes
 #returns vector of true/falses
@@ -526,8 +526,8 @@ nwattrinit <- reactive({
 #list of all vertex attributes in nw (after adding new)
 attr <- reactive({
 	  attr <- c()
-    if(is.network(nwreac())){        
-		    attr<-list.vertex.attributes(nwreac())
+    if(is.network(network())){        
+		    attr<-list.vertex.attributes(network())
     }
       attr
   })
@@ -547,17 +547,17 @@ menuattr <- reactive({
 #numeric attributes only (for size menu, etc.)
 numattr <- reactive({
     numattr <- c()
-    if(is.network(nwreac())){  
+    if(is.network(network())){  
       for(i in 1:length(attr())){
-        if(is.numeric(get.vertex.attribute(nwreac(),attr()[i]))){
+        if(is.numeric(get.vertex.attribute(network(),attr()[i]))){
           numattr <- append(numattr,attr()[i])
         } 
       }} 
     numattr})
 
   nodesize <- reactive({
-    if(!is.network(nwreac())){return()}
-    nw <- nwreac()
+    if(!is.network(network())){return()}
+    nw <- network()
     #scale size of nodes onto range between .7 and 3.5
     minsize <- min(get.vertex.attribute(nw,input$sizeby))
     maxsize <- max(get.vertex.attribute(nw,input$sizeby))
@@ -569,8 +569,8 @@ numattr <- reactive({
     size})
 
 vcol <- reactive({
-  if(!is.network(nwreac())){return()}
-  nw <- nwreac()
+  if(!is.network(network())){return()}
+  nw <- network()
   if(input$colorby ==2){
     vcol <- 2
   } else {
@@ -595,8 +595,8 @@ vcol <- reactive({
 })
 
 legendlabels <- reactive({
-  if(!is.network(nwreac())){return()}
-  nw <- nwreac()
+  if(!is.network(network())){return()}
+  nw <- network()
     if(input$colorby == 2){
       legendlabels <- NULL
     }else{
@@ -656,7 +656,7 @@ ergm.terms <- reactive({
 
 ergm.formula <- reactive({
   if(ergm.terms()=='NA')return()
-  formula(paste('nwreac() ~ ',ergm.terms(), sep = ''))})
+  formula(paste('network() ~ ',ergm.terms(), sep = ''))})
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
 #' and simulating from it is similar to what would be written in the command line,
@@ -703,7 +703,7 @@ sim.coords.2 <- reactive({
   plot.network(model1simreac()[[input$thissim]])})
 
 nodesize2 <- reactive({
-  nw <- nwreac()
+  nw <- network()
   #scale size of nodes onto range between .7 and 3.5
   
   minsize <- min(get.vertex.attribute(nw,input$sizeby2))
@@ -719,7 +719,7 @@ nodesize2 <- reactive({
   size})
 
 vcol2 <- reactive({
-  if(!is.network(nwreac())){return()}
+  if(!is.network(network())){return()}
   input$simButton
   isolate(nsim <- input$nsims)
   if(input$colorby2 ==2){
@@ -750,7 +750,7 @@ vcol2 <- reactive({
 })
 
 legendlabels2 <- reactive({
-  nw <- nwreac()
+  nw <- network()
   if(input$colorby2 == 2){
     legendlabels <- NULL
   }else{
@@ -824,10 +824,10 @@ output$newattrname <- renderPrint({
 
 #summary of network attributes
 output$nwsum <- renderPrint({
-  if (is.null(nwreac())){
+  if (is.null(network())){
     return(cat('NA'))
   }
-  nw <- nwreac()
+  nw <- network()
   if (class(nw)!="network"){
     return(cat(nw))
   }
@@ -848,10 +848,10 @@ output$nwsum <- renderPrint({
 #+ eval=FALSE
 #summary of network attributes
 output$attr2 <- renderPrint({
-  if (!is.network(nwreac())){
+  if (!is.network(network())){
     return(cat('NA'))
   }
-  nw <- nwreac()
+  nw <- network()
   return(nw)
 })
 
@@ -881,10 +881,10 @@ outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 #'
 #+ eval=FALSE
 output$nwplot <- renderPlot({
-  if (!is.network(nwreac())){
+  if (!is.network(network())){
     return()
   }
-  nw <- nwreac()
+  nw <- network()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
   plot.network(nw, coord = coords(), 
                displayisolates = input$iso, 
@@ -900,7 +900,7 @@ output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=10)
-    nw <- nwreac()
+    nw <- network()
     color <- adjustcolor(vcol(), alpha.f = input$transp)
     plot.network(nw, coord = coords(), 
                  displayisolates = input$iso, 
@@ -916,30 +916,30 @@ output$nwplotdownload <- downloadHandler(
 
 #Data to use for null hypothesis overlays in network plots
 uniformsamples <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
-  if(is.directed(nwreac())){
+  if(is.directed(network())){
     samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='digraph',
-                    diag=has.loops(nwreac()))
+                    diag=has.loops(network()))
   } else {
     samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='graph',
-                    diag=has.loops(nwreac()))
+                    diag=has.loops(network()))
   }
   samples
 })
 
 bernoullisamples <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
-  density <- gden(nwreac())
-  if(is.directed(nwreac())){
+  density <- gden(network())
+  if(is.directed(network())){
     samples <- rgraph(n=nodes(), m=50, mode='digraph', tprob=density,
-                      diag=has.loops(nwreac()))
+                      diag=has.loops(network()))
   } else {
     samples <- rgraph(n=nodes(), m=50, mode='graph', tprob=density,
-                      diag=has.loops(nwreac()))
+                      diag=has.loops(network()))
   }
   samples
 })
@@ -955,20 +955,20 @@ output$dynamiccolor_dd <- renderUI({
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE)
 
 dd_plotdata <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
-  if(is.directed(nwreac())){
+  if(is.directed(network())){
     gmode <- "digraph"
   } else {
     gmode <- "graph"
   }
-  if(has.loops(nwreac())){
+  if(has.loops(network())){
     diag <- TRUE
   } else {
     diag <- FALSE
   }
-  deg <- degree(nwreac(), gmode=gmode, cmode=input$cmode, diag=diag)
+  deg <- degree(network(), gmode=gmode, cmode=input$cmode, diag=diag)
   data <-tabulate(deg)
   data <- append(data,sum(deg==0),after=0)
   maxdeg <- max(deg)
@@ -976,16 +976,16 @@ dd_plotdata <- reactive({
   
   #for color-coded bars
   if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
-    if(is.directed(nwreac())){
+    if(is.directed(network())){
       if(input$cmode=='indegree'){
-        data <- summary(nwreac() ~ idegree(0:maxdeg, input$colorby_dd))
+        data <- summary(network() ~ idegree(0:maxdeg, input$colorby_dd))
       } else if(input$cmode=='outdegree'){
-        data <- summary(nwreac() ~ odegree(0:maxdeg, input$colorby_dd))
+        data <- summary(network() ~ odegree(0:maxdeg, input$colorby_dd))
       } else {
         return('Cannot color code a directed graph using total degree.')
       }
     } else {
-      data <- summary(nwreac() ~ degree(0:maxdeg, input$colorby_dd))
+      data <- summary(network() ~ degree(0:maxdeg, input$colorby_dd))
     }
     data <- t(matrix(data,nrow=maxdeg+1))
     colnames(data) <- 0:maxdeg
@@ -994,11 +994,11 @@ dd_plotdata <- reactive({
 })
 
 dd_uniformoverlay <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
   reps <- 50 #number of draws
-  if(is.directed(nwreac())){
+  if(is.directed(network())){
     deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
   } else {
     deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode)
@@ -1018,12 +1018,12 @@ dd_uniformoverlay <- reactive({
 })
 
 dd_bernoullioverlay <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
   reps = 50
-  density <- gden(nwreac())
-  if(is.directed(nwreac())){
+  density <- gden(network())
+  if(is.directed(network())){
     deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
   } else {
     deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', cmode=input$cmode)
@@ -1045,7 +1045,7 @@ dd_bernoullioverlay <- reactive({
 })
 
 output$degreedist <- renderPlot({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
   plotme <- dd_plotdata()
@@ -1062,7 +1062,7 @@ output$degreedist <- renderPlot({
   if(input$colorby_dd != "None"){
     ncolors <- dim(dd_plotdata())[1]
     color <- brewer.pal(ncolors,"Blues")[1:ncolors]
-    ltext <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
+    ltext <- sort(unique(get.vertex.attribute(network(),input$colorby_dd)))
     ltext <- append(ltext, "")
     lfill <- c(color, 0)
     lborder <- append(lborder, c(rep("black", times=ncolors), 0))
@@ -1184,7 +1184,7 @@ output$degreedistdownload <- downloadHandler(
       if(input$colorby_dd != "None"){
         ncolors <- dim(dd_plotdata())[1]
         color <- brewer.pal(ncolors,"Blues")[1:ncolors]
-        ltext <- sort(unique(get.vertex.attribute(nwreac(),input$colorby_dd)))
+        ltext <- sort(unique(get.vertex.attribute(network(),input$colorby_dd)))
         ltext <- append(ltext, "")
         lfill <- c(color, 0)
         lborder <- append(lborder, c(rep("black", times=ncolors), 0))
@@ -1292,7 +1292,7 @@ output$degreedistdownload <- downloadHandler(
 #GEODESIC DISTRIBUTION
 
 gd_uniformoverlay <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
   gd <- geodist(uniformsamples(), count.paths=FALSE, inf.replace=NA)
@@ -1318,7 +1318,7 @@ gd_uniformoverlay <- reactive({
 })
 
 gd_bernoullioverlay <- reactive({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
   gd <- geodist(bernoullisamples(), count.paths=FALSE, inf.replace=NA)
@@ -1344,10 +1344,10 @@ gd_bernoullioverlay <- reactive({
 })
 
 output$geodistplot <- renderPlot({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return()
   }
-  g <- geodist(nwreac(),inf.replace=NA)
+  g <- geodist(network(),inf.replace=NA)
   gdata <- tabulate(g$gdist)
   gdata <- append(gdata, sum(g$gdist == 0, na.rm=TRUE), after=0)
   g$gdist[is.na(g$gdist)] <- Inf
@@ -1435,7 +1435,7 @@ output$geodistdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_geodist.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=15)
-    g <- geodist(nwreac(),inf.replace=0)
+    g <- geodist(network(),inf.replace=0)
     gdata <- tabulate(g$gdist)
     gdata <- append(gdata, sum(g$gdist == 0))
     maxgeo <- length(gdata)-1
@@ -1520,7 +1520,7 @@ output$geodistdownload <- downloadHandler(
 #MORE
 
 output$subsetting <- renderUI({
-  if(class(nwreac())!='network'){
+  if(class(network())!='network'){
     return()
   }
   selectInput('subsetattr', label=NULL,
@@ -1529,10 +1529,10 @@ output$subsetting <- renderUI({
 outputOptions(output,'subsetting',suspendWhenHidden=FALSE)
 
 output$subsetting2 <- renderUI({
-  if(class(nwreac())!='network' | input$subsetattr == "None"){
+  if(class(network())!='network' | input$subsetattr == "None"){
     return()
   }
-  choices <- sort(unique(get.vertex.attribute(nwreac(),input$subsetattr)))
+  choices <- sort(unique(get.vertex.attribute(network(),input$subsetattr)))
   checkboxGroupInput('subsetattrchoice', label=NULL,
                      choices=choices, selected=NULL)
 })
@@ -1546,209 +1546,209 @@ output$mixmxchooser <- renderUI({
 outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
 output$mixingmatrix <- renderPrint({
-  if(!is.network(nwreac())) {return()}
+  if(!is.network(network())) {return()}
   if(!is.null(input$mixmx)){
-  mixingmatrix(nwreac(), input$mixmx)}
+  mixingmatrix(network(), input$mixmx)}
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
 output$gden <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  gden(nwreac(), diag=has.loops(nwreac()), mode=gmode)
+  gden(network(), diag=has.loops(network()), mode=gmode)
 })
 outputOptions(output,'gden',suspendWhenHidden=FALSE)
 
 output$grecip <- renderText({
-  if(!is.network(nwreac())) {return()}
+  if(!is.network(network())) {return()}
   if(input$grecipmeas == ''){
     return('Reciprocity:')
   }
-  grecip(nwreac(), measure=input$grecipmeas)
+  grecip(network(), measure=input$grecipmeas)
 })
 outputOptions(output,'grecip',suspendWhenHidden=FALSE)
 
 output$gtrans <- renderText({
-  if(!is.network(nwreac())) {return()}
+  if(!is.network(network())) {return()}
   if(input$gtransmeas == ''){
     return('Transitivity:')
   }
-  if(is.directed(nwreac())){
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  gtrans(nwreac(), diag=has.loops(nwreac()), mode=gmode,
+  gtrans(network(), diag=has.loops(network()), mode=gmode,
          measure=input$gtransmeas)
 })
 outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
 
 output$gdeg <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  d <- centralization(nwreac(), degree, mode=gmode, diag=has.loops(nwreac()),
+  d <- centralization(network(), degree, mode=gmode, diag=has.loops(network()),
               cmode=input$gdegcmode)
 })
 outputOptions(output,'gdeg',suspendWhenHidden=FALSE)
 
 output$gbetw <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  b <- centralization(nwreac(), betweenness, mode=gmode, diag=has.loops(nwreac()),
+  b <- centralization(network(), betweenness, mode=gmode, diag=has.loops(network()),
                    cmode=input$gbetwcmode)
 })
 outputOptions(output,'gbetw',suspendWhenHidden=FALSE)
 
 output$gclose <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  c <- centralization(nwreac(), closeness, mode=gmode, diag=has.loops(nwreac()),
+  c <- centralization(network(), closeness, mode=gmode, diag=has.loops(network()),
                  cmode=input$gclosecmode)
 })
 outputOptions(output,'gclose',suspendWhenHidden=FALSE)
 
 output$gstress <- renderText({
-  if(!is.network(nwreac())){ return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())){ return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  s <- centralization(nwreac(), stresscent, mode=gmode, diag=has.loops(nwreac()),
+  s <- centralization(network(), stresscent, mode=gmode, diag=has.loops(network()),
                   cmode=input$gstresscmode)
 })
 outputOptions(output,'gstress',suspendWhenHidden=FALSE)
 
 output$ggraphcent <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  g <- centralization(nwreac(), graphcent, mode=gmode, diag=has.loops(nwreac()),
+  g <- centralization(network(), graphcent, mode=gmode, diag=has.loops(network()),
                  cmode=input$ggraphcentcmode)
 })
 outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
 
 output$gevcent <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  e <- centralization(nwreac(), evcent, mode=gmode, diag=has.loops(nwreac()))
+  e <- centralization(network(), evcent, mode=gmode, diag=has.loops(network()))
 })
 outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
 
 output$ginfocent <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  i <- centralization(nwreac(), infocent, mode=gmode, diag=has.loops(nwreac()),
+  i <- centralization(network(), infocent, mode=gmode, diag=has.loops(network()),
                 cmode=input$ginfocentcmode)
 })
 outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
 
 output$ndeg <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  d <- degree(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+  d <- degree(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
          cmode=input$ndegcmode)
 })
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
 output$nbetw <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  b <- betweenness(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+  b <- betweenness(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
                    cmode=input$nbetwcmode)
 })
 outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
 
 output$nclose <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  c <- closeness(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+  c <- closeness(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
                  cmode=input$nclosecmode)
 })
 outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
 output$nstress <- renderText({
-  if(!is.network(nwreac())){ return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())){ return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  s <- stresscent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+  s <- stresscent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
                   cmode=input$nstresscmode)
 })
 outputOptions(output,'nstress',suspendWhenHidden=FALSE)
 
 output$ngraphcent <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  g <- graphcent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+  g <- graphcent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
                   cmode=input$ngraphcentcmode)
 })
 outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
 output$nevcent <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()))
+  e <- evcent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()))
 })
 outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
 
 output$ninfocent <- renderText({
-  if(!is.network(nwreac())) {return()}
-  if(is.directed(nwreac())){
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  i <- infocent(nwreac(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nwreac()),
+  i <- infocent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
                  cmode=input$ninfocentcmode)
 })
 outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
@@ -1772,13 +1772,13 @@ outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
 #+ fitmodel1, eval=FALSE
 # UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
 # output$listofterms <- renderUI({
-#   if(!is.network(nwreac())){
+#   if(!is.network(network())){
 #     return()
 #   }
 #   if(input$matchingorall == 'All terms'){
 #     current.terms <- unlist(allterms)
 #   } else {
-#     matchterms <- search.ergmTerms(net=nwreac())
+#     matchterms <- search.ergmTerms(net=network())
 #     ind <- gregexpr(pattern='\\(', matchterms)
 #     for(i in 1:length(matchterms)){
 #       matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[[i]][1]-1)
@@ -1806,14 +1806,14 @@ outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
 #'  
 #+ fitmodel2, eval=FALSE
 output$currentdataset1 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   cat(isolate(nwname()))
 })
 
 output$checkterms1 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   if(ergm.terms()=='NA') return(cat('Add terms to the formula'))
@@ -1821,7 +1821,7 @@ output$checkterms1 <- renderPrint({
 })
 
 output$prefitsum <- renderPrint({
-  if(!is.network(nwreac()) | length(input$terms)==0){
+  if(!is.network(network()) | length(input$terms)==0){
     return(cat('NA'))
   }
   if(ergm.terms()=='NA') return(cat('Add terms to the formula'))
@@ -1862,7 +1862,7 @@ outputOptions(output, "modelfitsum",priority=-10)
 #+ eval=FALSE
 
 output$checkterms3 <- renderPrint({
-  if(is.null(nwreac())){
+  if(is.null(network())){
     return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
@@ -1871,7 +1871,7 @@ output$checkterms3 <- renderPrint({
   cat(isolate(ergm.terms()))
 })
 output$currentdataset3 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   cat(nwname())
@@ -1926,7 +1926,7 @@ output$diagnostics <- renderPrint({
 #+ eval=FALSE
 #dataset only updates after goButton on first tab has been clicked
 output$currentdataset2 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   cat(nwname())
@@ -1934,7 +1934,7 @@ output$currentdataset2 <- renderPrint({
 
 #formula only updates after fitButton has been clicked
 output$checkterms2 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
@@ -2006,7 +2006,7 @@ output$gofplotspace <- renderUI({
 #' from the 'Plot Network' tab.
 #+ eval=FALSE
 output$checkterms4 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
@@ -2015,7 +2015,7 @@ output$checkterms4 <- renderPrint({
   cat(isolate(ergm.terms()))
 })
 output$currentdataset4 <- renderPrint({
-  if(!is.network(nwreac())){
+  if(!is.network(network())){
     return(cat('Upload a network'))
   }
   cat(nwname())
@@ -2052,7 +2052,7 @@ output$simplot <- renderPlot({
   if(input$simButton == 0){
     return()
   }
-  nw <- nwreac()
+  nw <- network()
   nsims <- isolate(input$nsims)
   model1sim <- isolate(model1simreac()) 
   
