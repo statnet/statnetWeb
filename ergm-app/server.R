@@ -1820,6 +1820,62 @@ output$modelfitsum <- renderPrint({
 outputOptions(output, "modelfit",priority=10, suspendWhenHidden=FALSE)
 outputOptions(output, "modelfitsum",priority=-10)
 
+#' **Diagnostics - MCMC Diagnostics**
+#' 
+#' When using the `mcmc.diagnostics` function in the command line, the printed 
+#' diagnostics and plots all output together. Instead of calling `mcmc.diagnositcs`
+#' a reactive object, .
+#' 
+#+ eval=FALSE
+
+output$checkterms3 <- renderPrint({
+  if(is.null(nwreac())){
+    return(cat('Upload a network'))
+  }
+  if(input$fitButton == 0){
+    return(cat('Please fit a model'))
+  }
+  cat(isolate(ergm.terms()))
+})
+output$currentdataset3 <- renderPrint({
+  if(!is.network(nwreac())){
+    return(cat('Upload a network'))
+  }
+  cat(nwname())
+})
+
+output$diagnosticsplot <- renderPlot({
+  vpp <- length(model1reac()$coef)
+  mcmc.diagnostics(model1reac(), vars.per.page = vpp)
+})
+
+output$mcmcplotdownload <- downloadHandler(
+  vpp <- length(model1reac()$coef),
+  filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
+  content = function(file){
+    pdf(file=file, height=vpp*4/3, width=10)
+    mcmc.diagnostics(model1reac(), vars.per.page = vpp)
+    dev.off()
+  }
+)
+
+output$diagnosticsplotspace <- renderUI({
+  if(input$fitButton == 0){
+    return()
+  }
+  vpp <- length(model1reac()$coef) 
+  plotOutput('diagnosticsplot', height = vpp*400/2)
+})
+
+output$diagnostics <- renderPrint({
+  if(input$fitButton == 0){
+    return()
+  }
+  isolate(mcmc.diagnostics(model1reac()))
+  
+})
+
+
 
 #' **Diagnostics - Goodness of Fit**
 #' 
@@ -1902,61 +1958,6 @@ output$gofplotspace <- renderUI({
     gofplotheight = 400
   }
   plotOutput('gofplot', height=gofplotheight)
-})
-
-#' **Diagnostics - MCMC Diagnostics**
-#' 
-#' When using the `mcmc.diagnostics` function in the command line, the printed 
-#' diagnostics and plots all output together. Instead of calling `mcmc.diagnositcs`
-#' a reactive object, .
-#' 
-#+ eval=FALSE
-
-output$checkterms3 <- renderPrint({
-  if(is.null(nwreac())){
-    return(cat('Upload a network'))
-  }
-  if(input$fitButton == 0){
-    return(cat('Please fit a model'))
-  }
-  cat(isolate(ergm.terms()))
-})
-output$currentdataset3 <- renderPrint({
-  if(!is.network(nwreac())){
-    return(cat('Upload a network'))
-  }
-  cat(nwname())
-})
-
-output$diagnosticsplot <- renderPlot({
-  vpp <- length(model1reac()$coef)
-  mcmc.diagnostics(model1reac(), vars.per.page = vpp)
-})
-
-output$mcmcplotdownload <- downloadHandler(
-  vpp <- length(model1reac()$coef),
-  filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
-  content = function(file){
-    pdf(file=file, height=vpp*4/3, width=10)
-    mcmc.diagnostics(model1reac(), vars.per.page = vpp)
-    dev.off()
-  }
-)
-
-output$diagnosticsplotspace <- renderUI({
-  if(input$fitButton == 0){
-    return()
-  }
-  vpp <- length(model1reac()$coef) 
-  plotOutput('diagnosticsplot', height = vpp*400/2)
-})
-
-output$diagnostics <- renderPrint({
-    if(input$fitButton == 0){
-      return()
-    }
-    isolate(mcmc.diagnostics(model1reac()))
-
 })
 
 
