@@ -116,10 +116,10 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel('ergm app',
+  tabPanel('About v1.0',
            fluidRow(
-                    column(8, 
-                           h5('About'),
+                    column(8,
+                           br(),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
@@ -201,7 +201,7 @@ shinyUI(
 #' `div` statement within those tabs.
 #+ eval=FALSE
 
-  tabPanel('Data Upload',
+  tabPanel('Data',
            #busy.js is for calculation in progress boxes
            #alert.js is for helper boxes, term doc box, 
            #jquery libraries are loaded from google cdn, needed for autocomplete
@@ -376,7 +376,7 @@ shinyUI(
 #' 
 #+ eval=FALSE
 
-  tabPanel('Network Plots',
+  tabPanel('Network Descriptives',
     br(), 
     fluidRow(      
      column(7,
@@ -714,24 +714,25 @@ shinyUI(
 
             
          fluidRow(
-           column(12,
-                  p('Current ergm formula:'),
+           column(2,
+                  p('Current ergm formula:')),
+           column(10,
                   verbatimTextOutput('checkterms1'))),
         fluidRow(
-           column(12,
-                  p('Summary Statistics:'),
-                  verbatimTextOutput('prefitsum'))
-           ),
+           column(2,
+                  p('Summary statistics:')),
+           column(10,
+                  verbatimTextOutput('prefitsum'))),
          
          br(),
          tags$hr(),
-         h4('Model Summary'),
-         p('Check for model degeneracy in the "Diagnostics" tab.'),
+         p(strong('Results'),br(),
+           'Check for model degeneracy in the "Diagnostics" tab.'),
          br(),
          tabsetPanel(id = 'fittingTabs',
            tabPanel('Fitting',
                     verbatimTextOutput('modelfit')),
-           tabPanel('Summary',
+           tabPanel('Model Summary',
                     verbatimTextOutput('modelfitsum'))
           ),
     helperButton(id = 'tab3help'),
@@ -930,7 +931,7 @@ shinyUI(
                              "please interact with the", 
                              a("repository", href='https://github.com/statnet/ergm-shiny',
                                target="_blank"), 
-                             "or email ebey@uw.edu."),
+                             "or email the statnet_help listserv (below)."),
                            h5('Help with statnet software'),
                            p("The best way to contact us with questions, comments or suggestions",
                              "is through the statnet users group listserv."),
