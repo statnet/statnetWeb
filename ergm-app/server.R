@@ -580,11 +580,14 @@ vcol <- reactive({
       short_list <- short_list[-which(short_list=="Other")]
       short_list <- c(short_list, "Other")
     }
+    full_list <- match(full_list, short_list) 
+    #each elt corresponds to integer position in short_list
     if(length(short_list)>9){
-      stop('Only 9 colors are available')
+      full_list <- full_list %% 9
+      full_list[full_list == 0] <- 9
     }
-    full_list <- match(full_list, short_list) #each elt is an integer 1-9
-    pal <- brewer.pal(9, "Set1")
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
     assigncolor <- function(x){
       switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
              pal[6], pal[7], pal[8], pal[9])
@@ -614,8 +617,9 @@ legendfill <- reactive({
     legendfill <- NULL
   } else {
     n <- length(legendlabels())
-    pal <- brewer.pal(9, "Set1")
-    legendfill <- adjustcolor(pal[1:n], alpha.f = input$transp)
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    legendfill <- adjustcolor(pal, alpha.f = input$transp)
   }
   legendfill
 })
@@ -735,11 +739,14 @@ vcol2 <- reactive({
       short_list <- short_list[-which(short_list=="Other")]
       short_list <- c(short_list, "Other")
     }
+    full_list <- match(full_list, short_list) 
+    #each elt is an integer position in short_list
     if(length(short_list)>9){
-      stop('Only 9 colors are available')
+      full_list <- full_list %% 9
+      full_list[full_list==0] <- 9
     }
-    full_list <- match(full_list, short_list) #each elt is an integer 1-9
-    pal <- brewer.pal(9, "Set1")
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
     assigncolor <- function(x){
       switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
              pal[6], pal[7], pal[8], pal[9])
@@ -767,9 +774,9 @@ legendfill2 <- reactive({
   if(input$colorby2 == 2){
     legendfill <- NULL
   } else {
-    pal <- brewer.pal(9, "Set1")
-    n <- length(legendlabels2())
-    legendfill <- adjustcolor(pal[1:n], alpha.f = input$transp2)
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
   legendfill
 })
@@ -862,6 +869,12 @@ output$dynamiccolor <- renderUI({
               selectize = FALSE)
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE)
+
+output$colorwarning <- renderUI({
+  if(length(legendlabels())<10) return()
+  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
+       'more than nine levels.', style='font-size:0.85em;')
+})
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
@@ -2038,6 +2051,12 @@ output$dynamiccolor2 <- renderUI({
               label = 'Color nodes according to:',
               c('None' = 2, attr()),
               selectize = FALSE)
+})
+
+output$colorwarning2 <- renderUI({
+  if(length(legendlabels2())<10) return()
+  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
+       'more than nine levels.', style='font-size:0.85em;')
 })
 
 output$dynamicsize2 <- renderUI({

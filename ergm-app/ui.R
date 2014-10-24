@@ -553,6 +553,7 @@ shinyUI(
                                                  min = 0, max = 1, value = 1),
                                      br(),
                                      uiOutput('dynamiccolor'),
+                                     uiOutput('colorwarning'),
                                      uiOutput('dynamicsize'),
                                      br(),
                                      downloadButton('nwplotdownload', label = "Download Plot")),
@@ -879,6 +880,7 @@ shinyUI(
                                                      min = 0, max = 1, value = 1),
                                          br(),
                                          uiOutput('dynamiccolor2'),
+                                         uiOutput('colorwarning2'),
                                          uiOutput('dynamicsize2'),
                                          downloadButton('simplotdownload',
                                                         label = 'Download Plot'))
