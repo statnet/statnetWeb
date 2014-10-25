@@ -905,7 +905,7 @@ output$nwplot <- renderPlot({
                vertex.col = color,
                vertex.cex = nodesize())
   if(input$colorby != 2){
-    legend('bottomright', legend = legendlabels(), fill = legendfill())
+    legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill())
   }
 })
 
@@ -921,7 +921,7 @@ output$nwplotdownload <- downloadHandler(
                  vertex.col = color,
                  vertex.cex = nodesize())
     if(input$colorby != 2){
-      legend('bottomright', legend = legendlabels(), fill = legendfill())
+      legend('bottomright', title=input$colorby, legend = legendlabels(), fill = legendfill())
     }
     dev.off()
   }
@@ -2268,9 +2268,6 @@ output$simplot <- renderPlot({
          displaylabels = input$vnames2, 
          vertex.col = color,
          vertex.cex = nodesize2())
-    if(input$colorby2 != 2){
-      legend('bottomright', legend = legendlabels2(), fill = legendfill2())
-    }
   } else {
     plot(model1sim[[input$thissim]], 
          coord = sim.coords.2(),
@@ -2278,10 +2275,11 @@ output$simplot <- renderPlot({
          displaylabels = input$vnames2, 
          vertex.col = color,
          vertex.cex = nodesize2())
-    if(input$colorby2 != 2){
-      legend('bottomright', legend = legendlabels2(), fill = legendfill2())
-    }
   }
+  if(input$colorby2 != 2){
+      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2())
+    }
+  
 })
 
 output$simplotdownload <- downloadHandler(
@@ -2305,7 +2303,7 @@ output$simplotdownload <- downloadHandler(
            vertex.cex = nodesize2())
     }
     if(input$colorby2 != 2){
-      legend('bottomright', legend = legendlabels2(), fill = legendfill2())
+      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2())
     }
     dev.off()
   }
