@@ -116,10 +116,10 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel('ergm app',
+  tabPanel('About v1.0',
            fluidRow(
-                    column(8, 
-                           h5('About'),
+                    column(8,
+                           br(),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
@@ -201,7 +201,7 @@ shinyUI(
 #' `div` statement within those tabs.
 #+ eval=FALSE
 
-  tabPanel('Data Upload',
+  tabPanel('Data',
            #busy.js is for calculation in progress boxes
            #alert.js is for helper boxes, term doc box, 
            #jquery libraries are loaded from google cdn, needed for autocomplete
@@ -376,7 +376,7 @@ shinyUI(
 #' 
 #+ eval=FALSE
 
-  tabPanel('Network Plots',
+  tabPanel('Network Descriptives',
     br(), 
     fluidRow(      
      column(7,
@@ -475,66 +475,84 @@ shinyUI(
                    h5('Node-level descriptive indices',
                       icon('angle-double-left'), id="nodeleveltitle"),
                    wellPanel(id="nodelevelbox",
-                     numericInput('nodeind', label='Input node index',value=1,
+                     span('Input node index:'),
+                     numericInput('nodeind', label=NULL, value=1,
                                 min=1),
                      tags$hr(),
                      fluidRow(
-                       column(4, offset=7, tags$u('Centrality mode')),
+                       column(2, offset=3, tags$u('Current node')),
+                       column(3, tags$u('Centrality mode')),
+                       column(2, tags$u('Min')),
+                       column(2, tags$u('Max'))),
                        fluidRow(
-                         column(4, p('Degree:', class='stitle')),
-                         column(3, p(textOutput('ndeg'), class='snum')),
-                         column(4, inlineSelectInput('ndegcmode', label=NULL,
+                         column(3, p('Degree:', class='stitle')),
+                         column(2, p(textOutput('ndeg'), class='snum')),
+                         column(3, inlineSelectInput('ndegcmode', label=NULL,
                                                      choices=c('indegree', 'outdegree', 'freeman'),
-                                                     style='margin-top:5px;'))
+                                                     style='margin-top:5px;')),
+                         column(2, p(textOutput('ndegmin'), class='snum', align='center')),
+                         column(2, p(textOutput('ndegmax'), class='snum', align='center'))
                          ),
                        fluidRow(
-                         column(4, p('Betweenness:', class='stitle')),
-                         column(3, p(textOutput('nbetw'), class='snum')),
-                         column(4, inlineSelectInput('nbetwcmode', label=NULL,
+                         column(3, p('Betweenness:', class='stitle')),
+                         column(2, p(textOutput('nbetw'), class='snum')),
+                         column(3, inlineSelectInput('nbetwcmode', label=NULL,
                                                      choices=c('directed','undirected',
                                                                'endpoints','proximalsrc',
                                                                'proximaltar','proximalsum',
                                                                'lengthscaled', 'linearscaled'),
-                                                     style='margin-top:0px;'))
+                                                     style='margin-top:0px;')),
+                         column(2, p(textOutput('nbetwmin'), class='snum')),
+                         column(2, p(textOutput('nbetwmax'), class='snum'))
                          ),
                        fluidRow(
-                         column(4, p('Closeness:', class='stitle')),
-                         column(3, p(textOutput('nclose'), class='snum')),
-                         column(4, inlineSelectInput('nclosecmode', label=NULL,
+                         column(3, p('Closeness:', class='stitle')),
+                         column(2, p(textOutput('nclose'), class='snum')),
+                         column(3, inlineSelectInput('nclosecmode', label=NULL,
                                                      choices=c('directed','undirected',
                                                                'suminvdir','suminvundir'),
-                                                     style='margin-top:0px;'))
+                                                     style='margin-top:0px;')), 
+                         column(2, p(textOutput('nclosemin'))),
+                         column(2, p(textOutput('nclosemax')))
                          ),
                        fluidRow(
-                         column(4, p('Stress Centrality:', class='stitle')),
-                         column(3, p(textOutput('nstress'), class='snum')),
-                         column(4, inlineSelectInput('nstresscmode', label=NULL,
+                         column(3, p('Stress Centrality:', class='stitle')),
+                         column(2, p(textOutput('nstress'), class='snum')),
+                         column(3, inlineSelectInput('nstresscmode', label=NULL,
                                                      choices=c('directed','undirected'),
-                                                     style='margin-top:0px;'))
+                                                     style='margin-top:0px;')),
+                         column(2, p(textOutput('nstressmin'))),
+                         column(2, p(textOutput('nstressmax')))
                          ),
                        fluidRow(
-                         column(4, p('(Harary) Graph Centrality:', class='stitle')),
-                         column(3, p(textOutput('ngraphcent'), class='snum')),
-                         column(4, inlineSelectInput('ngraphcentcmode', label=NULL,
+                         column(3, p('(Harary) Graph Centrality:', class='stitle')),
+                         column(2, p(textOutput('ngraphcent'), class='snum')),
+                         column(3, inlineSelectInput('ngraphcentcmode', label=NULL,
                                                      choices=c('directed', 'undirected'),
-                                                     style='margin-top:0px;'))
+                                                     style='margin-top:0px;')),
+                         column(2, p(textOutput('ngraphcentmin'))),
+                         column(2, p(textOutput('ngraphcentmax')))
                          ),
                        fluidRow(
-                         column(4, p('Eigenvector Centrality:', class='stitle')),
-                         column(3, p(textOutput('nevcent'), class='snum')),
-                         column(4, br())
+                         column(3, p('Eigenvector Centrality:', class='stitle')),
+                         column(2, p(textOutput('nevcent'), class='snum')),
+                         column(3, br()),
+                         column(2, p(textOutput('nevcentmin'))),
+                         column(2, p(textOutput('nevcentmax')))
                          ),
                        fluidRow(
-                         column(4, p('Information Centrality:', class='stitle')),
-                         column(3, p(textOutput('ninfocent'), class='snum')),
-                         column(4, inlineSelectInput('ninfocentcmode',label=NULL,
+                         column(3, p('Information Centrality:', class='stitle')),
+                         column(2, p(textOutput('ninfocent'), class='snum')),
+                         column(3, inlineSelectInput('ninfocentcmode',label=NULL,
                                                      choices=c('weak', 'strong', 'upper',
-                                                               'lower'), style='margin-top:0px;'))
+                                                               'lower'), style='margin-top:0px;')),
+                         column(2, p(textOutput('ninfocentmin'))),
+                         column(2, p(textOutput('ninfocentmax')))
                          )
                      ))
                    
                    
-                   )
+                   
           )),
      column(4,
          tabsetPanel(
@@ -553,6 +571,7 @@ shinyUI(
                                                  min = 0, max = 1, value = 1),
                                      br(),
                                      uiOutput('dynamiccolor'),
+                                     uiOutput('colorwarning'),
                                      uiOutput('dynamicsize'),
                                      br(),
                                      downloadButton('nwplotdownload', label = "Download Plot")),
@@ -714,24 +733,25 @@ shinyUI(
 
             
          fluidRow(
-           column(12,
-                  p('Current ergm formula:'),
+           column(2,
+                  p('Current ergm formula:')),
+           column(10,
                   verbatimTextOutput('checkterms1'))),
         fluidRow(
-           column(12,
-                  p('Summary Statistics:'),
-                  verbatimTextOutput('prefitsum'))
-           ),
+           column(2,
+                  p('Summary statistics:')),
+           column(10,
+                  verbatimTextOutput('prefitsum'))),
          
          br(),
          tags$hr(),
-         h4('Model Summary'),
-         p('Check for model degeneracy in the "Diagnostics" tab.'),
+         p(strong('Results'),br(),
+           'Check for model degeneracy in the "Diagnostics" tab.'),
          br(),
          tabsetPanel(id = 'fittingTabs',
            tabPanel('Fitting',
                     verbatimTextOutput('modelfit')),
-           tabPanel('Summary',
+           tabPanel('Model Summary',
                     verbatimTextOutput('modelfitsum'))
           ),
     helperButton(id = 'tab3help'),
@@ -878,6 +898,7 @@ shinyUI(
                                                      min = 0, max = 1, value = 1),
                                          br(),
                                          uiOutput('dynamiccolor2'),
+                                         uiOutput('colorwarning2'),
                                          uiOutput('dynamicsize2'),
                                          downloadButton('simplotdownload',
                                                         label = 'Download Plot'))
@@ -930,7 +951,7 @@ shinyUI(
                              "please interact with the", 
                              a("repository", href='https://github.com/statnet/ergm-shiny',
                                target="_blank"), 
-                             "or email ebey@uw.edu."),
+                             "or email the statnet_help listserv (below)."),
                            h5('Help with statnet software'),
                            p("The best way to contact us with questions, comments or suggestions",
                              "is through the statnet users group listserv."),

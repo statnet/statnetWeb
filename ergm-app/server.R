@@ -580,11 +580,14 @@ vcol <- reactive({
       short_list <- short_list[-which(short_list=="Other")]
       short_list <- c(short_list, "Other")
     }
+    full_list <- match(full_list, short_list) 
+    #each elt corresponds to integer position in short_list
     if(length(short_list)>9){
-      stop('Only 9 colors are available')
+      full_list <- full_list %% 9
+      full_list[full_list == 0] <- 9
     }
-    full_list <- match(full_list, short_list) #each elt is an integer 1-9
-    pal <- brewer.pal(9, "Set1")
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
     assigncolor <- function(x){
       switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
              pal[6], pal[7], pal[8], pal[9])
@@ -614,8 +617,9 @@ legendfill <- reactive({
     legendfill <- NULL
   } else {
     n <- length(legendlabels())
-    pal <- brewer.pal(9, "Set1")
-    legendfill <- adjustcolor(pal[1:n], alpha.f = input$transp)
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    legendfill <- adjustcolor(pal, alpha.f = input$transp)
   }
   legendfill
 })
@@ -735,11 +739,14 @@ vcol2 <- reactive({
       short_list <- short_list[-which(short_list=="Other")]
       short_list <- c(short_list, "Other")
     }
+    full_list <- match(full_list, short_list) 
+    #each elt is an integer position in short_list
     if(length(short_list)>9){
-      stop('Only 9 colors are available')
+      full_list <- full_list %% 9
+      full_list[full_list==0] <- 9
     }
-    full_list <- match(full_list, short_list) #each elt is an integer 1-9
-    pal <- brewer.pal(9, "Set1")
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
     assigncolor <- function(x){
       switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
              pal[6], pal[7], pal[8], pal[9])
@@ -767,9 +774,9 @@ legendfill2 <- reactive({
   if(input$colorby2 == 2){
     legendfill <- NULL
   } else {
-    pal <- brewer.pal(9, "Set1")
-    n <- length(legendlabels2())
-    legendfill <- adjustcolor(pal[1:n], alpha.f = input$transp2)
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
   legendfill
 })
@@ -862,6 +869,12 @@ output$dynamiccolor <- renderUI({
               selectize = FALSE)
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE)
+
+output$colorwarning <- renderUI({
+  if(length(legendlabels())<10) return()
+  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
+       'more than nine levels.', style='font-size:0.85em;')
+})
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
@@ -1049,7 +1062,7 @@ output$degreedist <- renderPlot({
     return()
   }
   plotme <- dd_plotdata()
-  color <- "#3182bd"
+  color <- "#79AED4"
   ylabel <- "Count of Nodes"
   ltext <- c()
   lcol <- c() #color for lines
@@ -1133,8 +1146,8 @@ output$degreedist <- renderPlot({
   bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
                       col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
-    points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
-    arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+    points(x=bar_axis-.15, y=unif_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
+    arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
            code=3, length=0.1, angle=90, col='firebrick')
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "firebrick")
@@ -1144,8 +1157,8 @@ output$degreedist <- renderPlot({
     lborder <- append(lborder, 0)
   }
   if(input$bernoullioverlay_dd){
-    points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
-    arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+    points(x=bar_axis+.15, y=bern_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
+    arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
            code=3, length=0.1, angle=90, col='orangered')
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "orangered")
@@ -1162,7 +1175,7 @@ output$degreedist <- renderPlot({
       lpch <-NULL
     }
     legend(x="topright", legend=ltext, title=ltitle, fill=lfill, border=lborder,
-           col=lcol, lty= lty, pch=lpch, bty="n", merge=lmerge)
+           col=lcol, lty= lty, pch=lpch, pt.cex=1.25, bty="n", merge=lmerge)
   }
 })
 
@@ -1171,7 +1184,7 @@ output$degreedistdownload <- downloadHandler(
   content = function(file){
     pdf(file=file, height=10, width=10)
     plotme <- dd_plotdata()
-    color <- "#3182bd"
+    color <- "#79AED4"
     ylabel <- "Count of Nodes"
     ltext <- c()
     lcol <- c() #color for lines
@@ -1255,8 +1268,8 @@ output$degreedistdownload <- downloadHandler(
     bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
                         col=color, ylim=c(0,ylimit), plot=TRUE)
     if(input$uniformoverlay_dd){
-      points(x=bar_axis-.1, y=unif_samplemeans,col='firebrick', lwd=1, pch=18)
-      arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+      points(x=bar_axis-.15, y=unif_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
+      arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
              code=3, length=0.1, angle=90, col='firebrick')
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "firebrick")
@@ -1266,8 +1279,8 @@ output$degreedistdownload <- downloadHandler(
       lborder <- append(lborder, 0)
     }
     if(input$bernoullioverlay_dd){
-      points(x=bar_axis+.1, y=bern_samplemeans,col='orangered', lwd=1, pch=18)
-      arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+      points(x=bar_axis+.15, y=bern_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
+      arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
              code=3, length=0.1, angle=90, col='orangered')
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "orangered")
@@ -1284,7 +1297,7 @@ output$degreedistdownload <- downloadHandler(
         lpch <-NULL
       }
       legend(x="topright", legend=ltext, title=ltitle, fill=lfill, border=lborder,
-             col=lcol, lty= lty, pch=lpch, bty="n", merge=lmerge)
+             col=lcol, lty= lty, pch=lpch, pt.cex=1.25, bty="n", merge=lmerge)
     }
     dev.off()
 })
@@ -1406,26 +1419,26 @@ output$geodistplot <- renderPlot({
   lcol <- c()
   
   #save x-coordinates of bars, so that points are centered on bars
-  bar_axis <- barplot(gdata,  col="#3182bd",
+  bar_axis <- barplot(gdata,  col="#79AED4",
                       xlab = "Geodesic Value", ylab = ylabel,
                       ylim = c(0,ylimit), plot=TRUE)
   
   if(input$uniformoverlay_gd){
-    points(x=bar_axis-.1, y=unif_means,col='firebrick', lwd=1, pch=18)
-    arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+    points(x=bar_axis-.15, y=unif_means,col='firebrick', lwd=1, pch=18, cex=1.25)
+    arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
            code=3, length=0.1, angle=90, col='firebrick')
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "firebrick")
   }
   if(input$bernoullioverlay_gd){
-    points(x=bar_axis+.1, y=bern_means,col='orangered', lwd=1, pch=18)
-    arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+    points(x=bar_axis+.15, y=bern_means,col='orangered', lwd=1, pch=18, cex=1.25)
+    arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
            code=3, length=0.1, angle=90, col='orangered')
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "orangered")
   }
   if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, merge=TRUE,
+    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
            inset=c(.12,0), bty="n")
   }
   
@@ -1492,26 +1505,26 @@ output$geodistdownload <- downloadHandler(
     lcol <- c()
     
     #save x-coordinates of bars, so that points are centered on bars
-    bar_axis <- barplot(gdata,  col="#3182bd",
+    bar_axis <- barplot(gdata,  col="#79AED4",
                         xlab = "Geodesic Value", ylab = ylabel,
                         ylim = c(0,ylimit), plot=TRUE)
     
     if(input$uniformoverlay_gd){
-      points(x=bar_axis-.1, y=unif_means,col='firebrick', lwd=1, pch=18)
-      arrows(x0=bar_axis-.1, y0=unif_upperline, x1=bar_axis-.1, y1=unif_lowerline,
+      points(x=bar_axis-.15, y=unif_means,col='firebrick', lwd=1, pch=18, cex=1.25)
+      arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
              code=3, length=0.1, angle=90, col='firebrick')
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "firebrick")
     }
     if(input$bernoullioverlay_gd){
-      points(x=bar_axis+.1, y=bern_means,col='orangered', lwd=1, pch=18)
-      arrows(x0=bar_axis+.1, y0=bern_upperline, x1=bar_axis+.1, y1=bern_lowerline,
+      points(x=bar_axis+.15, y=bern_means,col='orangered', lwd=1, pch=18, cex=1.25)
+      arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
              code=3, length=0.1, angle=90, col='orangered')
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "orangered")
     }
     if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-      legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, merge=TRUE,
+      legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
              inset=c(.12,0), bty="n")
     }
     dev.off()
@@ -1682,6 +1695,32 @@ output$ndeg <- renderText({
 })
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
+output$ndegmin <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- degree(network(), gmode=gmode, diag=has.loops(network()),
+              cmode=input$ndegcmode)
+  min(d)
+})
+outputOptions(output,'ndegmin',suspendWhenHidden=FALSE)
+
+output$ndegmax <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- degree(network(), gmode=gmode, diag=has.loops(network()),
+              cmode=input$ndegcmode)
+  max(d)
+})
+outputOptions(output,'ndegmax',suspendWhenHidden=FALSE)
+
 output$nbetw <- renderText({
   if(!is.network(network())) {return()}
   if(is.directed(network())){
@@ -1693,6 +1732,32 @@ output$nbetw <- renderText({
                    cmode=input$nbetwcmode)
 })
 outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
+
+output$nbetwmin <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- betweenness(network(), gmode=gmode, diag=has.loops(network()),
+                   cmode=input$nbetwcmode)
+  min(b)
+})
+outputOptions(output,'nbetwmin',suspendWhenHidden=FALSE)
+
+output$nbetwmax <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- betweenness(network(), gmode=gmode, diag=has.loops(network()),
+                   cmode=input$nbetwcmode)
+  max(b)
+})
+outputOptions(output,'nbetwmax',suspendWhenHidden=FALSE)
 
 output$nclose <- renderText({
   if(!is.network(network())) {return()}
@@ -1706,6 +1771,32 @@ output$nclose <- renderText({
 })
 outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
+output$nclosemin <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- closeness(network(), gmode=gmode, diag=has.loops(network()),
+                 cmode=input$nclosecmode)
+  min(c)
+})
+outputOptions(output,'nclosemin',suspendWhenHidden=FALSE)
+
+output$nclosemax <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- closeness(network(), gmode=gmode, diag=has.loops(network()),
+                 cmode=input$nclosecmode)
+  max(c)
+})
+outputOptions(output,'nclosemax',suspendWhenHidden=FALSE)
+
 output$nstress <- renderText({
   if(!is.network(network())){ return()}
   if(is.directed(network())){
@@ -1717,6 +1808,32 @@ output$nstress <- renderText({
                   cmode=input$nstresscmode)
 })
 outputOptions(output,'nstress',suspendWhenHidden=FALSE)
+
+output$nstressmin <- renderText({
+  if(!is.network(network())){ return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- stresscent(network(), gmode=gmode, diag=has.loops(network()),
+                  cmode=input$nstresscmode)
+  min(s)
+})
+outputOptions(output,'nstressmin',suspendWhenHidden=FALSE)
+
+output$nstressmax <- renderText({
+  if(!is.network(network())){ return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- stresscent(network(), gmode=gmode, diag=has.loops(network()),
+                  cmode=input$nstresscmode)
+  max(s)
+})
+outputOptions(output,'nstressmax',suspendWhenHidden=FALSE)
 
 output$ngraphcent <- renderText({
   if(!is.network(network())) {return()}
@@ -1730,6 +1847,32 @@ output$ngraphcent <- renderText({
 })
 outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
+output$ngraphcentmin <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- graphcent(network(), gmode=gmode, diag=has.loops(network()),
+                 cmode=input$ngraphcentcmode)
+  min(g)
+})
+outputOptions(output,'ngraphcentmin',suspendWhenHidden=FALSE)
+
+output$ngraphcentmax <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- graphcent(network(), gmode=gmode, diag=has.loops(network()),
+                 cmode=input$ngraphcentcmode)
+  max(g)
+})
+outputOptions(output,'ngraphcentmax',suspendWhenHidden=FALSE)
+
 output$nevcent <- renderText({
   if(!is.network(network())) {return()}
   if(is.directed(network())){
@@ -1740,6 +1883,30 @@ output$nevcent <- renderText({
   e <- evcent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()))
 })
 outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
+
+output$nevcentmin <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- evcent(network(), gmode=gmode, diag=has.loops(network()))
+  min(e)
+})
+outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
+
+output$nevcentmax <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- evcent(network(), gmode=gmode, diag=has.loops(network()))
+  max(e)
+})
+outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
 
 output$ninfocent <- renderText({
   if(!is.network(network())) {return()}
@@ -1752,6 +1919,32 @@ output$ninfocent <- renderText({
                  cmode=input$ninfocentcmode)
 })
 outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
+
+output$ninfocentmin <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i <- infocent(network(), gmode=gmode, diag=has.loops(network()),
+                cmode=input$ninfocentcmode)
+  min(i)
+})
+outputOptions(output,'ninfocentmin',suspendWhenHidden=FALSE)
+
+output$ninfocentmax <- renderText({
+  if(!is.network(network())) {return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i <- infocent(network(), gmode=gmode, diag=has.loops(network()),
+                cmode=input$ninfocentcmode)
+  max(i)
+})
+outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
 #' **Fit Model**
 #' 
@@ -2038,6 +2231,12 @@ output$dynamiccolor2 <- renderUI({
               label = 'Color nodes according to:',
               c('None' = 2, attr()),
               selectize = FALSE)
+})
+
+output$colorwarning2 <- renderUI({
+  if(length(legendlabels2())<10) return()
+  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
+       'more than nine levels.', style='font-size:0.85em;')
 })
 
 output$dynamicsize2 <- renderUI({
