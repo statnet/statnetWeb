@@ -148,10 +148,10 @@ shinyUI(
                              tags$li(a('License and source code attribution requirements',
                                        href = 'http://statnet.csde.washington.edu/attribution.shtml',
                                        target = '_blank')),
-                             tags$li(a('statnet Development Team'),
+                             tags$li(a('statnet Development Team',
                                      href = 'http://statnet.csde.washington.edu/about_us.shtml',
                                      target = '_blank'))
-                    ),       
+                    )),       
              column(4, wellPanel( 
                           h5('Resources'),
                           a("statnet Wiki",
