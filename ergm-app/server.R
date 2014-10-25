@@ -562,7 +562,7 @@ numattr <- reactive({
     minsize <- min(get.vertex.attribute(nw,input$sizeby))
     maxsize <- max(get.vertex.attribute(nw,input$sizeby))
     if (input$sizeby == '1'){
-      size = 1
+      size = 1.2
     } else { 
       size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
     }
@@ -713,7 +713,7 @@ nodesize2 <- reactive({
   minsize <- min(get.vertex.attribute(nw,input$sizeby2))
   maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
   if (input$sizeby2 == '1'){
-    size = 1
+    size = 1.2
   } else { 
     if(input$nsims==1){
     size = (get.vertex.attribute(model1simreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
