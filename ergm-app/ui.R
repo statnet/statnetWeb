@@ -48,6 +48,7 @@
 #+ setup, eval=FALSE
 # load necessary packages
 library(shiny)
+library(shinyBS)
 library(statnet)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
 
@@ -577,15 +578,18 @@ shinyUI(
                                      downloadButton('nwplotdownload', label = "Download Plot")),
                     conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                                      selectInput('cmode', 
-                                                 label = 'Type of degree centrality',
+                                                 label = 'Type of degree centrality:',
                                                  choices= c('indegree','outdegree',
                                                             'freeman (total)'='freeman'),
                                                  selected='freeman',
                                                  selectize=FALSE),
                                      uiOutput('dynamiccolor_dd'),
-                                     radioButtons('densplot', label='Y-axis measurement',
-                                                  choices = c("Count of nodes", "Percent of nodes"),
-                                                   selected="Count of nodes"),
+                                     bsButtonGroup(inputId='densplotgroup',
+                                                   label='Y-axis measurement:',
+                                                   toggle='radio', value='count',
+                                                   bsButton('freqplot', label = 'Count of nodes', value='count'),
+                                                   bsButton('densplot', label = 'Percent of nodes', value='percent')),
+                                     br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
                                        column(10,
@@ -613,9 +617,12 @@ shinyUI(
                                      downloadButton('degreedistdownload', label = "Download Plot")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
-                                     radioButtons('densplot_gd', label='Y-axis measurement',
-                                                  choices = c("Count of vertex pairs", "Percent of vertex pairs"),
-                                                  selected="Count of vertex pairs"),
+                                     bsButtonGroup(inputId='densplotgroup_gd',
+                                                   label='Y-axis measurement:',
+                                                   toggle='radio', value='count',
+                                                   bsButton('freqplot_gd', label = 'Count of nodes', value='count'),
+                                                   bsButton('densplot_gd', label = 'Percent of nodes', value='percent')),
+                                     br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
                                        column(10,

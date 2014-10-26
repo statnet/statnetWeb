@@ -55,6 +55,7 @@
 #+ eval=FALSE
 
 library(shiny)
+library(shinyBS)
 library(statnet)
 library(RColorBrewer)
 library(lattice)
@@ -1107,7 +1108,7 @@ output$degreedist <- renderPlot({
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   
-  if(input$densplot == "Percent of nodes"){
+  if(input$densplotgroup == "percent"){
     plotme <- dd_plotdata()/sum(dd_plotdata())
     unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
     unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1383,7 +1384,7 @@ output$geodistplot <- renderPlot({
   ylabel <- "Count of Vertex Pairs"
   
   #for density plot
-  if(input$densplot_gd == "Percent of vertex pairs"){
+  if(input$densplotgroup_gd == "percent"){
     unif_means <- unif_means/sum(gdata)
     unif_upperline <- unif_upperline/sum(gdata)
     unif_lowerline <- unif_lowerline/sum(gdata)
