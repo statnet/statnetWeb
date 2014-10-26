@@ -20,10 +20,9 @@ div.busy {
     position:fixed;
     top: 60px;
     right: 20px;
-    background-color:#FFFFFF;
-    border:1px solid #CECED8;
-    border-radius: 5px;
+    color: #808080;
 }
+
 
 div.helper-box { 
   position:fixed;

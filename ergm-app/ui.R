@@ -74,19 +74,6 @@ inlineSelectInput<-function (inputId, label, choices,...) {
 }
 
 
-# New helper button widget
-# action when clicking on button is controlled by alert.js (sourced later in script)
-helperButton <- function(id) {
-  tagList(
-    tags$button(id=id, type="button", class="helper-btn",
-                tags$img(src= "200px-Icon-round-Question_mark.svg.png",
-                         height = 20, width = 20))
-  )
-}
-
-
-
-
 #' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
 #' The first thing to be specified is the type of page to display. The `navbarPage` 
 #' includes a navigation bar at the top of the page and each tab leads to different 
@@ -355,10 +342,10 @@ shinyUI(
           )            
     ),
 
-     helperButton(id = 'tab2help'),
-     div(class="helper-box", style="display:none",
-         p('Upload a file of observed network data (must be of a supported type).', 
-           'Add custom attributes or symmetrize on the "Edit Network" tab.'))
+   icon('question-circle', class='fa-2x helper-btn'),
+   div(class="helper-box", style="display:none",
+       p('Upload a file of observed network data (must be of a supported type).', 
+         'Add custom attributes or symmetrize on the "Edit Network" tab.'))
       ),
 
 #' **Network Plots**
@@ -655,7 +642,7 @@ shinyUI(
             )
          )
      ),
-     helperButton(id = 'tab2help'),
+    div(id='plottabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
      div(class="helper-box", style="display:none",
          p('Use the network plots to gain insight to the observed network.', 
            'Edit the display options in the panel on the right and download a PDF of any of the plots.')),
@@ -757,7 +744,7 @@ shinyUI(
            tabPanel('Model Summary',
                     verbatimTextOutput('modelfitsum'))
           ),
-    helperButton(id = 'tab3help'),
+  div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",
       p('Create an ergm formula by typing terms into the text box.',
         'Notice the summary statistics populate for each term added to the formula. ',
@@ -791,7 +778,7 @@ shinyUI(
                                tabPanel('Summary', 
                                         verbatimTextOutput('diagnostics'))
                              ),
-                             helperButton(id = 'tab5help'),
+                             div(id='mcmctabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
                              div(class="helper-box", style="display:none",
                                  p('Check for model degeneracy. When a model converges properly',
                                    'the MCMC sample statistics should vary randomly around the',
@@ -842,7 +829,7 @@ shinyUI(
                      column(7,
                             uiOutput('gofplotspace'),
                             downloadButton('gofplotdownload', label = 'Download Plots'))),
-                     helperButton(id = 'tab4help'),
+                     div(id='goftabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
                      div(class="helper-box", style="display:none",
                          p('Test how well your model fits the original data by choosing a network',
                             'statistic that is not in the model, and comparing the value of this',
@@ -910,7 +897,7 @@ shinyUI(
                                         verbatimTextOutput('sim.summary'))
                               )
                      )),
-                   helperButton(id = 'tab6help'),
+                   div(id='simtabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
                    div(class="helper-box", style="display:none",
                        p('Choose how many simulations to run and click "Simulate".',
                          'Plot any of the simulations, edit the display',
