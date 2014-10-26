@@ -2233,6 +2233,7 @@ output$dynamiccolor2 <- renderUI({
               c('None' = 2, attr()),
               selectize = FALSE)
 })
+outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE)
 
 output$colorwarning2 <- renderUI({
   if(length(legendlabels2())<10) return()
