@@ -92,17 +92,13 @@ helperButton <- function(id) {
 #' includes a navigation bar at the top of the page and each tab leads to different 
 #' pages of content. Find out more about layout options 
 #' [here](http://shiny.rstudio.com/articles/layout-guide.html).
-#' 
-#' The only reason we wrap the `navbarPage` in a `bootstrapPage` is to correctly display 
-#' the app title in browser tab (rather than displaying the html from the styling of the 
-#' title in the app).
 #'
 #+ eval=FALSE 
 shinyUI(
-  bootstrapPage(title='statnet - ergm app',
   navbarPage(title=div(a(span('statnet  ', style='font-family:Courier'),
                             href = 'https://statnet.csde.washington.edu/trac',
-                            target = '_blank')),
+                            target = '_blank')), 
+             windowTitle = 'statnet web app', collapsable=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
@@ -984,6 +980,6 @@ shinyUI(
            )
                   
     
-    ))
+    )
   )
     
