@@ -374,7 +374,7 @@ shinyUI(
           tabPanel('Geodesic Distribution',
                    plotOutput('geodistplot')
                    ),
-          tabPanel('More',
+          tabPanel('More', value='More',
                    h5('Mixing Matrix', icon('angle-double-left'), 
                       id="mixmxtitle"),
                    wellPanel(id="mixmxbox",
@@ -539,8 +539,8 @@ shinyUI(
                    
           )),
      column(4,
-         tabsetPanel(
-           tabPanel('Display Options',
+         tabsetPanel(id='displaytabs',
+           tabPanel(title='Display Options',
               wellPanel(
                     conditionalPanel(condition='input.plottabs == "Network Plot"',
                                      checkboxInput('iso',
@@ -630,14 +630,14 @@ shinyUI(
                                                 "distribution and 95% confidence intervals are plotted."))),
                                      br(),
                                      downloadButton('geodistdownload', label= 'Download Plot')
-                      ),
-                    conditionalPanel(condition='input.plottabs == "More"',
-                                     p('Subset data by attribute:'),
-                                     uiOutput('subsetting'),
-                                     uiOutput('subsetting2')
-                                     )
+                      )
+#                     conditionalPanel(condition='input.plottabs == "More"',
+#                                      p('Subset data by attribute:'),
+#                                      uiOutput('subsetting'),
+#                                      uiOutput('subsetting2')
+#                                      )
                     )),
-           tabPanel('Network Summary',
+           tabPanel(title='Network Summary',
             verbatimTextOutput('attr2'))
             )
          )
