@@ -321,9 +321,9 @@ shinyUI(
                    ),
           tabPanel('Modify Attributes',
                    wellPanel(
-                     p('In the future we want you to be able to modify',
-                       'the attributes of your network. This will hopefullly',
-                       'include several options:'),
+                     p('In the future we will build in functions',
+                       'that will allow you to modify the attributes of your network. This will',
+                       'include options like:'),
                      tags$ul(
                        tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
                        tags$li('Recoding (mapping a set of attributes onto a new set)'),
@@ -692,9 +692,12 @@ shinyUI(
                    textInput(inputId="terms", label=NULL,
                              value="edges"),
                    actionButton('fitButton', 'Fit Model'),
-                   fluidRow(actionButton('addtermButton', 'Add Term(s)'),
+                   fluidRow(icon('warning', class='chromewarning'),
+                            actionButton('addtermButton', 'Add Term(s)'),
                             actionButton('resetformulaButton', 'Reset Formula'))
             ),
+            div(class="chromewarningbox",
+                p("When running the app through shinyapps.io...")),
             column(2,
                    br(),br(),
                    actionButton('termdocButton', 'Term Documentation')),
