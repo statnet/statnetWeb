@@ -321,9 +321,9 @@ shinyUI(
                    ),
           tabPanel('Modify Attributes',
                    wellPanel(
-                     p('In the future we want you to be able to modify',
-                       'the attributes of your network. This will hopefullly',
-                       'include several options:'),
+                     p('In the future we will build in functions that will ',
+                       'allow you to modify the attributes of your network.',
+                       'This will include options like:'),
                      tags$ul(
                        tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
                        tags$li('Recoding (mapping a set of attributes onto a new set)'),
@@ -374,7 +374,7 @@ shinyUI(
           tabPanel('Geodesic Distribution',
                    plotOutput('geodistplot')
                    ),
-          tabPanel('More',
+          tabPanel('More', value='More',
                    h5('Mixing Matrix', icon('angle-double-left'), 
                       id="mixmxtitle"),
                    wellPanel(id="mixmxbox",
@@ -539,8 +539,8 @@ shinyUI(
                    
           )),
      column(4,
-         tabsetPanel(
-           tabPanel('Display Options',
+         tabsetPanel(id='displaytabs',
+           tabPanel(title='Display Options',
               wellPanel(
                     conditionalPanel(condition='input.plottabs == "Network Plot"',
                                      checkboxInput('iso',
@@ -630,14 +630,14 @@ shinyUI(
                                                 "distribution and 95% confidence intervals are plotted."))),
                                      br(),
                                      downloadButton('geodistdownload', label= 'Download Plot')
-                      ),
-                    conditionalPanel(condition='input.plottabs == "More"',
-                                     p('Subset data by attribute:'),
-                                     uiOutput('subsetting'),
-                                     uiOutput('subsetting2')
-                                     )
+                      )
+#                     conditionalPanel(condition='input.plottabs == "More"',
+#                                      p('Subset data by attribute:'),
+#                                      uiOutput('subsetting'),
+#                                      uiOutput('subsetting2')
+#                                      )
                     )),
-           tabPanel('Network Summary',
+           tabPanel(title='Network Summary',
             verbatimTextOutput('attr2'))
             )
          )
@@ -692,9 +692,12 @@ shinyUI(
                    textInput(inputId="terms", label=NULL,
                              value="edges"),
                    actionButton('fitButton', 'Fit Model'),
-                   fluidRow(actionButton('addtermButton', 'Add Term(s)'),
+                   fluidRow(icon('warning', class='chromewarning'),
+                            actionButton('addtermButton', 'Add Term(s)'),
                             actionButton('resetformulaButton', 'Reset Formula'))
             ),
+            div(class="chromewarningbox",
+                p("When running the app through shinyapps.io...")),
             column(2,
                    br(),br(),
                    actionButton('termdocButton', 'Term Documentation')),

@@ -1533,23 +1533,30 @@ output$geodistdownload <- downloadHandler(
 
 #MORE
 
-output$subsetting <- renderUI({
-  if(class(network())!='network'){
-    return()
+observe({
+  if(input$plottabs == "More"){
+    updateTabsetPanel(session, 'displaytabs', selected="Network Summary")
   }
-  selectInput('subsetattr', label=NULL,
-              choices = c('None', menuattr()), selectize = FALSE)
 })
-outputOptions(output,'subsetting',suspendWhenHidden=FALSE)
 
-output$subsetting2 <- renderUI({
-  if(class(network())!='network' | input$subsetattr == "None"){
-    return()
-  }
-  choices <- sort(unique(get.vertex.attribute(network(),input$subsetattr)))
-  checkboxGroupInput('subsetattrchoice', label=NULL,
-                     choices=choices, selected=NULL)
-})
+# FUTURE: will be able to subset data
+# output$subsetting <- renderUI({
+#   if(class(network())!='network'){
+#     return()
+#   }
+#   selectInput('subsetattr', label=NULL,
+#               choices = c('None', menuattr()), selectize = FALSE)
+# })
+# outputOptions(output,'subsetting',suspendWhenHidden=FALSE)
+# 
+# output$subsetting2 <- renderUI({
+#   if(class(network())!='network' | input$subsetattr == "None"){
+#     return()
+#   }
+#   choices <- sort(unique(get.vertex.attribute(network(),input$subsetattr)))
+#   checkboxGroupInput('subsetattrchoice', label=NULL,
+#                      choices=choices, selected=NULL)
+# })
 
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden

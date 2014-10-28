@@ -87,6 +87,20 @@ div#brghelperbox_gd {
   margin-top:10px;
 }
 
+div.chromewarningbox {
+  position:absolute;
+  max-width: 150px;
+  max-height: 300px;
+  display:none;
+  background: #FFFFFF;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px;
+  border:1px solid #CECED8;
+  border-radius: 5px;
+  z-index: 10;
+}
+
 div.docpopup {
   position:absolute;
   z-index: 8;
