@@ -18,6 +18,18 @@ $(document).ready(function(){
   $("#filetypehelper3").click(function(){
     $("#filetypebox3").toggle(500);
   });
+  
+  $("#filetypehelper4").click(function(){
+    $("#filetypebox4").toggle(500);
+  });
+  
+  $("#filetypehelper5").click(function(){
+    $("#filetypebox5").toggle(500);
+  });
+  
+  $("#filetypehelper6").click(function(){
+    $("#filetypebox6").toggle(500);
+  });
     
   $("#cughelper_dd").click(function(){
     $("#cughelperbox_dd").toggle(500);
