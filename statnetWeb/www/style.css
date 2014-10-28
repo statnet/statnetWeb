@@ -45,14 +45,22 @@ div.helper-box {
   cursor:pointer;
 }
 
-div#filetypebox1,
-div#filetypebox2,
-div#filetypebox3,
-div#cughelperbox_dd,
-div#brghelperbox_dd,
-div#cughelperbox_gd,
-div#brghelperbox_gd,
-div.mischelperbox{
+div.smallhelperbox {
+  position:absolute;
+  z-index: 10;
+  display:none;
+  max-width: 200px;
+  max-height: 100px;
+  background: #FFFFFF;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px;
+  border:1px solid #CECED8;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+div.mischelperbox {
   position:absolute;
   z-index: 10;
   display:none;
