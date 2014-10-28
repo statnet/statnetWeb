@@ -21,6 +21,7 @@ div.busy {
     top: 60px;
     right: 20px;
     color: #A5A5AD;
+    cursor: pointer;
 }
 
 
