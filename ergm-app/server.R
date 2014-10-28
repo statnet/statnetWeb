@@ -1,8 +1,8 @@
 #' ---
-#' title: "ergm-app, server.R"
+#' title: "statnetWeb, server.R"
 #' author: "Emily Beylerian"
 #' ---
-#' ergm-app
+#' statnetWeb
 #' ===========
 #' server.R
 #' =========

@@ -1,14 +1,14 @@
 #' ---
-#' title: "ergm-app, ui.R"
+#' title: "statnetWeb, ui.R"
 #' author: "Emily Beylerian"
 #' ---
-#' ergm-app
+#' statnetWeb
 #' ============
 #' ui.R
 #' =========
 
-#' **Before reading this document:** The Shiny app "ergm-app" is not contained in a
-#' single R Script. Within the folder "ergm-app" the script `ui.R` controls the 
+#' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
+#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
 #' layout and appearance of the app, the script `server.R` controls the content that
 #' gets displayed in the app, and the folder "www" contains auxiliary files (javascript,
 #' css, and image files). If you are unfamiliar with Shiny apps, it may be more 
@@ -82,10 +82,10 @@ inlineSelectInput<-function (inputId, label, choices,...) {
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(title=div(a(span('statnet  ', style='font-family:Courier'),
-                            href = 'https://statnet.csde.washington.edu/trac',
+  navbarPage(title=div(a(span('statnetWeb  ', style='font-family:Courier'),
+                            href = 'https://github.com/statnet/ergm-shiny',
                             target = '_blank')), 
-             windowTitle = 'statnet web app', collapsable=TRUE,
+             windowTitle = 'statnetWeb', collapsable=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
