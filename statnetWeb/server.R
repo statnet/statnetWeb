@@ -561,18 +561,37 @@ numattr <- reactive({
       }} 
     numattr})
 
-  nodesize <- reactive({
-    if(!is.network(network())){return()}
-    nw <- network()
-    #scale size of nodes onto range between .7 and 3.5
+nodebetw <- reactive({
+  if(!is.network(network())){return()}
+  if(is.directed(network())){
+    gmode <- 'digraph'
+    cmode <- 'directed'
+  } else {
+    gmode <- 'graph'
+    cmode <- 'undirected'
+  }
+  betweenness(network(), gmode=gmode, diag=has.loops(network()),
+              cmode=cmode)
+})
+
+nodesize <- reactive({
+  if(!is.network(network())){return()}
+  nw <- network()
+  #scale size of nodes onto range between .7 and 3.5
+  minsize <- min(get.vertex.attribute(nw,input$sizeby))
+  maxsize <- max(get.vertex.attribute(nw,input$sizeby))
+  if (input$sizeby == '1'){
+    size = 1.2
+  } else if (input$sizeby == 'Betweenness'){
+    minsize <- min(nodebetw())
+    maxsize <- max(nodebetw())
+    size = (nodebetw()-minsize)/(maxsize-minsize)*(3.5-.7)+.7
+  } else {
     minsize <- min(get.vertex.attribute(nw,input$sizeby))
     maxsize <- max(get.vertex.attribute(nw,input$sizeby))
-    if (input$sizeby == '1'){
-      size = 1.2
-    } else { 
-      size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
-    }
-    size})
+    size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+  }
+  size})
 
 vcol <- reactive({
   if(!is.network(network())){return()}
@@ -712,19 +731,45 @@ sim.coords.1 <- reactive({
 sim.coords.2 <- reactive({
   plot.network(model1simreac()[[input$thissim]])})
 
+nodebetw2 <- reactive({
+  if(input$nsims==1){
+    if(is.directed(model1simreac())){
+      gmode <- "digraph"
+      cmode <- "directed"
+    } else {
+      gmode <- "graph"
+      cmode <- "undirected"
+    }
+    b <- betweenness(model1simreac(), gmode=gmode, cmode=cmode)
+  } else {
+    if(is.directed(model1simreac()[[input$thissim]])){
+      gmode <- "digraph"
+      cmode <- "directed"
+    } else {
+      gmode <- "graph"
+      cmode <- "undirected"
+    }
+    b <- betweenness(model1simreac()[[input$thissim]], gmode=gmode, cmode=cmode)
+  }
+  b
+})
+
 nodesize2 <- reactive({
   nw <- network()
   #scale size of nodes onto range between .7 and 3.5
-  
-  minsize <- min(get.vertex.attribute(nw,input$sizeby2))
-  maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
   if (input$sizeby2 == '1'){
     size = 1.2
-  } else { 
+  } else if (input$sizeby2 == "Betweenness"){
+    minsize <- min(nodebetw2())
+    maxsize <- max(nodebetw2())
+    size <- (nodebetw2()-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+  } else {
+    minsize <- min(get.vertex.attribute(nw,input$sizeby2))
+    maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
     if(input$nsims==1){
-    size = (get.vertex.attribute(model1simreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(model1simreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }else{
-    size = (get.vertex.attribute(model1simreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(model1simreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }}
   size})
 
@@ -885,7 +930,7 @@ output$colorwarning <- renderUI({
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
               label = 'Size nodes according to:',
-              c('None' = 1, numattr()),
+              c('None' = 1, 'Betweenness', numattr()),
               selectize = FALSE)
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
@@ -2268,7 +2313,7 @@ output$colorwarning2 <- renderUI({
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
               label = 'Size nodes according to:',
-              c('None' = 1, numattr()),
+              c('None' = 1, 'Betweenness',numattr()),
               selectize = FALSE)
 })
 
