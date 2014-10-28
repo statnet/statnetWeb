@@ -60,7 +60,8 @@ div.smallhelperbox {
   z-index: 10;
 }
 
-div.mischelperbox {
+div.mischelperbox,
+div.chromewarningbox{
   position:absolute;
   z-index: 10;
   display:none;
@@ -98,18 +99,9 @@ div.mischelperbox {
   margin-top:10px;
 }
 
-div.chromewarningbox {
-  position:absolute;
-  max-width: 150px;
-  max-height: 300px;
-  display:none;
-  background: #FFFFFF;
-  text-align: left;
-  font-size: 12px;
-  padding: 5px;
-  border:1px solid #CECED8;
-  border-radius: 5px;
-  z-index: 10;
+#fitButton,
+.chromewarning {
+  margin-bottom:10px;
 }
 
 div.docpopup {

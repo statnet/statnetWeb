@@ -723,17 +723,29 @@ shinyUI(
           fluidRow(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
+            
             column(8,
-                   p("Type in term(s) and their arguments. For multiple terms, separate with '+'."),
-                   textInput(inputId="terms", label=NULL,
-                             value="edges"),
-                   actionButton('fitButton', 'Fit Model'),
-                   fluidRow(icon('warning', class='chromewarning'),
-                            actionButton('addtermButton', 'Add Term(s)'),
-                            actionButton('resetformulaButton', 'Reset Formula'))
+                   p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
+                   fluidRow(
+                   column(5,
+                       textInput(inputId="terms", label=NULL,
+                                 value="edges"),
+                       actionButton('fitButton', 'Fit Model'),
+                       fluidRow(actionButton('addtermButton', 'Add Term(s)'),
+                                actionButton('resetformulaButton', 'Reset Formula'))
+                   ),
+                   column(4, style="margin-left:0px",
+                          span(class="helper chromewarning", icon('warning'),"Note for Chrome users", 
+                               style="font-size:.80em;"),
+                          div(class="chromewarningbox",
+                              p("When running statnetWeb through shinyapps.io on the Google Chrome browser",
+                                "we have noticed a delay between clicking the 'Add Term(s)' button and",
+                                "the terms populating the formula. You don't need to type the terms again,",
+                                "they will be added on your next click of the button. Thank you",
+                                "for your patience as we look for a solution!"))
+                   ))
             ),
-            div(class="chromewarningbox",
-                p("When running the app through shinyapps.io...")),
+            
             column(2,
                    br(),br(),
                    actionButton('termdocButton', 'Term Documentation')),

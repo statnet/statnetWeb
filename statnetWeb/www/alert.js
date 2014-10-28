@@ -66,6 +66,10 @@ $(document).ready(function(){
     $(".docpopup").toggle(500);
   });
   
+  $(".chromewarning").click(function(){
+    $(".chromewarningbox").toggle(500);
+  });
+  
 });
 
 
