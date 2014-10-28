@@ -70,8 +70,13 @@ library(latticeExtra)
 #+ eval=FALSE 
 
 data(faux.mesa.high)
+data(faux.magnolia.high)
 data(florentine)
 data(sampson)
+data(samplk)
+data(ecoli)
+data(molecule)
+data(kapferer)
 
 options(digits=3)
 
@@ -1686,8 +1691,11 @@ output$ginfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i <- centralization(network(), infocent, mode=gmode, diag=has.loops(network()),
-                cmode=input$ginfocentcmode)
+  i<-''
+  try({
+    i <- centralization(network(), infocent, mode=gmode, diag=has.loops(network()),
+                  cmode=input$ginfocentcmode)})
+  i
 })
 outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
 
@@ -1923,8 +1931,11 @@ output$ninfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i <- infocent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
-                 cmode=input$ninfocentcmode)
+  i<-''
+  try({
+    i <- infocent(network(), nodes=input$nodeind, gmode=gmode, diag=has.loops(network()),
+                   cmode=input$ninfocentcmode)})
+  i
 })
 outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
 
@@ -1935,9 +1946,12 @@ output$ninfocentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i <- infocent(network(), gmode=gmode, diag=has.loops(network()),
-                cmode=input$ninfocentcmode)
-  min(i)
+  i<-''
+  try({
+    i <- infocent(network(), gmode=gmode, diag=has.loops(network()),
+                  cmode=input$ninfocentcmode)
+    i<-min(i)})
+  i
 })
 outputOptions(output,'ninfocentmin',suspendWhenHidden=FALSE)
 
@@ -1948,9 +1962,12 @@ output$ninfocentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i <- infocent(network(), gmode=gmode, diag=has.loops(network()),
-                cmode=input$ninfocentcmode)
-  max(i)
+  i <- ''
+  try({
+    i <- infocent(network(), gmode=gmode, diag=has.loops(network()),
+                  cmode=input$ninfocentcmode)
+    i<-max(i)})
+  i
 })
 outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
