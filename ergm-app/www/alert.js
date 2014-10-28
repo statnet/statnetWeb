@@ -10,6 +10,10 @@ $(document).ready(function(){
   $("#filetypehelper2").click(function(){
     $("#filetypebox2").toggle(500);
   });
+  
+  $("#filetypehelper3").click(function(){
+    $("#filetypebox3").toggle(500);
+  });
     
   $("#cughelper_dd").click(function(){
     $("#cughelperbox_dd").toggle(500);
