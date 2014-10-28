@@ -269,6 +269,7 @@ shinyUI(
                                            icon('question-circle'),
                                            div(id="filetypebox4", class="smallhelperbox",
                                                "For edge lists, .csv files should not have row or column labels.")),
+
                                       br())),
                            column(4,
                                   br(),
