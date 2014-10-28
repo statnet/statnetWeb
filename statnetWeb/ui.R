@@ -664,12 +664,14 @@ shinyUI(
                                                 "distribution and 95% confidence intervals are plotted."))),
                                      br(),
                                      downloadButton('geodistdownload', label= 'Download Plot')
-                      )
-#                     conditionalPanel(condition='input.plottabs == "More"',
-#                                      p('Subset data by attribute:'),
-#                                      uiOutput('subsetting'),
-#                                      uiOutput('subsetting2')
-#                                      )
+                      ),
+                    conditionalPanel(condition='input.plottabs == "More"',
+                                     p("No display options at this time,",
+                                       "stay tuned for updates!")
+                                     #p('Subset data by attribute:'),
+                                     #uiOutput('subsetting'),
+                                     #uiOutput('subsetting2')
+                                     )
                     )),
            tabPanel(title='Network Summary',
             verbatimTextOutput('attr2'))
