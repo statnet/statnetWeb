@@ -51,7 +51,8 @@ div#filetypebox3,
 div#cughelperbox_dd,
 div#brghelperbox_dd,
 div#cughelperbox_gd,
-div#brghelperbox_gd {
+div#brghelperbox_gd,
+div.mischelperbox{
   position:absolute;
   z-index: 10;
   display:none;

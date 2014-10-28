@@ -3,6 +3,10 @@ $(document).ready(function(){
     $(".helper-box").toggle(500);
   });
   
+  $("#Robjhelp").click(function(){
+    $("#Robjbox").toggle(500);
+  });
+  
   $("#filetypehelper1").click(function(){
     $("#filetypebox1").toggle(500);
   });
