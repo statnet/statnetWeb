@@ -216,8 +216,8 @@ shinyUI(
                                                      'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
                                                      'matrix of relational data (*.csv or R-object)'=4)),
                               p(class="helper", id="Robjhelp", icon("question-circle"), span("What is an R-object?", style="font-size:0.85em;")),
-                              div(class="mischelperbox", id="Robjbox", 'An object in your R environment',
-                                  'can be saved to a file in the following way from the command line:', 
+                              div(class="mischelperbox", id="Robjbox", 'When working in R, an object in your environment',
+                                  'can be saved to a file from the command line in the following way:', 
                                   code('save(objectname, file="newfilename")'),br(),'By default the file will be saved',
                                   'into the current working directory, but the path to a new location can be',
                                   'specified with the ', code('envir = '), 'argument.')),
@@ -801,7 +801,10 @@ shinyUI(
       p('Create an ergm formula by typing terms into the text box.',
         'Notice the summary statistics populate for each term added to the formula. ',
         'After fitting the model, the "Fitting" tab will show MCMC iterations (if any) and MLE coefficients,',
-        'while the "Summary" tab shows a comprehensive summary of the model fit.'))
+        'while the "Summary" tab shows a comprehensive summary of the model fit.',br(),
+        'Find more help in the', a('ergm tutorial.', 
+                        href='http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html',
+                        target="_blank")))
           ),
 #' **MCMC Diagnostics**
 #' 
@@ -856,12 +859,7 @@ shinyUI(
                        column(10,
                               p('Current ergm formula:',
                                 verbatimTextOutput('checkterms2')))
-                      ), 
-                     p('Test how well your model fits the original data by choosing 
-                       a network statistic that is not in the model, and comparing 
-                       the value of this statistic observed in the original network 
-                       to the distribution of values you get in simulated networks from 
-                       your model.'),
+                      ),
                      p('If you do not specify a term the default formula for undirected 
                        networks is ', code('~ degree + espartners + distance'), 'and for 
                        directed networks is ', code('~ idegree + odegree + espartners + 
