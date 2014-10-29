@@ -187,17 +187,17 @@ shinyUI(
 
   tabPanel('Data',
            #busy.js is for calculation in progress boxes
-           #alert.js is for helper boxes, term doc box, 
+           #alert.js is for popup boxes, 
            #jquery libraries are loaded from google cdn, needed for autocomplete
            #this tagList command has to go inside a tabPanel
            tagList(
              tags$head(
                tags$link(rel="stylesheet", type="text/css",href="style.css"),
-               tags$link(rel="stylesheet", type="text/css",href="autocomplete.css"),
+               #tags$link(rel="stylesheet", type="text/css",href="autocomplete.css"),
                tags$link(rel="stylesheet", type="text/css",
                          href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css"),
                tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"),
-               tags$script(type="text/javascript", src="autocomplete.js"),
+               #tags$script(type="text/javascript", src="autocomplete.js"),
                tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"),
                tags$script(type="text/javascript", src="busy.js"),
                tags$script(type="text/javascript", src="alert.js")
