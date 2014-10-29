@@ -85,7 +85,7 @@ shinyUI(
   navbarPage(title=div(a(span('statnetWeb  ', style='font-family:Courier'),
                             href = 'https://github.com/statnet/ergm-shiny',
                             target = '_blank')), 
-             windowTitle = 'statnetWeb', collapsable=TRUE,
+             id= 'navbar', windowTitle = 'statnetWeb', collapsable=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
@@ -826,8 +826,8 @@ shinyUI(
                              ),     
                              br(),
                              tags$hr(),
-                             tabsetPanel(
-                               tabPanel('Plot',   
+                             tabsetPanel(id='mcmctabs',
+                               tabPanel('Plot',
                                         uiOutput('diagnosticsplotspace'),
                                         downloadButton('mcmcplotdownload',label = 'Download Plots')),
                                tabPanel('Summary', 

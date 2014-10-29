@@ -709,7 +709,19 @@ model1gof <- reactive({
   isolate(model1gof)})
 
 model1mcmcdiag <- reactive({
-  mcmc.diagnostics(model1reac())
+  tryCatch(
+    mcmc.diagnostics(model1reac(), vars.per.page = vpp),
+    error = function(e) "MCMC was not run")
+})
+
+observe({
+  if(input$navbar == "MCMC Diagnostics"){
+      if(model1mcmcdiag() == "MCMC was not run"){
+        updateTabsetPanel(session, "mcmctabs", selected="Summary")
+      } else {
+        updateTabsetPanel(session, "mcmctabs", selected="Plot")
+      }
+  }
 })
 
 
@@ -2140,7 +2152,9 @@ output$currentdataset3 <- renderPrint({
 
 output$diagnosticsplot <- renderPlot({
   vpp <- length(model1reac()$coef)
-  mcmc.diagnostics(model1reac(), vars.per.page = vpp)
+  tryCatch(
+    mcmc.diagnostics(model1reac(), vars.per.page = vpp),
+    error = function(e) cat("MCMC was not run or MCMC sample was not stored"))
 })
 
 output$mcmcplotdownload <- downloadHandler(
@@ -2148,7 +2162,9 @@ output$mcmcplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=vpp*4/3, width=10)
-    mcmc.diagnostics(model1reac(), vars.per.page = vpp)
+    tryCatch(
+      mcmc.diagnostics(model1reac(), vars.per.page = vpp),
+      error = function(e) cat("MCMC was not run or MCMC sample was not stored"))
     dev.off()
   }
 )
@@ -2165,8 +2181,9 @@ output$diagnostics <- renderPrint({
   if(input$fitButton == 0){
     return()
   }
-  isolate(mcmc.diagnostics(model1reac()))
-  
+  isolate(tryCatch(
+    mcmc.diagnostics(model1reac()),
+    error = function(e) cat("MCMC was not run or MCMC sample was not stored")))
 })
 
 
