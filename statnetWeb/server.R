@@ -443,14 +443,14 @@ nwmid <- reactive({
       input$newattrButton
       try({
         vertex_names <- get('vertex_names', pos='package:base')
-        network.vertex.names(nw) <- vertex_names
+        try(network.vertex.names(nw) <- vertex_names)
       })
       v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
           v_newname <- as.character(v_attrNamesToAdd[1,j])
           v_newval <- v_attrValsToAdd[,j]
-          set.vertex.attribute(nw,v_newname,v_newval)
+          try(set.vertex.attribute(nw,v_newname,v_newval))
         }
       }
       
@@ -459,7 +459,7 @@ nwmid <- reactive({
         for (k in 2:e_numnew){
           e_newname <- as.character(e_attrNamesToAdd[1,k])
           e_newval <- e_attrValsToAdd[,k]
-          set.edge.attribute(nw,e_newname,e_newval)
+          try(set.edge.attribute(nw,e_newname,e_newval))
         }
       }
       
@@ -468,7 +468,7 @@ nwmid <- reactive({
         for (l in 2:ev_numnew){
           ev_newname <- as.character(ev_attrNamesToAdd[1,l])
           ev_newval <- ev_attrValsToAdd[[l]]
-          set.edge.value(nw,ev_newname,ev_newval)
+          try(set.edge.value(nw,ev_newname,ev_newval))
         }
       }
     }
