@@ -850,6 +850,8 @@ url = {http://statnetproject.org}
                              tags$hr(),
                              tabsetPanel(id='mcmctabs',
                                tabPanel('Plot',
+                                        conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored'",
+                                                         pre('MCMC was not run or MCMC sample was not stored')),
                                         uiOutput('diagnosticsplotspace'),
                                         downloadButton('mcmcplotdownload',label = 'Download Plots')),
                                tabPanel('Summary', 

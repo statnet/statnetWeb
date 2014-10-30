@@ -708,22 +708,6 @@ model1gof <- reactive({
   }
   isolate(model1gof)})
 
-model1mcmcdiag <- reactive({
-  tryCatch(
-    mcmc.diagnostics(model1reac(), vars.per.page = vpp),
-    error = function(e) "MCMC was not run")
-})
-
-observe({
-  if(input$navbar == "MCMC Diagnostics"){
-      if(model1mcmcdiag() == "MCMC was not run"){
-        updateTabsetPanel(session, "mcmctabs", selected="Summary")
-      } else {
-        updateTabsetPanel(session, "mcmctabs", selected="Plot")
-      }
-  }
-})
-
 
 model1simreac <- reactive({
   input$simButton
@@ -2185,6 +2169,7 @@ output$diagnostics <- renderPrint({
     mcmc.diagnostics(model1reac()),
     error = function(e) cat("MCMC was not run or MCMC sample was not stored")))
 })
+outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 
 
 
