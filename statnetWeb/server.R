@@ -81,7 +81,7 @@ data(kapferer)
 options(digits=3)
 
 #create a list of unique term names
-# UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
+# UNCOMMENT AFTER STATNET RELEASE FOR TERM DOCUMENTATION
 # allterms <- search.ergmTerms()
 # inds <- gregexpr(pattern='\\(', allterms)
 # for(i in 1:length(allterms)){
@@ -286,9 +286,18 @@ newattrnamereac <- reactive({
       objname <- load(paste(path))
       newattrs <- get(objname)
       newname <- names(newattrs)
+      if(class(newattrs) != "list"){
+        newname <- "Attribute is not compatible, see help buttons and try again"
+      }
     }
-    
   })
+    
+  
+    
+  if(is.null(newname)){
+    newname <- "Attribute is not named,  please fix and re-upload"
+  }
+  
   newname
 })
 
@@ -448,27 +457,27 @@ nwmid <- reactive({
       v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
-          v_newname <- as.character(v_attrNamesToAdd[1,j])
+          try({v_newname <- as.character(v_attrNamesToAdd[1,j])
           v_newval <- v_attrValsToAdd[,j]
-          try(set.vertex.attribute(nw,v_newname,v_newval))
+          set.vertex.attribute(nw,v_newname,v_newval)})
         }
       }
       
       e_numnew <- length(e_attrNamesToAdd)
       if(e_numnew > 1){
         for (k in 2:e_numnew){
-          e_newname <- as.character(e_attrNamesToAdd[1,k])
+          try({e_newname <- as.character(e_attrNamesToAdd[1,k])
           e_newval <- e_attrValsToAdd[,k]
-          try(set.edge.attribute(nw,e_newname,e_newval))
+          set.edge.attribute(nw,e_newname,e_newval)})
         }
       }
       
       ev_numnew <- length(ev_attrNamesToAdd)
       if(ev_numnew > 1){
         for (l in 2:ev_numnew){
-          ev_newname <- as.character(ev_attrNamesToAdd[1,l])
+          try({ev_newname <- as.character(ev_attrNamesToAdd[1,l])
           ev_newval <- ev_attrValsToAdd[[l]]
-          try(set.edge.value(nw,ev_newname,ev_newval))
+          set.edge.value(nw,ev_newname,ev_newval)})
         }
       }
     }
