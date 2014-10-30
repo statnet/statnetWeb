@@ -2,7 +2,15 @@ $(document).ready(function(){
   $(".helper-btn").click(function(){
     $(".helper-box").toggle(500);
   });
-  
+
+  $("#swciteButton").click(function(){
+    $("#swcitation").toggle(500);
+  });
+
+  $("#sciteButton").click(function(){
+    $("#scitation").toggle(500);
+  });
+
   $("#Robjhelp").click(function(){
     $("#Robjbox").toggle(500);
   });

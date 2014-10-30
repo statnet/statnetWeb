@@ -15,6 +15,20 @@ div.busy {
   z-index: 1;
 }
 
+#swciteButton,
+#sciteButton {
+  padding: 5px;
+  border-radius: 5px;
+  border:1px solid #CECED8;
+  background: rgb(230, 230, 230);
+  cursor: pointer;
+}
+
+#swcitation,
+#scitation {
+  display:none;
+  position:absolute;
+}
 
 .helper-btn {
     position:fixed;
