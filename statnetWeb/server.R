@@ -7,13 +7,12 @@
 #' server.R
 #' =========
 
-#' **Before reading this document:** The Shiny app "ergm-app" is not contained in a
-#' single R Script. Within the folder "ergm-app" the script `ui.R` controls the 
+#' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
+#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
 #' layout and appearance of the app, the script `server.R` controls the content that
-#' gets displayed in the app, and the folder "www" contains auxiliary files (just a
-#' .png file right now). If you are unfamiliar with Shiny apps, it may be more 
-#' natural and helpful to start with the documentation for `ui.R` and then move on to
-#' `server.R`.
+#' gets displayed in the app, and the folder "www" contains auxiliary files. If you are
+#' unfamiliar with Shiny apps, it may be more natural and helpful to start with the 
+#' documentation for `ui.R` and then move on to `server.R`.
 #' 
 #' **Basics**
 #' 
@@ -94,7 +93,15 @@ options(digits=3)
 
 shinyServer(
   function(input, output, session){
+
     
+#' To keep a list of all attributes uploaded by the user:  
+#' can't use global variables because they are common to all 
+#' sessions using the app and will get overwritten, instead 
+#' created per session variables inside shinyServer
+#' 
+#' 
+#+ eval=FALSE
 assign('v_attrNamesToAdd', list(1),
        pos="package:base")
 assign('v_attrValsToAdd', list(),  
@@ -125,7 +132,29 @@ assign('input_termslist', list(),
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
 
-#this reactive expression is only to get the initial values of the network
+
+#list of everything in an uploaded Pajek project
+pajnws <- reactive({
+  nws <- NULL
+  if((input$filetype == 3) & (!is.null(input$rawdatafile))){
+    filename <- input$rawdatafile[1,1]
+    if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
+      nws <- read.paj(paste(input$rawdatafile[1,4]))
+    }
+  }
+  nws
+})
+
+nwname <- reactive({
+  name <- input$rawdatafile[1,1]
+  if(input$filetype == 5){
+    name <- input$samplenet
+  }
+  name
+})
+
+
+#this reactive expression is used to get the initial values of the network
 nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
   #datapath is stored in 4th column of dataframe
@@ -232,7 +261,7 @@ vattrinit.vals <- reactive({
   m
 })
 
-#set correct number of rows for the value lists, 
+#set correct number of rows for the attribute value lists, 
 #so that we can add columns later
 observe({
   nwinit()
@@ -265,14 +294,8 @@ observe({
   }
 })
 
-#' TO KEEP LIST OF ALL NEW ATTRIBUTES FROM USER
-#' can't use global variables because they are common to all 
-#' sessions using the app, instead created per session variables 
-#' inside shinyServer
-#' 
-#' 
-#+ eval=FALSE
-
+#names of uploaded attributes
+#or helpful message that upload is incorrect
 newattrnamereac <- reactive({
   newname <- ''
   try({
@@ -291,13 +314,9 @@ newattrnamereac <- reactive({
       }
     }
   })
-    
-  
-    
   if(is.null(newname)){
     newname <- "Attribute is not named,  please fix and re-upload"
   }
-  
   newname
 })
 
@@ -485,11 +504,12 @@ nwmid <- reactive({
     nw
 	})
 
-#delete unwanted attributes from this network and use it for future
-#calculations
+#use this network for future calculations
 network <- reactive({
   nw <- nwmid()
   
+#deleting attributes is no longer available
+
 #   deleteme <- input$deleteattrs$right
 #   len <- length(deleteme)
 #   if(len>=1){
@@ -505,26 +525,6 @@ network <- reactive({
   nw
 })
 
-
-#list of everything in the Pajek project
-pajnws <- reactive({
-  nws <- NULL
-  if((input$filetype == 3) & (!is.null(input$rawdatafile))){
-    filename <- input$rawdatafile[1,1]
-    if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
-    nws <- read.paj(paste(input$rawdatafile[1,4]))
-    }
-  }
-  nws
-})
-
-nwname <- reactive({
-  name <- input$rawdatafile[1,1]
-  if(input$filetype == 5){
-    name <- input$samplenet
-  }
-  name
-  })
 
 #get coordinates to plot network with
 coords <- reactive({
@@ -570,6 +570,7 @@ numattr <- reactive({
       }} 
     numattr})
 
+# betweenness centrality of all nodes (for sizing menu)
 nodebetw <- reactive({
   if(!is.network(network())){return()}
   if(is.directed(network())){
@@ -602,6 +603,7 @@ nodesize <- reactive({
   }
   size})
 
+#vertex color
 vcol <- reactive({
   if(!is.network(network())){return()}
   nw <- network()
@@ -658,7 +660,7 @@ legendfill <- reactive({
   legendfill
 })
 
-
+#' ERGM fitting:  
 #' `ergm.terms` is a compilation of all the terms entered,
 #' which we then use to create a complete formula. 
 #' 
@@ -2025,17 +2027,10 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 #' following tabs I output the current dataset as a reminder of what network
 #' they are working with. 
 #' 
-#' Like the coloring and sizing options in the network plot, the `selectInput`
-#' menus for creating an ergm formula must be dynamically rendered. Right now 
-#' the total list of terms available is from the statnet
-#' [list of common terms](http://statnet.csde.washington.edu/EpiModel/nme/2014/d2-ergmterms.html).
-#' The terms that the user sees in the menu depends on whether the current 
-#' network is directed or undirected (future: bipartite/independent).
-#' 
-#' The `selectInput` menus for `degree` and `nodematch` (more coming soon) depend
-#' on the number of nodes in the network and the vertex attributes, respectively.
+#' Coming soon: term documentation.
 
-#+ fitmodel1, eval=FALSE
+
+#+ eval=FALSE
 # UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
 # output$listofterms <- renderUI({
 #   if(!is.network(network())){
@@ -2065,7 +2060,7 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 # })
 
 
-#' Below I output the current formulation of the ergm 
+#' Below we output the current formulation of the ergm 
 #' model so the user can clearly see how their menu selections change the model.
 #' Since `ergm.terms()` is a reactive object, it will automatically update when
 #' the user clicks on menu options.
@@ -2123,7 +2118,8 @@ outputOptions(output, "modelfitsum",priority=-10)
 #' 
 #' When using the `mcmc.diagnostics` function in the command line, the printed 
 #' diagnostics and plots all output together. Instead of calling `mcmc.diagnositcs`
-#' a reactive object, .
+#' in a reactive object, it gets called in both the plot output element and summary
+#' output element.
 #' 
 #+ eval=FALSE
 
@@ -2184,7 +2180,7 @@ outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 
 #' **Diagnostics - Goodness of Fit**
 #' 
-#' Again, I output the current dataset and the ergm formula for the user to verify.
+#' Again, we output the current dataset and the ergm formula for the user to verify.
 #' One drawback of the `navbarPage` layout option (we specified this in the top of
 #' `ui.R`) is that you can't specify certain elements or panels to show up on 
 #' multiple pages. Furthermore, as far as I can tell, Shiny will not let you use 
