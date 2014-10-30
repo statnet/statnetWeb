@@ -15,6 +15,10 @@ div.busy {
   z-index: 1;
 }
 
+.citation {
+  display:none;
+  position:absolute;
+}
 
 .helper-btn {
     position:fixed;

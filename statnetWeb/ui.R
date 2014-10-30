@@ -122,8 +122,30 @@ shinyUI(
                                                                       href='https://github.com/statnet/ergm-shiny',
                                                                       target='_blank'),
                              "or by email to the statnet_help listserv (see Help tab)."),
-                           h5('Citing statnet'),
-                           p('If you use statnet, please cite it. All the citation information for statnet',
+                           h5('Citing statnetWeb'),
+                           p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
+                           
+                           span(id='swciteButton', 'statnetWeb'),
+                           span(id='sciteButton', 'statnet'),
+                                  
+
+tags$pre(class='citation','@Unpublished{beylerian:statnetWeb,
+title = {statnetWeb: An R-Shiny interface for statnet software},
+author = {Emily Beylerian and Martina Morris},
+year = {2014},
+address = {Seattle, WA},
+url = {https://github.com/statnet/ergm-shiny}
+}'),
+
+tags$pre(class='citation','@Manual{handcock:statnet,
+title = {statnet: Software tools for the Statistical Modeling of Network Data},
+author = {Mark S. Handcock and David R. Hunter and Carter T. Butts and Steven M. Goodreau and Martina Morris},
+year = {2003},
+address = {Seattle, WA},
+url = {http://statnetproject.org}
+}'),
+                           
+                           p('Additional citation information for statnet',
                              'and the component packages can be found here:'),
                            tags$ul(
                              tags$li(a('Citing statnet', 
