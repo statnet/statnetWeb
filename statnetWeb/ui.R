@@ -100,7 +100,7 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel('About v1.0',
+  tabPanel('About v0.1.0',
            fluidRow(
                     column(8,
                            br(),
