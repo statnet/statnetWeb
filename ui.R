@@ -83,7 +83,7 @@ inlineSelectInput<-function (inputId, label, choices,...) {
 #+ eval=FALSE 
 shinyUI(
   navbarPage(title=div(a(span('statnetWeb  ', style='font-family:Courier'),
-                            href = 'https://github.com/statnet/ergm-shiny',
+                            href = 'https://github.com/statnet/statnetWeb',
                             target = '_blank')), 
              id= 'navbar', windowTitle = 'statnetWeb', collapsable=TRUE,
              
@@ -119,7 +119,7 @@ shinyUI(
                              "Click on the help icon at the top of any page for guidance."),
                            p("Do you have comments/suggestions/complaints on this prototype app? Please share them with us.",
                              "They are best submitted through our", a('Github site,', 
-                                                                      href='https://github.com/statnet/ergm-shiny',
+                                                                      href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
                              "or by email to the statnet_help listserv (see Help tab)."),
                            h5('Citing statnetWeb'),
@@ -134,7 +134,7 @@ title = {statnetWeb: An R-Shiny interface for statnet software},
 author = {Emily Beylerian and Martina Morris},
 year = {2014},
 address = {Seattle, WA},
-url = {https://github.com/statnet/ergm-shiny}
+url = {https://github.com/statnet/statnetWeb}
 }'),
 
 tags$pre(id='scitation','@Manual{handcock:statnet,
@@ -179,7 +179,7 @@ url = {http://statnetproject.org}
                                   target = "_blank")),
                           br(),
                           br(),
-                          a("Github repository", href="https://github.com/statnet/ergm-shiny",
+                          a("Github repository", href="https://github.com/statnet/statnetWeb",
                             target="_blank"),
                           br(),
                           a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
@@ -995,7 +995,7 @@ url = {http://statnetproject.org}
                                     target = "_blank")),
                            br(),
                            br(),
-                           a("Github repository", href="https://github.com/statnet/ergm-shiny",
+                           a("Github repository", href="https://github.com/statnet/statnetWeb",
                              target="_blank"),
                            br(),
                            a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
@@ -1005,7 +1005,7 @@ url = {http://statnetproject.org}
                            h5('Help with the app'),
                            p("This app is maintained on Github. To request new features or report a bug,",
                              "please interact with the", 
-                             a("repository", href='https://github.com/statnet/ergm-shiny',
+                             a("repository", href='https://github.com/statnet/statnetWeb',
                                target="_blank"), 
                              "or email the statnet_help listserv (below)."),
                            h5('Help with statnet software'),
