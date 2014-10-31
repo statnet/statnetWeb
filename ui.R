@@ -225,6 +225,11 @@ url = {http://statnetproject.org}
                tags$script(type="text/javascript", src="alert.js")
              )
            ),
+#' Conditional panels are only displayed when a specified condition is true.
+#' The condition is a javascript expression that can refer to the current
+#' values of input or output objects. When the condition is false, the panel
+#' does not take up any space in the UI.  
+           
     br(),     
     fluidRow(
       column(7,
@@ -717,7 +722,9 @@ url = {http://statnetproject.org}
 
 #' **Fit Model**
 #' 
-#' 
+#' The output objects for the current dataset and current formula have default values 
+#' specified in server.R to prevent errors from NULL values and so that there are 
+#' helpful messages for the user before they begin entering data.
 #+ eval=FALSE                  
       tabPanel('Fit Model',
 
@@ -726,23 +733,7 @@ url = {http://statnetproject.org}
                p("Calculation in progress..."),
                img(src="ajax-loader.gif")
            ),  
-          
-#' Conditional panels only exist if the javascript expression passed to the condition
-#' argument is true. If the expression is false, nothing inside `conditionalPanel()` 
-#' will appear in the app, nor will it take up space in the interface. In this tab, each
-#' conditional panel contains a menu of options for one of the ergm terms and should only
-#' show up if a dataset has been uploaded AND the corresponding term has been chosen from
-#' the terms menu. To ensure that a dataset has been uploaded we will check that
-#' `output.nwsum` does not contain the string "NA". We check this output object to avoid checking 
-#' both `input.rawdatafile` and `input.rawdatamx` and because the reactive expression `nwreac()`
-#' is not in the DOM, so we can't check its value using javascript.
-#' [This page](http://bonsaiden.github.io/JavaScript-Garden/#types) describes some 
-#' important considerations involving equalities, types and classes in javascript. Next, there is no
-#' javascript function analagous to `is.element` in R, but the JS `indexOf` will return
-#' -1 if an element is not within the specified list, so we use this to check if 
-#' the term has been selected. 
-#' 
-#+ eval=FALSE                                          
+                                                  
           fluidRow(
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
@@ -850,6 +841,7 @@ url = {http://statnetproject.org}
                              tags$hr(),
                              tabsetPanel(id='mcmctabs',
                                tabPanel('Plot',
+                                        #intercept error and give friendly message when MCMC doesn't run
                                         conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored'",
                                                          pre('MCMC was not run or MCMC sample was not stored')),
                                         uiOutput('diagnosticsplotspace'),
