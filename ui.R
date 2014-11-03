@@ -680,8 +680,8 @@ url = {http://statnetproject.org}
                                      bsButtonGroup(inputId='densplotgroup_gd',
                                                    label='Y-axis measurement:',
                                                    toggle='radio', value='count',
-                                                   bsButton('freqplot_gd', label = 'Count of nodes', value='count'),
-                                                   bsButton('densplot_gd', label = 'Percent of nodes', value='percent')),
+                                                   bsButton('freqplot_gd', label = 'Count of vertex pairs', value='count'),
+                                                   bsButton('densplot_gd', label = 'Percent of vertex pairs', value='percent')),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
