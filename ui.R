@@ -432,6 +432,10 @@ url = {http://statnetproject.org}
             plotOutput('nwplot')
             ),
           tabPanel('Degree Distribution',
+                   div(class = "busy", 
+                       p("Calculation in progress..."),
+                       img(src="ajax-loader.gif")
+                   ),
                    p(class='helper', id='ddhelper', icon('question-circle')),
                    div(class='mischelperbox', id='ddhelperbox',
                        "See how the edges in a network are distributed among the",
@@ -442,6 +446,10 @@ url = {http://statnetproject.org}
                    plotOutput('degreedist')
                    ),
           tabPanel('Geodesic Distribution',
+                   div(class = "busy", 
+                       p("Calculation in progress..."),
+                       img(src="ajax-loader.gif")
+                   ),
                    p(class='helper', id='gdhelper', icon('question-circle')),
                    div(class='mischelperbox', id='gdhelperbox',
                        "Geodesic distance is the length of the shortest possible",
