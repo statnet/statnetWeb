@@ -2145,7 +2145,7 @@ output$diagnosticsplot <- renderPlot({
   vpp <- length(model1reac()$coef)
   tryCatch(
     mcmc.diagnostics(model1reac(), vars.per.page = vpp),
-    error = function(e) cat("MCMC was not run or MCMC sample was not stored"))
+    error = function(e) cat("MCMC does not run for dyadic independent models"))
 })
 
 output$mcmcplotdownload <- downloadHandler(
@@ -2155,7 +2155,7 @@ output$mcmcplotdownload <- downloadHandler(
     pdf(file=file, height=vpp*4/3, width=10)
     tryCatch(
       mcmc.diagnostics(model1reac(), vars.per.page = vpp),
-      error = function(e) cat("MCMC was not run or MCMC sample was not stored"))
+      error = function(e) cat("MCMC does not run for dyadic independent models"))
     dev.off()
   }
 )
@@ -2174,7 +2174,7 @@ output$diagnostics <- renderPrint({
   }
   isolate(tryCatch(
     mcmc.diagnostics(model1reac()),
-    error = function(e) cat("MCMC was not run or MCMC sample was not stored")))
+    error = function(e) cat("MCMC does not run for dyadic independent models")))
 })
 outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 

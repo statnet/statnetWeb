@@ -856,8 +856,8 @@ url = {http://statnetproject.org}
                              tabsetPanel(id='mcmctabs',
                                tabPanel('Plot',
                                         #intercept error and give friendly message when MCMC doesn't run
-                                        conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored'",
-                                                         pre('MCMC was not run or MCMC sample was not stored')),
+                                        conditionalPanel(condition="output.diagnostics == 'MCMC does not run for dyadic independent models'",
+                                                         pre('MCMC does not run for dyadic independent models')),
                                         uiOutput('diagnosticsplotspace'),
                                         downloadButton('mcmcplotdownload',label = 'Download Plots')),
                                tabPanel('Summary', 
