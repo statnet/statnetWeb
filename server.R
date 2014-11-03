@@ -132,6 +132,14 @@ assign('input_termslist', list(),
 #' definition of the numeric vertex attributes, we call `attr()`.    
 #+ eval=FALSE
 
+#move to Data panel when user clicks Get Started button
+observe({
+  if(input$startButton == 0) {return()}
+  isolate({
+    updateTabsetPanel(session, 'navbar', selected='Data')
+  })
+})
+
 
 #list of everything in an uploaded Pajek project
 pajnws <- reactive({

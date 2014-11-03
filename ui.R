@@ -122,6 +122,9 @@ shinyUI(
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
                              "or by email to the statnet_help listserv (see Help tab)."),
+                           actionButton('startButton', label='Get Started'),
+                           br(),
+                           
                            h5('Citing statnetWeb'),
                            p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
                            
