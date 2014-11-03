@@ -957,13 +957,15 @@ output$nwplot <- renderPlot({
   }
   nw <- network()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
+  par(mar = c(0, 0, 0, 0))
   plot.network(nw, coord = coords(), 
                displayisolates = input$iso, 
                displaylabels = input$vnames, 
                vertex.col = color,
                vertex.cex = nodesize())
   if(input$colorby != 2){
-    legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill())
+    legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill(),
+           bty='n')
   }
 })
 
@@ -2337,7 +2339,7 @@ output$simplot <- renderPlot({
   } 
   
   color <- adjustcolor(vcol2(), alpha.f = input$transp2)
-  
+  par(mar = c(0, 0, 0, 0))
   if (nsims == 1){
     plot(model1sim, coord = sim.coords.1(), 
          displayisolates = input$iso2, 
@@ -2353,7 +2355,8 @@ output$simplot <- renderPlot({
          vertex.cex = nodesize2())
   }
   if(input$colorby2 != 2){
-      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2())
+      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2(),
+             bty='n')
     }
   
 })
