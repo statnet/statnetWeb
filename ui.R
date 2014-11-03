@@ -652,6 +652,7 @@ url = {http://statnetproject.org}
                                                  selected='freeman',
                                                  selectize=FALSE),
                                      uiOutput('dynamiccolor_dd'),
+                                     uiOutput('colorwarning_dd'),
                                      bsButtonGroup(inputId='densplotgroup',
                                                    label='Y-axis measurement:',
                                                    toggle='radio', value='count',

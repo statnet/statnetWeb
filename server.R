@@ -1066,6 +1066,13 @@ dd_plotdata <- reactive({
   data
 })
 
+output$colorwarning_dd <- renderUI({
+  if(input$colorby_dd == "None") return()
+  if(dim(dd_plotdata())[1]<10) return()
+  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
+       'more than nine levels.', style='font-size:0.85em;')
+})
+
 dd_uniformoverlay <- reactive({
   if(!is.network(network())){
     return()
@@ -1135,6 +1142,7 @@ output$degreedist <- renderPlot({
   if(input$colorby_dd != "None"){
     ncolors <- dim(dd_plotdata())[1]
     color <- brewer.pal(ncolors,"Blues")[1:ncolors]
+    color[is.na(color)] <- brewer.pal(9, "Blues")
     ltext <- sort(unique(get.vertex.attribute(network(),input$colorby_dd)))
     ltext <- append(ltext, "")
     lfill <- c(color, 0)
@@ -1257,6 +1265,7 @@ output$degreedistdownload <- downloadHandler(
       if(input$colorby_dd != "None"){
         ncolors <- dim(dd_plotdata())[1]
         color <- brewer.pal(ncolors,"Blues")[1:ncolors]
+        color[is.na(color)] <- brewer.pal(9, "Blues")
         ltext <- sort(unique(get.vertex.attribute(network(),input$colorby_dd)))
         ltext <- append(ltext, "")
         lfill <- c(color, 0)
