@@ -86,6 +86,10 @@ $(document).ready(function(){
     $(".chromewarningbox").toggle(500);
   });
   
+  $("#mcmchelper").click(function(){
+    $("#mcmchelpbox").toggle(500);
+  });
+  
 });
 
 
