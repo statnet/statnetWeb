@@ -39,6 +39,14 @@ $(document).ready(function(){
     $("#filetypebox6").toggle(500);
   });
     
+  $("#ddhelper").click(function(){
+    $("#ddhelperbox").toggle(500);
+  });
+      
+  $("#gdhelper").click(function(){
+    $("#gdhelperbox").toggle(500);
+  });
+    
   $("#cughelper_dd").click(function(){
     $("#cughelperbox_dd").toggle(500);
   });

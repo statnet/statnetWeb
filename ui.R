@@ -431,9 +431,23 @@ url = {http://statnetproject.org}
             plotOutput('nwplot')
             ),
           tabPanel('Degree Distribution',
+                   p(class='helper', id='ddhelper', icon('question-circle')),
+                   div(class='mischelperbox', id='ddhelperbox',
+                       "See how the edges in a network are distributed among the",
+                       "nodes. The amount (or proportion) of nodes with low, medium",
+                       "or high degrees can give insight to the structure of the",
+                       "network. The degree distributions of directed graphs can",
+                       "be subset by in-degree or out-degree."),
                    plotOutput('degreedist')
                    ),
           tabPanel('Geodesic Distribution',
+                   p(class='helper', id='gdhelper', icon('question-circle')),
+                   div(class='mischelperbox', id='gdhelperbox',
+                       "Geodesic distance is the length of the shortest possible",
+                       "path between two vertices. Two vertices that are not connected", 
+                       "by any path are given a geodesic distance Inf. The geodesic distribution",
+                       "among all possible vertex pairs gives insight to the connectivity",
+                       "of the network."),
                    plotOutput('geodistplot')
                    ),
           tabPanel('More', value='More',
