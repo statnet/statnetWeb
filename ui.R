@@ -225,7 +225,12 @@ url = {http://statnetproject.org}
                #tags$script(type="text/javascript", src="autocomplete.js"),
                tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"),
                tags$script(type="text/javascript", src="busy.js"),
-               tags$script(type="text/javascript", src="alert.js")
+               tags$script(type="text/javascript", src="alert.js"),
+               tags$script(HTML('Shiny.addCustomMessageHandler("jsCode",
+                                function(message) {
+                                console.log(message)
+                                eval(message.code);
+                                });'))
              )
            ),
 #' Conditional panels are only displayed when a specified condition is true.

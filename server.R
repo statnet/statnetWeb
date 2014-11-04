@@ -912,11 +912,11 @@ output$nwsum <- renderPrint({
   return(nw)
 })
 
-# observe({
-#   if(input$symmetrize == "weak"){
-#     disableWidget("aftersymm", session)
-#   }
-# })
+observe({
+  if(input$symmetrize == "weak"){
+    disableWidget("aftersymm", session)
+  }
+})
 
 
 #' **Network Plots** 
