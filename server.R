@@ -88,7 +88,12 @@ options(digits=3)
 # }
 # allterms <- unique(allterms)
 
-   
+#new function to disable widget when they should not be usable
+disableWidget <- function(id, session){
+  session$sendCustomMessage(type="jsCode",
+                            list(code=paste("$('#",id,"').prop('disabled',true)",
+                                            sep="")))
+}
 
 
 shinyServer(
@@ -907,6 +912,11 @@ output$nwsum <- renderPrint({
   return(nw)
 })
 
+# observe({
+#   if(input$symmetrize == "weak"){
+#     disableWidget("aftersymm", session)
+#   }
+# })
 
 
 #' **Network Plots** 
