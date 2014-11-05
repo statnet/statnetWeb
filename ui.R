@@ -496,7 +496,7 @@ url = {http://statnetproject.org}
                       column(4, p('Degree:', class='stitle')),
                       column(3, p(textOutput('gdeg'), class='snum')),
                       column(4, inlineSelectInput('gdegcmode', label=NULL,
-                                                 choices=c('indegree', 'outdegree', 'freeman'),
+                                                 choices=c('indegree', 'outdegree', 'total'='freeman'),
                                                  style='margin-top:0px;'))),
                      fluidRow(
                       column(4, p('Betweenness:', class='stitle')),
@@ -560,7 +560,7 @@ url = {http://statnetproject.org}
                          column(3, p('Degree:', class='stitle')),
                          column(2, p(textOutput('ndeg'), class='snum')),
                          column(3, inlineSelectInput('ndegcmode', label=NULL,
-                                                     choices=c('indegree', 'outdegree', 'freeman'),
+                                                     choices=c('indegree', 'outdegree', 'total'='freeman'),
                                                      style='margin-top:5px;')),
                          column(2, p(textOutput('ndegmin'), class='snum', align='center')),
                          column(2, p(textOutput('ndegmax'), class='snum', align='center'))

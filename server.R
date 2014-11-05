@@ -1676,24 +1676,24 @@ outputOptions(output,'gden',suspendWhenHidden=FALSE)
 output$grecip <- renderText({
   if(!is.network(nw())) {return()}
   if(input$grecipmeas == ''){
-    return('Reciprocity:')
+    return()
   }
-  grecip(nw(), measure=input$grecipmeas)
+  try(grecip(nw(), measure=input$grecipmeas))
 })
 outputOptions(output,'grecip',suspendWhenHidden=FALSE)
 
 output$gtrans <- renderText({
   if(!is.network(nw())) {return()}
   if(input$gtransmeas == ''){
-    return('Transitivity:')
+    return()
   }
   if(is.directed(nw())){
     gmode <- 'digraph'
   } else {
     gmode <- 'graph'
   }
-  gtrans(nw(), diag=has.loops(nw()), mode=gmode,
-         measure=input$gtransmeas)
+  try(gtrans(nw(), diag=has.loops(nw()), mode=gmode,
+         measure=input$gtransmeas))
 })
 outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
 
@@ -1704,8 +1704,10 @@ output$gdeg <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- centralization(nw(), degree, mode=gmode, diag=has.loops(nw()),
-              cmode=input$gdegcmode)
+  d <- NULL
+  try(d <- centralization(nw(), degree, mode=gmode, diag=has.loops(nw()),
+              cmode=input$gdegcmode))
+  d
 })
 outputOptions(output,'gdeg',suspendWhenHidden=FALSE)
 
@@ -1716,8 +1718,10 @@ output$gbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- centralization(nw(), betweenness, mode=gmode, diag=has.loops(nw()),
-                   cmode=input$gbetwcmode)
+  b <- NULL
+  try(b <- centralization(nw(), betweenness, mode=gmode, diag=has.loops(nw()),
+                   cmode=input$gbetwcmode))
+  b
 })
 outputOptions(output,'gbetw',suspendWhenHidden=FALSE)
 
@@ -1743,8 +1747,10 @@ output$gstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
-                  cmode=input$gstresscmode)
+  s <- NULL
+  try(s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
+                  cmode=input$gstresscmode))
+  s
 })
 outputOptions(output,'gstress',suspendWhenHidden=FALSE)
 
@@ -1755,8 +1761,10 @@ output$ggraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
-                 cmode=input$ggraphcentcmode)
+  g <- NULL
+  try(g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
+                 cmode=input$ggraphcentcmode))
+  g
 })
 outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
 
@@ -1767,7 +1775,9 @@ output$gevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw()))
+  e <- NULL
+  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
+  e
 })
 outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
 
@@ -1778,7 +1788,7 @@ output$ginfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i<-''
+  i<-NULL
   try({
     i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
                   cmode=input$ginfocentcmode)})
@@ -1793,8 +1803,10 @@ output$ndeg <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-         cmode=input$ndegcmode)
+  d <- NULL
+  try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+         cmode=input$ndegcmode))
+  d
 })
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
@@ -1831,8 +1843,10 @@ output$nbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                   cmode=input$nbetwcmode)
+  b <- NULL
+  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                   cmode=input$nbetwcmode))
+  b
 })
 outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
 
@@ -1910,8 +1924,10 @@ output$nstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$nstresscmode)
+  s <- NULL
+  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$nstresscmode))
+  s
 })
 outputOptions(output,'nstress',suspendWhenHidden=FALSE)
 
@@ -1948,8 +1964,10 @@ output$ngraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ngraphcentcmode)
+  g <- NULL
+  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$ngraphcentcmode))
+  g
 })
 outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
@@ -1986,7 +2004,9 @@ output$nevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()))
+  e <- NULL
+  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
+  e
 })
 outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
 
