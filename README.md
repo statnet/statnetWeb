@@ -5,7 +5,9 @@ This is an R-shiny interface for the statnet suite of R packages. It currently i
 
 Run the app in two ways:  
 * Through the shinyapps server with this link: https://ebey.shinyapps.io/statnetWeb  
-* Through RStudio on your own machine: `shiny::runGitHub("statnetWeb", "statnet")`
+* On your own machine through RStudio:  
+    `install.packages(c("statnet", "shiny", "shinyBS", "RColorBrewer", "lattice", "latticeExtra"))`
+    `shiny::runGitHub("statnetWeb", "statnet")`
 
 
 statnet packages on CRAN:  
