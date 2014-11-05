@@ -1036,6 +1036,20 @@ output$dynamiccolor_dd <- renderUI({
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE)
 
+output$dynamiccmode_dd <- renderUI ({
+  if(is.directed(nw())){
+    choices <- c('total' = 'freeman',
+                 'indegree',
+                 'outdegree')
+  } else {
+    choices <- c('total' = 'freeman')
+  }
+  selectInput('cmode', 
+              label = 'Type of degree centrality (for directed graphs):',
+              choices= choices,
+              selectize=FALSE)
+})
+
 dd_plotdata <- reactive({
   if(!is.network(nw())){
     return()
