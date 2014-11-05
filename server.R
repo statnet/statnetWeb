@@ -1045,7 +1045,7 @@ output$dynamiccmode_dd <- renderUI ({
     choices <- c('total' = 'freeman')
   }
   selectInput('cmode', 
-              label = 'Type of degree centrality (for directed graphs):',
+              label = 'Type of degree (for directed graphs):',
               choices= choices,
               selectize=FALSE)
 })
