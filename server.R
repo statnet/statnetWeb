@@ -1705,8 +1705,12 @@ output$gdeg <- renderText({
     gmode <- 'graph'
   }
   d <- NULL
+  cmode <- input$gdegcmode
+  if(cmode == 'total'){
+    cmode <- 'freeman'
+  }
   try(d <- centralization(nw(), degree, mode=gmode, diag=has.loops(nw()),
-              cmode=input$gdegcmode))
+              cmode=cmode))
   d
 })
 outputOptions(output,'gdeg',suspendWhenHidden=FALSE)
@@ -1803,9 +1807,13 @@ output$ndeg <- renderText({
   } else {
     gmode <- 'graph'
   }
+  cmode <- input$ndegcmode
+  if(cmode == 'total'){
+    cmode <- 'freeman'
+  }
   d <- NULL
   try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-         cmode=input$ndegcmode))
+         cmode=cmode))
   d
 })
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
