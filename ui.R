@@ -133,7 +133,7 @@ shinyUI(
                                   
 
 tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
-title = {statnetWeb: An R-Shiny interface for statnet software},
+title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
 author = {Emily Beylerian and Martina Morris},
 year = {2014},
 address = {Seattle, WA},
