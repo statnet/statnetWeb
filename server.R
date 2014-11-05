@@ -1728,8 +1728,11 @@ output$gclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
-                 cmode=input$gclosecmode)
+  c <- NULL
+  try(
+    c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
+                   cmode=input$gclosecmode))
+  c
 })
 outputOptions(output,'gclose',suspendWhenHidden=FALSE)
 
@@ -1866,8 +1869,11 @@ output$nclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                 cmode=input$nclosecmode)
+  c <- NULL
+  try(
+    c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                   cmode=input$nclosecmode))
+  c
 })
 outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
