@@ -168,43 +168,43 @@ nwinit <- reactive({
   #datapath is stored in 4th column of dataframe
   #network creates a network object from the input file
   if(is.null(input$rawdatafile)){
-    nw <- NULL
+    nw_var <- NULL
   } else {
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
   }
   if(input$filetype == 1){
     if(!is.null(input$rawdatafile)){
-      nw <- tryCatch({
+      nw_var <- tryCatch({
         obj <- load(paste(filepath))
       }, error = function(err){
         return("Chosen file is not an R object")
       }, finally = NULL
       )
-      try(nw <- get(obj))
+      try(nw_var <- get(obj))
     }
   } else if(input$filetype == 2){
     if(!is.null(input$rawdatafile)){
-      nw <- "Upload a .net file"
+      nw_var <- "Upload a .net file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
            substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
-        nw <- read.paj(paste(filepath))
+        nw_var <- read.paj(paste(filepath))
       }
     }
   } else if(input$filetype == 3){
     if(!is.null(input$rawdatafile)){
-      nw <- "Upload a .paj file"
+      nw_var <- "Upload a .paj file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
            substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
-          nw <- nws$networks[[as.numeric(input$choosepajnw)]]
+          nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
         }
       }
     }
   } else if(input$filetype == 4){
     if(!is.null(input$rawdatafile)){
-      nw <- "Input the specified type of matrix"
+      nw_var <- "Input the specified type of matrix"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
         header <- TRUE
         row.names<-1
@@ -212,13 +212,13 @@ nwinit <- reactive({
           header <- FALSE
           row.names<-NULL
         }
-        try(nw <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row.names),
+        try(nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row.names),
                           directed=input$dir, loops=input$loops,
                           multiple=input$multiple, bipartite=input$bipartite,
                           matrix.type=input$matrixtype,
                           ignore.eval=FALSE, names.eval='edgevalue'))
       }
-      try(nw <- network(read.table(paste(filepath)),
+      try(nw_var <- network(read.table(paste(filepath)),
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
@@ -227,16 +227,16 @@ nwinit <- reactive({
     
   } else if(input$filetype ==5){
     if(input$samplenet == "None"){
-      nw <- NULL
+      nw_var <- NULL
     } else {
-      nw <- eval(parse(text = input$samplenet))
-      if(!is.element('bipartite',names(nw$gal))){
-        set.network.attribute(nw,'bipartite',FALSE)
+      nw_var <- eval(parse(text = input$samplenet))
+      if(!is.element('bipartite',names(nw_var$gal))){
+        set.network.attribute(nw_var,'bipartite',FALSE)
       }
     }
   }
 
-  nw
+  nw_var
 })
 
 #number of nodes in nw
@@ -444,19 +444,19 @@ observe({
 
 #attributes will be added to this network
 nwmid <- reactive({
-    nw <- nwinit()
+    nw_var <- nwinit()
   
-    if (class(nw)=="network"){
+    if (class(nw_var)=="network"){
       #preserve initial network attributes and let user choose if directed 
       #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
-        symnw <- symmetrize(nw, rule=input$symmetrize)
+        symnw <- symmetrize(nw_var, rule=input$symmetrize)
         if(input$aftersymm == 'directed'){
-          nw <- network(symnw, matrix.type="adjacency", directed=TRUE,
+          nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
                         hyper=nwattrinit()[2], loops=nwattrinit()[3],
                         multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         } else {
-          nw <- network(symnw, matrix.type="adjacency", directed=FALSE,
+          nw_var <- network(symnw, matrix.type="adjacency", directed=FALSE,
                         hyper=nwattrinit()[2], loops=nwattrinit()[3],
                         multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         }
@@ -465,7 +465,7 @@ nwmid <- reactive({
         for(k in 1:length(vattrinit())){
           attr_names <- vattrinit()
           attr_matrix <- vattrinit.vals()
-          set.vertex.attribute(nw,attr_names[k],attr_matrix[,k])
+          set.vertex.attribute(nw_var,attr_names[k],attr_matrix[,k])
         }
       }
       
@@ -480,14 +480,14 @@ nwmid <- reactive({
       input$newattrButton
       try({
         vertex_names <- get('vertex_names', pos='package:base')
-        try(network.vertex.names(nw) <- vertex_names)
+        try(network.vertex.names(nw_var) <- vertex_names)
       })
       v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
           try({v_newname <- as.character(v_attrNamesToAdd[1,j])
           v_newval <- v_attrValsToAdd[,j]
-          set.vertex.attribute(nw,v_newname,v_newval)})
+          set.vertex.attribute(nw_var,v_newname,v_newval)})
         }
       }
       
@@ -496,7 +496,7 @@ nwmid <- reactive({
         for (k in 2:e_numnew){
           try({e_newname <- as.character(e_attrNamesToAdd[1,k])
           e_newval <- e_attrValsToAdd[,k]
-          set.edge.attribute(nw,e_newname,e_newval)})
+          set.edge.attribute(nw_var,e_newname,e_newval)})
         }
       }
       
@@ -505,17 +505,17 @@ nwmid <- reactive({
         for (l in 2:ev_numnew){
           try({ev_newname <- as.character(ev_attrNamesToAdd[1,l])
           ev_newval <- ev_attrValsToAdd[[l]]
-          set.edge.value(nw,ev_newname,ev_newval)})
+          set.edge.value(nw_var,ev_newname,ev_newval)})
         }
       }
     }
   
-    nw
+    nw_var
 	})
 
 #use this network for future calculations
 network1 <- reactive({
-  nw <- nwmid()
+  nw_var <- nwmid()
   
 #deleting attributes is no longer available
 
@@ -523,15 +523,15 @@ network1 <- reactive({
 #   len <- length(deleteme)
 #   if(len>=1){
 #       for(i in 1:len){
-#         if(any(list.vertex.attributes(nw)==deleteme[i])){
-#           delete.vertex.attribute(nw,deleteme[i])
+#         if(any(list.vertex.attributes(nw_var)==deleteme[i])){
+#           delete.vertex.attribute(nw_var,deleteme[i])
 #         }
-#         if(any(list.edge.attributes(nw)==deleteme[i])){
-#           delete.edge.attribute(nw,deleteme[i])
+#         if(any(list.edge.attributes(nw_var)==deleteme[i])){
+#           delete.edge.attribute(nw_var,deleteme[i])
 #         }
 #       }
 #   }
-  nw
+  nw_var
 })
 
 
@@ -595,10 +595,10 @@ nodebetw <- reactive({
 
 nodesize <- reactive({
   if(!is.network(network1())){return()}
-  nw <- network1()
+  nw_var <- network1()
   #scale size of nodes onto range between .7 and 3.5
-  minsize <- min(get.vertex.attribute(nw,input$sizeby))
-  maxsize <- max(get.vertex.attribute(nw,input$sizeby))
+  minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
+  maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
   if (input$sizeby == '1'){
     size = 1.2
   } else if (input$sizeby == 'Betweenness'){
@@ -606,20 +606,20 @@ nodesize <- reactive({
     maxsize <- max(nodebetw())
     size = (nodebetw()-minsize)/(maxsize-minsize)*(3.5-.7)+.7
   } else {
-    minsize <- min(get.vertex.attribute(nw,input$sizeby))
-    maxsize <- max(get.vertex.attribute(nw,input$sizeby))
-    size = (get.vertex.attribute(nw,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
+    maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
+    size = (get.vertex.attribute(nw_var,input$sizeby)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }
   size})
 
 #vertex color
 vcol <- reactive({
   if(!is.network(network1())){return()}
-  nw <- network1()
+  nw_var <- network1()
   if(input$colorby ==2){
     vcol <- 2
   } else {
-    full_list <- get.vertex.attribute(nw,input$colorby)
+    full_list <- get.vertex.attribute(nw_var,input$colorby)
     short_list <- sort(unique(full_list))
     if(is.element("Other", short_list)){ #to be consistent with order of legend
       short_list <- short_list[-which(short_list=="Other")]
@@ -644,11 +644,11 @@ vcol <- reactive({
 
 legendlabels <- reactive({
   if(!is.network(network1())){return()}
-  nw <- network1()
+  nw_var <- network1()
     if(input$colorby == 2){
       legendlabels <- NULL
     }else{
-      legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby)))
+      legendlabels <- sort(unique(get.vertex.attribute(nw_var, input$colorby)))
       if(is.element("Other", legendlabels)){
         legendlabels <- legendlabels[-which(legendlabels=="Other")]
         legendlabels <- c(legendlabels, "Other")
@@ -771,7 +771,7 @@ nodebetw2 <- reactive({
 })
 
 nodesize2 <- reactive({
-  nw <- network1()
+  nw_var <- network1()
   #scale size of nodes onto range between .7 and 3.5
   if (input$sizeby2 == '1'){
     size = 1.2
@@ -780,8 +780,8 @@ nodesize2 <- reactive({
     maxsize <- max(nodebetw2())
     size <- (nodebetw2()-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   } else {
-    minsize <- min(get.vertex.attribute(nw,input$sizeby2))
-    maxsize <- max(get.vertex.attribute(nw,input$sizeby2))
+    minsize <- min(get.vertex.attribute(nw_var,input$sizeby2))
+    maxsize <- max(get.vertex.attribute(nw_var,input$sizeby2))
     if(input$nsims==1){
     size <- (get.vertex.attribute(model1simreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }else{
@@ -824,11 +824,11 @@ vcol2 <- reactive({
 })
 
 legendlabels2 <- reactive({
-  nw <- network1()
+  nw_var <- network1()
   if(input$colorby2 == 2){
     legendlabels <- NULL
   }else{
-    legendlabels <- sort(unique(get.vertex.attribute(nw, input$colorby2)))
+    legendlabels <- sort(unique(get.vertex.attribute(nw_var, input$colorby2)))
     if(is.element("Other", legendlabels)){
       legendlabels <- legendlabels[-which(legendlabels=="Other")]
       legendlabels <- c(legendlabels, "Other")
@@ -901,11 +901,11 @@ output$nwsum <- renderPrint({
   if (is.null(network1())){
     return(cat('NA'))
   }
-  nw <- network1()
-  if (class(nw)!="network"){
-    return(cat(nw))
+  nw_var <- network1()
+  if (class(nw_var)!="network"){
+    return(cat(nw_var))
   }
-  return(nw)
+  return(nw_var)
 })
 
 
@@ -925,8 +925,8 @@ output$attr2 <- renderPrint({
   if (!is.network(network1())){
     return(cat('NA'))
   }
-  nw <- network1()
-  return(nw)
+  nw_var <- network1()
+  return(nw_var)
 })
 
 output$dynamiccolor <- renderUI({
@@ -964,10 +964,10 @@ output$nwplot <- renderPlot({
   if (!is.network(network1())){
     return()
   }
-  nw <- network1()
+  nw_var <- network1()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
   par(mar = c(0, 0, 0, 0))
-  plot.network(nw, coord = coords(), 
+  plot.network(nw_var, coord = coords(), 
                displayisolates = input$iso, 
                displaylabels = input$vnames, 
                vertex.col = color,
@@ -982,9 +982,9 @@ output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=10, width=10)
-    nw <- network1()
+    nw_var <- network1()
     color <- adjustcolor(vcol(), alpha.f = input$transp)
-    plot.network(nw, coord = coords(), 
+    plot.network(nw_var, coord = coords(), 
                  displayisolates = input$iso, 
                  displaylabels = input$vnames, 
                  vertex.col = color,
@@ -2347,7 +2347,7 @@ output$simplot <- renderPlot({
   if(input$simButton == 0){
     return()
   }
-  nw <- network1()
+  nw_var <- network1()
   nsims <- isolate(input$nsims)
   model1sim <- isolate(model1simreac()) 
   
