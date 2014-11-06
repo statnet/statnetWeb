@@ -726,7 +726,7 @@ model1gof <- reactive({
     gofform <- formula(paste('model1reac() ~ ', input$gofterm, sep = ''))
     model1gof <- gof(gofform)
   }
-  isolate(model1gof)})
+  model1gof})
 
 
 model1simreac <- reactive({
@@ -2279,17 +2279,37 @@ output$checkterms2 <- renderPrint({
   cat(isolate(ergm.terms()))
 })
 
+#state$gof will toggle between two states, depending on
+#if gof plots are outdated compared to current ergm formula
+state <- reactiveValues(gof = 0)
+
+observe({
+  input$fitButton
+  state$gof <- 0 #gof plots are outdated
+})
+
+observe({
+  input$gofButton
+  state$gof <- 1 #gof plots are up to date
+})
+
 output$gofsummary <- renderPrint({
   if (input$gofButton == 0){
     return()
   }
-  
-  return(isolate(model1gof()))
+  s <- isolate({model1gof()})
+  if(state$gof == 0){
+    return()
+  }
+  return(s)
   })
-
+outputOptions(output, 'gofsummary', suspendWhenHidden=FALSE)
 
 output$gofplot <- renderPlot({
   input$gofButton
+  if(state$gof == 0){
+    return()
+  }
   gofterm <- isolate(input$gofterm)
   if (gofterm == ''){
     par(mfrow=c(3,1))
@@ -2318,6 +2338,9 @@ output$gofplotdownload <- downloadHandler(
 
 output$gofplotspace <- renderUI({
   if(input$gofButton == 0){
+    return()
+  }
+  if(state$gof == 0){
     return()
   }
   gofterm <- isolate(input$gofterm)
