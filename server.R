@@ -2158,8 +2158,22 @@ output$prefitsum <- renderPrint({
   summary(ergm.formula())
 })
 
+state <- reactiveValues(modelfit = 0)
+
+observe({
+  input$fitButton
+  state$modelfit <- 1  #modelfit is up to date
+})
+observe({
+  nw()
+  state$modelfit <- 0 #modelfit is outdated when nw changes
+})
+
 output$modelfit <- renderPrint({
   if (input$fitButton == 0){
+    return(cat('After adding terms to the formula, click "Fit Model" above.'))
+  }
+  if (state$modelfit == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   model1reac()
@@ -2167,6 +2181,9 @@ output$modelfit <- renderPrint({
 
 output$modelfitsum <- renderPrint({
   if (input$fitButton == 0){
+    return(cat('After adding terms to the formula, click "Fit Model" above.'))
+  }
+  if (state$modelfit == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   summary(model1reac())
