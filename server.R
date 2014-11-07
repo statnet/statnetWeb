@@ -88,8 +88,12 @@ options(digits=3)
 # }
 # allterms <- unique(allterms)
 
-   
-
+#new function to disable widgets when they should not be usable
+disableWidget <- function(id, session){
+  session$sendCustomMessage(type="jsCode",
+                            list(code=paste("$('#",id,"').prop('disabled',true)",
+                                            sep="")))
+}
 
 shinyServer(
   function(input, output, session){
@@ -590,6 +594,7 @@ nodebetw <- reactive({
     cmode <- 'undirected'
   }
   betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+
               cmode=cmode)
 })
 
@@ -887,6 +892,16 @@ output$pajchooser <- renderUI({
               choices = pajlist, selectize=FALSE)
 })
 
+output$aftersymmcolor <- renderUI({
+  r <- radioButtons('aftersymm', label='After symmetrizing, network should be:',
+               choices=c('directed', 'undirected'))
+  if(input$symmetrize == "Do not symmetrize"){
+      r <- span(radioButtons('aftersymm', label='After symmetrizing, network should be:',
+                        choices=c('directed', 'undirected')), style="color:gray;")
+  }
+  r
+})
+
 output$newattrname <- renderPrint({
   if(!is.null(input$newattrvalue)){
       cat(newattrnamereac())}
@@ -913,6 +928,7 @@ output$nwsum <- renderPrint({
   }
   return(nw_var)
 })
+
 
 
 

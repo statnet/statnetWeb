@@ -122,7 +122,7 @@ shinyUI(
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
                              "or by email to the statnet_help listserv (see Help tab)."),
-                           actionButton('startButton', label='Get Started'),
+                           actionButton('startButton', label='Get Started', class="candisable"),
                            br(),
                            
                            h5('Citing statnetWeb'),
@@ -225,7 +225,12 @@ url = {http://statnetproject.org}
                #tags$script(type="text/javascript", src="autocomplete.js"),
                tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"),
                tags$script(type="text/javascript", src="busy.js"),
-               tags$script(type="text/javascript", src="alert.js")
+               tags$script(type="text/javascript", src="alert.js"),
+               tags$script(HTML('Shiny.addCustomMessageHandler("jsCode",
+                                function(message) {
+                                console.log(message)
+                                eval(message.code);
+                                });'))
              )
            ),
 #' Conditional panels are only displayed when a specified condition is true.
@@ -337,8 +342,7 @@ url = {http://statnetproject.org}
                                                      'lower: Copy lower triangle over upper triangle'='lower',
                                                      'strong: Intersection of ties'='strong',
                                                      'weak: Union of ties'='weak')),
-                              radioButtons('aftersymm', label='After symmetrizing, network should be:',
-                                           choices=c('directed', 'undirected'))
+                              uiOutput('aftersymmcolor')
                               )),
                        
                        column(5,strong('Import new attribute information'),
