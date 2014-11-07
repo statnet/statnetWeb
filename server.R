@@ -793,6 +793,7 @@ vcol2 <- reactive({
   if(!is.network(nw())){return()}
   input$simButton
   isolate(nsim <- input$nsims)
+  if(!is.null(input$colorby2)){
   if(input$colorby2 ==2){
     vcol <- 2
   } else {
@@ -820,11 +821,13 @@ vcol2 <- reactive({
     }
     vcol <- sapply(X = full_list, FUN = assigncolor)
   }
+  }
   vcol
 })
 
 legendlabels2 <- reactive({
   nw_var <- nw()
+  if(!is.null(input$colorby2)){
   if(input$colorby2 == 2){
     legendlabels <- NULL
   }else{
@@ -834,16 +837,19 @@ legendlabels2 <- reactive({
       legendlabels <- c(legendlabels, "Other")
     }
   }
+  }
   legendlabels
 })
 
 legendfill2 <- reactive({
+  if(!is.null(input$colorby2)){
   if(input$colorby2 == 2){
     legendfill <- NULL
   } else {
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     legendfill <- adjustcolor(pal, alpha.f = input$transp2)
+  }
   }
   legendfill
 })
@@ -937,10 +943,14 @@ output$dynamiccolor <- renderUI({
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE)
 
-output$colorwarning <- renderUI({
-  if(length(legendlabels())<10) return()
-  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
-       'more than nine levels.', style='font-size:0.85em;')
+observe({
+  if(length(legendlabels())>9){
+    createAlert(session, inputId = "colorwarning",
+                title=NULL, 
+                message="Warning: Colors get recycled for attributes with more than nine levels.",
+                type="warning", dismiss=TRUE, 
+                block=FALSE, append=FALSE)
+  }
 })
 
 output$dynamicsize <- renderUI({
@@ -1032,6 +1042,7 @@ output$dynamiccolor_dd <- renderUI({
   selectInput('colorby_dd',
               label = 'Color bars according to:',
               c('None', menuattr()),
+              selected = 'None',
               selectize = FALSE)
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE)
@@ -1089,11 +1100,18 @@ dd_plotdata <- reactive({
   data
 })
 
-output$colorwarning_dd <- renderUI({
-  if(input$colorby_dd == "None") return()
-  if(dim(dd_plotdata())[1]<10) return()
-  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
-       'more than nine levels.', style='font-size:0.85em;')
+observe({
+  if(!is.null(input$colorby_dd)){
+    if(input$colorby_dd != "None"){
+      if(dim(dd_plotdata())[1]>9){
+        createAlert(session, inputId = "colorwarning_dd",
+                    title=NULL, 
+                    message="Warning: Colors get recycled for attributes with more than nine levels.",
+                    type="warning", dismiss=TRUE, 
+                    block=FALSE, append=FALSE)
+      }
+    }
+  }
 })
 
 dd_uniformoverlay <- reactive({
@@ -2413,14 +2431,19 @@ output$dynamiccolor2 <- renderUI({
   selectInput('colorby2',
               label = 'Color nodes according to:',
               c('None' = 2, attr()),
+              selected = 2,
               selectize = FALSE)
 })
 outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE)
 
-output$colorwarning2 <- renderUI({
-  if(length(legendlabels2())<10) return()
-  span(tags$u('Warning:'), ' Colors get recycled for attributes with',
-       'more than nine levels.', style='font-size:0.85em;')
+observe({
+  if(length(legendlabels2())>9){
+    createAlert(session, inputId = "colorwarning2",
+                title=NULL, 
+                message="Warning: Colors get recycled for attributes with more than nine levels.",
+                type="warning", dismiss=TRUE, 
+                block=FALSE, append=FALSE)
+  }
 })
 
 output$dynamicsize2 <- renderUI({
