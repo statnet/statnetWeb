@@ -122,7 +122,7 @@ shinyUI(
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
                              "or by email to the statnet_help listserv (see Help tab)."),
-                           actionButton('startButton', label='Get Started'),
+                           actionButton('startButton', label='Get Started', class="candisable"),
                            br(),
                            
                            h5('Citing statnetWeb'),
@@ -342,8 +342,7 @@ url = {http://statnetproject.org}
                                                      'lower: Copy lower triangle over upper triangle'='lower',
                                                      'strong: Intersection of ties'='strong',
                                                      'weak: Union of ties'='weak')),
-                              radioButtons('aftersymm', label='After symmetrizing, network should be:',
-                                           choices=c('directed', 'undirected'))
+                              uiOutput('aftersymmcolor')
                               )),
                        
                        column(5,strong('Import new attribute information'),
