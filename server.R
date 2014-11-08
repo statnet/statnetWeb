@@ -1077,6 +1077,14 @@ output$dynamiccmode_dd <- renderUI ({
               selectize=FALSE)
 })
 
+observe({
+  if(is.network(nw())){
+    if(!is.directed(nw())){
+      disableWidget('cmode', session)
+    }
+  }
+})
+
 dd_plotdata <- reactive({
   if(!is.network(nw())){
     return()
