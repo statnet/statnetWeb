@@ -89,10 +89,16 @@ options(digits=3)
 # allterms <- unique(allterms)
 
 #new function to disable widgets when they should not be usable
-disableWidget <- function(id, session){
-  session$sendCustomMessage(type="jsCode",
-                            list(code=paste("$('#",id,"').prop('disabled',true)",
-                                            sep="")))
+disableWidget <- function(id, session, disabled=TRUE){
+  if(disabled){
+    session$sendCustomMessage(type="jsCode",
+                              list(code=paste("$('#",id,"').prop('disabled',true)",
+                                               sep="")))
+  } else {
+    session$sendCustomMessage(type="jsCode",
+                              list(code=paste("$('#",id,"').prop('disabled',false)",
+                                              sep="")))
+  }
 }
 
 shinyServer(
@@ -1063,24 +1069,12 @@ output$dynamiccolor_dd <- renderUI({
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE)
 
-output$dynamiccmode_dd <- renderUI ({
-  if(is.directed(nw())){
-    choices <- c('total' = 'freeman',
-                 'indegree',
-                 'outdegree')
-  } else {
-    choices <- c('total' = 'freeman')
-  }
-  selectInput('cmode', 
-              label = 'Type of degree (for directed graphs):',
-              choices= choices,
-              selectize=FALSE)
-})
-
 observe({
   if(is.network(nw())){
     if(!is.directed(nw())){
-      disableWidget('cmode', session)
+      disableWidget('cmode', session, TRUE)
+    } else {
+      disableWidget('cmode', session, FALSE)
     }
   }
 })
