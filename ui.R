@@ -789,15 +789,12 @@ url = {http://statnetproject.org}
                                 "for your patience as we look for a solution!")))
                        ),
                        fluidRow(actionButton('addtermButton', 'Add Term(s)'),
-                                actionButton('resetformulaButton', 'Reset Formula'))
+                                actionButton('resetformulaButton', 'Reset Formula'),
+                                actionButton('termdocButton', label = NULL, icon=icon('book')),
+                                bsTooltip(id='termdocButton', "Term Documentation", placement="right", trigger='hover'))
                    )
             ),
-            
-            column(2,
-                   br(),br(),
-                   actionButton('termdocButton', 'Term Documentation')),
-          
-         column(5,offset=6,
+         column(5,offset=4,
                 div(class= 'docpopup', 
                     fluidRow(
                       column(3,
@@ -807,7 +804,7 @@ url = {http://statnetproject.org}
 #                                                     'All terms')),
 #                              uiOutput('listofterms')
                              ),
-                      column(9, 
+                      column(8, 
                              p("After the next release of statnet (coming soon!), you will be able to",
                                "read the documentation for any of the ergm terms inside this popup box.",
                                "Until then, documentation can be accessed from the R command line using",
