@@ -55,7 +55,9 @@
 
 library(shiny)
 library(shinyBS)
-library(statnet)
+library(ergm)
+library(sna)
+library(network)
 library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
