@@ -690,7 +690,7 @@ legendfill <- reactive({
 
 #add terms to list as user enters them
 observe({
-  if(input$addtermButton==0) return()
+  if(input$addtermButton==0) {return()}
   isolate({
     valsofar <- get('input_termslist',pos='package:base')
     newval <- input$terms
@@ -701,7 +701,7 @@ observe({
 })
 
 observe({
-  if(input$resetformulaButton==0) return()
+  if(input$resetformulaButton==0) {return()}
   isolate({
     assign('input_termslist', list(), pos='package:base')
     updateTextInput(session, inputId='terms', value='')
@@ -712,12 +712,12 @@ ergm.terms <- reactive({
   input$resetformulaButton
   input$addtermButton
   interms <- get('input_termslist', pos='package:base')
-  if(length(interms)==0) return('NA')
+  if(length(interms)==0) {return('NA')}
   paste(interms, collapse = '+')
   })
 
 ergm.formula <- reactive({
-  if(ergm.terms()=='NA')return()
+  if(ergm.terms()=='NA') {return()}
   formula(paste('nw() ~ ',ergm.terms(), sep = ''))})
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
@@ -914,7 +914,7 @@ output$newattrname <- renderPrint({
 })
 
 # output$modifyattrchooser <- renderUI({
-#   if(!is.network(nwmid())) return()
+#   if(!is.network(nwmid())) {return()}
 #   vattr <- list.vertex.attributes(nwmid())
 #   eattr <- list.edge.attributes(nwmid())
 #   attrlist <- c(vattr, eattr)
