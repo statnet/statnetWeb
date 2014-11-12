@@ -781,15 +781,7 @@ url = {http://statnetproject.org}
                       fluidRow(
                        textInput(inputId="terms", label=NULL,
                                  value="edges"),
-                       actionButton('fitButton', 'Fit Model'),
-                       div(class="helper chromewarning", icon('warning'),"Note for Chrome users", 
-                               style="font-size:.80em; display:inline;",
-                          div(class="chromewarningbox",
-                              p("When running statnetWeb through shinyapps.io on the Google Chrome browser",
-                                "we have noticed a delay between clicking the 'Add Term(s)' button and",
-                                "the terms populating the formula. You don't need to type the terms again,",
-                                "they will be added on your next click of the button. Thank you",
-                                "for your patience as we look for a solution!")))
+                       actionButton('fitButton', 'Fit Model')
                        ),
                        fluidRow(actionButton('addtermButton', 'Add Term(s)'),
                                 actionButton('resetformulaButton', 'Reset Formula'),
