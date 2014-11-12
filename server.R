@@ -965,7 +965,7 @@ output$dynamiccolor <- renderUI({
               c('None' = 2, attr()),
               selectize = FALSE)
 })
-outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE)
+outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 
 observe({
   if(length(legendlabels())>9){
@@ -1069,7 +1069,7 @@ output$dynamiccolor_dd <- renderUI({
               selected = 'None',
               selectize = FALSE)
 })
-outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE)
+outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
 
 observe({
   if(is.network(nw())){
@@ -2454,7 +2454,7 @@ output$dynamiccolor2 <- renderUI({
               selected = 2,
               selectize = FALSE)
 })
-outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE)
+outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
 observe({
   if(length(legendlabels2())>9){
