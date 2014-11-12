@@ -341,7 +341,11 @@ url = {http://statnetproject.org}
                                                      'lower: Copy lower triangle over upper triangle'='lower',
                                                      'strong: Intersection of ties'='strong',
                                                      'weak: Union of ties'='weak')),
-                              uiOutput('aftersymmcolor')
+                              bsButtonGroup(inputId='aftersymm',
+                                            label='After symmetrizing, network should be',
+                                            toggle='radio', value='directed',
+                                            bsButton('symmdir', label='directed', value='directed'),
+                                            bsButton('symmundir', label='undirected', value='undirected'))
                               )),
                        
                        column(5,strong('Import new attribute information'),

@@ -900,14 +900,12 @@ output$pajchooser <- renderUI({
               choices = pajlist, selectize=FALSE)
 })
 
-output$aftersymmcolor <- renderUI({
-  r <- radioButtons('aftersymm', label='After symmetrizing, network should be:',
-               choices=c('directed', 'undirected'))
-  if(input$symmetrize == "Do not symmetrize"){
-      r <- span(radioButtons('aftersymm', label='After symmetrizing, network should be:',
-                        choices=c('directed', 'undirected')), style="color:gray;")
+observe({
+  if(input$symmetrize=="Do not symmetrize"){
+    updateButtonGroup(session, 'aftersymm', disabled=TRUE)
+  } else {
+    updateButtonGroup(session, 'aftersymm', disabled=FALSE)
   }
-  r
 })
 
 output$newattrname <- renderPrint({
