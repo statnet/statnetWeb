@@ -5,7 +5,7 @@
 #' statnetWeb
 #' ============
 #' ui.R
-#' =========
+#' ============
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
 #' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
@@ -49,7 +49,6 @@
 # load necessary packages
 library(shiny)
 library(shinyBS)
-library(statnet)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
 
 #' Functions to create new widgets

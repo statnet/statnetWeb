@@ -5,7 +5,7 @@
 #' statnetWeb
 #' ===========
 #' server.R
-#' =========
+#' ===========
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
 #' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
