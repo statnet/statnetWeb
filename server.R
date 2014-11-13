@@ -616,7 +616,7 @@ nodesize <- reactive({
   minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
   maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
   if (input$sizeby == '1'){
-    size = 1.2
+    size = 1
   } else if (input$sizeby == 'Betweenness'){
     minsize <- min(nodebetw())
     maxsize <- max(nodebetw())
@@ -791,7 +791,7 @@ nodesize2 <- reactive({
   nw_var <- nw()
   #scale size of nodes onto range between .7 and 3.5
   if (input$sizeby2 == '1'){
-    size = 1.2
+    size = 1
   } else if (input$sizeby2 == "Betweenness"){
     minsize <- min(nodebetw2())
     maxsize <- max(nodebetw2())
