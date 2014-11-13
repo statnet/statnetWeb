@@ -543,6 +543,9 @@ nw <- reactive({
 #         }
 #       }
 #   }
+  assign('input_termslist', list(), pos='package:base')
+  updateTextInput(session, inputId='terms', value='edges')
+
   nw_var
 })
 
@@ -709,6 +712,7 @@ observe({
 })
 
 ergm.terms <- reactive({
+  nw()
   input$resetformulaButton
   input$addtermButton
   interms <- get('input_termslist', pos='package:base')
