@@ -1000,8 +1000,7 @@ url = {http://statnetproject.org}
                                                     wellPanel(
                                                       verbatimTextOutput('simsummary'),
                                                       verbatimTextOutput('simcoef'),
-                                                      p('Stored network statistics:',
-                                                        style='font-family:monospace; margin:0 0 0 2px; font-size:13px;'),
+                                                      verbatimTextOutput('simstatslabel'),
                                                       verbatimTextOutput('simstats')
                                                       )
                                      ),

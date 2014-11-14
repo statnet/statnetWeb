@@ -2445,12 +2445,11 @@ output$simsummary <- renderPrint({
   sim <- isolate(model1simreac())
   n <- isolate(input$nsims)
   sum <- list()
-  sum[1] <- "\n"
-  sum[2] <- paste("Number of Networks: ",n, "\n")
-  sum[3] <- paste("Model: ", nwname(),' ~ ',ergm.terms(), "\n")
-  sum[4] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
-  sum[5] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
-  sum[6] <- paste("Parameters: \n")
+  sum[1] <- paste(" Number of Networks: ",n, "\n")
+  sum[2] <- paste("Model: ", nwname(),' ~ ',ergm.terms(), "\n")
+  sum[3] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
+  sum[4] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
+  sum[5] <- paste("Parameters: \n")
   cat(unlist(sum))
 })
 
@@ -2462,6 +2461,13 @@ output$simcoef <- renderPrint({
   c <- attr(sim, 'coef')
   c <- cbind(format(names(c)),c)
   write.table(c, quote=FALSE, row.names=FALSE, col.names=FALSE)
+})
+
+output$simstatslabel <- renderPrint({
+  if (input$simButton == 0){
+    return(cat(''))
+  }
+  cat(' Stored network statistics:')
 })
 
 output$simstats <- renderPrint({

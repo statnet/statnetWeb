@@ -128,10 +128,11 @@ div.docpopup {
   background: #FFFFFF;
 }
 
-#simsummary {
+#simsummary,
+#simstatslabel {
   border-style: none;
   padding: 0px;
-  margin: 0px
+  margin: 0px;
 }
 #simcoef,
 #simstats {
