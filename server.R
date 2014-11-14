@@ -141,7 +141,7 @@ assign('input_termslist', list(),
 #'
 #' Notice that already in this chunk of code we call previously declared reactive
 #' objects. For example, to use the reactive list of vertex attributes in the
-#' definition of the numeric vertex attributes, we call `attr()`.    
+#' definition of the numeric vertex attributes, we call `attrib()`.    
 #+ eval=FALSE
 
 #move to Data panel when user clicks Get Started button
@@ -563,7 +563,7 @@ nwattrinit <- reactive({
 })
 
 #list of all vertex attributes in nw (after adding new)
-attr <- reactive({
+attrib <- reactive({
 	  attr <- c()
     if(is.network(nw())){        
 		    attr<-list.vertex.attributes(nw())
@@ -573,7 +573,7 @@ attr <- reactive({
 
 #don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
 menuattr <- reactive({
-  menuattr <- attr()
+  menuattr <- attrib()
   if(is.element("na",menuattr)){
     menuattr <- menuattr[-which("na"==menuattr)]
   }
@@ -587,9 +587,9 @@ menuattr <- reactive({
 numattr <- reactive({
     numattr <- c()
     if(is.network(nw())){  
-      for(i in 1:length(attr())){
-        if(is.numeric(get.vertex.attribute(nw(),attr()[i]))){
-          numattr <- append(numattr,attr()[i])
+      for(i in 1:length(attrib())){
+        if(is.numeric(get.vertex.attribute(nw(),attrib()[i]))){
+          numattr <- append(numattr,attrib()[i])
         } 
       }} 
     numattr})
@@ -964,7 +964,7 @@ output$attr2 <- renderPrint({
 output$dynamiccolor <- renderUI({
   selectInput('colorby',
               label = 'Color nodes according to:',
-              c('None' = 2, attr()),
+              c('None' = 2, attrib()),
               selectize = FALSE)
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
@@ -2438,21 +2438,54 @@ output$currentdataset4 <- renderPrint({
 })
 
 
-output$sim.summary <- renderPrint({
+output$simsummary <- renderPrint({
   if (input$simButton == 0){
     return(cat(''))
   }
-  model1sim <- isolate(model1simreac())
-  if (isolate(input$nsims) == 1){
-    return(model1sim)
+  sim <- isolate(model1simreac())
+  n <- isolate(input$nsims)
+  sum <- list()
+  sum[1] <- "\n"
+  sum[2] <- paste("Number of Networks: ",n, "\n")
+  sum[3] <- paste("Model: ", nwname(),' ~ ',ergm.terms(), "\n")
+  sum[4] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
+  sum[5] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
+  sum[6] <- paste("Parameters: \n")
+  cat(unlist(sum))
+})
+
+output$simcoef <- renderPrint({
+  if (input$simButton == 0){
+    return(cat(''))
   }
-  return(summary(model1sim))
+  sim <- isolate(model1simreac())
+  c <- attr(sim, 'coef')
+  c <- cbind(format(names(c)),c)
+  write.table(c, quote=FALSE, row.names=FALSE, col.names=FALSE)
+})
+
+output$simstats <- renderPrint({
+  if (input$simButton == 0){
+    return(cat(''))
+  }
+  sim <- isolate(model1simreac())
+  m <- format(t(attr(sim,'stats')))
+  m <- cbind(format(rownames(m)),m)
+  write.table(m, quote=F, row.names=F, col.names=F)
+})
+
+output$simsummary2 <- renderPrint({
+  if (input$simButton == 0){
+    return(cat(''))
+  }
+  sim <- isolate(model1simreac())
+  sim
 })
 
 output$dynamiccolor2 <- renderUI({
   selectInput('colorby2',
               label = 'Color nodes according to:',
-              c('None' = 2, attr()),
+              c('None' = 2, attrib()),
               selected = 2,
               selectize = FALSE)
 })

@@ -996,7 +996,20 @@ url = {http://statnetproject.org}
                                                         label = 'Download Plot'))
                                 ),
                               tabPanel('Simulation Summary',
-                                        verbatimTextOutput('sim.summary'))
+                                   conditionalPanel(condition="input.nsims > 1",
+                                                    wellPanel(
+                                                      verbatimTextOutput('simsummary'),
+                                                      verbatimTextOutput('simcoef'),
+                                                      p('Stored network statistics:',
+                                                        style='font-family:monospace; margin:0 0 0 2px; font-size:13px;'),
+                                                      verbatimTextOutput('simstats')
+                                                      )
+                                     ),
+                                   conditionalPanel(condition="input.nsims == 1",
+                                     verbatimTextOutput('simsummary2')
+                                     )
+                                    
+                                  )
                               )
                      )),
                    div(id='simtabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
