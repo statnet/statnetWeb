@@ -2437,6 +2437,12 @@ output$currentdataset4 <- renderPrint({
   cat(nwname())
 })
 
+output$simnum <- renderText({
+  input$simButton
+  n <- isolate(input$nsims)
+  n
+})
+outputOptions(output, 'simnum', suspendWhenHidden=FALSE)
 
 output$simsummary <- renderPrint({
   if (input$simButton == 0){

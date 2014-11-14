@@ -996,7 +996,7 @@ url = {http://statnetproject.org}
                                                         label = 'Download Plot'))
                                 ),
                               tabPanel('Simulation Summary',
-                                   conditionalPanel(condition="input.nsims > 1",
+                                   conditionalPanel(condition="output.simnum != 1",
                                                     wellPanel(
                                                       verbatimTextOutput('simsummary'),
                                                       verbatimTextOutput('simcoef'),
@@ -1004,7 +1004,7 @@ url = {http://statnetproject.org}
                                                       verbatimTextOutput('simstats')
                                                       )
                                      ),
-                                   conditionalPanel(condition="input.nsims == 1",
+                                   conditionalPanel(condition="output.simnum == 1",
                                      verbatimTextOutput('simsummary2')
                                      )
                                     
