@@ -74,7 +74,8 @@ div.smallhelperbox {
   z-index: 10;
 }
 
-div.mischelperbox {
+div.mischelperbox,
+div.chromewarningbox {
   position:absolute;
   z-index: 10;
   display:none;
@@ -112,7 +113,8 @@ div.mischelperbox {
   margin-top:10px;
 }
 
-#fitButton {
+#fitButton,
+.chromewarning {
   margin-bottom:10px;
 }
 
