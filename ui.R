@@ -789,7 +789,9 @@ url = {http://statnetproject.org}
                                  "we have noticed an occasional delay between clicking the 'Add Term(s)' button and",
                                  "the terms populating the formula. You don't need to type the terms again,",
                                  "they will be added on your next click of the button. Thank you",
-                                 "for your patience as we look for a solution!")))
+                                 "for your patience as we look for a solution!"),
+                               p(strong('Update: '), 'We believe this problem has been fixed. If you',
+                                 'still experience a delay please let us know by filing an issue on Github.')))
                        ),
                        fluidRow(actionButton('addtermButton', 'Add Term(s)'),
                                 actionButton('resetformulaButton', 'Reset Formula'),
