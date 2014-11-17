@@ -126,7 +126,8 @@ assign('ev_attrNamesToAdd', list(1),
        pos="package:base" )
 assign('ev_attrValsToAdd', list(),  
        pos="package:base")
-
+assign('vertex_names', list(),
+       pos="package:base")
 assign('input_termslist', list(),
        pos="package:base")
 
