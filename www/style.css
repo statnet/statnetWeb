@@ -116,6 +116,11 @@ div.chromewarningbox {
   margin-bottom:10px;
 }
 
+div .mcmcopt {
+  padding: 2px;
+  margin-bottom: 5px;
+}
+
 div.docpopup {
   position:absolute;
   z-index: 8;

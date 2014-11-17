@@ -61,6 +61,12 @@ customTextInput<-function (inputId, label, value="",...) {
     tags$input(id = inputId, type="text", value=value,...))
 }
 
+customNumericInput<-function (inputId, label, value=0,...) {
+  tagList(
+    tags$label(label, `for` = inputId, style="display:inline;"), 
+    tags$input(id = inputId, type="number", value=value,...))
+}
+
 #version of selectInput...shorter box and label inline
 #lapply allows us to add each element of choices as an option in the select menu
 inlineSelectInput<-function (inputId, label, choices,...) {
@@ -775,7 +781,7 @@ url = {http://statnetproject.org}
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
             
-            column(8,
+            column(5,
                    p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                    fluidRow(
                       fluidRow(
@@ -799,27 +805,42 @@ url = {http://statnetproject.org}
                                 bsTooltip(id='termdocButton', "Term Documentation", placement="right", trigger='hover'))
                    )
             ),
-         column(5,offset=4,
-                div(class= 'docpopup', 
-                    fluidRow(
-                      column(3,
-                             h5('Term Documentation')
-#                              radioButtons('matchingorall', label='Choose from:',
-#                                           choices=c('Terms compatible with current network',
-#                                                     'All terms')),
-#                              uiOutput('listofterms')
-                             ),
-                      column(8, 
-                             p("After the next release of statnet (coming soon!), you will be able to",
-                               "read the documentation for any of the ergm terms inside this popup box.",
-                               "Until then, documentation can be accessed from the R command line using",
-                               code('help("ergm-terms")'), "or in ", a("this paper", 
-                                                                       href="http://www.jstatsoft.org/v24/i04/paper",
-                                                                       target="_blank"))
-                             #verbatimTextOutput('termdoc')
-                      )))
+            column(4, 
+                   div(fluidRow(
+                     column(4,
+                            p("MCMC Options"),
+                            checkboxInput('mcmcdefault','Use default options', value=TRUE)),
+                     column(8,
+                            span("Interval:"),
+                            customNumericInput('interval',label=NULL, value=1024, class="mcmcopt input-mini"),br(),
+                            span("Burn-in:"),
+                            customNumericInput('burnin', label=NULL, value=16384, class="mcmcopt input-mini"),br(),
+                            span("Sample size:"),
+                            customNumericInput('samplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
+                        )
+                       )
+                   ),
+            column(5,offset=4,
+                    div(class= 'docpopup', 
+                        fluidRow(
+                          column(3,
+                                 h5('Term Documentation')
+    #                              radioButtons('matchingorall', label='Choose from:',
+    #                                           choices=c('Terms compatible with current network',
+    #                                                     'All terms')),
+    #                              uiOutput('listofterms')
+                                 ),
+                          column(8, 
+                                 p("After the next release of statnet (coming soon!), you will be able to",
+                                   "read the documentation for any of the ergm terms inside this popup box.",
+                                   "Until then, documentation can be accessed from the R command line using",
+                                   code('help("ergm-terms")'), "or in ", a("this paper", 
+                                                                           href="http://www.jstatsoft.org/v24/i04/paper",
+                                                                           target="_blank"))
+                                 #verbatimTextOutput('termdoc')
+                          )))
                 )
-          ),
+            ),
 
             
          fluidRow(
