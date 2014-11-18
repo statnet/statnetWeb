@@ -733,7 +733,16 @@ model1reac <- reactive({
   if(input$fitButton == 0){
     return()
   }
-  isolate(ergm(ergm.formula()))})
+  usingdefault <- isolate(input$mcmcdefault)
+  if(usingdefault){
+    f <- isolate(ergm(ergm.formula()))
+  } else {
+    f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=input$interval,
+                                                      MCMC.burnin=input$burnin,
+                                                      MCMC.samplesize=input$samplesize)))
+  }
+  f
+  })
 
 #use default gof formula
 model1gof <- reactive({
