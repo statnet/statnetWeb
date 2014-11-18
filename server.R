@@ -2168,6 +2168,26 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 #   search.ergmTerms(name=myterm)
 # })
 
+observe({
+  if(input$mcmcdefault){
+    updateNumericInput(session, "interval", value=1024)
+    #updateNumericInput(session, "burnin", value=16384)
+    updateNumericInput(session, "samplesize", value=1024)
+    disableWidget("interval", session, disabled=TRUE)
+    disableWidget("burnin", session, disabled=TRUE)
+    disableWidget("samplesize", session, disabled=TRUE)
+  } else {
+    disableWidget("interval", session, disabled=FALSE)
+    disableWidget("burnin", session, disabled=FALSE)
+    disableWidget("samplesize", session, disabled=FALSE)
+  }
+})
+
+observe({
+  input$interval
+  updateNumericInput(session, "burnin", value=16*input$interval)
+})
+
 
 #' Below we output the current formulation of the ergm 
 #' model so the user can clearly see how their menu selections change the model.

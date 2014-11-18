@@ -781,7 +781,7 @@ url = {http://statnetproject.org}
             column(2,
                p('Current network:', verbatimTextOutput('currentdataset1'))),
             
-            column(5,
+            column(6,
                    p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                    fluidRow(
                       fluidRow(
@@ -805,10 +805,10 @@ url = {http://statnetproject.org}
                                 bsTooltip(id='termdocButton', "Term Documentation", placement="right", trigger='hover'))
                    )
             ),
-            column(4, 
+            column(4,
                    div(fluidRow(
                      column(4,
-                            p("MCMC Options"),
+                            p(strong("MCMC Options")),
                             checkboxInput('mcmcdefault','Use default options', value=TRUE)),
                      column(8,
                             span("Interval:"),
