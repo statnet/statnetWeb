@@ -49,6 +49,7 @@
 # load necessary packages
 library(shiny)
 library(shinyBS)
+library(shinyAce)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
 
 #' Functions to create new widgets
@@ -420,6 +421,9 @@ url = {http://statnetproject.org}
                      ))
           )            
     ),
+  
+  aceEditor("dataAce", mode="r", theme="textmate", readOnly=TRUE,
+            value="", height="200px"),
 
    icon('question-circle', class='fa-2x helper-btn'),
    div(class="helper-box", style="display:none",

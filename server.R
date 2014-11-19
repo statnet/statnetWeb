@@ -55,6 +55,7 @@
 
 library(shiny)
 library(shinyBS)
+library(shinyAce)
 library(ergm)
 library(sna)
 library(network)
@@ -153,6 +154,115 @@ observe({
   })
 })
 
+acecode <- reactiveValues(data="library(statnet)")
+
+#this reactive expression is used to get the initial values of the network
+nwinit <- reactive({
+  #input$rawdatafile comes as a dataframe with name, size, type and datapath
+  #datapath is stored in 4th column of dataframe
+  #network creates a network object from the input file
+  if(is.null(input$rawdatafile)){
+    nw_var <- NULL
+  } else {
+    filepath <- input$rawdatafile[1,4]
+    filename <- input$rawdatafile[1,1]
+  }
+  loadfile <- ''
+  if(input$filetype == 1){
+    loadfile <- ''
+    if(!is.null(input$rawdatafile)){
+      nw_var <- tryCatch({
+        obj <- load(paste(filepath))
+      }, error = function(err){
+        return("Chosen file is not an R object")
+      }, finally = NULL
+      )
+      try(nw_var <- get(obj))
+      loadfile <- paste('load("',filepath,'")', '\n',
+                        'nw <- ',obj, sep='')
+    }
+  } else if(input$filetype == 2){
+    loadfile <- ''
+    if(!is.null(input$rawdatafile)){
+      nw_var <- "Upload a .net file"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
+           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
+        nw_var <- read.paj(paste(filepath))
+        loadfile <- paste('nw <- read.paj("',filepath,'")', sep='')
+      }
+    }
+  } else if(input$filetype == 3){
+    loadfile <- ''
+    if(!is.null(input$rawdatafile)){
+      nw_var <- "Upload a .paj file"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
+           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
+        nws <- read.paj(paste(filepath))
+        if(!is.null(pajnws())){
+          nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
+          loadfile <- paste('nws <- read.paj("',filepath,'") \n',
+                            'nw <- nws$networks[[',as.numeric(input$choosepajnw),']]', sep='')
+        }
+      }
+    }
+  } else if(input$filetype == 4){
+    loadfile <- ''
+    if(!is.null(input$rawdatafile)){
+      nw_var <- "Input the specified type of matrix"
+      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+        header <- TRUE
+        row_names<-1
+        if(input$matrixtype == "edgelist"){
+          header <- FALSE
+          row_names<-NULL
+        }
+        try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row_names),
+                          directed=input$dir, loops=input$loops,
+                          multiple=input$multiple, bipartite=input$bipartite,
+                          matrix.type=input$matrixtype,
+                          ignore.eval=FALSE, names.eval='edgevalue')
+             codeline1 <- paste('x <- read.csv("',filepath,'", sep=",", header=',header,
+                           'row.names=',row_names,')', sep='')
+             })
+        
+      }
+      try({nw_var <- network(read.table(paste(filepath)),
+                        directed=input$dir, loops=input$loops,
+                        multiple=input$multiple, bipartite=input$bipartite,
+                        matrix.type=input$matrixtype,
+                        ignore.eval=FALSE, names.eval='edgevalue')
+           codeline1 <- paste('x <- read.table("',filepath,'")',sep='')
+           })
+        
+      
+      codeline2 <- paste('nw <- network(x, directed=',input$dir,', loops=',input$loops,
+                         ', multiple=',input$multiple,', bipartite=',input$bipartite,
+                         ', matrix.type=',input$matrixtype,
+                         ', ignore.eval=FALSE, names.eval="edgevalue")', sep='')
+      loadfile <- paste(codeline1,"\n", codeline2, sep="")
+    }
+    
+  } else if(input$filetype ==5){
+    loadfile <- ''
+    if(input$samplenet == "None"){
+      nw_var <- NULL
+    } else {
+      nw_var <- eval(parse(text = input$samplenet))
+      if(!is.element('bipartite',names(nw_var$gal))){
+        set.network.attribute(nw_var,'bipartite',FALSE)
+      }
+      loadfile <- paste('data(',input$samplenet,') \n',
+                        'nw <- ',input$samplenet, sep='')
+    }
+  }
+  prev <- "library(statnet)"
+  acecode$data <- paste(prev,"\n",loadfile, sep='')
+  nw_var
+})
+
+observe({
+  updateAceEditor(session, "dataAce", value=acecode$data)
+})
 
 #list of everything in an uploaded Pajek project
 pajnws <- reactive({
@@ -172,84 +282,6 @@ nwname <- reactive({
     name <- input$samplenet
   }
   name
-})
-
-
-#this reactive expression is used to get the initial values of the network
-nwinit <- reactive({
-  #input$rawdatafile comes as a dataframe with name, size, type and datapath
-  #datapath is stored in 4th column of dataframe
-  #network creates a network object from the input file
-  if(is.null(input$rawdatafile)){
-    nw_var <- NULL
-  } else {
-    filepath <- input$rawdatafile[1,4]
-    filename <- input$rawdatafile[1,1]
-  }
-  if(input$filetype == 1){
-    if(!is.null(input$rawdatafile)){
-      nw_var <- tryCatch({
-        obj <- load(paste(filepath))
-      }, error = function(err){
-        return("Chosen file is not an R object")
-      }, finally = NULL
-      )
-      try(nw_var <- get(obj))
-    }
-  } else if(input$filetype == 2){
-    if(!is.null(input$rawdatafile)){
-      nw_var <- "Upload a .net file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
-        nw_var <- read.paj(paste(filepath))
-      }
-    }
-  } else if(input$filetype == 3){
-    if(!is.null(input$rawdatafile)){
-      nw_var <- "Upload a .paj file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
-        nws <- read.paj(paste(filepath))
-        if(!is.null(pajnws())){
-          nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
-        }
-      }
-    }
-  } else if(input$filetype == 4){
-    if(!is.null(input$rawdatafile)){
-      nw_var <- "Input the specified type of matrix"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
-        header <- TRUE
-        row.names<-1
-        if(input$matrixtype == "edgelist"){
-          header <- FALSE
-          row.names<-NULL
-        }
-        try(nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row.names),
-                          directed=input$dir, loops=input$loops,
-                          multiple=input$multiple, bipartite=input$bipartite,
-                          matrix.type=input$matrixtype,
-                          ignore.eval=FALSE, names.eval='edgevalue'))
-      }
-      try(nw_var <- network(read.table(paste(filepath)),
-                        directed=input$dir, loops=input$loops,
-                        multiple=input$multiple, bipartite=input$bipartite,
-                        matrix.type=input$matrixtype,
-                        ignore.eval=FALSE, names.eval='edgevalue'))
-    }
-    
-  } else if(input$filetype ==5){
-    if(input$samplenet == "None"){
-      nw_var <- NULL
-    } else {
-      nw_var <- eval(parse(text = input$samplenet))
-      if(!is.element('bipartite',names(nw_var$gal))){
-        set.network.attribute(nw_var,'bipartite',FALSE)
-      }
-    }
-  }
-
-  nw_var
 })
 
 #number of nodes in nw
