@@ -140,7 +140,8 @@ div.docpopup {
   margin: 0px;
 }
 #simcoef,
-#simstats {
+#simstats,
+#simstats2 {
   border-style: none;
   padding: 5px;
   margin: 0 0 0 15px;

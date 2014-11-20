@@ -2548,6 +2548,18 @@ output$simstats <- renderPrint({
   write.table(m, quote=F, row.names=F, col.names=F)
 })
 
+output$simstats2 <- renderPrint({
+  if(input$simButton == 0){
+    return()
+  }
+  sim <- isolate(model1simreac())
+  m <- attr(sim,'stats')
+  mat <- cbind(apply(m,2,min),apply(m,2,max),apply(m,2,IQR),
+               apply(m,2,mean),apply(m,2,sd))
+  colnames(mat) <- c("min","max","IQR","mean","SD")
+  mat
+})
+
 output$simsummary2 <- renderPrint({
   if (input$simButton == 0){
     return(cat(''))

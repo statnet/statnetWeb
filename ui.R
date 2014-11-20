@@ -1036,7 +1036,10 @@ url = {http://statnetproject.org}
                                                       verbatimTextOutput('simsummary'),
                                                       verbatimTextOutput('simcoef'),
                                                       verbatimTextOutput('simstatslabel'),
-                                                      verbatimTextOutput('simstats')
+                                                      conditionalPanel("output.simnum < 10",
+                                                        verbatimTextOutput('simstats')),
+                                                      conditionalPanel("output.simnum >= 10",
+                                                        verbatimTextOutput('simstats2'))
                                                       )
                                      ),
                                    conditionalPanel(condition="output.simnum == 1",
