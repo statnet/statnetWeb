@@ -62,9 +62,9 @@ customTextInput<-function (inputId, label, value="",...) {
     tags$input(id = inputId, type="text", value=value,...))
 }
 
-customNumericInput<-function (inputId, label, value=0,...) {
+customNumericInput<-function (inputId, label, value=0, labelstyle="display:inline;", ...) {
   tagList(
-    tags$label(label, `for` = inputId, style="display:inline;"), 
+    tags$label(label, `for` = inputId, style=labelstyle), 
     tags$input(id = inputId, type="number", value=value,...))
 }
 
@@ -986,29 +986,33 @@ url = {http://statnetproject.org}
                             p('Current ergm formula:',
                               verbatimTextOutput('checkterms4')))
                    ),
-                   br(),
+                   fluidRow(
+                     customNumericInput('nsims', class="input-small",
+                                        labelstyle="display:block;",
+                                        label = 'Number of simulations:',
+                                        min = 1,
+                                        value = 1),
+                     actionButton('simButton', 'Simulate')
+                     ),
                    tags$hr(),
                    
                    fluidRow(
                      column(7,
-                        fluidRow(
-                            column(4,
-                                numericInput('nsims',
-                                             label = 'Number of simulations:',
-                                             min = 1,
-                                             value = 1),
-                                actionButton('simButton', 'Simulate')
-                              ),    
-                            column(8, 
-                                numericInput('thissim',
-                                            label = 'Choose a simulation to plot',
-                                            min = 1,
-                                            value = 1)
-                            )),  
-                        column(12,
-                            plotOutput('simplot')
-                            )
-                        ),
+                       tabsetPanel(
+                       tabPanel("Network Plots",
+                           customNumericInput('thissim', class="input-small",
+                                              labelstyle="display:block;",
+                                              label = 'Choose a simulation to plot:',
+                                              min = 1, value = 1),
+                           plotOutput('simplot')
+                                ),
+                       tabPanel("Simulation Statistics"
+                         
+                         )    
+                        )
+                       ),
+                     
+                      
                    column(4,
                             tabsetPanel(
                               tabPanel('Display Options',
@@ -1031,22 +1035,23 @@ url = {http://statnetproject.org}
                                                         label = 'Download Plot'))
                                 ),
                               tabPanel('Simulation Summary',
+                                   wellPanel(    
                                    conditionalPanel(condition="output.simnum != 1",
-                                                    wellPanel(
-                                                      verbatimTextOutput('simsummary'),
-                                                      verbatimTextOutput('simcoef'),
-                                                      verbatimTextOutput('simstatslabel'),
-                                                      conditionalPanel("output.simnum < 10",
-                                                        verbatimTextOutput('simstats')),
-                                                      conditionalPanel("output.simnum >= 10",
-                                                        verbatimTextOutput('simstats2'))
-                                                      )
-                                     ),
+                                          verbatimTextOutput('simsummary'),
+                                          verbatimTextOutput('simcoef'),
+                                          verbatimTextOutput('simstatslabel'),
+                                          conditionalPanel("output.simnum < 10",
+                                            verbatimTextOutput('simstats')),
+                                          conditionalPanel("output.simnum >= 10",
+                                            verbatimTextOutput('simstats2'))
+                                                      ),
                                    conditionalPanel(condition="output.simnum == 1",
                                      verbatimTextOutput('simsummary2')
                                      ),
-                                   downloadButton('simstatsdownload', label = 'Download Statistics')
-                                    
+                                   br(),
+                                   downloadButton('simstatsdownload', 
+                                                  label = 'Download Statistics')
+                                     )
                                   )
                               )
                      )),

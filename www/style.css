@@ -112,6 +112,7 @@ div.chromewarningbox {
 }
 
 #fitButton,
+#simButton,
 .chromewarning {
   margin-bottom:10px;
 }
@@ -134,7 +135,8 @@ div.docpopup {
 }
 
 #simsummary,
-#simstatslabel {
+#simstatslabel,
+#simsummary2 {
   border-style: none;
   padding: 0px;
   margin: 0px;
