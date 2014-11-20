@@ -2560,6 +2560,15 @@ output$simstats2 <- renderPrint({
   mat
 })
 
+output$simstatsdownload <- downloadHandler(
+  filename = function(){paste(nwname(),'_simstats.csv',sep='')},
+  contentType = "text/csv",
+  content = function(file) {
+    x<-attr(model1simreac(),"stats")
+    write.csv(x, file)
+  }
+  )
+
 output$simsummary2 <- renderPrint({
   if (input$simButton == 0){
     return(cat(''))

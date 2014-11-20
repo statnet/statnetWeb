@@ -1044,7 +1044,8 @@ url = {http://statnetproject.org}
                                      ),
                                    conditionalPanel(condition="output.simnum == 1",
                                      verbatimTextOutput('simsummary2')
-                                     )
+                                     ),
+                                   downloadButton('simstatsdownload', label = 'Download Statistics')
                                     
                                   )
                               )
