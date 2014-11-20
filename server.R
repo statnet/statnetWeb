@@ -2527,7 +2527,7 @@ output$simcoef <- renderPrint({
   }
   sim <- isolate(model1simreac())
   c <- attr(sim, 'coef')
-  c <- cbind(format(names(c)),c)
+  c <- cbind(format(names(c)),format(c, digits=3))
   write.table(c, quote=FALSE, row.names=FALSE, col.names=FALSE)
 })
 
