@@ -1355,7 +1355,7 @@ output$degreedist <- renderPlot({
 output$degreedistdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_degreedist.pdf',sep='')},
   content = function(file){
-    pdf(file=file, height=10, width=10)
+    pdf(file=file, height=8, width=12)
     plotme <- dd_plotdata()
     color <- "#79AED4"
     ylabel <- "Count of Nodes"
@@ -1618,7 +1618,7 @@ output$geodistplot <- renderPlot({
 output$geodistdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_geodist.pdf',sep='')},
   content = function(file){
-    pdf(file=file, height=10, width=15)
+    pdf(file=file, height=8, width=12)
     g <- geodist(nw(),inf.replace=NA)
     gdata <- tabulate(g$gdist)
     g$gdist[is.na(g$gdist)] <- Inf
