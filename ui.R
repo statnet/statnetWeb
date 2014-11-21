@@ -805,7 +805,8 @@ url = {http://statnetproject.org}
                        ),
                        fluidRow(actionButton('addtermButton', 'Add Term(s)'),
                                 actionButton('resetformulaButton', 'Reset Formula'),
-                                actionButton('termdocButton', label = NULL, icon=icon('book')),
+                                div(title="Term Documentation", style="display:inline;",
+                                  actionButton('termdocButton', label = NULL, icon=icon('book'))),
                                 bsTooltip(id='termdocButton', "Term Documentation", placement="right", trigger='hover'))
                    )
             ),
