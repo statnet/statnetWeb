@@ -765,7 +765,7 @@ model1reac <- reactive({
   if(input$fitButton == 0){
     return()
   }
-  usingdefault <- isolate(input$mcmcdefault)
+  usingdefault <- isolate(input$controldefault)
   if(usingdefault){
     f <- isolate(ergm(ergm.formula()))
   } else {
@@ -2210,7 +2210,7 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 # })
 
 observe({
-  if(input$mcmcdefault){
+  if(input$controldefault){
     updateNumericInput(session, "interval", value=1024)
     #updateNumericInput(session, "burnin", value=16384)
     updateNumericInput(session, "samplesize", value=1024)
