@@ -2599,6 +2599,30 @@ output$simstatslegend <- renderPlot({
                'orange', 'black', 'grey', 'yellow'))
 })
 
+output$simstatsplotdownload <- downloadHandler(
+  filename = function(){paste(nwname(),'_simstatsplot.pdf',sep='')},
+  content = function(file){
+    pdf(file=file, height=8, width=15)
+    sim <- isolate(model1simreac())
+    simstats <- attr(sim,'stats')
+    targetstats <- summary(ergm.formula())
+    par(mar=c(5,4,4,8)) #increase margin on right to accommodate legend
+    matplot(1:nrow(simstats), simstats, pch=c(0:8),
+            col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
+                  'orange', 'black', 'grey', 'yellow'),
+            xlab="Simulations",ylab="")
+    abline(h=c(targetstats),
+           col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
+                 'orange', 'black', 'grey', 'yellow'))
+    par(xpd=TRUE)
+    legend('topright', inset=c(-.08,0), pch=c(0:8), 
+           legend=colnames(simstats),
+           col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
+                 'orange', 'black', 'grey', 'yellow'))
+    dev.off()
+  }
+)
+
 output$simsummary2 <- renderPrint({
   if (input$simButton == 0){
     return(cat(''))

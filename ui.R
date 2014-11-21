@@ -1042,7 +1042,9 @@ url = {http://statnetproject.org}
                                   ),
                                   conditionalPanel("input.simplotpanel == 'Simulation Statistics'",
                                          conditionalPanel("output.simnum > 1",
-                                                   plotOutput('simstatslegend')
+                                                   plotOutput('simstatslegend'),
+                                                   downloadButton('simstatsplotdownload',
+                                                                  label='Download Plot')
                                                    ))
                                 ),
                               tabPanel('Simulation Summary',
