@@ -2585,6 +2585,20 @@ output$simstatsplot <- renderPlot({
                'orange', 'black', 'grey', 'yellow'))
 })
 
+output$simstatslegend <- renderPlot({
+  if(input$simButton==0){
+    return()
+  }
+  sim <- isolate(model1simreac())
+  simstats <- attr(sim,'stats')
+  plot.new()
+  par(xpd=TRUE)
+  legend('topleft', inset=c(-.15,0), pch=c(0:8), 
+         legend=colnames(simstats),
+         col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
+               'orange', 'black', 'grey', 'yellow'))
+})
+
 output$simsummary2 <- renderPrint({
   if (input$simButton == 0){
     return(cat(''))
