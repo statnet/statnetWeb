@@ -1008,7 +1008,10 @@ url = {http://statnetproject.org}
                                 ),
                        tabPanel("Simulation Statistics",
                                 conditionalPanel("output.simnum >1",
-                                    plotOutput('simstatsplot')
+                                    div(plotOutput('simstatsplot'),
+                                        title=paste("Statistics from each simulation,",
+                                                    "plotted over horizontal \n",
+                                                    "lines of the corresponding target statistics."))
                                  )
                          )    
                         )
@@ -1066,8 +1069,10 @@ url = {http://statnetproject.org}
                    div(id='simtabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
                    div(class="helper-box", style="display:none",
                        p('Choose how many simulations to run and click "Simulate".',
-                         'Plot any of the simulations, edit the display',
-                         'options and download a PDF of the plot.'))
+                         'Plot any individual simulation, or compare',
+                         'simulation statistics with target statistics.',
+                         'Download any of the plots or a .csv file of the',
+                         'simulation statistics.'))
                    ),
 #' **Help**
 #' 
