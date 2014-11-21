@@ -998,7 +998,7 @@ url = {http://statnetproject.org}
                    
                    fluidRow(
                      column(7,
-                       tabsetPanel(
+                       tabsetPanel(id="simplotpanel",
                        tabPanel("Network Plots",
                            customNumericInput('thissim', class="input-small",
                                               labelstyle="display:block;",
@@ -1006,8 +1006,10 @@ url = {http://statnetproject.org}
                                               min = 1, value = 1),
                            plotOutput('simplot')
                                 ),
-                       tabPanel("Simulation Statistics"
-                         
+                       tabPanel("Simulation Statistics",
+                                conditionalPanel("output.simnum >1",
+                                    plotOutput('simstatsplot')             
+                                 )
                          )    
                         )
                        ),
@@ -1016,6 +1018,7 @@ url = {http://statnetproject.org}
                    column(4,
                             tabsetPanel(
                               tabPanel('Display Options',
+                                  conditionalPanel("input.simplotpanel == 'Network Plots'",
                                        wellPanel(
                                          checkboxInput('iso2',
                                                        label = 'Display isolates?', 
@@ -1033,6 +1036,10 @@ url = {http://statnetproject.org}
                                          uiOutput('dynamicsize2'),
                                          downloadButton('simplotdownload',
                                                         label = 'Download Plot'))
+                                  ),
+                                  conditionalPanel("input.simplotpanel == 'Simulation Statistics'",
+                                         plotOutput('simstatslegend')
+                                                   )
                                 ),
                               tabPanel('Simulation Summary',
                                    wellPanel(    

@@ -2569,6 +2569,22 @@ output$simstatsdownload <- downloadHandler(
   }
   )
 
+output$simstatsplot <- renderPlot({
+  if(input$simButton==0){
+    return()
+  }
+  sim <- isolate(model1simreac())
+  simstats <- attr(sim,'stats')
+  targetstats <- summary(ergm.formula())
+  matplot(1:nrow(simstats), simstats, pch=c(0:8),
+          col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
+                'orange', 'black', 'grey', 'yellow'),
+          xlab="Simulations",ylab="")
+  abline(h=c(targetstats),
+         col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
+               'orange', 'black', 'grey', 'yellow'))
+})
+
 output$simsummary2 <- renderPrint({
   if (input$simButton == 0){
     return(cat(''))
