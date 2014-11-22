@@ -769,9 +769,18 @@ model1reac <- reactive({
   if(usingdefault){
     f <- isolate(ergm(ergm.formula()))
   } else {
-    f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=input$interval,
-                                                      MCMC.burnin=input$burnin,
-                                                      MCMC.samplesize=input$samplesize)))
+    customcontrols <- isolate(paste(input$customMCMCcontrol, sep=","))
+    if(customcontrols == ""){
+      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$interval),
+                                                             MCMC.burnin=isolate(input$burnin),
+                                                             MCMC.samplesize=isolate(input$samplesize))))
+    } else {
+      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$interval),
+                                                             MCMC.burnin=isolate(input$burnin),
+                                                             MCMC.samplesize=isolate(input$samplesize),
+                                                             eval(parse(text=customcontrols)))))
+    }
+    
   }
   f
   })
@@ -2212,15 +2221,17 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 observe({
   if(input$controldefault){
     updateNumericInput(session, "interval", value=1024)
-    #updateNumericInput(session, "burnin", value=16384)
+    #burn-in gets updated separately, to be 16*interval
     updateNumericInput(session, "samplesize", value=1024)
     disableWidget("interval", session, disabled=TRUE)
     disableWidget("burnin", session, disabled=TRUE)
     disableWidget("samplesize", session, disabled=TRUE)
+    disableWidget("customMCMCcontrol", session, disable=TRUE)
   } else {
     disableWidget("interval", session, disabled=FALSE)
     disableWidget("burnin", session, disabled=FALSE)
     disableWidget("samplesize", session, disabled=FALSE)
+    disableWidget("customMCMCcontrol", session, disable=FALSE)
   }
 })
 

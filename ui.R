@@ -837,16 +837,25 @@ url = {http://statnetproject.org}
                           checkboxInput('controldefault','Use default options', value=TRUE)),
                    tabsetPanel(
                      tabPanel("MCMC",
+                          column(5,
+                            div(title="Number of proposals between sampled statistics.",
                               span("Interval:"),
-                            customNumericInput('interval',label=NULL, value=1024, class="mcmcopt input-mini"),br(),
-                            span("Burn-in:"),
-                            customNumericInput('burnin', label=NULL, value=16384, class="mcmcopt input-mini"),br(),
-                            span("Sample size:"),
-                            customNumericInput('samplesize', label=NULL, value=1024, class="input-mini mcmcopt")
+                              customNumericInput('interval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                            div(title="Number of proposals before any MCMC sampling is done.\nDefaults to 16 times the MCMC interval, unless burn-in \nis specified after the interval.",  
+                              span("Burn-in:"),
+                              customNumericInput('burnin', label=NULL, value=16384, class="mcmcopt input-mini")),
+                            div(title="Number of network statistics, randomly drawn from a given \ndistribution on the set of all networks, returned by the \nMetropolis-Hastings algorithm.",  
+                              span("Sample size:"),
+                              customNumericInput('samplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
                               ),
-                     tabPanel("SAN"),
-                     tabPanel("MCMLE"),
-                     tabPanel("Misc"))
+                          column(7,
+                            textInput("customMCMCcontrol","Other controls:",value=""))),
+                     tabPanel("SAN",
+                              p("Coming soon")),
+                     tabPanel("MCMLE",
+                              p("Coming soon")),
+                     tabPanel("Misc",
+                              p("Coming soon")))
                    )
                    
                    )
