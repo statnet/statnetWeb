@@ -998,20 +998,47 @@ url = {http://statnetproject.org}
 #+ eval=FALSE  
           tabPanel('Simulations',
                    fluidRow(
-                     column(2,
-                            p('Current network:', verbatimTextOutput('currentdataset4'))),
-                     column(10,
-                            p('Current ergm formula:',
-                              verbatimTextOutput('checkterms4')))
+                     column(7,
+                        fluidRow(
+                          column(4,
+                              p('Current network:', verbatimTextOutput('currentdataset4'))),
+                          column(5,
+                                 customNumericInput('nsims', class="input-small",
+                                                    labelstyle="display:block; padding-bottom:5px;",
+                                                    label = 'Number of simulations:',
+                                                    min = 1,
+                                                    value = 1),
+                                 actionButton('simButton', 'Simulate'))
+                          ),
+                        p('Current ergm formula:',
+                          verbatimTextOutput('checkterms4'))   
+                        ),
+                     column(5,
+                            fluidRow(
+                              column(4,
+                                     span("Control options:"),br(),
+                                     checkboxInput('simcontroldefault','Use default options', value=TRUE)),
+                              tabsetPanel(
+                                tabPanel("MCMC",
+                                         column(5,
+                                                div(title="Number of proposals between sampled statistics.",
+                                                    span("Interval:"),
+                                                    customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                                                div(title="Number of proposals before any MCMC \nsampling is done. Defaults to 16 times the \nMCMC interval, unless burn-in is specified \nafter the interval.",  
+                                                    span("Burn-in:"),
+                                                    customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"))
+                                                
+                                         ),
+                                         column(7,
+                                                div(title = "Type in other arguments to be passed to \ncontrol.simulate, e.g. MCMC.init.maxedges=200",
+                                                    textInput("simcustomMCMCcontrol","Other controls:",value=""))
+                                         )),
+                                tabPanel("Parallel",
+                                         p("Coming soon")))
+                            )
+                     )
                    ),
-                   fluidRow(
-                     customNumericInput('nsims', class="input-small",
-                                        labelstyle="display:block;",
-                                        label = 'Number of simulations:',
-                                        min = 1,
-                                        value = 1),
-                     actionButton('simButton', 'Simulate')
-                     ),
+                   
                    tags$hr(),
                    
                    fluidRow(
