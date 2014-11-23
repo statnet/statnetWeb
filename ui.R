@@ -840,13 +840,13 @@ url = {http://statnetproject.org}
                           column(5,
                             div(title="Number of proposals between sampled statistics.",
                               span("Interval:"),
-                              customNumericInput('interval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                              customNumericInput('MCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
                             div(title="Number of proposals before any MCMC \nsampling is done. Defaults to 16 times the \nMCMC interval, unless burn-in is specified \nafter the interval.",  
                               span("Burn-in:"),
-                              customNumericInput('burnin', label=NULL, value=16384, class="mcmcopt input-mini")),
+                              customNumericInput('MCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini")),
                             div(title="Number of network statistics, randomly drawn \nfrom a given distribution on the set of all networks, returned by the Metropolis-Hastings \nalgorithm.",  
                               span("Sample size:"),
-                              customNumericInput('samplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
+                              customNumericInput('MCMCsamplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
                               ),
                           column(7,
                               div(title = "Type in other arguments to be passed to \ncontrol.ergm, e.g. MCMC.burnin.retries=1",

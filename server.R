@@ -771,13 +771,13 @@ model1reac <- reactive({
   } else {
     customcontrols <- isolate(paste(input$customMCMCcontrol, sep=","))
     if(customcontrols == ""){
-      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$interval),
-                                                             MCMC.burnin=isolate(input$burnin),
-                                                             MCMC.samplesize=isolate(input$samplesize))))
+      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
+                                                             MCMC.burnin=isolate(input$MCMCburnin),
+                                                             MCMC.samplesize=isolate(input$MCMCsamplesize))))
     } else {
-      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$interval),
-                                                             MCMC.burnin=isolate(input$burnin),
-                                                             MCMC.samplesize=isolate(input$samplesize),
+      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
+                                                             MCMC.burnin=isolate(input$MCMCburnin),
+                                                             MCMC.samplesize=isolate(input$MCMCsamplesize),
                                                              eval(parse(text=customcontrols)))))
     }
     
@@ -2220,24 +2220,24 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
 observe({
   if(input$controldefault){
-    updateNumericInput(session, "interval", value=1024)
+    updateNumericInput(session, "MCMCinterval", value=1024)
     #burn-in gets updated separately, to be 16*interval
-    updateNumericInput(session, "samplesize", value=1024)
-    disableWidget("interval", session, disabled=TRUE)
-    disableWidget("burnin", session, disabled=TRUE)
-    disableWidget("samplesize", session, disabled=TRUE)
+    updateNumericInput(session, "MCMCsamplesize", value=1024)
+    disableWidget("MCMCinterval", session, disabled=TRUE)
+    disableWidget("MCMCburnin", session, disabled=TRUE)
+    disableWidget("MCMCsamplesize", session, disabled=TRUE)
     disableWidget("customMCMCcontrol", session, disable=TRUE)
   } else {
-    disableWidget("interval", session, disabled=FALSE)
-    disableWidget("burnin", session, disabled=FALSE)
-    disableWidget("samplesize", session, disabled=FALSE)
+    disableWidget("MCMCinterval", session, disabled=FALSE)
+    disableWidget("MCMCburnin", session, disabled=FALSE)
+    disableWidget("MCMCsamplesize", session, disabled=FALSE)
     disableWidget("customMCMCcontrol", session, disable=FALSE)
   }
 })
 
 observe({
-  input$interval
-  updateNumericInput(session, "burnin", value=16*input$interval)
+  input$MCMCinterval
+  updateNumericInput(session, "burnin", value=16*input$MCMCinterval)
 })
 
 
@@ -2508,6 +2508,25 @@ output$currentdataset4 <- renderPrint({
     return(cat('Upload a network'))
   }
   cat(nwname())
+})
+
+observe({
+  if(input$simcontroldefault){
+    updateNumericInput(session, "simMCMCinterval", value=1024)
+    #burn-in gets updated separately, to be 16*interval
+    disableWidget("simMCMCinterval", session, disabled=TRUE)
+    disableWidget("simMCMCburnin", session, disabled=TRUE)
+    disableWidget("simcustomMCMCcontrol", session, disable=TRUE)
+  } else {
+    disableWidget("simMCMCinterval", session, disabled=FALSE)
+    disableWidget("simMCMCburnin", session, disabled=FALSE)
+    disableWidget("simcustomMCMCcontrol", session, disable=FALSE)
+  }
+})
+
+observe({
+  input$simMCMCinterval
+  updateNumericInput(session, "simMCMCburnin", value=16*input$MCMCinterval)
 })
 
 output$simnum <- renderText({
