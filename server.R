@@ -799,7 +799,23 @@ model1gof <- reactive({
 
 model1simreac <- reactive({
   input$simButton
-  isolate(simulate(model1reac(), nsim = input$nsims))})
+  if(input$simcontroldefault){
+    s<-isolate(simulate(model1reac(), nsim = input$nsims))
+  } else {
+    customcontrols <- isolate(paste(input$simcustomMCMCcontrol, sep=","))
+    if(customcontrols == ""){
+      s<-isolate(simulate(model1reac(), nsim = input$nsims,
+                       control=control.simulate.ergm(MCMC.burnin=input$simMCMCburnin,
+                                                    MCMC.interval=input$simMCMCinterval)))
+    } else {
+      s<-isolate(simulate(model1reac(), nsim = input$nsims,
+                       control=control.simulate.ergm(MCMC.burnin=input$simMCMCburnin,
+                                                    MCMC.interval=input$simMCMCinterval,
+                                                    eval(parse(text=customcontrols)))))
+    }
+  }
+  s
+  })
 
 #' Currently, the reactive statements that control the sizing/coloring/legend in the 
 #' simulation plots use the attributes from the original network as a point of reference.
@@ -2526,7 +2542,7 @@ observe({
 
 observe({
   input$simMCMCinterval
-  updateNumericInput(session, "simMCMCburnin", value=16*input$MCMCinterval)
+  updateNumericInput(session, "simMCMCburnin", value=16*input$simMCMCinterval)
 })
 
 output$simnum <- renderText({
