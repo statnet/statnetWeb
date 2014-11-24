@@ -1,3 +1,45 @@
+
+div.tool span.tip {
+    z-index:10;
+    display:none; 
+    padding:2px 3px;
+    margin-top:40px; 
+    margin-left:5px;
+    font-size:12px;
+    max-width:300px;
+}
+div.tool:hover span.tip{
+  display:inline; 
+  position:absolute; 
+  color:#333333;
+  border:1px solid #CCCCCC; 
+  border-radius:3px;
+  background:#FFFFFF;
+  box-shadow: 3px 2px 5px 0px #CCCCCC;
+  }
+/*div.tool span.tip::before{
+  z-index:20;
+  content: "";
+  width: 0px;
+	height: 0px;
+	border: 0.8em solid transparent;
+	position: absolute;
+  left: 5%;
+	top: -19px;
+	border-bottom: 10px solid #CCCCCC;
+} */
+div.tool .callout {
+  display:none;
+}
+div.tool:hover .callout {
+  display:inline;
+  z-index: 20;
+  position: absolute;
+  left: 5%;
+  top: -13px;
+}
+
+
 div.busy { 
   position:fixed;
   top: 40%;
