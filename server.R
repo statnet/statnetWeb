@@ -150,8 +150,28 @@ assign('input_termslist', list(),
 observe({
   if(input$startButton == 0) {return()}
   isolate({
-    updateTabsetPanel(session, 'navbar', selected='Data')
+    updateTabsetPanel(session, 'navbar', selected='tab2')
   })
+})
+
+#update active tab in navbar when arrows are clicked
+leftarrowclicks <- reactive({
+  input$dataleft+input$plotleft+input$fitleft+input$mcmcleft+input$gofleft+input$simleft
+})
+rightarrowclicks <- reactive({
+  input$dataright+input$plotright+input$fitright+input$mcmcright+input$gofright+input$simright
+})
+observe({
+  if(leftarrowclicks() == 0) {return()}
+  tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7', 'tab8')
+  current <- isolate(which(input$navbar==tabOptions))
+  updateTabsetPanel(session, 'navbar', selected=tabOptions[current-1])
+})
+observe({
+  if(rightarrowclicks() == 0) {return()}
+  tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7', 'tab8')
+  current <- isolate(which(input$navbar==tabOptions))
+  updateTabsetPanel(session, 'navbar', selected=tabOptions[current+1])
 })
 
 acecode <- reactiveValues(data="library(statnet)")

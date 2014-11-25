@@ -106,7 +106,7 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel('About v0.2.0',
+  tabPanel(title='About v0.2.0', value='tab1',
            fluidRow(
                     column(8,
                            br(),
@@ -216,7 +216,7 @@ url = {http://statnetproject.org}
 #' `div` statement within those tabs.
 #+ eval=FALSE
 
-  tabPanel('Data',
+  tabPanel(title='Data', value='tab2',
            #busy.js is for calculation in progress boxes
            #alert.js is for popup boxes, 
            #jquery libraries are loaded from google cdn, needed for autocomplete
@@ -248,7 +248,7 @@ url = {http://statnetproject.org}
     fluidRow(
       column(7,
         tabsetPanel(id='datatabs',
-          tabPanel('Upload Network', value=1,
+          tabPanel('Upload Network',
                    wellPanel(
                      fluidRow(
                        column(6,
@@ -336,7 +336,7 @@ url = {http://statnetproject.org}
                                   uiOutput('pajchooser')))
                      ))
                    ),
-          tabPanel('Edit Network', value=2,
+          tabPanel('Edit Network',
                    wellPanel(
                      fluidRow(
                       
@@ -429,8 +429,8 @@ url = {http://statnetproject.org}
    div(class="helper-box", style="display:none",
        p('Upload a file of observed network data (must be of a supported type).', 
          'Add custom attributes or symmetrize on the "Edit Network" tab.')),
-  span(icon('arrow-left', class='fa-2x leftarrow'), id='dataleft'),
-  span(icon('arrow-right', class='fa-2x rightarrow'), id='dataright'),
+  actionLink('dataleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+  actionLink('dataright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
       ),
 
 #' **Network Plots**
@@ -445,7 +445,7 @@ url = {http://statnetproject.org}
 #' 
 #+ eval=FALSE
 
-  tabPanel('Network Descriptives',
+  tabPanel(title='Network Descriptives', value='tab3',
     br(), 
     fluidRow(      
      column(7,
@@ -759,6 +759,8 @@ url = {http://statnetproject.org}
      div(class="helper-box", style="display:none",
          p('Use the network plots to gain insight to the observed network.', 
            'Edit the display options in the panel on the right and download a PDF of any of the plots.')),
+    actionLink('plotleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+    actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL),
     
     #include progress box when this tab is loading
     div(class = "busy", 
@@ -775,7 +777,7 @@ url = {http://statnetproject.org}
 #' specified in server.R to prevent errors from NULL values and so that there are 
 #' helpful messages for the user before they begin entering data.
 #+ eval=FALSE                  
-      tabPanel('Fit Model',
+      tabPanel(title='Fit Model',value='tab4',
 
           #include progress bar when this tab is loading
            div(class = "busy", 
@@ -903,13 +905,15 @@ url = {http://statnetproject.org}
         'while the "Summary" tab shows a comprehensive summary of the model fit.',br(),
         'Find more help in the', a('ergm tutorial.', 
                         href='http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html',
-                        target="_blank")))
+                        target="_blank"))),
+actionLink('fitleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
           ),
 #' **MCMC Diagnostics**
 #' 
 #+ eval=FALSE   
 #          navbarMenu('Diagnostics',         
-                    tabPanel('MCMC Diagnostics',
+                    tabPanel(title='MCMC Diagnostics', value='tab5',
                              #include progress bar when this tab is loading
                              div(class = "busy", 
                                  p("Calculation in progress..."),
@@ -952,13 +956,15 @@ url = {http://statnetproject.org}
                                    'the MCMC sample statistics should vary randomly around the',
                                    'observed values at each step, and the difference between the',
                                    'observed and simulated values of the sample statistics should',
-                                   'have a roughly bell shaped distribution, centered at 0.'))
+                                   'have a roughly bell shaped distribution, centered at 0.')),
+                             actionLink('mcmcleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+                             actionLink('mcmcright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              
                     ),
 #' **Goodness of Fit**
 #' 
 #+ eval=FALSE  
-            tabPanel('Goodness of Fit',
+            tabPanel(title='Goodness of Fit',value='tab6',
                      
                      #include progress bar when this tab is loading
                      div(class = "busy", 
@@ -997,14 +1003,16 @@ url = {http://statnetproject.org}
                          p('Test how well your model fits the original data by choosing a network',
                             'statistic that is not in the model, and comparing the value of this',
                             'statistic observed in the original network to the distribution of values',
-                            'you get in simulated networks from your model.'))
+                            'you get in simulated networks from your model.')),
+                     actionLink('gofleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+                     actionLink('gofright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      ),
 
 #             ),
 #' **Simulations**
 #' 
 #+ eval=FALSE  
-          tabPanel('Simulations',
+          tabPanel(title='Simulations', value='tab7',
                    fluidRow(
                      column(7,
                         fluidRow(
@@ -1131,12 +1139,14 @@ url = {http://statnetproject.org}
                          'Plot any individual simulation, or compare',
                          'simulation statistics with target statistics.',
                          'Download any of the plots or a .csv file of the',
-                         'simulation statistics.'))
+                         'simulation statistics.')),
+                   actionLink('simleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+                   actionLink('simright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                    ),
 #' **Help**
 #' 
 #+ eval=FALSE  
-  tabPanel('Help',
+  tabPanel(title='Help', value='tab8',
            sidebarLayout(position = 'right',
                          sidebarPanel(
                            h5('Resources'),

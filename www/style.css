@@ -40,9 +40,33 @@ div.tool:hover .callout {
 }
 
 
-.leftarrow,
-.rightarrow {
-  
+#dataleft, #fitleft,
+#plotleft, #mcmcleft,
+#gofleft, #simleft {
+  position: absolute;
+  top: 50px;
+  right: 65px;
+  color: #A5A5AD;
+  cursor: pointer; 
+}
+#dataright, #fitright,
+#plotright, #mcmcright,
+#gofright, #simright {
+  position: absolute;
+  top: 50px;
+  right: 38px;
+  color: #A5A5AD;
+  cursor: pointer; 
+}
+
+#dataleft:hover, #fitleft:hover,
+#plotleft:hover, #mcmcleft:hover,
+#gofleft:hover, #simleft:hover,
+#dataright:hover, #fitright:hover,
+#plotright:hover, #mcmcright:hover,
+#gofright:hover, #simright:hover,
+.helper-btn:hover {
+  color: #737379;
 }
 
 div.busy { 
@@ -79,8 +103,8 @@ div.busy {
 
 .helper-btn {
     position:fixed;
-    top: 60px;
-    right: 20px;
+    top: 50px;
+    right: 10px;
     color: #A5A5AD;
     cursor: pointer;
 }
