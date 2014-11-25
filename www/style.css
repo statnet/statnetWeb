@@ -40,6 +40,11 @@ div.tool:hover .callout {
 }
 
 
+.leftarrow,
+.rightarrow {
+  
+}
+
 div.busy { 
   position:fixed;
   top: 40%;

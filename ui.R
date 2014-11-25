@@ -428,7 +428,9 @@ url = {http://statnetproject.org}
    icon('question-circle', class='fa-2x helper-btn'),
    div(class="helper-box", style="display:none",
        p('Upload a file of observed network data (must be of a supported type).', 
-         'Add custom attributes or symmetrize on the "Edit Network" tab.'))
+         'Add custom attributes or symmetrize on the "Edit Network" tab.')),
+  span(icon('arrow-left', class='fa-2x leftarrow'), id='dataleft'),
+  span(icon('arrow-right', class='fa-2x rightarrow'), id='dataright'),
       ),
 
 #' **Network Plots**
