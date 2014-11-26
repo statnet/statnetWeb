@@ -476,9 +476,9 @@ url = {http://statnetproject.org}
                    p(class='helper', id='gdhelper', icon('question-circle')),
                    div(class='mischelperbox', id='gdhelperbox',
                        "Geodesics are a dyad level measure for the shortest possible path between a pair of nodes.",
-                       "If there is no path between a pair of nodes, their geodesic distance is 'Inf'.", 
-                       "The geodesic distribution",
-                       "among all possible dyads contributes to the structure of network connectivity."),
+                       'If there is no path between a pair of nodes, the geodesic distance is "inf".', 
+                       "The geodesic distribution among all possible dyads contributes to the",
+                       "structure of network connectivity."),
                    plotOutput('geodistplot')
                    ),
           tabPanel('More', value='More',
@@ -716,6 +716,16 @@ url = {http://statnetproject.org}
                                                    bsButton('freqplot_gd', label = 'Count of vertex pairs', value='count'),
                                                    bsButton('densplot_gd', label = 'Percent of vertex pairs', value='percent')),
                                      br(), br(),
+                                     fluidRow(
+                                       column(10,
+                                              checkboxInput('excludeInfs', 
+                                                            label=span('Exclude "inf"s from plot'), 
+                                                            value=FALSE)),
+                                       span(icon('question-circle'), id="infhelper_gd", class="helper",
+                                            div(id="infhelperbox_gd", class="mischelperbox",
+                                                "A pair of nodes without any path connecting",
+                                                'it has a geodesic distance of "inf".'))),
+                                     br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
                                        column(10,
@@ -739,6 +749,8 @@ url = {http://statnetproject.org}
                                                 "Draws from the distribution of simple random graphs with the same", 
                                                 "stochastic tie probability as the observed network.",
                                                 "The mean and 95% confidence intervals for each degree are plotted."))),
+                                     
+                                     
                                      br(),
                                      downloadButton('geodistdownload', label= 'Download Plot')
                       ),

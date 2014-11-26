@@ -1628,8 +1628,19 @@ output$geodistplot <- renderPlot({
   if(maxgeo < maxgeo_total){
     gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
     names(gdata) <- c(paste(1:maxgeo_total), "Inf")
-    
   }
+  
+  if(input$excludeInfs){
+    gdata <- gdata[1:maxgeo_total]
+    bern_means <- bern_means[1:maxgeo_total]
+    bern_upperline <- bern_upperline[1:maxgeo_total]
+    bern_lowerline <- bern_lowerline[1:maxgeo_total]
+    unif_means <- unif_means[1:maxgeo_total]
+    unif_upperline <- unif_upperline[1:maxgeo_total]
+    unif_lowerline <- unif_lowerline[1:maxgeo_total]
+  }
+  #get maximums to set y limits
+  ylimit <- max(gdata, bern_upperline, unif_upperline)
   
   ltext <- c()
   lcol <- c()

@@ -63,6 +63,10 @@ $(document).ready(function(){
     $("#brghelperbox_gd").toggle(500);
   });
   
+  $("#infhelper_gd").click(function(){
+    $("#infhelperbox_gd").toggle(500);
+  });
+  
   $("#mixmxtitle").click(function(){
     $("#mixmxbox").toggle(1000);
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");

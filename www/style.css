@@ -83,7 +83,7 @@ div.busy {
   padding-bottom: 40px;
   padding-right: 30px;
   border-radius: 5px;
-  z-index: 1;
+  z-index: 50;
 }
 
 #swciteButton,
