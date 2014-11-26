@@ -862,11 +862,9 @@ url = {http://statnetproject.org}
                                                     img(src="callout2.png",class="callout")),
                                 textInput("customMCMCcontrol","Other controls:",value=""))
                             )),
-                     tabPanel("SAN",
-                              p("Coming soon")),
                      tabPanel("MCMLE",
                               p("Coming soon")),
-                     tabPanel("Misc",
+                     tabPanel("Other",
                               p("Coming soon")))
                    )
                    
