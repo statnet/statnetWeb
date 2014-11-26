@@ -422,8 +422,8 @@ url = {http://statnetproject.org}
           )            
     ),
   
-  aceEditor("dataAce", mode="r", theme="textmate", readOnly=TRUE,
-            value="", height="200px"),
+#   aceEditor("dataAce", mode="r", theme="textmate", readOnly=TRUE,
+#             value="", height="200px"),
 
    icon('question-circle', class='fa-2x helper-btn'),
    div(class="helper-box", style="display:none",
