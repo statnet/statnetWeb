@@ -1087,6 +1087,10 @@ output$nwplot <- renderPlot({
   if (!is.network(nw())){
     return()
   }
+  input$plottabs
+  input$rawdatafile
+  input$samplenet
+  
   nw_var <- nw()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
   par(mar = c(0, 0, 0, 0))
@@ -1278,6 +1282,10 @@ output$degreedist <- renderPlot({
   if(!is.network(nw())){
     return()
   }
+  input$plottabs
+  input$rawdatafile
+  input$samplenet
+  
   plotme <- dd_plotdata()
   color <- "#79AED4"
   ylabel <- "Count of Nodes"
@@ -1577,7 +1585,11 @@ output$geodistplot <- renderPlot({
   if(!is.network(nw())){
     return()
   }
-  g <- geodist(nw(),inf.replace=NA)
+  input$plottabs
+  input$rawdatafile
+  input$samplenet
+  
+  g <- geodist(nw(), inf.replace=NA, count.paths=FALSE)
   gdata <- tabulate(g$gdist)
   g$gdist[is.na(g$gdist)] <- Inf
   gdata <- append(gdata, sum(g$gdist == Inf))
@@ -1610,8 +1622,6 @@ output$geodistplot <- renderPlot({
     ylimit <- max(gdata, bern_upperline, unif_upperline)
     ylabel <- "Percent of Vertex Pairs"
   }
-  #get maximums to set y limits
-  ylimit <- max(gdata, bern_upperline, unif_upperline)
   
   # make sure that barplot and lines have the same length
   maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
@@ -1675,7 +1685,7 @@ output$geodistdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_geodist.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=8, width=12)
-    g <- geodist(nw(),inf.replace=NA)
+    g <- geodist(nw(),inf.replace=NA, count.paths=FALSE)
     gdata <- tabulate(g$gdist)
     g$gdist[is.na(g$gdist)] <- Inf
     gdata <- append(gdata, sum(g$gdist == Inf))
@@ -1708,8 +1718,6 @@ output$geodistdownload <- downloadHandler(
       ylimit <- max(gdata, bern_upperline, unif_upperline)
       ylabel <- "Percent of Vertex Pairs"
     }
-    #get maximums to set y limits
-    ylimit <- max(gdata, bern_upperline, unif_upperline)
     
     # make sure that barplot and lines have the same length
     maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
@@ -1726,8 +1734,20 @@ output$geodistdownload <- downloadHandler(
     if(maxgeo < maxgeo_total){
       gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
       names(gdata) <- c(paste(1:maxgeo_total), "INF")
-      
     }
+    
+    if(input$excludeInfs){
+      gdata <- gdata[1:maxgeo_total]
+      bern_means <- bern_means[1:maxgeo_total]
+      bern_upperline <- bern_upperline[1:maxgeo_total]
+      bern_lowerline <- bern_lowerline[1:maxgeo_total]
+      unif_means <- unif_means[1:maxgeo_total]
+      unif_upperline <- unif_upperline[1:maxgeo_total]
+      unif_lowerline <- unif_lowerline[1:maxgeo_total]
+    }
+    
+    #get maximums to set y limits
+    ylimit <- max(gdata, bern_upperline, unif_upperline)
     
     ltext <- c()
     lcol <- c()

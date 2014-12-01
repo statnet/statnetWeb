@@ -446,6 +446,12 @@ url = {http://statnetproject.org}
 #+ eval=FALSE
 
   tabPanel(title='Network Descriptives', value='tab3',
+     #include progress box when this tab is loading
+     div(class = "busy", 
+         p("Calculation in progress..."),
+         img(src="ajax-loader.gif")
+     ),
+     
     br(), 
     fluidRow(      
      column(7,
@@ -454,10 +460,6 @@ url = {http://statnetproject.org}
             plotOutput('nwplot')
             ),
           tabPanel('Degree Distribution',
-                   div(class = "busy", 
-                       p("Calculation in progress..."),
-                       img(src="ajax-loader.gif")
-                   ),
                    p(class='helper', id='ddhelper', icon('question-circle')),
                    div(class='mischelperbox', id='ddhelperbox',
                        "Degrees are a node level measure for the number of edges incident on each node.",
@@ -469,10 +471,6 @@ url = {http://statnetproject.org}
                    plotOutput('degreedist')
                    ),
           tabPanel('Geodesic Distribution',
-                   div(class = "busy", 
-                       p("Calculation in progress..."),
-                       img(src="ajax-loader.gif")
-                   ),
                    p(class='helper', id='gdhelper', icon('question-circle')),
                    div(class='mischelperbox', id='gdhelperbox',
                        "Geodesics are a dyad level measure for the shortest possible path between a pair of nodes.",
@@ -772,13 +770,7 @@ url = {http://statnetproject.org}
          p('Use the network plots to gain insight to the observed network.', 
            'Edit the display options in the panel on the right and download a PDF of any of the plots.')),
     actionLink('plotleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
-    actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL),
-    
-    #include progress box when this tab is loading
-    div(class = "busy", 
-        p("Calculation in progress..."),
-        img(src="ajax-loader.gif")
-        ) 
+    actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
     ),
 
     
