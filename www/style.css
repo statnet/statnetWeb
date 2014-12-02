@@ -207,7 +207,8 @@ div.docpopup {
 
 #simsummary,
 #simstatslabel,
-#simsummary2 {
+#simsummary2,
+#infsummary {
   border-style: none;
   padding: 0px;
   margin: 0px;

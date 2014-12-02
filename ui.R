@@ -723,6 +723,7 @@ url = {http://statnetproject.org}
                                             div(id="infhelperbox_gd", class="mischelperbox",
                                                 "A pair of nodes without any path connecting",
                                                 'it has a geodesic distance of "inf".'))),
+                                     verbatimTextOutput('infsummary'),
                                      br(),
                                      p('Expected values of null models:'),
                                      fluidRow(

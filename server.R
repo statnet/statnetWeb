@@ -1531,6 +1531,16 @@ output$degreedistdownload <- downloadHandler(
 
 #GEODESIC DISTRIBUTION
 
+gdata <- reactive({
+  g <- geodist(nw(), inf.replace=NA, count.paths=FALSE)
+  gdata <- tabulate(g$gdist)
+  g$gdist[is.na(g$gdist)] <- Inf
+  gdata <- append(gdata, sum(g$gdist == Inf))
+  maxgeo <- length(gdata)-1
+  names(gdata) <- c(paste(1:maxgeo), "Inf")
+  gdata
+})
+
 gd_uniformoverlay <- reactive({
   if(!is.network(nw())){
     return()
@@ -1589,12 +1599,8 @@ output$geodistplot <- renderPlot({
   input$rawdatafile
   input$samplenet
   
-  g <- geodist(nw(), inf.replace=NA, count.paths=FALSE)
-  gdata <- tabulate(g$gdist)
-  g$gdist[is.na(g$gdist)] <- Inf
-  gdata <- append(gdata, sum(g$gdist == Inf))
+  gdata <- gdata()
   maxgeo <- length(gdata)-1
-  names(gdata) <- c(paste(1:maxgeo), "Inf")
   
   unif_means <- gd_uniformoverlay()[[1]]
   unif_stderr <- gd_uniformoverlay()[[2]]
@@ -1685,12 +1691,9 @@ output$geodistdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_geodist.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=8, width=12)
-    g <- geodist(nw(),inf.replace=NA, count.paths=FALSE)
-    gdata <- tabulate(g$gdist)
-    g$gdist[is.na(g$gdist)] <- Inf
-    gdata <- append(gdata, sum(g$gdist == Inf))
+
+    gdata <- gdata()
     maxgeo <- length(gdata)-1
-    names(gdata) <- c(paste(1:maxgeo), "Inf")
     
     unif_means <- gd_uniformoverlay()[[1]]
     unif_stderr <- gd_uniformoverlay()[[2]]
@@ -1776,6 +1779,22 @@ output$geodistdownload <- downloadHandler(
              inset=c(.12,0), bty="n")
     }
     dev.off()
+  })
+
+  output$infsummary <- renderPrint({
+    options(digits=3)
+    gdata <- gdata()
+    cols <- length(gdata)
+    obs <- gdata[cols]
+    unif_means <- gd_uniformoverlay()[[1]]
+    unif_sd <- gd_uniformoverlay()[[2]]
+    bern_means <- gd_bernoullioverlay()[[1]]
+    bern_sd <- gd_bernoullioverlay()[[2]]
+    
+    i<-data.frame(Obs=paste(obs), CUG=paste(unif_means[cols],"(",round(unif_sd[cols], digits=2),")",sep=""),
+               BRG=paste(bern_means[cols],"(",round(bern_sd[cols], digits=2),")", sep=""),
+               row.names="Infs:")
+    format(i, justify="centre")
   })
 
 #MORE
