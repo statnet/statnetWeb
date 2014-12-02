@@ -2697,7 +2697,7 @@ output$simstatsplot <- renderPlot({
   sim <- isolate(model1simreac())
   simstats <- attr(sim,'stats')
   targetstats <- summary(ergm.formula())
-  matplot(1:nrow(simstats), simstats, pch=c(0:8),
+  matplot(1:nrow(simstats), simstats, pch=c(1:8),
           col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
                 'orange', 'black', 'grey', 'yellow'),
           xlab="Simulations",ylab="")
@@ -2711,13 +2711,16 @@ output$simstatslegend <- renderPlot({
     return()
   }
   sim <- isolate(model1simreac())
-  simstats <- attr(sim,'stats')
+  termnames <- colnames(attr(sim,'stats'))
+  color <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'orange', 'black', 'grey', 'yellow')
   plot.new()
   par(xpd=TRUE)
-  legend('topleft', inset=c(-.15,0), pch=c(0:8), 
-         legend=colnames(simstats),
-         col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
-               'orange', 'black', 'grey', 'yellow'))
+  legend('topleft', inset=c(-.15,0), 
+         legend=c(termnames, paste("target stat:",termnames)),
+         pch=c(1:length(termnames), rep(NA,length(termnames))),
+         lty=c(rep(NA,length(termnames)),rep(1,length(termnames))),
+         col=rep(color[1:length(termnames)],2))
 })
 
 output$simstatsplotdownload <- downloadHandler(
@@ -2726,20 +2729,22 @@ output$simstatsplotdownload <- downloadHandler(
     pdf(file=file, height=8, width=15)
     sim <- isolate(model1simreac())
     simstats <- attr(sim,'stats')
+    termnames <- colnames(attr(sim,'stats'))
     targetstats <- summary(ergm.formula())
-    par(mar=c(5,4,4,8)) #increase margin on right to accommodate legend
-    matplot(1:nrow(simstats), simstats, pch=c(0:8),
-            col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
-                  'orange', 'black', 'grey', 'yellow'),
+    color <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+               'orange', 'black', 'grey', 'yellow')
+    par(mar=c(5,4,4,12)) #increase margin on right to accommodate legend
+    matplot(1:nrow(simstats), simstats, pch=c(1:8),
+            col=color,
             xlab="Simulations",ylab="")
     abline(h=c(targetstats),
-           col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
-                 'orange', 'black', 'grey', 'yellow'))
+           col=color)
     par(xpd=TRUE)
-    legend('topright', inset=c(-.08,0), pch=c(0:8), 
-           legend=colnames(simstats),
-           col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
-                 'orange', 'black', 'grey', 'yellow'))
+    legend('topright', inset=c(-.2,0),
+           legend=c(termnames, paste("target stat:",termnames)),
+           pch=c(1:length(termnames), rep(NA,length(termnames))),
+           lty=c(rep(NA,length(termnames)),rep(1,length(termnames))),
+           col=rep(color[1:length(termnames)],2))
     dev.off()
   }
 )
