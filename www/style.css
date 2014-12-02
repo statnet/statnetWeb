@@ -207,10 +207,14 @@ div.docpopup {
 
 #simsummary,
 #simstatslabel,
-#simsummary2,
-#infsummary {
+#simsummary2 {
   border-style: none;
   padding: 0px;
+  margin: 0px;
+}
+#infsummary {
+  border-style: none;
+  padding: 0 0 8 0px;
   margin: 0px;
 }
 #simcoef,

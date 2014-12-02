@@ -714,17 +714,6 @@ url = {http://statnetproject.org}
                                                    bsButton('freqplot_gd', label = 'Count of vertex pairs', value='count'),
                                                    bsButton('densplot_gd', label = 'Percent of vertex pairs', value='percent')),
                                      br(), br(),
-                                     fluidRow(
-                                       column(10,
-                                              checkboxInput('excludeInfs', 
-                                                            label=span('Exclude "inf"s from plot'), 
-                                                            value=FALSE)),
-                                       span(icon('question-circle'), id="infhelper_gd", class="helper",
-                                            div(id="infhelperbox_gd", class="mischelperbox",
-                                                "A pair of nodes without any path connecting",
-                                                'it has a geodesic distance of "inf".'))),
-                                     verbatimTextOutput('infsummary'),
-                                     br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
                                        column(10,
@@ -748,8 +737,17 @@ url = {http://statnetproject.org}
                                                 "Draws from the distribution of simple random graphs with the same", 
                                                 "stochastic tie probability as the observed network.",
                                                 "The mean and 95% confidence intervals for each degree are plotted."))),
-                                     
-                                     
+                                     br(),
+                                     verbatimTextOutput('infsummary'),
+                                     fluidRow(
+                                       column(10,
+                                              checkboxInput('excludeInfs', 
+                                                            label=span('Exclude "inf"s from plot'), 
+                                                            value=FALSE)),
+                                       span(icon('question-circle'), id="infhelper_gd", class="helper",
+                                            div(id="infhelperbox_gd", class="mischelperbox",
+                                                "A pair of nodes without any path connecting",
+                                                'it has a geodesic distance of "inf".'))),
                                      br(),
                                      downloadButton('geodistdownload', label= 'Download Plot')
                       ),

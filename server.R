@@ -1791,10 +1791,15 @@ output$geodistdownload <- downloadHandler(
     bern_means <- gd_bernoullioverlay()[[1]]
     bern_sd <- gd_bernoullioverlay()[[2]]
     
-    i<-data.frame(Obs=paste(obs), CUG=paste(unif_means[cols],"(",round(unif_sd[cols], digits=2),")",sep=""),
-               BRG=paste(bern_means[cols],"(",round(bern_sd[cols], digits=2),")", sep=""),
-               row.names="Infs:")
-    format(i, justify="centre")
+#     v<-data.frame(Obs=paste(obs), CUG=paste(unif_means[cols],"(",round(unif_sd[cols], digits=2),")",sep=""),
+#                BRG=paste(bern_means[cols],"(",round(bern_sd[cols], digits=2),")", sep=""),
+#                row.names="Infs:")
+#     format(v, justify="centre")
+    v <- c(paste0(unif_means[cols],"(",round(unif_sd[cols], digits=2),")"),
+           paste0(bern_means[cols],"(",round(bern_sd[cols], digits=2),")"))
+    cat(format("",width=4),format("Observed",width=8),format(c("CUG","BRG"),width=11,justify="centre"),"\n")
+    cat(format("Infs:",width=3,justify="centre"),format(paste(obs),width=8,justify="centre"),
+        format(v,width=10,justify="centre"))
   })
 
 #MORE
