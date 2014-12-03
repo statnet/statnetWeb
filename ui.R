@@ -886,17 +886,21 @@ url = {http://statnetproject.org}
                   p('Summary statistics:')),
            column(10,
                   verbatimTextOutput('prefitsum'))),
-         
+        fluidRow(column(12,
+          uiOutput('savemodel'),
+          bsActionButton('clearmodelButton',label='Clear All Models', block=FALSE)
+          )),
          br(),
          tags$hr(),
          p(strong('Results'),br(),
            'Check for model degeneracy in the "Diagnostics" tab.'),
          br(),
          tabsetPanel(id = 'fittingTabs',
-           tabPanel('Fitting',
+           tabPanel('Current Model Fitting',
                     verbatimTextOutput('modelfit')),
-           tabPanel('Model Summary',
-                    verbatimTextOutput('modelfitsum'))
+           tabPanel('Current Model Summary',
+                    verbatimTextOutput('modelfitsum')),
+           tabPanel('Model Comparison')
           ),
   div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",

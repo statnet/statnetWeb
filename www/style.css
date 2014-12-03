@@ -159,6 +159,9 @@ div.chromewarningbox {
   border-radius: 5px;
   z-index: 10;
 }
+#savemodel {
+  display:inline;
+}
 
 #mixmxbox, #graphlevelbox,
 #nodelevelbox {

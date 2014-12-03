@@ -146,6 +146,8 @@ assign('input_termslist', list(),
 #' definition of the numeric vertex attributes, we call `attrib()`.    
 #+ eval=FALSE
 
+values <- reactiveValues()
+
 #move to Data panel when user clicks Get Started button
 observe({
   if(input$startButton == 0) {return()}
@@ -804,6 +806,33 @@ model1reac <- reactive({
   }
   f
   })
+
+#Keep track of saved models
+values$modeltotal <- 0
+observe({
+  #increment label on save model button
+  if(!is.null(input$savemodelButton)){
+    m <- isolate(values$modeltotal)
+    if(input$savemodelButton > 0 & m < 5){
+      values$modeltotal <- isolate(m+1)
+    }
+  }
+})
+observe({
+  #disable savemodelButton after 5 models have been saved
+  if(values$modeltotal == 5){
+    updateButton(session, 'savemodelButton', disabled=TRUE)
+  } else {
+    updateButton(session, 'savemodelButton', disabled=FALSE)
+  }
+})
+observe({
+  #clear saved models
+  if(input$clearmodelButton==0){
+    return()
+  }
+  values$modeltotal<-isolate(0)
+})
 
 #use default gof formula
 model1gof <- reactive({
@@ -2361,6 +2390,13 @@ output$prefitsum <- renderPrint({
   options(width=150)
   summary(ergm.formula())
 })
+
+output$savemodel <- renderUI({
+  m <- values$modeltotal
+  bsActionButton('savemodelButton',label=paste0('Save Current Model (',m,'/5)'),
+                 block=FALSE)
+})
+outputOptions(output,'savemodel',suspendWhenHidden=FALSE)
 
 state <- reactiveValues(modelfit = 0)
 
