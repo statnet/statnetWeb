@@ -1,7 +1,7 @@
 # takes an ergm object and gathers some of the information from
 # `summary.ergm`, in preparation to be passed to `model.comparison`
 
-ergmsummary_short <- function(object) {
+ergminfo <- function(object) {
   coefs <- object$coef
   terms <- names(object$coef)
   coefmatrix <- summary(object)$coefs
@@ -20,4 +20,18 @@ ergmsummary_short <- function(object) {
   ans$aic <- summary(object)$aic
   ans$bic <- summary(object)$bic
   ans
+}
+
+# takes in a list of multiple outputs from ergminfo,
+# formatting it all into a table comparing up to 5 models
+
+model.comparison <- function(listobj) {
+  n <- length(listobj)
+  if(n>5) {stop("List of length greater than 5 passed to model.comparison")}
+  allterms <- c()
+  for(j in n){
+    allterms <- append(allterms, names(listobj[[j]]))
+  }
+  allterms <- sort(unique(allterms))
+  
 }
