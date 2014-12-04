@@ -63,7 +63,7 @@ library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
 #source("chooser.R")
-
+source("modelcomp.R")
 
 #' Loading data and assigning variables outside of the call to `shinyServer`
 #' saves time because this code will not get re-run.These don't depend on any user input
@@ -809,13 +809,20 @@ model1reac <- reactive({
 
 #Keep track of saved models
 values$modeltotal <- 0
+values$multiplemodelsum <- list()
 observe({
-  #increment label on save model button
   if(!is.null(input$savemodelButton)){
     m <- isolate(values$modeltotal)
     if(input$savemodelButton > 0 & m < 5){
-      values$modeltotal <- isolate(m+1)
+      #increment label on save model button
+      values$modeltotal <- m+1
     }
+  }
+})
+observe({
+  m <- values$modeltotal
+  if(m > 0 & m < 5){
+    values$multiplemodelsum[[m]] <- isolate(ergminfo(model1reac()))
   }
 })
 observe({
@@ -832,6 +839,7 @@ observe({
     return()
   }
   values$modeltotal<-isolate(0)
+  values$multiplemodelsum <- list()
 })
 
 #use default gof formula
@@ -2427,6 +2435,12 @@ output$modelfitsum <- renderPrint({
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   summary(model1reac())
+})
+
+output$modelcomparison <- renderPrint({
+  x <- values$multiplemodelsum
+  if(length(x)==0){return(cat(""))}
+  model.comparison(x)
 })
 
 #make sure that mcmc iterations output on the fitting tab by allowing

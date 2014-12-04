@@ -27,6 +27,7 @@ ergminfo <- function(object) {
 
 model.comparison <- function(listobj) {
   n <- length(listobj)
+  if(n==0) {stop("No model summaries were passed to model.comparison")}
   if(n>5) {stop("List of length greater than 5 passed to model.comparison")}
   allterms <- c()
   for(j in 1:n){

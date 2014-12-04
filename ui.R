@@ -900,7 +900,8 @@ url = {http://statnetproject.org}
                     verbatimTextOutput('modelfit')),
            tabPanel('Current Model Summary',
                     verbatimTextOutput('modelfitsum')),
-           tabPanel('Model Comparison')
+           tabPanel('Model Comparison',
+                    verbatimTextOutput('modelcomparison'))
           ),
   div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",
