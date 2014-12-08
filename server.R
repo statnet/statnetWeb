@@ -807,6 +807,11 @@ model1reac <- reactive({
   f
   })
 
+# values$modelstate keeps track of whether model fit is oudated,
+# equal to 0 if the nw changes and a new model has not been fit yet
+# equal to 1 otherwise
+values$modelstate <- 0
+
 #Keep track of saved models
 values$modeltotal <- 0
 values$multiplemodelsum <- list()
@@ -820,26 +825,40 @@ observe({
   }
 })
 observe({
+  # multiplemodelsum is a list object, each element is a list of 
+  # coefficients and stars for a single model
   m <- values$modeltotal
   if(m > 0 & m < 5){
     values$multiplemodelsum[[m]] <- isolate(ergminfo(model1reac()))
   }
 })
 observe({
-  #disable savemodelButton after 5 models have been saved
-  if(values$modeltotal == 5){
+  #disable savemodelButton before any models have been saved, 
+  #after 5 models have been saved, or after the network changes
+  if(input$fitButton == 0){
+    updateButton(session, 'savemodelButton', disabled=TRUE)
+  } else if(values$modeltotal == 5){
+    updateButton(session, 'savemodelButton', disabled=TRUE)
+  } else if(values$modelstate == 0){
     updateButton(session, 'savemodelButton', disabled=TRUE)
   } else {
     updateButton(session, 'savemodelButton', disabled=FALSE)
   }
 })
 observe({
-  #clear saved models
+  #clear saved models after button click
   if(input$clearmodelButton==0){
     return()
   }
   values$modeltotal<-isolate(0)
   values$multiplemodelsum <- list()
+})
+observe({
+  #clear saved models when network changes
+  if(values$modelstate==0){
+    values$modeltotal<-isolate(0)
+    values$multiplemodelsum <- list()
+  }
 })
 
 #use default gof formula
@@ -2406,22 +2425,20 @@ output$savemodel <- renderUI({
 })
 outputOptions(output,'savemodel',suspendWhenHidden=FALSE)
 
-state <- reactiveValues(modelfit = 0)
-
 observe({
   input$fitButton
-  state$modelfit <- 1  #modelfit is up to date
+  values$modelstate <- 1  #modelfit is up to date
 })
 observe({
   nw()
-  state$modelfit <- 0 #modelfit is outdated when nw changes
+  values$modelstate <- 0 #modelfit is outdated when nw changes
 })
 
 output$modelfit <- renderPrint({
   if (input$fitButton == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
-  if (state$modelfit == 0){
+  if (values$modelstate == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   model1reac()
@@ -2431,7 +2448,7 @@ output$modelfitsum <- renderPrint({
   if (input$fitButton == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
-  if (state$modelfit == 0){
+  if (values$modelstate == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   summary(model1reac())
