@@ -2460,6 +2460,16 @@ output$modelcomparison <- renderPrint({
   model.comparison(x)
 })
 
+output$modelcompdownload <- downloadHandler(
+  filename = function() {paste0(nwname(),"_modelcomparison.csv")},
+  contentType = "text/csv",
+  content = function(file) {
+    x <- values$multiplemodelsum
+    x <- model.comparison(x)
+    write.csv(x, file)
+  }
+)
+
 #make sure that mcmc iterations output on the fitting tab by allowing
 #modelfit to update even when other tab is active
 

@@ -901,7 +901,8 @@ url = {http://statnetproject.org}
            tabPanel('Current Model Summary',
                     verbatimTextOutput('modelfitsum')),
            tabPanel('Model Comparison',
-                    verbatimTextOutput('modelcomparison'))
+                    verbatimTextOutput('modelcomparison'),
+                    downloadButton("modelcompdownload", "Download"))
           ),
   div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",
