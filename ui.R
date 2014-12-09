@@ -764,7 +764,7 @@ url = {http://statnetproject.org}
                                                   
           fluidRow(
             column(2,
-               p('Current network:', verbatimTextOutput('currentdataset1'))),
+               p('Network:', verbatimTextOutput('currentdataset1'))),
             
             column(5,
                    p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
@@ -875,7 +875,6 @@ url = {http://statnetproject.org}
            tabPanel('Current Model Summary',
                     verbatimTextOutput('modelfitsum')),
            tabPanel('Model Comparison',
-                    uiOutput('choosemodelui'),
                     verbatimTextOutput('modelcomparison'),
                     downloadButton("modelcompdownload", "Download"))
           ),
@@ -904,10 +903,11 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              
                              fluidRow(
                                column(2,
-                                      p('Current network:', verbatimTextOutput('currentdataset3'))),
+                                      p('Network:', class="nwlabel"), verbatimTextOutput('currentdataset3')),
                                column(10,
-                                      p('Current ergm formula:',
-                                        verbatimTextOutput('checkterms3')))
+                                      p('ergm formula:',style="display:inline;"),
+                                        uiOutput('uichoosemodel3'),
+                                        verbatimTextOutput('checkterms3'))
                              ),     
                              br(),
                              tags$hr(),
@@ -956,9 +956,9 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      
                      fluidRow(
                        column(2,
-                              p('Current network:', verbatimTextOutput('currentdataset2'))),
+                              p('Network:', verbatimTextOutput('currentdataset2'))),
                        column(10,
-                              p('Current ergm formula:',
+                              p('ergm formula:',
                                 verbatimTextOutput('checkterms2')))
                       ),
                      p('If you do not specify a term the default formula for undirected 
@@ -999,7 +999,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      column(7,
                         fluidRow(
                           column(4,
-                              p('Current network:', verbatimTextOutput('currentdataset4'))),
+                              p('Network:', verbatimTextOutput('currentdataset4'))),
                           column(5,
                                  customNumericInput('nsims', class="input-small",
                                                     labelstyle="display:block; padding-bottom:5px;",
@@ -1008,7 +1008,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                     value = 1),
                                  actionButton('simButton', 'Simulate'))
                           ),
-                        p('Current ergm formula:',
+                        p('ergm formula:',
                           verbatimTextOutput('checkterms4'))   
                         ),
                      column(5,

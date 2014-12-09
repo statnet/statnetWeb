@@ -792,7 +792,10 @@ values$modelstate <- 0
 
 #Keep track of saved models
 values$modeltotal <- 0
-values$multiplemodelsum <- list()
+values$modelcoefs <- list()
+values$modelformulas <- list()
+values$modelfits <- list()
+
 observe({
   if(!is.null(input$savemodelButton)){
     m <- isolate(values$modeltotal)
@@ -803,11 +806,14 @@ observe({
   }
 })
 observe({
-  # multiplemodelsum is a list object, each element is a list of 
+  # Add to lists that hold info for each model
+  # values$modelcoefs is a list object, each element is a list of 
   # coefficients and stars for a single model
   m <- values$modeltotal
   if(m > 0 & m < 5){
-    values$multiplemodelsum[[m]] <- isolate(ergminfo(model1reac()))
+    values$modelcoefs[[m]] <- isolate(ergminfo(model1reac()))
+    values$modelformulas[[m]] <- isolate(ergm.terms())
+    values$modelfits[[m]] <- isolate(model1reac())
   }
 })
 observe({
@@ -829,13 +835,17 @@ observe({
     return()
   }
   values$modeltotal<-isolate(0)
-  values$multiplemodelsum <- list()
+  values$modelcoefs <- list()
+  values$modelformulas <- list()
+  values$modelfits <- list()
 })
 observe({
   #clear saved models when network changes
   if(values$modelstate==0){
     values$modeltotal<-isolate(0)
-    values$multiplemodelsum <- list()
+    values$modelcoefs <- list()
+    values$modelformulas <- list()
+    values$modelfits <- list()
   }
 })
 
@@ -2432,21 +2442,8 @@ output$modelfitsum <- renderPrint({
   summary(model1reac())
 })
 
-output$choosemodelui <- renderUI({
-  n <- values$modeltotal
-  if(n == 0){
-    selectInput("choosemodel",label=NULL,
-                choices=c("Current"),
-                selectize=FALSE)
-  } else {
-    selectInput("choosemodel",label=NULL,
-                      choices=c("Current",paste0("Model",1:n)),
-                      selectize=FALSE)
-  }
-})
-
 output$modelcomparison <- renderPrint({
-  x <- values$multiplemodelsum
+  x <- values$modelcoefs
   if(length(x)==0){return(cat(""))}
   model.comparison(x)
 })
@@ -2455,7 +2452,7 @@ output$modelcompdownload <- downloadHandler(
   filename = function() {paste0(nwname(),"_modelcomparison.csv")},
   contentType = "text/csv",
   content = function(file) {
-    x <- values$multiplemodelsum
+    x <- values$modelcoefs
     x <- model.comparison(x)
     write.csv(x, file)
   }
@@ -2480,6 +2477,21 @@ outputOptions(output, "modelfitsum",priority=-10)
 #' 
 #+ eval=FALSE
 
+
+output$uichoosemodel3 <- renderUI({
+  n <- values$modeltotal
+  if(n == 0){
+    inlineSelectInput("choosemodel3",label=NULL,
+                choices=c("Current"),
+                selectize=FALSE)
+  } else {
+    inlineSelectInput("choosemodel3",label=NULL,
+                choices=c(paste0("Model",1:n)),
+                selectize=FALSE)
+  }
+})
+outputOptions(output,"uichoosemodel3",suspendWhenHidden=FALSE)
+
 output$checkterms3 <- renderPrint({
   if(is.null(nw())){
     return(cat('Upload a network'))
@@ -2487,8 +2499,15 @@ output$checkterms3 <- renderPrint({
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
   }
-  cat(isolate(ergm.terms()))
+  mod <- input$choosemodel3
+  if(mod=="Current"){
+    cat(isolate(ergm.terms()))
+  } else {
+    mod <- as.numeric(substr(mod,6,6))
+    cat(values$modelformulas[[mod]])
+  }
 })
+
 output$currentdataset3 <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
@@ -2497,16 +2516,33 @@ output$currentdataset3 <- renderPrint({
 })
 
 output$diagnosticsplot <- renderPlot({
-  vpp <- length(model1reac()$coef)
+  if(ergm.terms()=="NA"){
+    return()
+  }
+  mod <- input$choosemodel3
+  if(mod=="Current"){
+    mod <- model1reac()
+  } else {
+    modn <- as.numeric(substr(mod,6,6))
+    mod <- values$modelfits[[modn]]
+  }
+  vpp <- length(mod$coef)
   tryCatch(
-    mcmc.diagnostics(model1reac(), vars.per.page = vpp),
+    mcmc.diagnostics(mod, vars.per.page = vpp),
     error = function(e) cat("MCMC was not run or MCMC sample was not stored."))
 })
 
 output$mcmcplotdownload <- downloadHandler(
-  vpp <- length(model1reac()$coef),
   filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
   content = function(file){
+    mod <- input$choosemodel3
+    if(mod=="Current"){
+      mod <- model1reac()
+    } else {
+      modn <- as.numeric(substr(mod,6,6))
+      mod <- values$modelfits[[modn]]
+    }
+    vpp <- length(mod$coef)
     pdf(file=file, height=vpp*4/3, width=10)
     tryCatch(
       mcmc.diagnostics(model1reac(), vars.per.page = vpp),
@@ -2516,19 +2552,33 @@ output$mcmcplotdownload <- downloadHandler(
 )
 
 output$diagnosticsplotspace <- renderUI({
-  if(input$fitButton == 0){
+  if(input$fitButton == 0 | ergm.terms()=="NA"){
     return()
   }
-  vpp <- length(model1reac()$coef) 
+  mod <- input$choosemodel3
+  if(mod=="Current"){
+    mod <- model1reac()
+  } else {
+    modn <- as.numeric(substr(mod,6,6))
+    mod <- values$modelfits[[modn]]
+  }
+  vpp <- length(mod$coef)
   plotOutput('diagnosticsplot', height = vpp*400/2)
 })
 
 output$diagnostics <- renderPrint({
-  if(input$fitButton == 0){
+  if(input$fitButton == 0 | ergm.terms()=="NA"){
     return()
   }
+  mod <- input$choosemodel3
+  if(mod=="Current"){
+    mod <- model1reac()
+  } else {
+    modn <- as.numeric(substr(mod,6,6))
+    mod <- values$modelfits[[modn]]
+  }
   isolate(tryCatch(
-    mcmc.diagnostics(model1reac()),
+    mcmc.diagnostics(mod),
     error = function(e) cat("MCMC was not run or MCMC sample was not stored.")))
 })
 outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)

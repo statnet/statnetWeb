@@ -208,6 +208,16 @@ div.docpopup {
   background: #FFFFFF;
 }
 
+#uichoosemodel3 {
+  display:inline;
+  padding:4px 6px;
+  margin-bottom:5px;
+}
+
+.nwlabel {
+  margin:8px 0px 11px;
+}
+
 #simsummary,
 #simstatslabel,
 #simsummary2 {
