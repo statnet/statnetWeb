@@ -849,10 +849,10 @@ observe({
   }
 })
 
-#use default gof formula
 model1gof <- reactive({
   input$gofButton
   if(input$gofterm == ''){
+    #use default gof formula
     model1gof <- gof(model1reac())
   } else {
     gofform <- formula(paste('model1reac() ~ ', input$gofterm, sep = ''))
