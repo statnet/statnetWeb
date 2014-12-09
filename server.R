@@ -82,28 +82,6 @@ data(kapferer)
 
 options(digits=3)
 
-#create a list of unique term names
-# UNCOMMENT AFTER STATNET RELEASE FOR TERM DOCUMENTATION
-# allterms <- search.ergmTerms()
-# inds <- gregexpr(pattern='\\(', allterms)
-# for(i in 1:length(allterms)){
-#   allterms[i] <- substr(allterms[[i]], start=1, stop=inds[[i]][1]-1)
-# }
-# allterms <- unique(allterms)
-
-#new function to disable widgets when they should not be usable
-disableWidget <- function(id, session, disabled=TRUE){
-  if(disabled){
-    session$sendCustomMessage(type="jsCode",
-                              list(code=paste("$('#",id,"').prop('disabled',true)",
-                                               sep="")))
-  } else {
-    session$sendCustomMessage(type="jsCode",
-                              list(code=paste("$('#",id,"').prop('disabled',false)",
-                                              sep="")))
-  }
-}
-
 shinyServer(
   function(input, output, session){
 
@@ -2452,6 +2430,19 @@ output$modelfitsum <- renderPrint({
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
   summary(model1reac())
+})
+
+output$choosemodelui <- renderUI({
+  n <- values$modeltotal
+  if(n == 0){
+    selectInput("choosemodel",label=NULL,
+                choices=c("Current"),
+                selectize=FALSE)
+  } else {
+    selectInput("choosemodel",label=NULL,
+                      choices=c("Current",paste0("Model",1:n)),
+                      selectize=FALSE)
+  }
 })
 
 output$modelcomparison <- renderPrint({

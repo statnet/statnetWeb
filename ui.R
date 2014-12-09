@@ -44,40 +44,14 @@
 #' **Code**
 #' 
 #' Before the call to `shinyUI`, make sure that necessary packages are loaded
-#' and create any custom widgets that we will use in the app.
+#' and create any custom widgets that we will use in the app.(Custom widgets are
+#' in global.R now)
 #+ setup, eval=FALSE
 # load necessary packages
 library(shiny)
 library(shinyBS)
 library(shinyAce)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
-
-#' Functions to create new widgets
-#+ eval=FALSE
-# version of textInput with more size options
-# specify class = "input-small" or class="input-mini" in addition to other textInput args
-customTextInput<-function (inputId, label, value="",...) {
-  tagList(
-    tags$label(label, `for` = inputId), 
-    tags$input(id = inputId, type="text", value=value,...))
-}
-
-customNumericInput<-function (inputId, label, value=0, labelstyle="display:inline;", ...) {
-  tagList(
-    tags$label(label, `for` = inputId, style=labelstyle), 
-    tags$input(id = inputId, type="number", value=value,...))
-}
-
-#version of selectInput...shorter box and label inline
-#lapply allows us to add each element of choices as an option in the select menu
-inlineSelectInput<-function (inputId, label, choices,...) {
-  tagList(
-    tags$label(label, `for` = inputId, style="display:inline"), 
-    tags$select(id = inputId, choices=choices,..., 
-                style="width:100px; line-height:20px; font-size:12px",
-                class="shiny-bound-input",
-                lapply(choices, tags$option)))
-}
 
 
 #' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
@@ -901,6 +875,7 @@ url = {http://statnetproject.org}
            tabPanel('Current Model Summary',
                     verbatimTextOutput('modelfitsum')),
            tabPanel('Model Comparison',
+                    uiOutput('choosemodelui'),
                     verbatimTextOutput('modelcomparison'),
                     downloadButton("modelcompdownload", "Download"))
           ),
