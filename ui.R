@@ -870,13 +870,14 @@ url = {http://statnetproject.org}
          )),
          br(),
          tabsetPanel(id = 'fittingTabs',
+           tabPanel('Current Model Summary',
+                    verbatimTextOutput('modelfitsum'),
+                    downloadButton("modelfitdownload", "Download Summary (.txt)")),
            tabPanel('Current Model Fit Report',
                     verbatimTextOutput('modelfit')),
-           tabPanel('Current Model Summary',
-                    verbatimTextOutput('modelfitsum')),
            tabPanel('Model Comparison',
                     verbatimTextOutput('modelcomparison'),
-                    downloadButton("modelcompdownload", "Download"))
+                    downloadButton("modelcompdownload", "Download Comparison (.txt)"))
           ), br(),br(),
   div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",

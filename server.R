@@ -2442,6 +2442,14 @@ output$modelfitsum <- renderPrint({
   summary(model1reac())
 })
 
+output$modelfitdownload <- downloadHandler(
+  filename = function() {paste0(nwname(),"_modelfit.txt")},
+  contentType = "text/csv",
+  content = function(file) {
+    capture.output(summary(model1reac()),file=file)
+  }
+)
+
 output$modelcomparison <- renderPrint({
   x <- values$modelcoefs
   if(length(x)==0){return(cat(""))}
@@ -2449,12 +2457,12 @@ output$modelcomparison <- renderPrint({
 })
 
 output$modelcompdownload <- downloadHandler(
-  filename = function() {paste0(nwname(),"_modelcomparison.csv")},
+  filename = function() {paste0(nwname(),"_modelcomparison.txt")},
   contentType = "text/csv",
   content = function(file) {
     x <- values$modelcoefs
     x <- model.comparison(x)
-    write.csv(x, file)
+    capture.output(cat(nwname(),"\n"),x,file=file)
   }
 )
 
