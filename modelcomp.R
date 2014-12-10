@@ -33,7 +33,7 @@ model.comparison <- function(listobj) {
   for(j in 1:n){
     allterms <- append(allterms, names(listobj[[j]]))
   }
-  allterms <- sort(unique(allterms))
+  allterms <- unique(allterms)
   allterms <- c(allterms[-which(allterms=="AIC")],"AIC")
   allterms <- c(allterms[-which(allterms=="BIC")],"BIC")
   mat <- matrix(nrow=length(allterms),ncol=n)
