@@ -848,7 +848,6 @@ url = {http://statnetproject.org}
                    )
 
             ),
-
             
          fluidRow(
            column(2,
@@ -860,14 +859,15 @@ url = {http://statnetproject.org}
                   p('Summary statistics:')),
            column(10,
                   verbatimTextOutput('prefitsum'))),
-        fluidRow(column(12,
-          uiOutput('savemodel'),
-          bsActionButton('clearmodelButton',label='Clear All Models', block=FALSE)
-          )),
          br(),
          tags$hr(),
          p(strong('Results'),br(),
            'Check for model degeneracy in the "Diagnostics" tab.'),
+         fluidRow(column(12,
+                         uiOutput('savemodel'),
+                         bsActionButton('clearmodelButton',
+                                        label='Clear All Models', block=FALSE)
+         )),
          br(),
          tabsetPanel(id = 'fittingTabs',
            tabPanel('Current Model Fit Report',
