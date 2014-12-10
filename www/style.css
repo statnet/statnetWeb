@@ -208,7 +208,9 @@ div.docpopup {
   background: #FFFFFF;
 }
 
-#uichoosemodel3 {
+#uichoosemodel2,
+#uichoosemodel3,
+#uichoosemodel4 {
   display:inline;
   padding:4px 6px;
   margin-bottom:5px;

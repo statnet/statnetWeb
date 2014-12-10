@@ -2607,6 +2607,19 @@ output$currentdataset2 <- renderPrint({
   cat(nwname())
 })
 
+output$uichoosemodel2 <- renderUI({
+  n <- values$modeltotal
+  if(n == 0){
+    inlineSelectInput("choosemodel2",label=NULL,
+                      choices=c("Current"),
+                      selectize=FALSE)
+  } else {
+    inlineSelectInput("choosemodel2",label=NULL,
+                      choices=c(paste0("Model",1:n)),
+                      selectize=FALSE)
+  }
+})
+outputOptions(output,"uichoosemodel2",suspendWhenHidden=FALSE)
 #formula only updates after fitButton has been clicked
 output$checkterms2 <- renderPrint({
   if(!is.network(nw())){
@@ -2615,7 +2628,13 @@ output$checkterms2 <- renderPrint({
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
   }
-  cat(isolate(ergm.terms()))
+  mod <- input$choosemodel2
+  if(mod=="Current"){
+    cat(isolate(ergm.terms()))
+  } else {
+    mod <- as.numeric(substr(mod,6,6))
+    cat(values$modelformulas[[mod]])
+  }
 })
 
 #state$gof will toggle between two states, depending on
@@ -2703,6 +2722,20 @@ output$gofplotspace <- renderUI({
 #' command in an if-statement. The rest of the display options should look familiar
 #' from the 'Plot Network' tab.
 #+ eval=FALSE
+output$uichoosemodel4 <- renderUI({
+  n <- values$modeltotal
+  if(n == 0){
+    inlineSelectInput("choosemodel4",label=NULL,
+                      choices=c("Current"),
+                      selectize=FALSE)
+  } else {
+    inlineSelectInput("choosemodel4",label=NULL,
+                      choices=c(paste0("Model",1:n)),
+                      selectize=FALSE)
+  }
+})
+outputOptions(output,"uichoosemodel4",suspendWhenHidden=FALSE)
+
 output$checkterms4 <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))

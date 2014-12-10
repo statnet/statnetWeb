@@ -956,10 +956,12 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      
                      fluidRow(
                        column(2,
-                              p('Network:', verbatimTextOutput('currentdataset2'))),
+                              p('Network:', class="nwlabel"), 
+                              verbatimTextOutput('currentdataset2')),
                        column(10,
-                              p('ergm formula:',
-                                verbatimTextOutput('checkterms2')))
+                              p('ergm formula:',style="display:inline;"),
+                              uiOutput('uichoosemodel2'),
+                              verbatimTextOutput('checkterms2'))
                       ),
                      p('If you do not specify a term the default formula for undirected 
                        networks is ', code('~ degree + espartners + distance'), 'and for 
@@ -973,13 +975,18 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      fluidRow(
                         column(3, actionButton('gofButton', 'Run'))),
                      br(),
-                     tags$hr(),
-                     fluidRow(
-                     column(5,
-                            verbatimTextOutput('gofsummary')),  
-                     column(7,
-                            uiOutput('gofplotspace'),
-                            downloadButton('gofplotdownload', label = 'Download Plots'))),
+                 tabsetPanel(
+                   tabPanel("Current Model",
+                            fluidRow(
+                              column(5,
+                                     verbatimTextOutput('gofsummary')),  
+                              column(7,
+                                     uiOutput('gofplotspace'),
+                                     downloadButton('gofplotdownload', label = 'Download Plots')))
+                            ),
+                   tabPanel("Compare Models")
+                   ),
+                 
                      div(id='goftabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
                      div(class="helper-box", style="display:none",
                          p('Test how well your model fits the original data by choosing a network',
@@ -1008,8 +1015,9 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                     value = 1),
                                  actionButton('simButton', 'Simulate'))
                           ),
-                        p('ergm formula:',
-                          verbatimTextOutput('checkterms4'))   
+                        p('ergm formula:',style="display:inline;"),
+                        uiOutput('uichoosemodel4'),
+                        verbatimTextOutput('checkterms4')   
                         ),
                      column(5,
                             fluidRow(
