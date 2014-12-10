@@ -2760,6 +2760,22 @@ output$currentdataset4 <- renderPrint({
   cat(nwname())
 })
 
+#state$sim will toggle between two states, depending on
+#if simulations are outdated compared to current ergm network/formula
+state$sim <- 0
+
+observe({
+  nwname()
+  input$fitButton
+  state$sim <- 0 #simulations are outdated
+  updateNumericInput(session, "nsims", value=1)
+})
+
+observe({
+  input$simButton
+  state$sim <- 1 #simulations plots are up to date
+})
+
 observe({
   if(input$simcontroldefault){
     updateNumericInput(session, "simMCMCinterval", value=1024)
@@ -2787,7 +2803,7 @@ output$simnum <- renderText({
 outputOptions(output, 'simnum', suspendWhenHidden=FALSE)
 
 output$simsummary <- renderPrint({
-  if (input$simButton == 0){
+  if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
   sim <- isolate(model1simreac())
@@ -2802,7 +2818,7 @@ output$simsummary <- renderPrint({
 })
 
 output$simcoef <- renderPrint({
-  if (input$simButton == 0){
+  if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
   sim <- isolate(model1simreac())
@@ -2812,14 +2828,14 @@ output$simcoef <- renderPrint({
 })
 
 output$simstatslabel <- renderPrint({
-  if (input$simButton == 0){
+  if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
   cat(' Stored network statistics:')
 })
 
 output$simstats <- renderPrint({
-  if (input$simButton == 0){
+  if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
   sim <- isolate(model1simreac())
@@ -2829,7 +2845,7 @@ output$simstats <- renderPrint({
 })
 
 output$simstats2 <- renderPrint({
-  if(input$simButton == 0){
+  if(input$simButton == 0 | state$sim == 0){
     return()
   }
   sim <- isolate(model1simreac())
@@ -2850,7 +2866,7 @@ output$simstatsdownload <- downloadHandler(
   )
 
 output$simstatsplot <- renderPlot({
-  if(input$simButton==0){
+  if(input$simButton==0 | state$sim == 0){
     return()
   }
   sim <- isolate(model1simreac())
@@ -2866,7 +2882,7 @@ output$simstatsplot <- renderPlot({
 })
 
 output$simstatslegend <- renderPlot({
-  if(input$simButton==0){
+  if(input$simButton==0 | state$sim == 0){
     return()
   }
   sim <- isolate(model1simreac())
@@ -2909,7 +2925,7 @@ output$simstatsplotdownload <- downloadHandler(
 )
 
 output$simsummary2 <- renderPrint({
-  if (input$simButton == 0){
+  if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
   sim <- isolate(model1simreac())
@@ -2944,7 +2960,7 @@ output$dynamicsize2 <- renderUI({
 
 
 output$simplot <- renderPlot({
-  if(input$simButton == 0){
+  if(input$simButton == 0 | state$sim == 0){
     return()
   }
   nw_var <- nw()
