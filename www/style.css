@@ -8,6 +8,11 @@ div.tool span.tip {
     font-size:12px;
     max-width:300px;
 }
+#statstip,
+#controltip,
+#controltip2 {
+  margin-top:60px;
+}
 div.tool:hover span.tip{
   display:inline; 
   position:absolute; 

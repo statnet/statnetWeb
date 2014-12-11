@@ -2817,6 +2817,14 @@ output$simsummary <- renderPrint({
   cat(unlist(sum))
 })
 
+output$simsummary2 <- renderPrint({
+  if (input$simButton == 0 | state$sim == 0){
+    return(cat(''))
+  }
+  sim <- isolate(model1simreac())
+  sim
+})
+
 output$simcoef <- renderPrint({
   if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
@@ -2857,11 +2865,45 @@ output$simstats2 <- renderPrint({
 })
 
 output$simstatsdownload <- downloadHandler(
-  filename = function(){paste(nwname(),'_simstats.csv',sep='')},
+  filename = function(){paste(nwname(),'_simstats',
+                              input$simstatsfiletype,sep='')},
   contentType = "text/csv",
   content = function(file) {
     x<-attr(model1simreac(),"stats")
-    write.csv(x, file)
+    if(input$simstatsfiletype == ".csv"){
+      write.csv(x, file)
+    } else {
+      if(input$nsims > 1){
+        capture.output({
+            sim <- model1simreac()
+            n <- input$nsims
+            sum <- list()
+            sum[1] <- paste(" Number of Networks: ",n, "\n")
+            sum[2] <- paste("Model: ", nwname(),' ~ ',ergm.terms(), "\n")
+            sum[3] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
+            sum[4] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
+            sum[5] <- paste("Parameters: \n")
+            cat(unlist(sum))
+            
+            c <- attr(sim, 'coef')
+            c <- cbind(format(names(c)),format(c, digits=3))
+            write.table(c, quote=FALSE, row.names=FALSE, col.names=FALSE)
+            cat("\n\n")
+            cat(' Stored network statistics:\n')
+            
+            mat <- cbind(apply(x,2,min),apply(x,2,max),apply(x,2,IQR),
+                         apply(x,2,mean),apply(x,2,sd))
+            colnames(mat) <- c("min","max","IQR","mean","SD")
+            cat("\n")
+            print(mat)
+            rownames(x) <- rep("",n)
+            print(t(x))
+        },file=file)
+      } else {
+        capture.output(model1simreac(),file=file)
+      }
+    }
+    
   }
   )
 
@@ -2923,14 +2965,6 @@ output$simstatsplotdownload <- downloadHandler(
     dev.off()
   }
 )
-
-output$simsummary2 <- renderPrint({
-  if (input$simButton == 0 | state$sim == 0){
-    return(cat(''))
-  }
-  sim <- isolate(model1simreac())
-  sim
-})
 
 output$dynamiccolor2 <- renderUI({
   selectInput('colorby2',

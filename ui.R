@@ -834,7 +834,8 @@ url = {http://statnetproject.org}
                               customNumericInput('MCMCsamplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
                               ),
                           column(7,
-                              div(class="tool",span(class ="tip", "Type in other arguments to be passed to", span("control.ergm", style="font-family:Courier;"),
+                              div(class="tool",span(class ="tip", id="controltip",
+                                                    "Type in other arguments to be passed to", span("control.ergm", style="font-family:Courier;"),
                                                     ", e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
                                                     img(src="callout2.png",class="callout")),
                                 textInput("customMCMCcontrol","Other controls:",value=""))
@@ -1039,7 +1040,8 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                 
                                          ),
                                          column(7,
-                                                div(class="tool", span(class="tip","Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
+                                                div(class="tool", span(class="tip", id="controltip2",
+                                                                       "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
                                                                        ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
                                                                        img(src="callout2.png",class="callout")),
                                                     textInput("simcustomMCMCcontrol","Other controls:",value=""))
@@ -1118,8 +1120,22 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                      verbatimTextOutput('simsummary2')
                                      ),
                                    br(),
-                                   downloadButton('simstatsdownload', 
-                                                  label = 'Download Statistics')
+                                   fluidRow(
+                                     column(7, 
+                                          downloadButton('simstatsdownload', 
+                                                  label = 'Download Statistics')),
+                                     column(4,
+                                        div(class="tool", span(class="tip", id="statstip",".txt: Summary of simulations",
+                                                               "plus full list of statistics.",br(), 
+                                                               ".csv: Full list of statistics only.",
+                                                               img(src="callout2.png",class="callout")),
+                                          radioButtons('simstatsfiletype', label=NULL,
+                                                       choices=c('.txt','.csv'))
+                                          )
+                                        )
+                                     )
+                                   
+                                   
                                      )
                                   )
                               )
