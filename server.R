@@ -105,8 +105,6 @@ assign('ev_attrNamesToAdd', list(1),
        pos="package:base" )
 assign('ev_attrValsToAdd', list(),  
        pos="package:base")
-assign('vertex_names', list(),
-       pos="package:base")
 assign('input_termslist', list(),
        pos="package:base")
 
@@ -314,8 +312,7 @@ observe({
     assign('ev_attrNamesToAdd', list(1),
            pos="package:base" )
     
-    assign('vertex_names', network.vertex.names(nwinit()), pos="package:base")
-    
+    values$vertexnames <- network.vertex.names(nwinit())
   }
 })
 
@@ -345,7 +342,7 @@ newattrnamereac <- reactive({
   newname
 })
 
-#save vertex names
+#save new vertex names
 observe({
   if(input$newattrButton == 0) return()
   isolate({
@@ -355,12 +352,13 @@ observe({
       
       if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
         newnames <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newnames <- newnames[[1]]
       } else {
         objname <- load(paste(path))
         newnames <- get(objname)
       }
       
-      assign('vertex_names', newnames, pos='package:base')
+      values$vertexnames <- newnames
     }
   })
 })
@@ -494,11 +492,9 @@ nwmid <- reactive({
       ev_attrValsToAdd <- get('ev_attrValsToAdd', pos='package:base')
       
       
-      input$newattrButton
-      try({
-        vertex_names <- get('vertex_names', pos='package:base')
-        try(network.vertex.names(nw_var) <- vertex_names)
-      })
+      if(input$newattrButton > 0){
+        try({network.vertex.names(nw_var) <- values$vertexnames})
+      }
       v_numnew <- length(v_attrNamesToAdd)
       if(v_numnew > 1){
         for (j in 2:v_numnew){
