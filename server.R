@@ -819,11 +819,18 @@ observe({
 
 model1gof <- reactive({
   input$gofButton
+  mod <- input$choosemodel2
+  if(mod=="Current"){
+    mod <- model1reac()
+  } else {
+    modn <- as.numeric(substr(mod,6,6))
+    mod <- values$modelfits[[modn]]
+  }
   if(input$gofterm == ''){
     #use default gof formula
-    model1gof <- gof(model1reac())
+    model1gof <- gof(mod)
   } else {
-    gofform <- formula(paste('model1reac() ~ ', input$gofterm, sep = ''))
+    gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model1gof <- gof(gofform)
   }
   model1gof})
