@@ -154,7 +154,6 @@ observe({
   updateTabsetPanel(session, 'navbar', selected=tabOptions[current+1])
 })
 
-acecode <- reactiveValues(data="library(statnet)")
 
 #this reactive expression is used to get the initial values of the network
 nwinit <- reactive({
@@ -167,7 +166,6 @@ nwinit <- reactive({
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
   }
-  loadfile <- ''
   if(input$filetype == 1){
     loadfile <- ''
     if(!is.null(input$rawdatafile)){
@@ -178,21 +176,16 @@ nwinit <- reactive({
       }, finally = NULL
       )
       try(nw_var <- get(obj))
-      loadfile <- paste('load("',filepath,'")', '\n',
-                        'nw <- ',obj, sep='')
     }
   } else if(input$filetype == 2){
-    loadfile <- ''
     if(!is.null(input$rawdatafile)){
       nw_var <- "Upload a .net file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
            substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
         nw_var <- read.paj(paste(filepath))
-        loadfile <- paste('nw <- read.paj("',filepath,'")', sep='')
       }
     }
   } else if(input$filetype == 3){
-    loadfile <- ''
     if(!is.null(input$rawdatafile)){
       nw_var <- "Upload a .paj file"
       if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
@@ -200,8 +193,6 @@ nwinit <- reactive({
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
           nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
-          loadfile <- paste('nws <- read.paj("',filepath,'") \n',
-                            'nw <- nws$networks[[',as.numeric(input$choosepajnw),']]', sep='')
         }
       }
     }
@@ -221,8 +212,6 @@ nwinit <- reactive({
                           multiple=input$multiple, bipartite=input$bipartite,
                           matrix.type=input$matrixtype,
                           ignore.eval=FALSE, names.eval='edgevalue')
-             codeline1 <- paste('x <- read.csv("',filepath,'", sep=",", header=',header,
-                           'row.names=',row_names,')', sep='')
              })
         
       }
@@ -231,19 +220,10 @@ nwinit <- reactive({
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
                         ignore.eval=FALSE, names.eval='edgevalue')
-           codeline1 <- paste('x <- read.table("',filepath,'")',sep='')
            })
-        
-      
-      codeline2 <- paste('nw <- network(x, directed=',input$dir,', loops=',input$loops,
-                         ', multiple=',input$multiple,', bipartite=',input$bipartite,
-                         ', matrix.type=',input$matrixtype,
-                         ', ignore.eval=FALSE, names.eval="edgevalue")', sep='')
-      loadfile <- paste(codeline1,"\n", codeline2, sep="")
     }
     
   } else if(input$filetype ==5){
-    loadfile <- ''
     if(input$samplenet == "None"){
       nw_var <- NULL
     } else {
@@ -251,17 +231,9 @@ nwinit <- reactive({
       if(!is.element('bipartite',names(nw_var$gal))){
         set.network.attribute(nw_var,'bipartite',FALSE)
       }
-      loadfile <- paste('data(',input$samplenet,') \n',
-                        'nw <- ',input$samplenet, sep='')
     }
   }
-  prev <- "library(statnet)"
-  acecode$data <- paste(prev,"\n",loadfile, sep='')
   nw_var
-})
-
-observe({
-  updateAceEditor(session, "dataAce", value=acecode$data)
 })
 
 #list of everything in an uploaded Pajek project
