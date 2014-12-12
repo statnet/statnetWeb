@@ -836,7 +836,6 @@ model1gof <- reactive({
 
 model2gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel_gof
   if(values$modeltotal < 2){
     return()
   } else {
@@ -853,7 +852,6 @@ model2gof <- reactive({
 
 model3gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel_gof
   if(values$modeltotal < 3){
     return()
   } else {
@@ -870,7 +868,6 @@ model3gof <- reactive({
 
 model4gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel_gof
   if(values$modeltotal < 4){
     return()
   } else {
@@ -887,7 +884,6 @@ model4gof <- reactive({
 
 model5gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel_gof
   if(values$modeltotal < 5){
     return()
   } else {
@@ -2809,7 +2805,8 @@ output$gofplotcomp <- renderPlot({
     if(j==3 | n==2){
       par(mar=c(4.1,2.1,2,2))
     }
-    gofobj <- isolate({switch(j, "2" = model2gof(),
+    gofobj <- isolate({switch(n, "1" = model1gof(), 
+                              "2" = model2gof(),
                               "3" = model3gof(),
                               "4" = model4gof(),
                               "5" = model5gof())})  
