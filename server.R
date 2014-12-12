@@ -2787,33 +2787,81 @@ output$gofplotcomp <- renderPlot({
   if(state$gof == 0){
     return()
   }
+  n <- values$modeltotal
   gofterm <- isolate(input$gofterm)
   if (gofterm == ''){
-    par(mfrow=c(3,3))
+    par(mfrow=c(n,3))
   } else {
-    par(mfrow=c(3,1))
+    par(mfrow=c(n,1))
   }
-  par(cex.axis=1)
-  n <- values$modeltotal
+  par(mar=c(5.1, 4.1, 4.1, 2.1))
   for(j in 1:n){
-    if(j==1 | j==5){
-      par(mar=c(2.1,2.1,4,2))
-    }
-    if(j==2 | j==4){
-      par(mar=c(3.1,2.1,3,2))
-    }
-    if(j==3 | n==2){
-      par(mar=c(4.1,2.1,2,2))
-    }
+#     if(j==1 | j==5){
+#       par(mar=c(2.1,2.1,5,2))
+#     }
+#     if(j==2 | j==4){
+#       par(mar=c(3.1,2.1,3,2))
+#     }
+#     if(j==3 | (n==j)){
+#       par(mar=c(4.1,2.1,2,2))
+#     }
     gofobj <- isolate({switch(n, "1" = model1gof(), 
                               "2" = model2gof(),
                               "3" = model3gof(),
                               "4" = model4gof(),
                               "5" = model5gof())})  
-    plot.gofobject(gofobj)
+    plot.gofobject(gofobj, cex.axis=1)
   }
-  par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), cex.axis=.7)
+  par(mfrow=c(3,1), mar=c(5.1, 4.1, 4.1, 2.1), cex.axis=.7)
 })
+
+output$gofplotcompspace <- renderUI({
+  if(input$gofButton==0 | state$gof==0){
+    return()
+  }
+  gofterm <- isolate(input$gofterm)
+  n <- isolate(values$modeltotal)
+  plotheight = n*250
+  if (gofterm == ''){
+    plotwidth = "100%"
+  } else {
+    plotwidth = "50%"
+  }
+  
+  plotOutput('gofplotcomp', height=plotheight+100, width=plotwidth)
+})
+
+output$gofplotcompdownload <- downloadHandler(
+  filename = function(){paste(nwname(),'_gof.pdf',sep='')},
+  content = function(file){
+    n <- values$modeltotal
+    gofterm <- isolate(input$gofterm)
+    if (gofterm == ''){
+      par(mfrow=c(3,3))
+    } else {
+      par(mfrow=c(3,1))
+    }
+    par(cex.axis=1)
+    for(j in 1:n){
+      if(j==1 | j==5){
+        par(mar=c(2.1,2.1,4,2))
+      }
+      if(j==2 | j==4){
+        par(mar=c(3.1,2.1,3,2))
+      }
+      if(j==3 | n==2){
+        par(mar=c(4.1,2.1,2,2))
+      }
+      gofobj <- isolate({switch(n, "1" = model1gof(), 
+                                "2" = model2gof(),
+                                "3" = model3gof(),
+                                "4" = model4gof(),
+                                "5" = model5gof())})  
+      plot.gofobject(gofobj)
+    }
+    par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), cex.axis=.7)
+  }
+)
 
 #' **Simulations**
 #' 
