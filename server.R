@@ -819,7 +819,7 @@ observe({
 
 model1gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(mod=="Current"){
     mod <- model1reac()
   } else {
@@ -836,7 +836,7 @@ model1gof <- reactive({
 
 model2gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(values$modeltotal < 2){
     return()
   } else {
@@ -853,7 +853,7 @@ model2gof <- reactive({
 
 model3gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(values$modeltotal < 3){
     return()
   } else {
@@ -870,7 +870,7 @@ model3gof <- reactive({
 
 model4gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(values$modeltotal < 4){
     return()
   } else {
@@ -887,7 +887,7 @@ model4gof <- reactive({
 
 model5gof <- reactive({
   input$gofButton
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(values$modeltotal < 5){
     return()
   } else {
@@ -2430,7 +2430,7 @@ output$currentdataset1 <- renderPrint({
   cat(isolate(nwname()))
 })
 
-output$checkterms1 <- renderPrint({
+output$checkterms_fit <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
   }
@@ -2527,28 +2527,28 @@ outputOptions(output, "modelfitsum",priority=-10)
 #+ eval=FALSE
 
 
-output$uichoosemodel3 <- renderUI({
+output$uichoosemodel_mcmc <- renderUI({
   n <- values$modeltotal
   if(n == 0){
-    inlineSelectInput("choosemodel3",label=NULL,
+    inlineSelectInput("choosemodel_mcmc",label=NULL,
                 choices=c("Current"),
                 selectize=FALSE)
   } else {
-    inlineSelectInput("choosemodel3",label=NULL,
+    inlineSelectInput("choosemodel_mcmc",label=NULL,
                 choices=c(paste0("Model",1:n)),
                 selectize=FALSE)
   }
 })
-outputOptions(output,"uichoosemodel3",suspendWhenHidden=FALSE)
+outputOptions(output,"uichoosemodel_mcmc",suspendWhenHidden=FALSE)
 
-output$checkterms3 <- renderPrint({
+output$checkterms_mcmc <- renderPrint({
   if(is.null(nw())){
     return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
   }
-  mod <- input$choosemodel3
+  mod <- input$choosemodel_mcmc
   if(mod=="Current"){
     cat(isolate(ergm.terms()))
   } else {
@@ -2557,7 +2557,7 @@ output$checkterms3 <- renderPrint({
   }
 })
 
-output$currentdataset3 <- renderPrint({
+output$currentdataset_mcmc <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
   }
@@ -2568,7 +2568,7 @@ output$diagnosticsplot <- renderPlot({
   if(ergm.terms()=="NA"){
     return()
   }
-  mod <- input$choosemodel3
+  mod <- input$choosemodel_mcmc
   if(mod=="Current"){
     mod <- model1reac()
   } else {
@@ -2584,7 +2584,7 @@ output$diagnosticsplot <- renderPlot({
 output$mcmcplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
   content = function(file){
-    mod <- input$choosemodel3
+    mod <- input$choosemodel_mcmc
     if(mod=="Current"){
       mod <- model1reac()
     } else {
@@ -2604,7 +2604,7 @@ output$diagnosticsplotspace <- renderUI({
   if(input$fitButton == 0 | ergm.terms()=="NA"){
     return()
   }
-  mod <- input$choosemodel3
+  mod <- input$choosemodel_mcmc
   if(mod=="Current"){
     mod <- model1reac()
   } else {
@@ -2619,7 +2619,7 @@ output$diagnostics <- renderPrint({
   if(input$fitButton == 0 | ergm.terms()=="NA"){
     return()
   }
-  mod <- input$choosemodel3
+  mod <- input$choosemodel_mcmc
   if(mod=="Current"){
     mod <- model1reac()
   } else {
@@ -2649,35 +2649,35 @@ outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 #' on the page we can output the text of the gof object and the plot of the gof object.
 #+ eval=FALSE
 #dataset only updates after goButton on first tab has been clicked
-output$currentdataset2 <- renderPrint({
+output$currentdataset_gof <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
   }
   cat(nwname())
 })
 
-output$uichoosemodel2 <- renderUI({
+output$uichoosemodel_gof <- renderUI({
   n <- values$modeltotal
   if(n == 0){
-    inlineSelectInput("choosemodel2",label=NULL,
+    inlineSelectInput("choosemodel_gof",label=NULL,
                       choices=c("Current"),
                       selectize=FALSE)
   } else {
-    inlineSelectInput("choosemodel2",label=NULL,
+    inlineSelectInput("choosemodel_gof",label=NULL,
                       choices=c(paste0("Model",1:n)),
                       selectize=FALSE)
   }
 })
-outputOptions(output,"uichoosemodel2",suspendWhenHidden=FALSE)
+outputOptions(output,"uichoosemodel_gof",suspendWhenHidden=FALSE)
 #formula only updates after fitButton has been clicked
-output$checkterms2 <- renderPrint({
+output$checkterms_gof <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
   }
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
   }
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(mod=="Current"){
     cat(isolate(ergm.terms()))
   } else {
@@ -2705,7 +2705,7 @@ output$gofsummary <- renderPrint({
   if (input$gofButton == 0 | state$gof == 0){
     return()
   }
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(mod=="Current" | mod=="Model1"){
     gofobj <- isolate({model1gof()}) 
   } else {
@@ -2731,7 +2731,7 @@ output$gofplot <- renderPlot({
   } else {
     par(mfrow=c(1,1))
   }
-  mod <- input$choosemodel2
+  mod <- input$choosemodel_gof
   if(mod=="Current" | mod=="Model1"){
     gofobj <- isolate({model1gof()}) 
   } else {
@@ -2754,7 +2754,7 @@ output$gofplotdownload <- downloadHandler(
       par(mfrow=c(1,1))
     }
     pdf(file=file, height=4, width=10)
-    mod <- input$choosemodel2
+    mod <- input$choosemodel_gof
     if(mod=="Current" | mod=="Model1"){
       gofobj <- isolate({model1gof()}) 
     } else {
@@ -2829,21 +2829,21 @@ output$gofplotcomp <- renderPlot({
 #' command in an if-statement. The rest of the display options should look familiar
 #' from the 'Plot Network' tab.
 #+ eval=FALSE
-output$uichoosemodel4 <- renderUI({
+output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
   if(n == 0){
-    inlineSelectInput("choosemodel4",label=NULL,
+    inlineSelectInput("choosemodel_sim",label=NULL,
                       choices=c("Current"),
                       selectize=FALSE)
   } else {
-    inlineSelectInput("choosemodel4",label=NULL,
+    inlineSelectInput("choosemodel_sim",label=NULL,
                       choices=c(paste0("Model",1:n)),
                       selectize=FALSE)
   }
 })
-outputOptions(output,"uichoosemodel4",suspendWhenHidden=FALSE)
+outputOptions(output,"uichoosemodel_sim",suspendWhenHidden=FALSE)
 
-output$checkterms4 <- renderPrint({
+output$checkterms_sim <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
   }
@@ -2852,7 +2852,7 @@ output$checkterms4 <- renderPrint({
   }
   cat(isolate(ergm.terms()))
 })
-output$currentdataset4 <- renderPrint({
+output$currentdataset_sim <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
   }

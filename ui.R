@@ -854,7 +854,7 @@ url = {http://statnetproject.org}
            column(2,
                   p('Current ergm formula:')),
            column(10,
-                  verbatimTextOutput('checkterms1'))),
+                  verbatimTextOutput('checkterms_fit'))),
         fluidRow(
            column(2,
                   p('Summary statistics:')),
@@ -905,11 +905,11 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              
                              fluidRow(
                                column(2,
-                                      p('Network:', class="nwlabel"), verbatimTextOutput('currentdataset3')),
+                                      p('Network:', class="nwlabel"), verbatimTextOutput('currentdataset_mcmc')),
                                column(10,
                                       p('ergm formula:',style="display:inline;"),
-                                        uiOutput('uichoosemodel3'),
-                                        verbatimTextOutput('checkterms3'))
+                                        uiOutput('uichoosemodel_mcmc'),
+                                        verbatimTextOutput('checkterms_mcmc'))
                              ),     
                              br(),
                              tags$hr(),
@@ -959,11 +959,11 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      fluidRow(
                        column(2,
                               p('Network:', class="nwlabel"), 
-                              verbatimTextOutput('currentdataset2')),
+                              verbatimTextOutput('currentdataset_gof')),
                        column(10,
                               p('ergm formula:',style="display:inline;"),
-                              uiOutput('uichoosemodel2'),
-                              verbatimTextOutput('checkterms2'))
+                              uiOutput('uichoosemodel_gof'),
+                              verbatimTextOutput('checkterms_gof'))
                       ),
                      p('If you do not specify a term the default formula for undirected 
                        networks is ', code('~ degree + espartners + distance'), 'and for 
@@ -1009,7 +1009,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                      column(7,
                         fluidRow(
                           column(4,
-                              p('Network:', verbatimTextOutput('currentdataset4'))),
+                              p('Network:', verbatimTextOutput('currentdataset_sim'))),
                           column(5,
                                  customNumericInput('nsims', class="input-small",
                                                     labelstyle="display:block; padding-bottom:5px;",
@@ -1019,8 +1019,8 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                  actionButton('simButton', 'Simulate'))
                           ),
                         p('ergm formula:',style="display:inline;"),
-                        uiOutput('uichoosemodel4'),
-                        verbatimTextOutput('checkterms4')   
+                        uiOutput('uichoosemodel_sim'),
+                        verbatimTextOutput('checkterms_sim')   
                         ),
                      column(5,
                             fluidRow(
