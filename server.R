@@ -2832,7 +2832,7 @@ output$gofplotcompspace <- renderUI({
 })
 
 output$gofplotcompdownload <- downloadHandler(
-  filename = function(){paste(nwname(),'_gof.pdf',sep='')},
+  filename = function(){paste(nwname(),'_gofcomp.pdf',sep='')},
   content = function(file){
     n <- values$modeltotal
     gofterm <- isolate(input$gofterm)
@@ -2841,17 +2841,16 @@ output$gofplotcompdownload <- downloadHandler(
     } else {
       par(mfrow=c(3,1))
     }
-    par(cex.axis=1)
     for(j in 1:n){
-      if(j==1 | j==5){
-        par(mar=c(2.1,2.1,4,2))
-      }
-      if(j==2 | j==4){
-        par(mar=c(3.1,2.1,3,2))
-      }
-      if(j==3 | n==2){
-        par(mar=c(4.1,2.1,2,2))
-      }
+#       if(j==1 | j==5){
+#         par(mar=c(2.1,2.1,4,2))
+#       }
+#       if(j==2 | j==4){
+#         par(mar=c(3.1,2.1,3,2))
+#       }
+#       if(j==3 | n==2){
+#         par(mar=c(4.1,2.1,2,2))
+#       }
       gofobj <- isolate({switch(n, "1" = model1gof(), 
                                 "2" = model2gof(),
                                 "3" = model3gof(),
@@ -2859,7 +2858,7 @@ output$gofplotcompdownload <- downloadHandler(
                                 "5" = model5gof())})  
       plot.gofobject(gofobj)
     }
-    par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), cex.axis=.7)
+    dev.off()
   }
 )
 

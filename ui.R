@@ -988,6 +988,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                             ),
                    tabPanel("Compare Models",
                             uiOutput('gofplotcompspace'))
+#                             downloadButton('gofplotcompdownload', label='Download Plots'))
                    ),
                  
                      div(id='goftabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
