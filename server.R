@@ -823,8 +823,7 @@ model1gof <- reactive({
   if(mod=="Current"){
     mod <- model1reac()
   } else {
-    modn <- as.numeric(substr(mod,6,6))
-    mod <- values$modelfits[[modn]]
+    mod <- values$modelfits[[1]]
   }
   if(input$gofterm == ''){
     #use default gof formula
@@ -835,6 +834,73 @@ model1gof <- reactive({
   }
   model1gof})
 
+model2gof <- reactive({
+  input$gofButton
+  mod <- input$choosemodel2
+  if(values$modeltotal < 2){
+    return()
+  } else {
+    mod <- values$modelfits[[2]]
+  }
+  if(input$gofterm == ''){
+    #use default gof formula
+    model2gof <- gof(mod)
+  } else {
+    gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
+    model2gof <- gof(gofform)
+  }
+  model2gof})
+
+model3gof <- reactive({
+  input$gofButton
+  mod <- input$choosemodel2
+  if(values$modeltotal < 3){
+    return()
+  } else {
+    mod <- values$modelfits[[3]]
+  }
+  if(input$gofterm == ''){
+    #use default gof formula
+    model3gof <- gof(mod)
+  } else {
+    gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
+    model3gof <- gof(gofform)
+  }
+  model3gof})
+
+model4gof <- reactive({
+  input$gofButton
+  mod <- input$choosemodel2
+  if(values$modeltotal < 4){
+    return()
+  } else {
+    mod <- values$modelfits[[4]]
+  }
+  if(input$gofterm == ''){
+    #use default gof formula
+    model4gof <- gof(mod)
+  } else {
+    gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
+    model4gof <- gof(gofform)
+  }
+  model4gof})
+
+model5gof <- reactive({
+  input$gofButton
+  mod <- input$choosemodel2
+  if(values$modeltotal < 5){
+    return()
+  } else {
+    mod <- values$modelfits[[5]]
+  }
+  if(input$gofterm == ''){
+    #use default gof formula
+    model5gof <- gof(mod)
+  } else {
+    gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
+    model5gof <- gof(gofform)
+  }
+  model5gof})
 
 model1simreac <- reactive({
   input$simButton
@@ -2634,15 +2700,23 @@ observe({
   state$gof <- 1 #gof plots are up to date
 })
 
+
 output$gofsummary <- renderPrint({
-  if (input$gofButton == 0){
+  if (input$gofButton == 0 | state$gof == 0){
     return()
   }
-  s <- isolate({model1gof()})
-  if(state$gof == 0){
-    return()
+  mod <- input$choosemodel2
+  if(mod=="Current" | mod=="Model1"){
+    gofobj <- isolate({model1gof()}) 
+  } else {
+    n <- substr(mod,6,6)
+    gofobj <- isolate({switch(n, "2" = model2gof(),
+                              "3" = model3gof(),
+                              "4" = model4gof(),
+                              "5" = model5gof())})    
   }
-  return(s)
+  
+  gofobj
   })
 outputOptions(output, 'gofsummary', suspendWhenHidden=FALSE)
 
@@ -2657,8 +2731,17 @@ output$gofplot <- renderPlot({
   } else {
     par(mfrow=c(1,1))
   }
-  
-  isolate(plot.gofobject(model1gof()))
+  mod <- input$choosemodel2
+  if(mod=="Current" | mod=="Model1"){
+    gofobj <- isolate({model1gof()}) 
+  } else {
+    n <- substr(mod,6,6)
+    gofobj <- isolate({switch(n, "2" = model2gof(),
+                              "3" = model3gof(),
+                              "4" = model4gof(),
+                              "5" = model5gof())})      
+  }
+  isolate(plot.gofobject(gofobj, cex.axis=1))
   par(mfrow=c(1,1))
 })
 
@@ -2671,7 +2754,17 @@ output$gofplotdownload <- downloadHandler(
       par(mfrow=c(1,1))
     }
     pdf(file=file, height=4, width=10)
-    plot.gofobject(model1gof())
+    mod <- input$choosemodel2
+    if(mod=="Current" | mod=="Model1"){
+      gofobj <- isolate({model1gof()}) 
+    } else {
+      n <- substr(mod,6,6)
+      gofobj <- isolate({switch(n, "2" = model2gof(),
+                                "3" = model3gof(),
+                                "4" = model4gof(),
+                                "5" = model5gof())})     
+    }
+    isolate(plot.gofobject(gofobj, cex.axis=1))
     par(mfrow=c(1,1))
     dev.off()
   }
@@ -2693,6 +2786,37 @@ output$gofplotspace <- renderUI({
   plotOutput('gofplot', height=gofplotheight)
 })
 
+output$gofplotcomp <- renderPlot({
+  input$gofButton
+  if(state$gof == 0){
+    return()
+  }
+  gofterm <- isolate(input$gofterm)
+  if (gofterm == ''){
+    par(mfrow=c(3,3))
+  } else {
+    par(mfrow=c(3,1))
+  }
+  par(cex.axis=1)
+  n <- values$modeltotal
+  for(j in 1:n){
+    if(j==1 | j==5){
+      par(mar=c(2.1,2.1,4,2))
+    }
+    if(j==2 | j==4){
+      par(mar=c(3.1,2.1,3,2))
+    }
+    if(j==3 | n==2){
+      par(mar=c(4.1,2.1,2,2))
+    }
+    gofobj <- isolate({switch(j, "2" = model2gof(),
+                              "3" = model3gof(),
+                              "4" = model4gof(),
+                              "5" = model5gof())})  
+    plot.gofobject(gofobj)
+  }
+  par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), cex.axis=.7)
+})
 
 #' **Simulations**
 #' 
