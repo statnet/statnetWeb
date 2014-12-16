@@ -2748,8 +2748,10 @@ output$gofplot <- renderPlot({
   gofterm <- isolate(input$gofterm)
   if (gofterm == ''){
     par(mfrow=c(3,1))
+    cex <- 1.5
   } else {
     par(mfrow=c(1,1))
+    cex <- 1
   }
   mod <- input$choosemodel_gof
   if(mod=="Current" | mod=="Model1"){
@@ -2761,8 +2763,8 @@ output$gofplot <- renderPlot({
                               "4" = model4gof(),
                               "5" = model5gof())})      
   }
-  par(cex.lab=2)
-  isolate(plot.gofobject(gofobj, cex.axis=2))
+  par(cex.lab=cex, mar=c(5,4.2,4,2)+.1)
+  isolate(plot.gofobject(gofobj, cex.axis=cex))
   par(mfrow=c(1,1), cex.lab=1, cex.axis=1)
 })
 
@@ -2808,36 +2810,51 @@ output$gofplotspace <- renderUI({
 })
 
 output$gofplotcomp <- renderPlot({
-  input$gofButton
   if(state$gof == 0){
     return()
   }
-  n <- values$modeltotal
+  input$gofButton
   gofterm <- isolate(input$gofterm)
+  n <- values$modeltotal
   if (gofterm == ''){
-    par(mfrow=c(n,3))
+    cols <- 3
+    innermat <- matrix(1:(n*cols),ncol=cols)
+    bottommat <- c(0,(n*cols+1):(n*cols+3))
+    bottomtext <- c("degree","espartners","distance")
   } else {
-    par(mfrow=c(n,1))
+    cols <- 1
+    innermat <- matrix(1:n,ncol=1,nrow=n)
+    bottommat <- c(0,n*cols+1)
+    bottomtext <- input$gofterm
   }
-  par(mar=c(5.1, 4.1, 4.1, 2.1))
+  sidemat <- (bottommat[length(bottommat)]+1):(bottommat[length(bottommat)]+n)
+  sidetext <- paste("Model",1:n)
+  layoutmat <- cbind(sidemat,innermat)
+  layoutmat <- rbind(layoutmat, bottommat)
+  widths <- c(1,rep(3,cols))
+  heights <- c(rep(3,n),1)
+  layout(layoutmat, widths=widths, heights=heights)
+  par(mar=c(3.1,2.1,3,2))
+  
+  isolate({
   for(j in 1:n){
-#     if(j==1 | j==5){
-#       par(mar=c(2.1,2.1,5,2))
-#     }
-#     if(j==2 | j==4){
-#       par(mar=c(3.1,2.1,3,2))
-#     }
-#     if(j==3 | (n==j)){
-#       par(mar=c(4.1,2.1,2,2))
-#     }
-    gofobj <- isolate({switch(n, "1" = model1gof(), 
+    gofobj <- switch(n, "1" = model1gof(), 
                               "2" = model2gof(),
                               "3" = model3gof(),
                               "4" = model4gof(),
-                              "5" = model5gof())})  
+                              "5" = model5gof()) 
     plot.gofobject(gofobj, cex.axis=1)
   }
-  par(mfrow=c(3,1), mar=c(5.1, 4.1, 4.1, 2.1), cex.axis=.7)
+  par(mar=c(1,1,1,1))
+  for(j in 1:cols){
+    plot.new()
+    text(x=.5,y=.7,labels=bottomtext[j], cex=1.5)
+  }
+  for(j in 1:n){
+    plot.new()
+    text(x=.7,y=.5,labels=sidetext[j], srt=90, cex=1.5)
+  }
+  }) 
 })
 
 output$gofplotcompspace <- renderUI({

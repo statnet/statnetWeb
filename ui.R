@@ -986,7 +986,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                      uiOutput('gofplotspace'),
                                      downloadButton('gofplotdownload', label = 'Download Plots')))
                             ),
-                   tabPanel("Compare Models",
+                   tabPanel("Compare Models",align="center",
                             uiOutput('gofplotcompspace'))
 #                             downloadButton('gofplotcompdownload', label='Download Plots'))
                    ),
