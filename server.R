@@ -2761,8 +2761,9 @@ output$gofplot <- renderPlot({
                               "4" = model4gof(),
                               "5" = model5gof())})      
   }
-  isolate(plot.gofobject(gofobj, cex.axis=1))
-  par(mfrow=c(1,1))
+  par(cex.lab=2)
+  isolate(plot.gofobject(gofobj, cex.axis=2))
+  par(mfrow=c(1,1), cex.lab=1, cex.axis=1)
 })
 
 output$gofplotdownload <- downloadHandler(
