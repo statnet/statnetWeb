@@ -2817,15 +2817,15 @@ output$gofplotcomp <- renderPlot({
   gofterm <- isolate(input$gofterm)
   n <- values$modeltotal
   if (gofterm == ''){
-    cols <- 3
+    cols <- isolate(3)
     innermat <- matrix(1:(n*cols),ncol=cols)
     bottommat <- c(0,(n*cols+1):(n*cols+3))
     bottomtext <- c("degree","espartners","distance")
   } else {
-    cols <- 1
+    cols <- isolate(1)
     innermat <- matrix(1:n,ncol=1,nrow=n)
     bottommat <- c(0,n*cols+1)
-    bottomtext <- input$gofterm
+    bottomtext <- isolate(input$gofterm)
   }
   sidemat <- (bottommat[length(bottommat)]+1):(bottommat[length(bottommat)]+n)
   sidetext <- paste("Model",1:n)
