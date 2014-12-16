@@ -725,6 +725,22 @@ ergm.formula <- reactive({
   if(ergm.terms()=='NA') {return()}
   formula(paste('nw() ~ ',ergm.terms(), sep = ''))})
 
+current.simterms <- reactive({
+  mod <- input$choosemodel_sim
+  if(mod=="Current"){
+    terms <- ergm.terms()
+  } else {
+    mod <- as.numeric(substr(mod,6,6))
+    terms <- values$modelformulas[[mod]]
+  }
+  terms
+})
+
+current.simformula <- reactive ({
+  terms <- current.simterms()
+  formula(paste('nw() ~ ',terms, sep=''))
+})
+
 #' Once we have a formula, creating a model object, checking the goodness of fit
 #' and simulating from it is similar to what would be written in the command line,
 #' wrapped in a reactive statement.
@@ -898,18 +914,26 @@ model5gof <- reactive({
   }
   model5gof})
 
-model1simreac <- reactive({
+allmodelsimreac <- reactive({
   input$simButton
+  mod <- input$choosemodel_sim
+  if(mod=="Current"){
+    mod <- model1reac()
+  } else {
+    mod <- as.numeric(substr(mod,6,6))
+    mod <- values$modelfits[[mod]]
+  }
+  
   if(input$simcontroldefault){
-    s<-isolate(simulate(model1reac(), nsim = input$nsims))
+    s<-isolate(simulate(mod, nsim = input$nsims))
   } else {
     customcontrols <- isolate(paste(input$simcustomMCMCcontrol, sep=","))
     if(customcontrols == ""){
-      s<-isolate(simulate(model1reac(), nsim = input$nsims,
+      s<-isolate(simulate(mod, nsim = input$nsims,
                        control=control.simulate.ergm(MCMC.burnin=input$simMCMCburnin,
                                                     MCMC.interval=input$simMCMCinterval)))
     } else {
-      s<-isolate(simulate(model1reac(), nsim = input$nsims,
+      s<-isolate(simulate(mod, nsim = input$nsims,
                        control=control.simulate.ergm(MCMC.burnin=input$simMCMCburnin,
                                                     MCMC.interval=input$simMCMCinterval,
                                                     eval(parse(text=customcontrols)))))
@@ -928,29 +952,29 @@ model1simreac <- reactive({
 #get coordinates to plot simulations with
 sim.coords.1 <- reactive({
   input$simButton
-  isolate(plot.network(model1simreac()))})
+  isolate(plot.network(allmodelsimreac()))})
 sim.coords.2 <- reactive({
-  plot.network(model1simreac()[[input$thissim]])})
+  plot.network(allmodelsimreac()[[input$thissim]])})
 
 nodebetw2 <- reactive({
   if(input$nsims==1){
-    if(is.directed(model1simreac())){
+    if(is.directed(allmodelsimreac())){
       gmode <- "digraph"
       cmode <- "directed"
     } else {
       gmode <- "graph"
       cmode <- "undirected"
     }
-    b <- betweenness(model1simreac(), gmode=gmode, cmode=cmode)
+    b <- betweenness(allmodelsimreac(), gmode=gmode, cmode=cmode)
   } else {
-    if(is.directed(model1simreac()[[input$thissim]])){
+    if(is.directed(allmodelsimreac()[[input$thissim]])){
       gmode <- "digraph"
       cmode <- "directed"
     } else {
       gmode <- "graph"
       cmode <- "undirected"
     }
-    b <- betweenness(model1simreac()[[input$thissim]], gmode=gmode, cmode=cmode)
+    b <- betweenness(allmodelsimreac()[[input$thissim]], gmode=gmode, cmode=cmode)
   }
   b
 })
@@ -968,9 +992,9 @@ nodesize2 <- reactive({
     minsize <- min(get.vertex.attribute(nw_var,input$sizeby2))
     maxsize <- max(get.vertex.attribute(nw_var,input$sizeby2))
     if(input$nsims==1){
-    size <- (get.vertex.attribute(model1simreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(allmodelsimreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }else{
-    size <- (get.vertex.attribute(model1simreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }}
   size})
 
@@ -983,9 +1007,9 @@ vcol2 <- reactive({
     vcol <- 2
   } else {
     if(nsim == 1){
-      full_list <- get.vertex.attribute(model1simreac(),input$colorby2)
+      full_list <- get.vertex.attribute(allmodelsimreac(),input$colorby2)
     } else {
-      full_list <- get.vertex.attribute(model1simreac()[[input$thissim]],input$colorby2)
+      full_list <- get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$colorby2)
     }
     short_list <- sort(unique(full_list))
     if(is.element("Other", short_list)){ #to be consistent with order of legend
@@ -2867,8 +2891,8 @@ output$gofplotcompdownload <- downloadHandler(
 #' On this page the user can choose how many simulations of the model to run. The 
 #' reactive object `model1simreac` contains all the simulations, which we can output
 #' a summary of and choose one simulation at a time to plot. *Note:* when the user
-#' chooses to simulate one network, `model1simreac()` is a reactive object of class
-#' network. When the user chooses to simulate multiple networks, `model1simreac()`
+#' chooses to simulate one network, `allmodelsimreac()` is a reactive object of class
+#' network. When the user chooses to simulate multiple networks, `allmodelsimreac()`
 #' contains a list of the generated networks. This is why we have to split up the plot
 #' command in an if-statement. The rest of the display options should look familiar
 #' from the 'Plot Network' tab.
@@ -2894,7 +2918,8 @@ output$checkterms_sim <- renderPrint({
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
   }
-  cat(isolate(ergm.terms()))
+  cat(isolate(current.simterms()))
+
 })
 output$currentdataset_sim <- renderPrint({
   if(!is.network(nw())){
@@ -2949,11 +2974,12 @@ output$simsummary <- renderPrint({
   if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   n <- isolate(input$nsims)
+  terms <- isolate(current.simterms())
   sum <- list()
   sum[1] <- paste(" Number of Networks: ",n, "\n")
-  sum[2] <- paste("Model: ", nwname(),' ~ ',ergm.terms(), "\n")
+  sum[2] <- paste("Model: ", nwname(),' ~ ',terms, "\n")
   sum[3] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
   sum[4] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
   sum[5] <- paste("Parameters: \n")
@@ -2964,7 +2990,7 @@ output$simsummary2 <- renderPrint({
   if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   sim
 })
 
@@ -2972,7 +2998,7 @@ output$simcoef <- renderPrint({
   if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   c <- attr(sim, 'coef')
   c <- cbind(format(names(c)),format(c, digits=3))
   write.table(c, quote=FALSE, row.names=FALSE, col.names=FALSE)
@@ -2989,7 +3015,7 @@ output$simstats <- renderPrint({
   if (input$simButton == 0 | state$sim == 0){
     return(cat(''))
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   m <- format(t(attr(sim,'stats')))
   m <- cbind(format(rownames(m)),m)
   write.table(m, quote=F, row.names=F, col.names=F)
@@ -2999,7 +3025,7 @@ output$simstats2 <- renderPrint({
   if(input$simButton == 0 | state$sim == 0){
     return()
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   m <- attr(sim,'stats')
   mat <- cbind(apply(m,2,min),apply(m,2,max),apply(m,2,IQR),
                apply(m,2,mean),apply(m,2,sd))
@@ -3012,17 +3038,18 @@ output$simstatsdownload <- downloadHandler(
                               input$simstatsfiletype,sep='')},
   contentType = "text/csv",
   content = function(file) {
-    x<-attr(model1simreac(),"stats")
+    x<-attr(allmodelsimreac(),"stats")
     if(input$simstatsfiletype == ".csv"){
       write.csv(x, file)
     } else {
       if(input$nsims > 1){
         capture.output({
-            sim <- model1simreac()
+            sim <- allmodelsimreac()
+            terms <- current.simterms()
             n <- input$nsims
             sum <- list()
             sum[1] <- paste(" Number of Networks: ",n, "\n")
-            sum[2] <- paste("Model: ", nwname(),' ~ ',ergm.terms(), "\n")
+            sum[2] <- paste("Model: ", nwname(),' ~ ',terms, "\n")
             sum[3] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
             sum[4] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
             sum[5] <- paste("Parameters: \n")
@@ -3043,7 +3070,7 @@ output$simstatsdownload <- downloadHandler(
             print(t(x))
         },file=file)
       } else {
-        capture.output(model1simreac(),file=file)
+        capture.output(allmodelsimreac(),file=file)
       }
     }
     
@@ -3054,9 +3081,9 @@ output$simstatsplot <- renderPlot({
   if(input$simButton==0 | state$sim == 0){
     return()
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   simstats <- attr(sim,'stats')
-  targetstats <- summary(ergm.formula())
+  targetstats <- summary(current.simformula())
   matplot(1:nrow(simstats), simstats, pch=c(1:8),
           col=c('red', 'blue', 'green3', 'cyan', 'magenta3',
                 'orange', 'black', 'grey', 'yellow'),
@@ -3070,7 +3097,7 @@ output$simstatslegend <- renderPlot({
   if(input$simButton==0 | state$sim == 0){
     return()
   }
-  sim <- isolate(model1simreac())
+  sim <- isolate(allmodelsimreac())
   termnames <- colnames(attr(sim,'stats'))
   color <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'orange', 'black', 'grey', 'yellow')
@@ -3087,10 +3114,10 @@ output$simstatsplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_simstatsplot.pdf',sep='')},
   content = function(file){
     pdf(file=file, height=8, width=15)
-    sim <- isolate(model1simreac())
+    sim <- isolate(allmodelsimreac())
     simstats <- attr(sim,'stats')
     termnames <- colnames(attr(sim,'stats'))
-    targetstats <- summary(ergm.formula())
+    targetstats <- summary(current.simformula())
     color <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
                'orange', 'black', 'grey', 'yellow')
     par(mar=c(5,4,4,12)) #increase margin on right to accommodate legend
@@ -3142,7 +3169,7 @@ output$simplot <- renderPlot({
   }
   nw_var <- nw()
   nsims <- isolate(input$nsims)
-  model1sim <- isolate(model1simreac()) 
+  model1sim <- isolate(allmodelsimreac()) 
   
   #can't plot simulation number greater than total sims
   if(input$thissim > nsims){
@@ -3178,14 +3205,14 @@ output$simplotdownload <- downloadHandler(
     pdf(file=file, height=10, width=10)
     color <- adjustcolor(vcol2(), alpha.f = input$transp2)
     if(input$nsims == 1){
-    plot(model1simreac(), 
+    plot(allmodelsimreac(), 
          coord = sim.coords.1(), 
          displayisolates = input$iso2, 
          displaylabels = input$vnames2, 
          vertex.col = color,
          vertex.cex = nodesize2())
     }else{
-      plot(model1simreac()[[input$thissim]], 
+      plot(allmodelsimreac()[[input$thissim]], 
            coord = sim.coords.2(), 
            displayisolates = input$iso2, 
            displaylabels = input$vnames2, 
