@@ -2876,29 +2876,45 @@ output$gofplotcompspace <- renderUI({
 output$gofplotcompdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_gofcomp.pdf',sep='')},
   content = function(file){
+    pdf(file=file, height=12, width=10)
+    gofterm <- input$gofterm
     n <- values$modeltotal
-    gofterm <- isolate(input$gofterm)
     if (gofterm == ''){
-      par(mfrow=c(3,3))
+      cols <- 3
+      innermat <- matrix(1:(n*cols),ncol=cols)
+      bottommat <- c(0,(n*cols+1):(n*cols+3))
+      bottomtext <- c("degree","espartners","distance")
     } else {
-      par(mfrow=c(3,1))
+      cols <- 1
+      innermat <- matrix(1:n,ncol=1,nrow=n)
+      bottommat <- c(0,n*cols+1)
+      bottomtext <- input$gofterm
+    }
+    sidemat <- (bottommat[length(bottommat)]+1):(bottommat[length(bottommat)]+n)
+    sidetext <- paste("Model",1:n)
+    layoutmat <- cbind(sidemat,innermat)
+    layoutmat <- rbind(layoutmat, bottommat)
+    widths <- c(1,rep(3,cols))
+    heights <- c(rep(3,n),1)
+    layout(layoutmat, widths=widths, heights=heights)
+    par(mar=c(3.1,2.1,3,2))
+  
+    for(j in 1:n){
+      gofobj <- switch(n, "1" = model1gof(), 
+                       "2" = model2gof(),
+                       "3" = model3gof(),
+                       "4" = model4gof(),
+                       "5" = model5gof()) 
+      plot.gofobject(gofobj, cex.axis=1)
+    }
+    par(mar=c(1,1,1,1))
+    for(j in 1:cols){
+      plot.new()
+      text(x=.5,y=.7,labels=bottomtext[j], cex=1.5)
     }
     for(j in 1:n){
-#       if(j==1 | j==5){
-#         par(mar=c(2.1,2.1,4,2))
-#       }
-#       if(j==2 | j==4){
-#         par(mar=c(3.1,2.1,3,2))
-#       }
-#       if(j==3 | n==2){
-#         par(mar=c(4.1,2.1,2,2))
-#       }
-      gofobj <- isolate({switch(n, "1" = model1gof(), 
-                                "2" = model2gof(),
-                                "3" = model3gof(),
-                                "4" = model4gof(),
-                                "5" = model5gof())})  
-      plot.gofobject(gofobj)
+      plot.new()
+      text(x=.7,y=.5,labels=sidetext[j], srt=90, cex=1.5)
     }
     dev.off()
   }
