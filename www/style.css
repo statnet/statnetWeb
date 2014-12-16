@@ -213,9 +213,9 @@ div.docpopup {
   background: #FFFFFF;
 }
 
-#uichoosemodel2,
-#uichoosemodel3,
-#uichoosemodel4 {
+#uichoosemodel_mcmc,
+#uichoosemodel_gof,
+#uichoosemodel_sim {
   display:inline;
   padding:4px 6px;
   margin-bottom:5px;
