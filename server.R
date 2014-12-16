@@ -2918,7 +2918,7 @@ output$checkterms_sim <- renderPrint({
   if(input$fitButton == 0){
     return(cat('Please fit a model'))
   }
-  cat(isolate(current.simterms()))
+  cat(current.simterms())
 
 })
 output$currentdataset_sim <- renderPrint({
