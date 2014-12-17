@@ -1,9 +1,9 @@
 
 # version of textInput with more size options
 # specify class = "input-small" or class="input-mini" in addition to other textInput args
-customTextInput<-function (inputId, label, value="",...) {
+customTextInput<-function (inputId, label, value="", labelstyle="dispay:inline;",...) {
   tagList(
-    tags$label(label, `for` = inputId), 
+    tags$label(label, `for` = inputId, style=labelstyle), 
     tags$input(id = inputId, type="text", value=value,...))
 }
 

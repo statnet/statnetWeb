@@ -1,4 +1,8 @@
 
+div.tool {
+  display:inline;
+}
+
 div.tool span.tip {
     z-index:10;
     display:none; 
@@ -197,6 +201,7 @@ div.chromewarningbox {
 }
 
 div .mcmcopt {
+  display:inline;
   padding: 2px;
   margin-bottom: 5px;
 }

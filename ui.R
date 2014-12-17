@@ -819,26 +819,30 @@ url = {http://statnetproject.org}
                           checkboxInput('controldefault','Use default options', value=TRUE)),
                    tabsetPanel(
                      tabPanel("MCMC",
-                          column(5,
+                        fluidRow(
                             div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                    img(src="callout2.png",class="callout")),
-                              span("Interval:"),
-                              customNumericInput('MCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                                span("Interval:"),
+                                customNumericInput('MCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                            
                             div(class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
                                                   img(src="callout2.png",class="callout")),  
                               span("Burn-in:"),
                               customNumericInput('MCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini")),
+                            
                             div(class="tool",span(class="tip","Number of network statistics, randomly drawn from a given distribution on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
                                                   img(src="callout2.png",class="callout")),  
                               span("Sample size:"),
                               customNumericInput('MCMCsamplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
-                              ),
-                          column(7,
+                          ),
+                             
+                          fluidRow(
                               div(class="tool",span(class ="tip", id="controltip",
                                                     "Type in other arguments to be passed to", span("control.ergm", style="font-family:Courier;"),
                                                     ", e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
                                                     img(src="callout2.png",class="callout")),
-                                textInput("customMCMCcontrol","Other controls:",value=""))
+                                  span("Other controls:"),
+                                  customTextInput("customMCMCcontrol",label=NULL,value=""))
                             )),
                      tabPanel("MCMLE",
                               p("Coming soon")),
@@ -1034,7 +1038,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                      checkboxInput('simcontroldefault','Use default options', value=TRUE)),
                               tabsetPanel(
                                 tabPanel("MCMC",
-                                         column(5,
+                                         fluidRow(
                                                 div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                                        img(src="callout2.png",class="callout")),
                                                     span("Interval:"),
@@ -1045,12 +1049,13 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                     customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"))
                                                 
                                          ),
-                                         column(7,
+                                         fluidRow(
                                                 div(class="tool", span(class="tip", id="controltip2",
                                                                        "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
                                                                        ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
                                                                        img(src="callout2.png",class="callout")),
-                                                    textInput("simcustomMCMCcontrol","Other controls:",value=""))
+                                                    span("Other controls:"),
+                                                    textInput("simcustomMCMCcontrol",label=NULL,value=""))
                                          )),
                                 tabPanel("Parallel",
                                          p("Coming soon")))
