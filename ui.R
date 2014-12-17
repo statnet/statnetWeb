@@ -813,13 +813,20 @@ url = {http://statnetproject.org}
                    )
             ),
             column(5,
-                   fluidRow(
-                   column(4,
-                          span("Control options:"),br(),
-                          checkboxInput('controldefault','Use default options', value=TRUE)),
-                   tabsetPanel(
-                     tabPanel("MCMC",
-                        fluidRow(
+               tabsetPanel(
+                 tabPanel("Term Documentation"),
+                 tabPanel("Control Options",
+                    fluidRow(
+                      column(4,
+                        checkboxInput('controldefault','Use default options', value=TRUE)),
+                      column(3,
+                        inlineSelectInput('controltype',label=NULL, 
+                                          choices=c("MCMC",
+                                                    "MCMLE",
+                                                    "Other")))
+                    ),
+                        conditionalPanel(condition="input.controltype == 'MCMC'",
+                          fluidRow(
                             div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                    img(src="callout2.png",class="callout")),
                                 span("Interval:"),
@@ -842,18 +849,15 @@ url = {http://statnetproject.org}
                                                     ", e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
                                                     img(src="callout2.png",class="callout")),
                                   span("Other controls:"),
-                                  customTextInput("customMCMCcontrol",label=NULL,value=""))
+                                  textInput("customMCMCcontrol",label=NULL,value=""))
                             )),
-                     tabPanel("MCMLE",
-                              p("Coming soon")),
-                     tabPanel("Other",
-                              p("Coming soon")))
-                   )
-                   
-                   )
-
+                        conditionalPanel(condition="input.controltype == 'MCMLE'",
+                                         p("Coming soon")),
+                        conditionalPanel(condition="input.controltype == 'Other'",
+                                         p("Coming soon"))
+                        ))
+                     )
             ),
-            
          fluidRow(
            column(2,
                   p('Current ergm formula:')),
@@ -864,7 +868,6 @@ url = {http://statnetproject.org}
                   p('Summary statistics:')),
            column(10,
                   verbatimTextOutput('prefitsum'))),
-         br(),
          tags$hr(),
          p(strong('Results'),br(),
            'Check for model degeneracy in the "Diagnostics" tab.'),
