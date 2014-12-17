@@ -2818,12 +2818,12 @@ output$gofplotcomp <- renderPlot({
   n <- values$modeltotal
   if (gofterm == ''){
     cols <- isolate(3)
-    innermat <- matrix(1:(n*cols),ncol=cols)
+    innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
     bottommat <- c(0,(n*cols+1):(n*cols+3))
     bottomtext <- c("degree","espartners","distance")
   } else {
     cols <- isolate(1)
-    innermat <- matrix(1:n,ncol=1,nrow=n)
+    innermat <- matrix(1:n,ncol=1,nrow=n, byrow=TRUE)
     bottommat <- c(0,n*cols+1)
     bottomtext <- isolate(input$gofterm)
   }
@@ -2838,7 +2838,7 @@ output$gofplotcomp <- renderPlot({
   
   isolate({
   for(j in 1:n){
-    gofobj <- switch(n, "1" = model1gof(), 
+    gofobj <- switch(j, "1" = model1gof(), 
                               "2" = model2gof(),
                               "3" = model3gof(),
                               "4" = model4gof(),
@@ -2876,12 +2876,11 @@ output$gofplotcompspace <- renderUI({
 output$gofplotcompdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_gofcomp.pdf',sep='')},
   content = function(file){
-    pdf(file=file, height=12, width=10)
     gofterm <- input$gofterm
     n <- values$modeltotal
     if (gofterm == ''){
       cols <- 3
-      innermat <- matrix(1:(n*cols),ncol=cols)
+      innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
       bottommat <- c(0,(n*cols+1):(n*cols+3))
       bottomtext <- c("degree","espartners","distance")
     } else {
@@ -2890,6 +2889,7 @@ output$gofplotcompdownload <- downloadHandler(
       bottommat <- c(0,n*cols+1)
       bottomtext <- input$gofterm
     }
+    pdf(file=file, height=2.5*n, width=4*cols)
     sidemat <- (bottommat[length(bottommat)]+1):(bottommat[length(bottommat)]+n)
     sidetext <- paste("Model",1:n)
     layoutmat <- cbind(sidemat,innermat)
@@ -2900,7 +2900,7 @@ output$gofplotcompdownload <- downloadHandler(
     par(mar=c(3.1,2.1,3,2))
   
     for(j in 1:n){
-      gofobj <- switch(n, "1" = model1gof(), 
+      gofobj <- switch(j, "1" = model1gof(), 
                        "2" = model2gof(),
                        "3" = model3gof(),
                        "4" = model4gof(),
