@@ -817,13 +817,13 @@ url = {http://statnetproject.org}
                  tabPanel("Term Documentation"),
                  tabPanel("Control Options",
                     fluidRow(
-                      column(4,
-                        checkboxInput('controldefault','Use default options', value=TRUE)),
                       column(3,
                         inlineSelectInput('controltype',label=NULL, 
                                           choices=c("MCMC",
                                                     "MCMLE",
-                                                    "Other")))
+                                                    "Other"))),
+                      column(4,
+                        checkboxInput('controldefault','Use default options', value=TRUE))
                     ),
                         conditionalPanel(condition="input.controltype == 'MCMC'",
                           fluidRow(
@@ -1035,33 +1035,39 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                         verbatimTextOutput('checkterms_sim')   
                         ),
                      column(5,
-                            fluidRow(
-                              column(4,
-                                     span("Control options:"),br(),
-                                     checkboxInput('simcontroldefault','Use default options', value=TRUE)),
-                              tabsetPanel(
-                                tabPanel("MCMC",
-                                         fluidRow(
-                                                div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
-                                                                       img(src="callout2.png",class="callout")),
-                                                    span("Interval:"),
-                                                    customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
-                                                div(class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                                                      img(src="callout2.png",class="callout")),  
-                                                    span("Burn-in:"),
-                                                    customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"))
-                                                
-                                         ),
-                                         fluidRow(
-                                                div(class="tool", span(class="tip", id="controltip2",
-                                                                       "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
-                                                                       ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
-                                                                       img(src="callout2.png",class="callout")),
-                                                    span("Other controls:"),
-                                                    textInput("simcustomMCMCcontrol",label=NULL,value=""))
-                                         )),
-                                tabPanel("Parallel",
-                                         p("Coming soon")))
+                          tabsetPanel(
+                            tabPanel("Control Options",
+                                     fluidRow(
+                                       column(3,
+                                              inlineSelectInput('simcontroltype',label=NULL, 
+                                                                choices=c("MCMC",
+                                                                          "Parallel"))),
+                                       column(4,
+                                              checkboxInput('simcontroldefault','Use default options', value=TRUE))
+                                     ),
+                                     conditionalPanel(condition="input.simcontroltype == 'MCMC'",
+                                       fluidRow(
+                                              div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
+                                                                     img(src="callout2.png",class="callout")),
+                                                  span("Interval:"),
+                                                  customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                                              div(class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
+                                                                    img(src="callout2.png",class="callout")),  
+                                                  span("Burn-in:"),
+                                                  customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"))
+                                              
+                                       ),
+                                       fluidRow(
+                                              div(class="tool", span(class="tip", id="controltip2",
+                                                                     "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
+                                                                     ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
+                                                                     img(src="callout2.png",class="callout")),
+                                                  span("Other controls:"),
+                                                  textInput("simcustomMCMCcontrol",label=NULL,value=""))
+                                       )),
+                                     conditionalPanel(condition="input.simcontroltype == 'Parallel'",
+                                                     p("Coming soon"))
+                                     )
                             )
                      )
                    ),
