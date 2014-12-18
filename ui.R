@@ -789,32 +789,21 @@ url = {http://statnetproject.org}
                                 div(class="tool", style="display:inline;",
                                     span("Term Documentation", class="tip", img(src="callout2.png",class="callout")),
                                   actionButton('termdocButton', label = NULL, icon=icon('book')))
-                                ),
-                      column(5,offset=4,
-                             div(class= 'docpopup', 
-                                 fluidRow(
-                                   column(3,
-                                          h5('Term Documentation')
-#                                           radioButtons('matchingorall', label='Choose from:',
-#                                           choices=c('Terms compatible with current network',
-#                                                     'All terms')),
-#                                           uiOutput('listofterms')
-                                   ),
-                                   column(8, 
-                                          p("After the next release of statnet (coming soon!), you will be able to",
-                                            "read the documentation for any of the ergm terms inside this popup box.",
-                                            "Until then, documentation can be accessed from the R command line using",
-                                            code('help("ergm-terms")'), "or in ", a("this paper", 
-                                                                                    href="http://www.jstatsoft.org/v24/i04/paper",
-                                                                                    target="_blank"))
-                                          #verbatimTextOutput('termdoc')
-                                   )))
-                      )
+                                )
                    )
             ),
             column(5,
                tabsetPanel(
-                 tabPanel("Term Documentation"),
+                 tabPanel("Term Documentation",
+                    column(3,
+                           radioButtons('matchingorall', label='Choose from:',
+                                 choices=c('Terms compatible with current network',
+                                           'All terms')),
+                           uiOutput('listofterms'))
+                           ),
+                    column(8,
+                           textOutput('termdoc')),
+                          
                  tabPanel("Control Options",
                     fluidRow(
                       column(3,

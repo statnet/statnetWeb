@@ -26,12 +26,12 @@ inlineSelectInput<-function (inputId, label, choices,...) {
 
 #create a list of unique term names
 # UNCOMMENT AFTER STATNET RELEASE FOR TERM DOCUMENTATION
-# allterms <- search.ergmTerms()
-# inds <- gregexpr(pattern='\\(', allterms)
-# for(i in 1:length(allterms)){
-#   allterms[i] <- substr(allterms[[i]], start=1, stop=inds[[i]][1]-1)
-# }
-# allterms <- unique(allterms)
+allterms <- search.ergmTerms()
+inds <- gregexpr(pattern='\\(', allterms)
+for(i in 1:length(allterms)){
+  allterms[i] <- substr(allterms[[i]], start=1, stop=inds[[i]][1]-1)
+}
+allterms <- unique(allterms)
 
 #disable widgets when they should not be usable
 disableWidget <- function(id, session, disabled=TRUE){
