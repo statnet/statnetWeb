@@ -2391,26 +2391,25 @@ output$listofterms <- renderUI({
   if(!is.network(nw())){
     return()
   }
-  if(input$matchingorall == 'All terms'){
+  if(input$matchingorall == "all"){
     current.terms <- unlist(allterms)
   } else {
     matchterms <- search.ergmTerms(net=nw())
-    ind <- gregexpr(pattern='\\(', matchterms)
+    ind <- regexpr(pattern='\\(', matchterms)
     for(i in 1:length(matchterms)){
-      matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[[i]][1]-1)
+      matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[i]-1)
     }
     matchterms <- unique(matchterms)
     current.terms <- unlist(matchterms)
   }
-  selectInput('termdoc',label = NULL,
-                  choices = current.terms,
-                  multiple=FALSE, 
-                  selectize=FALSE)
+  selectInput('chooseterm',label = NULL,
+              choices = current.terms,
+              multiple=FALSE, selectize=FALSE)
   
 })
 
 output$termdoc <- renderPrint({
-  myterm <- input$termdoc
+  myterm <- input$chooseterm
   search.ergmTerms(name=myterm)
 })
 

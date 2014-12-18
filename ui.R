@@ -795,15 +795,15 @@ url = {http://statnetproject.org}
             column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
-                    column(3,
-                           radioButtons('matchingorall', label='Choose from:',
-                                 choices=c('Terms compatible with current network',
-                                           'All terms')),
-                           uiOutput('listofterms'))
+                  fluidRow(
+                           bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
+                                 value="matching",
+                                 bsButton("matchingButton",label="Compatible Terms", value="matching"),
+                                 bsButton("allButton",label="All Terms", value="all")),
+                           uiOutput('listofterms')
                            ),
-                    column(8,
-                           textOutput('termdoc')),
-                          
+                   verbatimTextOutput('termdoc')
+                 ),
                  tabPanel("Control Options",
                     fluidRow(
                       column(3,
