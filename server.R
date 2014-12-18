@@ -2834,7 +2834,7 @@ output$gofplotcomp <- renderPlot({
   widths <- c(1,rep(3,cols))
   heights <- c(rep(3,n),1)
   layout(layoutmat, widths=widths, heights=heights)
-  par(mar=c(3.1,2.1,3,2))
+  par(mar=c(1,2,2.2,1), omi=c(0,0,.3,0))
   
   isolate({
   for(j in 1:n){
@@ -2843,7 +2843,7 @@ output$gofplotcomp <- renderPlot({
                               "3" = model3gof(),
                               "4" = model4gof(),
                               "5" = model5gof()) 
-    plot.gofobject(gofobj, cex.axis=1)
+    plot.gofobject(gofobj, main="", cex.axis=1)
   }
   par(mar=c(1,1,1,1))
   for(j in 1:cols){
@@ -2854,6 +2854,7 @@ output$gofplotcomp <- renderPlot({
     plot.new()
     text(x=.7,y=.5,labels=sidetext[j], srt=90, cex=1.5)
   }
+  mtext("Goodness-of-fit diagnostics",side=3,outer=TRUE,cex=1.5,padj=0)
   }) 
 })
 
@@ -2897,7 +2898,7 @@ output$gofplotcompdownload <- downloadHandler(
     widths <- c(1,rep(3,cols))
     heights <- c(rep(3,n),1)
     layout(layoutmat, widths=widths, heights=heights)
-    par(mar=c(3.1,2.1,3,2))
+    par(mar=c(1,2,2.2,1), omi=c(0,0,.3,0))
   
     for(j in 1:n){
       gofobj <- switch(j, "1" = model1gof(), 
@@ -2905,7 +2906,7 @@ output$gofplotcompdownload <- downloadHandler(
                        "3" = model3gof(),
                        "4" = model4gof(),
                        "5" = model5gof()) 
-      plot.gofobject(gofobj, cex.axis=1)
+      plot.gofobject(gofobj, cex.axis=1, main="")
     }
     par(mar=c(1,1,1,1))
     for(j in 1:cols){
@@ -2916,6 +2917,7 @@ output$gofplotcompdownload <- downloadHandler(
       plot.new()
       text(x=.7,y=.5,labels=sidetext[j], srt=90, cex=1.5)
     }
+    mtext("Goodness-of-fit diagnostics",side=3,outer=TRUE,cex=1.5,padj=0)
     dev.off()
   }
 )
