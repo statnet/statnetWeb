@@ -216,8 +216,31 @@ div .mcmcopt {
 }
 #matchingorall {
   margin-bottom:2px;
+  margin-left:2px;
 }
-
+#termdoc {
+  background:#FFFFFF;
+  border:none;
+}
+#termdocbox {
+  max-height:75px;
+  border: 1px solid #CECED8;
+  border-radius: 5px;
+  overflow:scroll;
+}
+#termexpand {
+  width:50px;
+  height:22px;
+  margin-bottom:2px;
+  background: #FFFFFF;
+  border: 1px solid #CECED8;
+  border-radius: 5px;
+  border-top:none;
+  color: #A5A5AD;
+}
+#termexpand:hover {
+  color: #737379;
+}
 div.docpopup {
   position:absolute;
   z-index: 8;

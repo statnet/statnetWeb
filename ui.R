@@ -800,9 +800,14 @@ url = {http://statnetproject.org}
                                  value="matching",
                                  bsButton("matchingButton",label="Compatible Terms", value="matching"),
                                  bsButton("allButton",label="All Terms", value="all")),
-                           uiOutput('listofterms')
+                           uiOutput("listofterms")
                            ),
-                   verbatimTextOutput('termdoc')
+                  div(id="termdocbox",
+                    verbatimTextOutput("termdoc")),
+                  fluidRow(align="center",
+                    div(id="termexpand", 
+                      icon(name="angle-double-down", class="fa-2x"))
+                  )
                  ),
                  tabPanel("Control Options",
                     fluidRow(
