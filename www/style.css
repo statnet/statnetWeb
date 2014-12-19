@@ -218,27 +218,31 @@ div .mcmcopt {
   margin-bottom:2px;
   margin-left:2px;
 }
+div.placeholder {
+  height:110px;
+}
 #termdoc {
   background:#FFFFFF;
   border:none;
 }
 #termdocbox {
   position:absolute;
-  max-height:75px;
+  margin-right:10px;
+  height:65px;
   border: 1px solid #CECED8;
   border-radius: 5px;
   overflow:scroll;
+  z-index:9;
 }
 #termexpand {
   position:absolute;
-  width:50px;
-  height:22px;
-  margin-bottom:2px;
+  width:30px;
+  height:20px;
   background: #FFFFFF;
   border: 1px solid #CECED8;
   border-radius: 5px;
-  border-top:none;
   color: #A5A5AD;
+  z-index:10;
 }
 #termexpand:hover {
   color: #737379;

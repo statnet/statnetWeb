@@ -795,6 +795,7 @@ url = {http://statnetproject.org}
             column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
+                  div(class="placeholder",
                   fluidRow(
                            bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
                                  value="matching",
@@ -803,14 +804,12 @@ url = {http://statnetproject.org}
                            uiOutput("listofterms")
                            ),
                   div(id="termdocbox",
-                    verbatimTextOutput("termdoc"),
-                    fluidRow(align="center",
-                      div(id="termexpand", 
-                        icon(name="angle-double-down", class="fa-2x"))
-                    ))
-                  
+                    verbatimTextOutput("termdoc")
+                    )
+                  )
                  ),
                  tabPanel("Control Options",
+                    div(class="placeholder",
                     fluidRow(
                       column(3,
                         inlineSelectInput('controltype',label=NULL, 
@@ -850,10 +849,9 @@ url = {http://statnetproject.org}
                                          p("Coming soon")),
                         conditionalPanel(condition="input.controltype == 'Other'",
                                          p("Coming soon"))
-                        ))
+                        )))
                      )
             ),
-          br(),br(),
          fluidRow(
            column(2,
                   p('Current ergm formula:')),

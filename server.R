@@ -2381,9 +2381,6 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 #' The user is only allowed to change the dataset on the first tab; on the
 #' following tabs I output the current dataset as a reminder of what network
 #' they are working with. 
-#' 
-#' Coming soon: term documentation.
-
 
 #+ eval=FALSE
 #UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
