@@ -228,7 +228,7 @@ div.placeholder {
 #termdocbox {
   position:absolute;
   margin-right:10px;
-  height:65px;
+  max-height:65px;
   border: 1px solid #CECED8;
   border-radius: 5px;
   overflow:scroll;
@@ -236,11 +236,9 @@ div.placeholder {
 }
 #termexpand {
   position:absolute;
+  right:3px;
   width:30px;
   height:20px;
-  background: #FFFFFF;
-  border: 1px solid #CECED8;
-  border-radius: 5px;
   color: #A5A5AD;
   z-index:10;
 }

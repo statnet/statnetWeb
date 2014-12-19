@@ -805,7 +805,9 @@ url = {http://statnetproject.org}
                            ),
                   div(id="termdocbox",
                     verbatimTextOutput("termdoc")
-                    )
+                    ),
+                  div(id="termexpand",
+                          icon(name="expand"))
                   )
                  ),
                  tabPanel("Control Options",

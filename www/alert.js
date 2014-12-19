@@ -90,14 +90,15 @@ $(document).ready(function(){
     $(".chromewarningbox").toggle(500);
   });
   
-  $("#termdocbox").click(function(){
+  $("#termexpand").click(function(){
+    $("i",this).toggleClass("fa-expand fa-compress");
     if($("#termdocbox").height()<100){
       $("#termdocbox").css({
-      "height":"250px"
+      "max-height":"250px"
       });
     } else {
       $("#termdocbox").css({
-      "height":"65px"
+      "max-height":"65px"
       });
     }
     
