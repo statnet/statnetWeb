@@ -223,12 +223,14 @@ div .mcmcopt {
   border:none;
 }
 #termdocbox {
+  position:absolute;
   max-height:75px;
   border: 1px solid #CECED8;
   border-radius: 5px;
   overflow:scroll;
 }
 #termexpand {
+  position:absolute;
   width:50px;
   height:22px;
   margin-bottom:2px;

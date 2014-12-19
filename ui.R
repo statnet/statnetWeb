@@ -803,11 +803,12 @@ url = {http://statnetproject.org}
                            uiOutput("listofterms")
                            ),
                   div(id="termdocbox",
-                    verbatimTextOutput("termdoc")),
-                  fluidRow(align="center",
-                    div(id="termexpand", 
-                      icon(name="angle-double-down", class="fa-2x"))
-                  )
+                    verbatimTextOutput("termdoc"),
+                    fluidRow(align="center",
+                      div(id="termexpand", 
+                        icon(name="angle-double-down", class="fa-2x"))
+                    ))
+                  
                  ),
                  tabPanel("Control Options",
                     fluidRow(
@@ -852,6 +853,7 @@ url = {http://statnetproject.org}
                         ))
                      )
             ),
+          br(),br(),
          fluidRow(
            column(2,
                   p('Current ergm formula:')),

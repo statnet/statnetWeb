@@ -90,6 +90,19 @@ $(document).ready(function(){
     $(".chromewarningbox").toggle(500);
   });
   
+  $("#termexpand").click(function(){
+    if($("#termdocbox").height()<100){
+      $("#termdocbox").css({
+      "max-height":"250px"
+      });
+    } else {
+      $("#termdocbox").css({
+      "max-height":"75px"
+      });
+    }
+    
+  });
+  
   $("#mcmchelper").click(function(){
     $("#mcmchelpbox").toggle(500);
   });
