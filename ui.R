@@ -218,7 +218,7 @@ url = {http://statnetproject.org}
 #' values of input or output objects. When the condition is false, the panel
 #' does not take up any space in the UI.  
            
-    br(),     
+     
     fluidRow(
       column(7,
         tabsetPanel(id='datatabs',
@@ -425,8 +425,7 @@ url = {http://statnetproject.org}
          p("Calculation in progress..."),
          img(src="ajax-loader.gif")
      ),
-     
-    br(), 
+ 
     fluidRow(      
      column(7,
         tabsetPanel(id='plottabs',
@@ -764,9 +763,14 @@ url = {http://statnetproject.org}
                                                   
           fluidRow(
             column(2,
-               p('Network:', verbatimTextOutput('currentdataset1'))),
+              tabsetPanel(
+                tabPanel("Network",
+               verbatimTextOutput('currentdataset1')))
+              ),
             
             column(5,
+              tabsetPanel(
+                tabPanel("ergm Formula",
                    p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                    fluidRow(
                       fluidRow(
@@ -791,7 +795,7 @@ url = {http://statnetproject.org}
                                   actionButton('termdocButton', label = NULL, icon=icon('book')))
                                 )
                    )
-            ),
+            ))),
             column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
@@ -865,8 +869,6 @@ url = {http://statnetproject.org}
            column(10,
                   verbatimTextOutput('prefitsum'))),
          tags$hr(),
-         p(strong('Results'),br(),
-           'Check for model degeneracy in the "Diagnostics" tab.'),
          fluidRow(column(12,
                          uiOutput('savemodel'),
                          bsActionButton('clearmodelButton',
@@ -897,118 +899,121 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
           ),
 #' **MCMC Diagnostics**
 #' 
-#+ eval=FALSE   
-#          navbarMenu('Diagnostics',         
-                    tabPanel(title='MCMC Diagnostics', value='tab5',
-                             #include progress bar when this tab is loading
-                             div(class = "busy", 
-                                 p("Calculation in progress..."),
-                                 img(src="ajax-loader.gif")
-                             ),
-                             
-                             fluidRow(
-                               column(2,
-                                      p('Network:', class="nwlabel"), verbatimTextOutput('currentdataset_mcmc')),
-                               column(10,
-                                      p('ergm formula:',style="display:inline;"),
-                                        uiOutput('uichoosemodel_mcmc'),
-                                        verbatimTextOutput('checkterms_mcmc'))
-                             ),     
-                             br(),
-                             tags$hr(),
-                             tabsetPanel(id='mcmctabs',
-                               tabPanel('Plot',
-                                        #intercept error and give friendly message when MCMC doesn't run
-                                        conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored.'",
-                                                    column(1,span(class='helper', id='mcmchelper', icon('question-circle')),
-                                                           style='width:20px; margin-left:0px'),
-                                                    column(11,pre('MCMC was not run or MCMC sample was not stored.'),
-                                                           style='margin-left:0px;'),
-                                                    column(3, 
-                                                           div(class='mischelperbox', id='mcmchelpbox',
-                                                            "MCMC is only run when at least one of the terms in the model represents",
-                                                            "dyad dependence (e.g., degree terms, or triad related terms).  For",
-                                                            "models with only dyadic independent terms, estimation relies on",
-                                                            "traditional maximum likelihood algorithms used for generalized linear",
-                                                            "models."))
-                                                         ),
-                                        uiOutput('diagnosticsplotspace'),
-                                        downloadButton('mcmcplotdownload',label = 'Download Plots')),
-                               tabPanel('Summary', 
-                                        verbatimTextOutput('diagnostics'))
-                             ),
-                             div(id='mcmctabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
-                             div(class="helper-box", style="display:none",
-                                 p('Check for model degeneracy. When a model converges properly',
-                                   'the MCMC sample statistics should vary randomly around the',
-                                   'observed values at each step, and the difference between the',
-                                   'observed and simulated values of the sample statistics should',
-                                   'have a roughly bell shaped distribution, centered at 0.')),
-                             actionLink('mcmcleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
-                             actionLink('mcmcright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
-                             
-                    ),
+#+ eval=FALSE          
+        tabPanel(title='MCMC Diagnostics', value='tab5',
+                 #include progress bar when this tab is loading
+                 div(class = "busy", 
+                     p("Calculation in progress..."),
+                     img(src="ajax-loader.gif")
+                 ),
+                 
+                 fluidRow(
+                   column(2,
+                      tabsetPanel(
+                        tabPanel("Network",
+                            verbatimTextOutput('currentdataset_mcmc')     
+                            ))),
+                   column(10,
+                      tabsetPanel(
+                        tabPanel("ergm Formula",
+                            verbatimTextOutput('checkterms_mcmc'),
+                            uiOutput('uichoosemodel_mcmc')
+                        )))
+                 ),     
+                 br(),
+                 tags$hr(),
+                 tabsetPanel(id='mcmctabs',
+                   tabPanel('Plot',
+                            #intercept error and give friendly message when MCMC doesn't run
+                            conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored.'",
+                                        column(1,span(class='helper', id='mcmchelper', icon('question-circle')),
+                                               style='width:20px; margin-left:0px'),
+                                        column(11,pre('MCMC was not run or MCMC sample was not stored.'),
+                                               style='margin-left:0px;'),
+                                        column(3, 
+                                               div(class='mischelperbox', id='mcmchelpbox',
+                                                "MCMC is only run when at least one of the terms in the model represents",
+                                                "dyad dependence (e.g., degree terms, or triad related terms).  For",
+                                                "models with only dyadic independent terms, estimation relies on",
+                                                "traditional maximum likelihood algorithms used for generalized linear",
+                                                "models."))
+                                             ),
+                            uiOutput('diagnosticsplotspace'),
+                            downloadButton('mcmcplotdownload',label = 'Download Plots')),
+                   tabPanel('Summary', 
+                            verbatimTextOutput('diagnostics'))
+                 ),
+                 div(id='mcmctabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
+                 div(class="helper-box", style="display:none",
+                     p('Check for model degeneracy. When a model converges properly',
+                       'the MCMC sample statistics should vary randomly around the',
+                       'observed values at each step, and the difference between the',
+                       'observed and simulated values of the sample statistics should',
+                       'have a roughly bell shaped distribution, centered at 0.')),
+                 actionLink('mcmcleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+                 actionLink('mcmcright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
+                 
+        ),
 #' **Goodness of Fit**
 #' 
 #+ eval=FALSE  
-            tabPanel(title='Goodness of Fit',value='tab6',
-                     
-                     #include progress bar when this tab is loading
-                     div(class = "busy", 
-                         p("Calculation in progress..."),
-                         img(src="ajax-loader.gif")
-                     ),
-                     
-                     fluidRow(
-                       column(2,
-                              p('Network:', class="nwlabel"), 
-                              verbatimTextOutput('currentdataset_gof')),
-                       column(10,
-                              p('ergm formula:',style="display:inline;"),
-                              uiOutput('uichoosemodel_gof'),
-                              verbatimTextOutput('checkterms_gof'))
-                      ),
-                     p('If you do not specify a term the default formula for undirected 
-                       networks is ', code('~ degree + espartners + distance'), 'and for 
-                       directed networks is ', code('~ idegree + odegree + espartners + 
-                                                    distance'), '.'),
-                     fluidRow(
-                       column(3, selectInput('gofterm', 'Goodness of Fit Term:',
-                                             c(Default='', 'degree', 'distance', 'espartners', 
-                                               'dspartners', 'triadcensus', 'model'),
-                                             selectize = FALSE))),
-                     fluidRow(
-                        column(3, actionButton('gofButton', 'Run'))),
-                     br(),
-                 tabsetPanel(
-                   tabPanel("Current Model",
-                            fluidRow(
-                              column(5,
-                                     verbatimTextOutput('gofsummary')),  
-                              column(7,
-                                     uiOutput('gofplotspace'),
-                                     downloadButton('gofplotdownload', label = 'Download Plots')))
-                            ),
-                   tabPanel("Compare Models",align="center",
-                            uiOutput('gofplotcompspace'),
-                            fluidRow(align="left",
-                                     downloadButton('gofplotcompdownload', 
-                                                    label='Download Plots'),
-                                     br())
-                            )
-                   ),
-                 
-                     div(id='goftabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
-                     div(class="helper-box", style="display:none",
-                         p('Test how well your model fits the original data by choosing a network',
-                            'statistic that is not in the model, and comparing the value of this',
-                            'statistic observed in the original network to the distribution of values',
-                            'you get in simulated networks from your model.')),
-                     actionLink('gofleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
-                     actionLink('gofright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
-                     ),
+    tabPanel(title='Goodness of Fit',value='tab6',
+             
+             #include progress bar when this tab is loading
+             div(class = "busy", 
+                 p("Calculation in progress..."),
+                 img(src="ajax-loader.gif")
+             ),
+             
+             fluidRow(
+               column(2,
+                      p('Network:', class="nwlabel"), 
+                      verbatimTextOutput('currentdataset_gof')),
+               column(10,
+                      p('ergm formula:',style="display:inline;"),
+                      uiOutput('uichoosemodel_gof'),
+                      verbatimTextOutput('checkterms_gof'))
+              ),
+             p('If you do not specify a term the default formula for undirected 
+               networks is ', code('~ degree + espartners + distance'), 'and for 
+               directed networks is ', code('~ idegree + odegree + espartners + 
+                                            distance'), '.'),
+             fluidRow(
+               column(3, selectInput('gofterm', 'Goodness of Fit Term:',
+                                     c(Default='', 'degree', 'distance', 'espartners', 
+                                       'dspartners', 'triadcensus', 'model'),
+                                     selectize = FALSE))),
+             fluidRow(
+                column(3, actionButton('gofButton', 'Run'))),
+             br(),
+         tabsetPanel(
+           tabPanel("Current Model",
+                    fluidRow(
+                      column(5,
+                             verbatimTextOutput('gofsummary')),  
+                      column(7,
+                             uiOutput('gofplotspace'),
+                             downloadButton('gofplotdownload', label = 'Download Plots')))
+                    ),
+           tabPanel("Compare Models",align="center",
+                    uiOutput('gofplotcompspace'),
+                    fluidRow(align="left",
+                             downloadButton('gofplotcompdownload', 
+                                            label='Download Plots'),
+                             br())
+                    )
+           ),
+         
+             div(id='goftabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
+             div(class="helper-box", style="display:none",
+                 p('Test how well your model fits the original data by choosing a network',
+                    'statistic that is not in the model, and comparing the value of this',
+                    'statistic observed in the original network to the distribution of values',
+                    'you get in simulated networks from your model.')),
+             actionLink('gofleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
+             actionLink('gofright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
+             ),
 
-#             ),
 #' **Simulations**
 #' 
 #+ eval=FALSE  
