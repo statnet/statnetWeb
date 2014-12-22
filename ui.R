@@ -763,14 +763,11 @@ url = {http://statnetproject.org}
                                                   
           fluidRow(
             column(2,
-              tabsetPanel(
-                tabPanel("Network",
-               verbatimTextOutput('currentdataset1')))
+               p('Network:', class="nwlabel"), 
+               verbatimTextOutput('currentdataset1')
               ),
             
             column(5,
-              tabsetPanel(
-                tabPanel("ergm Formula",
                    p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                    fluidRow(
                       fluidRow(
@@ -795,7 +792,7 @@ url = {http://statnetproject.org}
                                   actionButton('termdocButton', label = NULL, icon=icon('book')))
                                 )
                    )
-            ))),
+            ),
             column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
@@ -909,16 +906,12 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                  
                  fluidRow(
                    column(2,
-                      tabsetPanel(
-                        tabPanel("Network",
-                            verbatimTextOutput('currentdataset_mcmc')     
-                            ))),
+                          p('Network:', class="nwlabel"), 
+                          verbatimTextOutput('currentdataset_mcmc')),
                    column(10,
-                      tabsetPanel(
-                        tabPanel("ergm Formula",
-                            verbatimTextOutput('checkterms_mcmc'),
-                            uiOutput('uichoosemodel_mcmc')
-                        )))
+                          p('ergm formula:',style="display:inline;"),
+                            uiOutput('uichoosemodel_mcmc'),
+                            verbatimTextOutput('checkterms_mcmc'))
                  ),     
                  br(),
                  tags$hr(),
