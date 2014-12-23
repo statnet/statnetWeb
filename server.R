@@ -532,18 +532,6 @@ nw <- reactive({
   
 #deleting attributes is no longer available
 
-#   deleteme <- input$deleteattrs$right
-#   len <- length(deleteme)
-#   if(len>=1){
-#       for(i in 1:len){
-#         if(any(list.vertex.attributes(nw_var)==deleteme[i])){
-#           delete.vertex.attribute(nw_var,deleteme[i])
-#         }
-#         if(any(list.edge.attributes(nw_var)==deleteme[i])){
-#           delete.edge.attribute(nw_var,deleteme[i])
-#         }
-#       }
-#   }
   assign('input_termslist', list(), pos='package:base')
   updateTextInput(session, inputId='terms', value='edges')
 
@@ -1915,25 +1903,6 @@ observe({
   }
 })
 
-# FUTURE: will be able to subset data
-# output$subsetting <- renderUI({
-#   if(class(nw())!='network'){
-#     return()
-#   }
-#   selectInput('subsetattr', label=NULL,
-#               choices = c('None', menuattr()), selectize = FALSE)
-# })
-# outputOptions(output,'subsetting',suspendWhenHidden=FALSE)
-# 
-# output$subsetting2 <- renderUI({
-#   if(class(nw())!='network' | input$subsetattr == "None"){
-#     return()
-#   }
-#   choices <- sort(unique(get.vertex.attribute(nw(),input$subsetattr)))
-#   checkboxGroupInput('subsetattrchoice', label=NULL,
-#                      choices=choices, selected=NULL)
-# })
-
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden
 output$mixmxchooser <- renderUI({
@@ -2383,7 +2352,6 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 #' they are working with. 
 
 #+ eval=FALSE
-#UNCOMMENT AFTER RELEASE FOR TERM DOCUMENTATION
 output$listofterms <- renderUI({
   if(!is.network(nw())){
     return()
