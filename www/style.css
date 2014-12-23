@@ -245,17 +245,6 @@ div.placeholder {
 #termexpand:hover {
   color: #737379;
 }
-div.docpopup {
-  position:absolute;
-  z-index: 8;
-  display:none;
-  max-width: 700px;
-  max-height: 600px;
-  padding: 5px;
-  border:1px solid #CECED8;
-  border-radius: 5px;
-  background: #FFFFFF;
-}
 
 #uichoosemodel_mcmc,
 #uichoosemodel_gof,
