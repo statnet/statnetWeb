@@ -794,7 +794,7 @@ observe({
   # values$modelcoefs is a list object, each element is a list of 
   # coefficients and stars for a single model
   m <- values$modeltotal
-  if(m > 0 & m < 5){
+  if(m > 0 & m <= 5){
     values$modelcoefs[[m]] <- isolate(ergminfo(model1reac()))
     values$modelformulas[[m]] <- isolate(ergm.terms())
     values$modelfits[[m]] <- isolate(model1reac())
@@ -2880,7 +2880,13 @@ output$gofplotcompdownload <- downloadHandler(
       lastelt <- 15
       bottommat <- c(0,(n*cols+1):(n*cols+3))
       bottomtext <- c("degree","espartners","distance")
-      pdf(file=file, height=8.5, width=11)
+      if(n<=4){
+        #landscape page
+        pdf(file=file, height=8.5, width=11)
+      } else {
+        #portrait page
+        pdf(file=file, height=11, width=8.5)
+      }
     } else {
       cols <- 1
       lastelt <- 7
@@ -2896,14 +2902,15 @@ output$gofplotcompdownload <- downloadHandler(
     if(n<3){
       extra <- 3-n
       last <- sidemat[length(sidemat)]
-      m <- matrix((last+1):lastelt, nrow=extra, byrow=TRUE)
-      layoutmat <- rbind(layoutmat, bottommat, m)
+      filler <- matrix((last+1):lastelt, nrow=extra, byrow=TRUE)
+      layoutmat <- rbind(layoutmat, bottommat, filler)
+      heights <- c(rep(3,n),1,rep(3,3-n))
     } else {
       layoutmat <- rbind(layoutmat, bottommat)
+      heights <- c(rep(3,n),1)
     }
     
-    widths <- c(1,rep(3,cols))
-    heights <- c(rep(3,n),1,rep(3,3-n))
+    widths <- c(1,rep((9/cols),cols))
     layout(layoutmat, widths=widths, heights=heights)
     par(mar=c(1,2,2.2,1), omi=c(0,0,.3,0))
   
@@ -2925,6 +2932,7 @@ output$gofplotcompdownload <- downloadHandler(
       text(x=.7,y=.5,labels=sidetext[j], srt=90, cex=1.5)
     }
     mtext("Goodness-of-fit diagnostics",side=3,outer=TRUE,cex=1.5,padj=0)
+    
     dev.off()
   }
 )
