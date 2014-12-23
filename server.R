@@ -2877,22 +2877,33 @@ output$gofplotcompdownload <- downloadHandler(
     n <- values$modeltotal
     if (gofterm == ''){
       cols <- 3
-      innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
+      lastelt <- 15
       bottommat <- c(0,(n*cols+1):(n*cols+3))
       bottomtext <- c("degree","espartners","distance")
+      pdf(file=file, height=8.5, width=11)
     } else {
       cols <- 1
-      innermat <- matrix(1:n,ncol=1,nrow=n)
+      lastelt <- 7
       bottommat <- c(0,n*cols+1)
       bottomtext <- input$gofterm
+      pdf(file=file, height=11, width=8.5)
     }
-    pdf(file=file, height=2.5*n, width=4*cols)
+    
     sidemat <- (bottommat[length(bottommat)]+1):(bottommat[length(bottommat)]+n)
     sidetext <- paste("Model",1:n)
+    innermat <- matrix(1:(n*cols), ncol=cols, nrow=n, byrow=TRUE)
     layoutmat <- cbind(sidemat,innermat)
-    layoutmat <- rbind(layoutmat, bottommat)
+    if(n<3){
+      extra <- 3-n
+      last <- sidemat[length(sidemat)]
+      m <- matrix((last+1):lastelt, nrow=extra, byrow=TRUE)
+      layoutmat <- rbind(layoutmat, bottommat, m)
+    } else {
+      layoutmat <- rbind(layoutmat, bottommat)
+    }
+    
     widths <- c(1,rep(3,cols))
-    heights <- c(rep(3,n),1)
+    heights <- c(rep(3,n),1,rep(3,3-n))
     layout(layoutmat, widths=widths, heights=heights)
     par(mar=c(1,2,2.2,1), omi=c(0,0,.3,0))
   
