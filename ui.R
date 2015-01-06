@@ -62,9 +62,7 @@ library(shinyAce)
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(title=div(a(span('statnetWeb  ', style='font-family:Courier'),
-                            href = 'https://github.com/statnet/statnetWeb',
-                            target = '_blank')), 
+  navbarPage(title=NULL, 
              id= 'navbar', windowTitle = 'statnetWeb', collapsable=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
@@ -80,10 +78,11 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel(title='About v0.2.0', value='tab1',
+  tabPanel(title=span('statnetWeb', style='font-family:Courier; font-size:14pt; font-weight:bold;'),
+           value='tab1',
            fluidRow(
                     column(8,
-                           br(),
+                           h5("About statnetWeb v0.3.0"),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
