@@ -681,6 +681,8 @@ legendfill <- reactive({
 #+ eval=FALSE 
 
 #add terms to list as user enters them
+#function in alert.js will click the addtermButton when user
+#presses Enter from within the terms textbox
 observe({
   if(input$addtermButton==0) {return()}
   isolate({
