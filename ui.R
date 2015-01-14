@@ -78,7 +78,7 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel(title=span('statnetWeb', style='font-family:Courier; font-size:14pt; font-weight:bold;'),
+  tabPanel(title=span('statnetWeb', style='font-family:Courier; font-size:14pt;'),
            value='tab1',
            fluidRow(
                     column(8,
