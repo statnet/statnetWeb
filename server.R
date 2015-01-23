@@ -201,7 +201,9 @@ nwinit <- reactive({
              })
         
       }
-      try({nw_var <- network(read.table(paste(filepath)),
+      try({
+        newmx <- load(paste(filepath))
+        nw_var <- network(get(newmx),
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
