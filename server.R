@@ -1231,9 +1231,13 @@ bernoullisamples <- reactive({
 #DEGREE DISTRIBUTION
 
 output$dynamiccolor_dd <- renderUI({
+  menu <- menuattr()
+  if(input$cmode == "freeman" & is.directed(nw())){
+    menu <- c()
+  }
   selectInput('colorby_dd',
               label = 'Color bars according to:',
-              c('None', menuattr()),
+              c('None', menu),
               selected = 'None',
               selectize = FALSE)
 })
