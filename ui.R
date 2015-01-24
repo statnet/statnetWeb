@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ============
-#' ui.R
+#' ui.R, v0.3.1
 #' ============
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
@@ -78,11 +78,11 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel(title=span('statnetWeb', style='font-family:Courier; font-size:14pt;'),
+  tabPanel(title=span('statnetWeb', id="sWtitle"),
            value='tab1',
            fluidRow(
                     column(8,
-                           h5("About statnetWeb v0.3.0"),
+                           h5("About statnetWeb v0.3.1"),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
