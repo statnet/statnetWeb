@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ===========
-#' server.R
+#' server.R, v0.3.1
 #' ===========
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
@@ -85,28 +85,6 @@ options(digits=3)
 shinyServer(
   function(input, output, session){
 
-    
-#' To keep a list of all attributes uploaded by the user:  
-#' can't use global variables because they are common to all 
-#' sessions using the app and will get overwritten, instead 
-#' created per session variables inside shinyServer
-#' 
-#' 
-#+ eval=FALSE
-assign('v_attrNamesToAdd', list(1),
-       pos="package:base")
-assign('v_attrValsToAdd', list(),  
-       pos="package:base")
-assign('e_attrNamesToAdd', list(1),
-       pos="package:base" )
-assign('e_attrValsToAdd', list(),  
-       pos="package:base")
-assign('ev_attrNamesToAdd', list(1),
-       pos="package:base" )
-assign('ev_attrValsToAdd', list(),  
-       pos="package:base")
-assign('input_termslist', list(),
-       pos="package:base")
 
 #' Reactive Expressions
 #' ---------------------------------
@@ -123,6 +101,16 @@ assign('input_termslist', list(),
 #+ eval=FALSE
 
 values <- reactiveValues()
+
+
+# To keep a list of all attributes uploaded by the user:  
+values$v_attrNamesToAdd <- list(1)
+values$v_attrValsToAdd <- list()
+values$e_attrNamesToAdd <- list(1)
+values$e_attrValsToAdd <- list()
+values$ev_attrNamesToAdd <- list(1)
+values$ev_attrValsToAdd <- list()
+values$input_termslist <- list()
 
 #move to Data panel when user clicks Get Started button
 observe({
@@ -213,7 +201,9 @@ nwinit <- reactive({
              })
         
       }
-      try({nw_var <- network(read.table(paste(filepath)),
+      try({
+        newmx <- load(paste(filepath))
+        nw_var <- network(get(newmx),
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
@@ -302,15 +292,12 @@ observe({
       edf <- rbind(edf,i)
       evdf <- rbind(evdf,i)
     }
-    assign("v_attrValsToAdd", vdf, pos="package:base")
-    assign("e_attrValsToAdd", edf, pos="package:base")
-    assign("ev_attrValsToAdd", evdf, pos="package:base")
-    assign('v_attrNamesToAdd', list(1),
-           pos="package:base" )
-    assign('e_attrNamesToAdd', list(1),
-           pos="package:base" )
-    assign('ev_attrNamesToAdd', list(1),
-           pos="package:base" )
+    values$v_attrValsToAdd <- vdf
+    values$e_attrValsToAdd <- edf
+    values$ev_attrValsToAdd <- evdf
+    values$v_attrNamesToAdd <- list(1)
+    values$e_attrNamesToAdd <- list(1)
+    values$ev_attrNamesToAdd <- list(1)
     
     values$vertexnames <- network.vertex.names(nwinit())
   }
@@ -380,17 +367,15 @@ observe({
             newname <- names(newattrs)
           }
           
-          namesofar <- get("v_attrNamesToAdd", pos="package:base")
-          valsofar <- get("v_attrValsToAdd", pos="package:base")
+          namesofar <- values$v_attrNamesToAdd
+          valsofar <- values$v_attrValsToAdd
           for(k in 1:length(newname)){
             namesofar <- cbind(namesofar, newname[[k]])
             valsofar <- cbind(valsofar, newattrs[[k]])
           }
           
-          assign('v_attrNamesToAdd', namesofar,
-                 pos="package:base")
-          assign('v_attrValsToAdd', valsofar,
-                 pos="package:base")
+          values$v_attrNamesToAdd <- namesofar
+          values$v_attrValsToAdd <- valsofar
         }
   })
 })
@@ -412,16 +397,14 @@ observe({
         newname <- names(newattrs)
       }
 
-      namesofar <- get("e_attrNamesToAdd", pos="package:base")
-      valsofar <- get("e_attrValsToAdd", pos="package:base")
+      namesofar <- values$e_attrNamesToAdd
+      valsofar <- values$e_attrValsToAdd
       for(k in 1:length(newname)){
         namesofar <- cbind(namesofar, newname[[k]])
         valsofar <- cbind(valsofar, newattrs[[k]])
       }
-        assign('e_attrNamesToAdd', namesofar,
-               pos="package:base")
-        assign('e_attrValsToAdd', valsofar,
-               pos="package:base")
+        values$e_attrNamesToAdd <- namesofar
+        values$e_attrValsToAdd <- valsofar
       }
   })
 })
@@ -442,17 +425,15 @@ observe({
         newattrs <- get(objname)
         newname <- names(newattrs)
       }
-      namesofar <- get("ev_attrNamesToAdd", pos="package:base")
-      valsofar <- get("ev_attrValsToAdd", pos="package:base")
+      namesofar <- values$ev_attrNamesToAdd
+      valsofar <- values$ev_attrValsToAdd
       j <- length(valsofar)
       for(k in 1:length(newname)){
         namesofar <- cbind(namesofar, newname[[k]])
         valsofar[[j+k]] <- newattrs[[k]]
       }
-      assign('ev_attrNamesToAdd', namesofar,
-             pos="package:base")
-      assign('ev_attrValsToAdd', valsofar,
-             pos="package:base")
+      values$ev_attrNamesToAdd <- namesofar
+      values$ev_attrValsToAdd <- valsofar
     }
   })
 })
@@ -484,12 +465,12 @@ nwmid <- reactive({
         }
       }
       
-      v_attrNamesToAdd <- get('v_attrNamesToAdd',pos='package:base')
-      v_attrValsToAdd <- get('v_attrValsToAdd', pos='package:base')
-      e_attrNamesToAdd <- get('e_attrNamesToAdd',pos='package:base')
-      e_attrValsToAdd <- get('e_attrValsToAdd', pos='package:base')
-      ev_attrNamesToAdd <- get('ev_attrNamesToAdd',pos='package:base')
-      ev_attrValsToAdd <- get('ev_attrValsToAdd', pos='package:base')
+      v_attrNamesToAdd <- values$v_attrNamesToAdd
+      v_attrValsToAdd <- values$v_attrValsToAdd
+      e_attrNamesToAdd <- values$e_attrNamesToAdd
+      e_attrValsToAdd <- values$e_attrValsToAdd
+      ev_attrNamesToAdd <- values$ev_attrNamesToAdd
+      ev_attrValsToAdd <- values$ev_attrValsToAdd
       
       
       if(input$newattrButton > 0){
@@ -532,7 +513,7 @@ nw <- reactive({
   
 #deleting attributes is no longer available
 
-  assign('input_termslist', list(), pos='package:base')
+  values$input_termslist <- list()
   updateTextInput(session, inputId='terms', value='edges')
 
   nw_var
@@ -681,13 +662,14 @@ legendfill <- reactive({
 #+ eval=FALSE 
 
 #add terms to list as user enters them
+#function in alert.js will click the addtermButton when user
+#presses Enter from within the terms textbox
 observe({
   if(input$addtermButton==0) {return()}
   isolate({
-    valsofar <- get('input_termslist',pos='package:base')
+    valsofar <- values$input_termslist
     newval <- input$terms
-    assign('input_termslist', rbind(valsofar, newval),
-           pos='package:base')
+    values$input_termslist <- rbind(valsofar, newval)
     updateTextInput(session, inputId='terms', value='')
   })
 })
@@ -695,7 +677,7 @@ observe({
 observe({
   if(input$resetformulaButton==0) {return()}
   isolate({
-    assign('input_termslist', list(), pos='package:base')
+    values$input_termslist <- list()
     updateTextInput(session, inputId='terms', value='')
   })
 })
@@ -704,7 +686,7 @@ ergm.terms <- reactive({
   nw()
   input$resetformulaButton
   input$addtermButton
-  interms <- get('input_termslist', pos='package:base')
+  interms <- values$input_termslist
   if(length(interms)==0) {return('NA')}
   paste(interms, collapse = '+')
   })
@@ -1249,9 +1231,13 @@ bernoullisamples <- reactive({
 #DEGREE DISTRIBUTION
 
 output$dynamiccolor_dd <- renderUI({
+  menu <- menuattr()
+  if(input$cmode == "freeman" & is.directed(nw())){
+    menu <- c()
+  }
   selectInput('colorby_dd',
               label = 'Color bars according to:',
-              c('None', menuattr()),
+              c('None', menu),
               selected = 'None',
               selectize = FALSE)
 })

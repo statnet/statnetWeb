@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ============
-#' ui.R
+#' ui.R, v0.3.1
 #' ============
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
@@ -62,9 +62,7 @@ library(shinyAce)
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(title=div(a(span('statnetWeb  ', style='font-family:Courier'),
-                            href = 'https://github.com/statnet/statnetWeb',
-                            target = '_blank')), 
+  navbarPage(title=NULL, 
              id= 'navbar', windowTitle = 'statnetWeb', collapsable=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
@@ -80,10 +78,11 @@ shinyUI(
 #' This page might move to the last tab to be combined with the Help Page.
 #' 
 #+ eval=FALSE
-  tabPanel(title='About v0.3.0', value='tab1',
+  tabPanel(title=span('statnetWeb', id="sWtitle"),
+           value='tab1',
            fluidRow(
                     column(8,
-                           br(),
+                           h5("About statnetWeb v0.3.1"),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
@@ -638,8 +637,6 @@ url = {http://statnetproject.org}
                                      br(),
                                      downloadButton('nwplotdownload', label = "Download Plot")),
                     conditionalPanel(condition='input.plottabs == "Degree Distribution"',
-                                     uiOutput('dynamiccolor_dd'),
-                                     span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
                                      selectInput('cmode', 
                                                  label = 'Type of degree (for directed graphs):',
                                                  choices= c('total' = 'freeman',
@@ -647,6 +644,8 @@ url = {http://statnetproject.org}
                                                             'outdegree'),
                                                  selected = 'freeman',
                                                  selectize=FALSE),
+                                     uiOutput('dynamiccolor_dd'),
+                                     span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
                                      bsButtonGroup(inputId='densplotgroup',
                                                    label='Y-axis units:',
                                                    toggle='radio', value='count',

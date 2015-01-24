@@ -104,6 +104,12 @@ $(document).ready(function(){
     
   });
   
+  $("#terms").keyup(function(event){
+    if(event.which == 13){
+        $("#addtermButton").click();
+    }
+  });
+  
   $("#mcmchelper").click(function(){
     $("#mcmchelpbox").toggle(500);
   });
