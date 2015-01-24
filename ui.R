@@ -763,7 +763,7 @@ url = {http://statnetproject.org}
                verbatimTextOutput('currentdataset1')
               ),
             
-            column(5,
+            column(4,
                    p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                    fluidRow(
                       fluidRow(
@@ -776,7 +776,7 @@ url = {http://statnetproject.org}
                                 )
                    )
             ),
-            column(5,
+            column(6,
                tabsetPanel(
                  tabPanel("Term Documentation",
                   div(class="placeholder",
