@@ -19,11 +19,13 @@ http://cran.r-project.org/web/packages/ergm/
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
 
-#### New in v0.2.0
+#### New in v0.3.0
 
-* Fixed delay when adding terms to formula.
-* ergm formula and model fit are cleared when the uploaded network changes.
-* Previous goodness of fit plots are cleared when a new model is fit.
-* Simulation summary is reformatted so that the simulation parameters and network statistics are listed by row, rather than by column.
-* Widgets are disabled when their input is irrelevant for the current network.
-* Improved warning boxes for color-coding with more than nine levels.
+* Access term documentation within Fit Model page
+* Customize MCMC control parameters when fitting a model or simulating from a model
+* Save up to five different models for a single network
+* Compare coefficients and AIC/BIC scores across models
+* Switch between models when looking at MCMC Diagnostics, GOF and Simulations
+* Compare GOF plots across saved models in a comprehensive chart
+* Plot simulation statistics compared to target statistics
+* Arrow icons for page navigation
