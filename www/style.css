@@ -198,7 +198,11 @@ div.mischelperbox {
   margin-top:10px;
 }
 
-#fitButton,
+#fitButton {
+  background-color:#BABABA;
+  background-image:linear-gradient(to bottom,#e6e6e6,#BABABA);
+  border-bottom-color: #828282;
+}
 #simButton,
 .chromewarning {
   margin-bottom:10px;
