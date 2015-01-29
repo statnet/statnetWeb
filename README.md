@@ -21,7 +21,12 @@ http://cran.r-project.org/web/packages/sna/
 
 #### New in v0.3.1
 
-* Fixed method of uploading matrices saved from R
+* Improved method of saving user-entered attributes
+* Bug in uploading relational data saved as R object is fixed
+* "Fit Model" button is closer to summary statistics
+* User can add terms to formula by pressing Enter key
+* User is not allowed to color code degree distribution of total degree for directed networks (in- and out-degree distributions are allowed)
+* Title of application is incorporated into title of first tab
 * Prevented error in viewing GOF comparison when no models are saved
 * New color palettes for attributes with more than nine levels
 
