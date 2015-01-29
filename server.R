@@ -2760,7 +2760,7 @@ output$gofplotspace <- renderUI({
 })
 
 output$gofplotcomp <- renderPlot({
-  if(state$gof == 0){
+  if(state$gof == 0 | values$modeltotal == 0){
     return()
   }
   input$gofButton
