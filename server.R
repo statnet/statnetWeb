@@ -1377,8 +1377,13 @@ output$degreedist <- renderPlot({
   if(!is.null(input$colorby_dd)){
   if(input$colorby_dd != "None"){
     ncolors <- dim(dd_plotdata())[1]
-    color <- brewer.pal(ncolors,"Blues")[1:ncolors]
-    color[is.na(color)] <- brewer.pal(9, "Blues")
+    if(ncolors == 2){
+      color <- c("#eff3ff", "#377FBC")
+    } else if(ncolors < 10){
+      color <- brewer.pal(ncolors,"Blues")
+    } else if(ncolors >= 10){
+      color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+    }
     ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
     ltext <- append(ltext, "")
     lfill <- c(color, 0)
