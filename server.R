@@ -617,7 +617,7 @@ vcol <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(ncolors>9){
-      pal <- colorRampPalette(c("green", "blue"))(ncolors)
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
     }
     vcol <- pal[full_list]
   }
@@ -647,7 +647,7 @@ legendfill <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(n>9){
-      pal <- colorRampPalette(c("green","blue"))(n)
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
     }
     legendfill <- adjustcolor(pal, alpha.f = input$transp)
   }
@@ -1134,7 +1134,7 @@ observe({
   if(length(legendlabels())>9){
     createAlert(session, inputId = "colorwarning",
                 title=NULL, 
-                message="Note: Color palette becomes sequential for attributes with more than nine levels.",
+                message="Note: Color palette changes for attributes with more than nine levels.",
                 type="warning", dismiss=TRUE, 
                 block=FALSE, append=FALSE)
   }
