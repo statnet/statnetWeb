@@ -607,23 +607,19 @@ vcol <- reactive({
   } else {
     full_list <- get.vertex.attribute(nw_var,input$colorby)
     short_list <- sort(unique(full_list))
+    ncolors <- length(short_list)
     if(is.element("Other", short_list)){ #to be consistent with order of legend
       short_list <- short_list[-which(short_list=="Other")]
       short_list <- c(short_list, "Other")
     }
     full_list <- match(full_list, short_list) 
     #each elt corresponds to integer position in short_list
-    if(length(short_list)>9){
-      full_list <- full_list %% 9
-      full_list[full_list == 0] <- 9
-    }
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
-    assigncolor <- function(x){
-      switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
-             pal[6], pal[7], pal[8], pal[9])
+    if(ncolors>9){
+      pal <- colorRampPalette(c("green", "blue"))(ncolors)
     }
-    vcol <- sapply(X = full_list, FUN = assigncolor)
+    vcol <- pal[full_list]
   }
   vcol
 })
@@ -650,6 +646,9 @@ legendfill <- reactive({
     n <- length(legendlabels())
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
+    if(n>9){
+      pal <- colorRampPalette(c("green","blue"))(n)
+    }
     legendfill <- adjustcolor(pal, alpha.f = input$transp)
   }
   legendfill
@@ -1135,7 +1134,7 @@ observe({
   if(length(legendlabels())>9){
     createAlert(session, inputId = "colorwarning",
                 title=NULL, 
-                message="Warning: Colors get recycled for attributes with more than nine levels.",
+                message="Note: Color palette becomes sequential for attributes with more than nine levels.",
                 type="warning", dismiss=TRUE, 
                 block=FALSE, append=FALSE)
   }
