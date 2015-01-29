@@ -981,23 +981,19 @@ vcol2 <- reactive({
       full_list <- get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$colorby2)
     }
     short_list <- sort(unique(full_list))
+    ncolors <- length(short_list)
     if(is.element("Other", short_list)){ #to be consistent with order of legend
       short_list <- short_list[-which(short_list=="Other")]
       short_list <- c(short_list, "Other")
     }
     full_list <- match(full_list, short_list) 
     #each elt is an integer position in short_list
-    if(length(short_list)>9){
-      full_list <- full_list %% 9
-      full_list[full_list==0] <- 9
-    }
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
-    assigncolor <- function(x){
-      switch(x, pal[1], pal[2], pal[3], pal[4], pal[5],
-             pal[6], pal[7], pal[8], pal[9])
+    if(ncolors>9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
     }
-    vcol <- sapply(X = full_list, FUN = assigncolor)
+    vcol <- pal[full_list]
   }
   }
   vcol
@@ -1024,8 +1020,12 @@ legendfill2 <- reactive({
   if(input$colorby2 == 2){
     legendfill <- NULL
   } else {
+    n <- length(legendlabels2())
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
+    if(n > 9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
+    }
     legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
   }
@@ -1130,15 +1130,15 @@ output$dynamiccolor <- renderUI({
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 
-observe({
-  if(length(legendlabels())>9){
-    createAlert(session, inputId = "colorwarning",
-                title=NULL, 
-                message="Note: Color palette changes for attributes with more than nine levels.",
-                type="warning", dismiss=TRUE, 
-                block=FALSE, append=FALSE)
-  }
-})
+# observe({
+#   if(length(legendlabels())>9){
+#     createAlert(session, inputId = "colorwarning",
+#                 title=NULL, 
+#                 message="Note: Color palette changes for attributes with more than nine levels.",
+#                 type="warning", dismiss=TRUE, 
+#                 block=FALSE, append=FALSE)
+#   }
+# })
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
@@ -1291,19 +1291,19 @@ dd_plotdata <- reactive({
   data
 })
 
-observe({
-  if(!is.null(input$colorby_dd)){
-    if(input$colorby_dd != "None"){
-      if(dim(dd_plotdata())[1]>9){
-        createAlert(session, inputId = "colorwarning_dd",
-                    title=NULL, 
-                    message="Warning: Colors get recycled for attributes with more than nine levels.",
-                    type="warning", dismiss=TRUE, 
-                    block=FALSE, append=FALSE)
-      }
-    }
-  }
-})
+# observe({
+#   if(!is.null(input$colorby_dd)){
+#     if(input$colorby_dd != "None"){
+#       if(dim(dd_plotdata())[1]>9){
+#         createAlert(session, inputId = "colorwarning_dd",
+#                     title=NULL, 
+#                     message="Warning: Colors get recycled for attributes with more than nine levels.",
+#                     type="warning", dismiss=TRUE, 
+#                     block=FALSE, append=FALSE)
+#       }
+#     }
+#   }
+# })
 
 dd_uniformoverlay <- reactive({
   if(!is.network(nw())){
@@ -3149,15 +3149,15 @@ output$dynamiccolor2 <- renderUI({
 })
 outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
-observe({
-  if(length(legendlabels2())>9){
-    createAlert(session, inputId = "colorwarning2",
-                title=NULL, 
-                message="Warning: Colors get recycled for attributes with more than nine levels.",
-                type="warning", dismiss=TRUE, 
-                block=FALSE, append=FALSE)
-  }
-})
+# observe({
+#   if(length(legendlabels2())>9){
+#     createAlert(session, inputId = "colorwarning2",
+#                 title=NULL, 
+#                 message="Warning: Colors get recycled for attributes with more than nine levels.",
+#                 type="warning", dismiss=TRUE, 
+#                 block=FALSE, append=FALSE)
+#   }
+# })
 
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
