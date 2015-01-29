@@ -19,6 +19,12 @@ http://cran.r-project.org/web/packages/ergm/
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
 
+#### New in v0.3.1
+
+* Fixed method of uploading matrices saved from R
+* Prevented error in viewing GOF comparison when no models are saved
+* New color palettes for attributes with more than nine levels
+
 #### New in v0.3.0
 
 * Access term documentation within Fit Model page
