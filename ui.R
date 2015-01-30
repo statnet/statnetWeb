@@ -63,7 +63,7 @@ library(shinyAce)
 #+ eval=FALSE 
 shinyUI(
   navbarPage(title=NULL, 
-             id= 'navbar', windowTitle = 'statnetWeb', collapsable=TRUE,
+             id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
@@ -222,7 +222,7 @@ url = {http://statnetproject.org}
     fluidRow(
       column(7,
         tabsetPanel(id='datatabs',
-          tabPanel('Upload Network',
+          tabPanel('Upload Network', br(),
                    wellPanel(
                      fluidRow(
                        column(6,
@@ -310,7 +310,7 @@ url = {http://statnetproject.org}
                                   uiOutput('pajchooser')))
                      ))
                    ),
-          tabPanel('Edit Network',
+          tabPanel('Edit Network', br(),
                    wellPanel(
                      fluidRow(
                       
@@ -373,7 +373,7 @@ url = {http://statnetproject.org}
                      )
                      )
                    ),
-          tabPanel('Modify Attributes',
+          tabPanel('Modify Attributes', br(),
                    wellPanel(
                      p('In the future we will build in functions that will ',
                        'allow you to modify the attributes of your network.',
@@ -390,7 +390,7 @@ url = {http://statnetproject.org}
           
    column(4,
           tabsetPanel(
-            tabPanel('Network Summary',
+            tabPanel('Network Summary', br(),
                      verbatimTextOutput('nwsum')
                      ))
           )            
@@ -452,7 +452,7 @@ url = {http://statnetproject.org}
                        "structure of network connectivity."),
                    plotOutput('geodistplot')
                    ),
-          tabPanel('More', value='More',
+          tabPanel('More', value='More', br(),
                    h5('Mixing Matrix', icon('angle-double-left'), 
                       id="mixmxtitle"),
                    wellPanel(id="mixmxbox",
@@ -618,7 +618,7 @@ url = {http://statnetproject.org}
           )),
      column(4,
          tabsetPanel(id='displaytabs',
-           tabPanel(title='Display Options',
+           tabPanel(title='Display Options', br(),
               wellPanel(
                     conditionalPanel(condition='input.plottabs == "Network Plot"',
                                      checkboxInput('iso',
@@ -729,7 +729,7 @@ url = {http://statnetproject.org}
                                        "stay tuned for updates!")
                                      )
                     )),
-           tabPanel(title='Network Summary',
+           tabPanel(title='Network Summary', br(),
             verbatimTextOutput('attr2'))
             )
          )
@@ -858,12 +858,12 @@ url = {http://statnetproject.org}
          )),
          br(),
          tabsetPanel(id = 'fittingTabs',
-           tabPanel('Current Model Summary',
+           tabPanel('Current Model Summary', br(),
                     verbatimTextOutput('modelfitsum'),
                     downloadButton("modelfitdownload", "Download Summary (.txt)")),
-           tabPanel('Current Model Fit Report',
+           tabPanel('Current Model Fit Report', br(),
                     verbatimTextOutput('modelfit')),
-           tabPanel('Model Comparison',
+           tabPanel('Model Comparison', br(),
                     verbatimTextOutput('modelcomparison'),
                     downloadButton("modelcompdownload", "Download Comparison (.txt)"))
           ), br(),br(),
@@ -918,7 +918,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                              ),
                             uiOutput('diagnosticsplotspace'),
                             downloadButton('mcmcplotdownload',label = 'Download Plots')),
-                   tabPanel('Summary', 
+                   tabPanel('Summary', br(),
                             verbatimTextOutput('diagnostics'))
                  ),
                  div(id='mcmctabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
@@ -965,7 +965,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                 column(3, actionButton('gofButton', 'Run'))),
              br(),
          tabsetPanel(
-           tabPanel("Current Model",
+           tabPanel("Current Model", br(),
                     fluidRow(
                       column(5,
                              verbatimTextOutput('gofsummary')),  
@@ -973,7 +973,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              uiOutput('gofplotspace'),
                              downloadButton('gofplotdownload', label = 'Download Plots')))
                     ),
-           tabPanel("Compare Saved Models",align="center",
+           tabPanel("Compare Saved Models",align="center", br(),
                     uiOutput('gofplotcompspace'),
                     fluidRow(align="left",
                              downloadButton('gofplotcompdownload', 
@@ -1056,7 +1056,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                    fluidRow(
                      column(7,
                        tabsetPanel(id="simplotpanel",
-                       tabPanel("Network Plots",
+                       tabPanel("Network Plots", br(),
                            customNumericInput('thissim', class="input-small",
                                               labelstyle="display:block;",
                                               label = 'Choose a simulation to plot:',
@@ -1077,7 +1077,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       
                    column(4,
                             tabsetPanel(
-                              tabPanel('Display Options',
+                              tabPanel('Display Options', br(),
                                   conditionalPanel("input.simplotpanel == 'Network Plots'",
                                        wellPanel(
                                          checkboxInput('iso2',
@@ -1104,7 +1104,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                                   label='Download Plot')
                                                    ))
                                 ),
-                              tabPanel('Simulation Summary',
+                              tabPanel('Simulation Summary', br(),
                                    wellPanel(    
                                    conditionalPanel(condition="output.simnum != 1",
                                           verbatimTextOutput('simsummary'),
