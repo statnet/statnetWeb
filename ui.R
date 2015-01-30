@@ -849,12 +849,10 @@ url = {http://statnetproject.org}
                   p('Summary statistics:')),
            column(10,
                   verbatimTextOutput('prefitsum'))),
-        actionButton('fitButton', 'Fit Model'),
-         tags$hr(),
          fluidRow(column(12,
+                         actionButton('fitButton', 'Fit Model'),
                          uiOutput('savemodel'),
-                         bsActionButton('clearmodelButton',
-                                        label='Clear All Models', block=FALSE)
+                         actionButton('clearmodelButton', label='Clear All Models')
          )),
          br(),
          tabsetPanel(id = 'fittingTabs',

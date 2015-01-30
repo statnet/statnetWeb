@@ -196,9 +196,7 @@ div.mischelperbox {
 }
 
 #fitButton {
-  background-color:#BABABA;
-  background-image:linear-gradient(to bottom,#e6e6e6,#BABABA);
-  border-bottom-color: #828282;
+  border-style:groove;
 }
 #savemodel {
   display:inline;
