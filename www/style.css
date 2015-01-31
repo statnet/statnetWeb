@@ -3,7 +3,13 @@
   font-family:Courier;
   font-size:14pt;
 }
-
+.form-group {
+  margin-bottom: 5px;
+}
+.shiny-input-container:not {
+  width:150px;
+  margin:0px;
+}
 div.tool {
   display:inline;
 }
@@ -212,14 +218,15 @@ div .mcmcopt {
   padding: 2px;
   margin-bottom: 5px;
 }
-
+div.form-group.shiny-input-container {
+  width=150px;
+}
 #chooseterm {
   display:inline;
-  margin-bottom:2px;
-  width:150px;
 }
 #listofterms{
   display:inline;
+  width:150px;
 }
 #matchingorall {
   margin-bottom:2px;
