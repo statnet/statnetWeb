@@ -244,14 +244,15 @@ url = {http://statnetproject.org}
                               verbatimTextOutput('rawdatafile'))
                           ),
                        conditionalPanel(condition = 'input.filetype == 5',
+                          column(6,
                               br(),
                               selectInput('samplenet', label='Choose a network',
                                           choices=c('None', 'ecoli1', 'ecoli2',
                                                     'faux.mesa.high','flobusiness',
                                                     'flomarriage', 'kapferer', 'kapferer2',
-                                                    'molecule', 'samplike'),
-                                          selectize=FALSE) 
-                                        )
+                                                    'molecule', 'samplike'))
+                          )
+                         )
                        ),
                      fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
@@ -470,14 +471,14 @@ url = {http://statnetproject.org}
                       column(4, inlineSelectInput('grecipmeas',label=NULL,
                                  choices=c('dyadic','dyadic.nonnull','edgewise',
                                            'edgewise.lrr','correlation'),
-                                 selectize=FALSE, style='margin-top:5px;'))),
+                                 style='margin-top:5px;'))),
                      fluidRow(
                       column(4, p('Transitivity:'), class='stitle'),
                       column(3, p(textOutput('gtrans'), class='snum')),
                       column(4, inlineSelectInput('gtransmeas',label=NULL,
                                     choices=c('weak','strong','weakcensus',
                                               'strongcensus','rank','correlation'),
-                                    selectize=FALSE, style='margin-top:0px;'))),
+                                    style='margin-top:0px;'))),
                      fluidRow(
                       column(4, p('Density:', class='stitle')),
                       column(3, p(textOutput('gden'), class='snum'))), 
@@ -643,8 +644,7 @@ url = {http://statnetproject.org}
                                                  choices= c('total' = 'freeman',
                                                             'indegree',
                                                             'outdegree'),
-                                                 selected = 'freeman',
-                                                 selectize=FALSE),
+                                                 selected = 'freeman'),
                                      uiOutput('dynamiccolor_dd'),
                                      span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
                                      bsButtonGroup(inputId='densplotgroup',
@@ -765,29 +765,25 @@ url = {http://statnetproject.org}
               ),
             
             column(4,
-                   p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
-                   fluidRow(
-                      fluidRow(
-                       textInput(inputId="terms", label=NULL,
-                                 value="edges")
-                       
-                       ),
-                       fluidRow(actionButton('addtermButton', 'Add Term(s)'),
-                                actionButton('resetformulaButton', 'Reset Formula')
-                                )
-                   )
+                   p("ERGM terms:"),
+                   div(class="tool",
+                       span(class="tip", "Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
+                       textInput(inputId="terms", label=NULL, value="edges")
+                   ),
+                   actionButton('addtermButton', 'Add Term(s)'),
+                            actionButton('resetformulaButton', 'Reset Formula')
+                            
+                   
             ),
-            column(6,
+            column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
                   div(class="placeholder",
-                  fluidRow(
-                           bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
+                      uiOutput("listofterms"),
+                      bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
                                  value="matching",
                                  bsButton("matchingButton",label="Compatible Terms", value="matching"),
                                  bsButton("allButton",label="All Terms", value="all")),
-                           uiOutput("listofterms")
-                           ),
                   div(id="termdocbox",
                     verbatimTextOutput("termdoc")
                     ),
@@ -958,7 +954,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                column(3, selectInput('gofterm', 'Goodness of Fit Term:',
                                      c(Default='', 'degree', 'distance', 'espartners', 
                                        'dspartners', 'triadcensus', 'model'),
-                                     selectize = FALSE))),
+                                     ))),
              fluidRow(
                 column(3, actionButton('gofButton', 'Run'))),
              br(),

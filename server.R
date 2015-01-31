@@ -1062,7 +1062,7 @@ output$pajchooser <- renderUI({
   names(pajlist) <- names(pajnws()$networks)
   }
   selectInput('choosepajnw', label='Upload a Pajek project file and choose a network from it',
-              choices = pajlist, selectize=FALSE)
+              choices = pajlist)
 })
 
 observe({
@@ -1083,8 +1083,7 @@ output$newattrname <- renderPrint({
 #   vattr <- list.vertex.attributes(nwmid())
 #   eattr <- list.edge.attributes(nwmid())
 #   attrlist <- c(vattr, eattr)
-#   selectInput('modifyattrs', label=NULL, choices=attrlist,
-#               selectize=FALSE)
+#   selectInput('modifyattrs', label=NULL, choices=attrlist)
 # })
 
 
@@ -1125,8 +1124,7 @@ output$attr2 <- renderPrint({
 output$dynamiccolor <- renderUI({
   selectInput('colorby',
               label = 'Color nodes according to:',
-              c('None' = 2, attrib()),
-              selectize = FALSE)
+              c('None' = 2, attrib()))
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 
@@ -1143,8 +1141,7 @@ outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
               label = 'Size nodes according to:',
-              c('None' = 1, 'Betweenness', numattr()),
-              selectize = FALSE)
+              c('None' = 1, 'Betweenness', numattr()))
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 
@@ -1237,8 +1234,7 @@ output$dynamiccolor_dd <- renderUI({
   selectInput('colorby_dd',
               label = 'Color bars according to:',
               c('None', menu),
-              selected = 'None',
-              selectize = FALSE)
+              selected = 'None')
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
 
@@ -1897,7 +1893,7 @@ observe({
 #not suspend the output when hidden
 output$mixmxchooser <- renderUI({
   selectInput('mixmx', label='Choose attribute',
-              choices = menuattr(), selectize = FALSE)
+              choices = menuattr())
 })
 outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
@@ -2359,7 +2355,7 @@ output$listofterms <- renderUI({
   }
   selectInput('chooseterm',label = NULL,
               choices = current.terms,
-              multiple=FALSE, selectize=FALSE)
+              multiple=FALSE, width='150px')
   
 })
 
@@ -2505,12 +2501,10 @@ output$uichoosemodel_mcmc <- renderUI({
   n <- values$modeltotal
   if(n == 0){
     inlineSelectInput("choosemodel_mcmc",label=NULL,
-                choices=c("Current"),
-                selectize=FALSE)
+                choices=c("Current"))
   } else {
     inlineSelectInput("choosemodel_mcmc",label=NULL,
-                choices=c(paste0("Model",1:n)),
-                selectize=FALSE)
+                choices=c(paste0("Model",1:n)))
   }
 })
 outputOptions(output,"uichoosemodel_mcmc",suspendWhenHidden=FALSE)
@@ -2634,12 +2628,10 @@ output$uichoosemodel_gof <- renderUI({
   n <- values$modeltotal
   if(n == 0){
     inlineSelectInput("choosemodel_gof",label=NULL,
-                      choices=c("Current"),
-                      selectize=FALSE)
+                      choices=c("Current"))
   } else {
     inlineSelectInput("choosemodel_gof",label=NULL,
-                      choices=c(paste0("Model",1:n)),
-                      selectize=FALSE)
+                      choices=c(paste0("Model",1:n)))
   }
 })
 outputOptions(output,"uichoosemodel_gof",suspendWhenHidden=FALSE)
@@ -2910,12 +2902,10 @@ output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
   if(n == 0){
     inlineSelectInput("choosemodel_sim",label=NULL,
-                      choices=c("Current"),
-                      selectize=FALSE)
+                      choices=c("Current"))
   } else {
     inlineSelectInput("choosemodel_sim",label=NULL,
-                      choices=c(paste0("Model",1:n)),
-                      selectize=FALSE)
+                      choices=c(paste0("Model",1:n)))
   }
 })
 outputOptions(output,"uichoosemodel_sim",suspendWhenHidden=FALSE)
@@ -3149,8 +3139,7 @@ output$dynamiccolor2 <- renderUI({
   selectInput('colorby2',
               label = 'Color nodes according to:',
               c('None' = 2, attrib()),
-              selected = 2,
-              selectize = FALSE)
+              selected = 2)
 })
 outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
@@ -3167,8 +3156,7 @@ outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
               label = 'Size nodes according to:',
-              c('None' = 1, 'Betweenness',numattr()),
-              selectize = FALSE)
+              c('None' = 1, 'Betweenness',numattr()))
 })
 
 

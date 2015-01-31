@@ -234,6 +234,7 @@ div.placeholder {
 }
 #termdocbox {
   position:absolute;
+  width: 450px;
   margin-right:10px;
   max-height:65px;
   border: 1px solid #CECED8;
@@ -262,7 +263,7 @@ div.placeholder {
 }
 
 .nwlabel {
-  margin:8px 0px 11px;
+  margin:0px 0px 10px;
 }
 
 #simsummary,
