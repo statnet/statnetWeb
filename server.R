@@ -1627,15 +1627,12 @@ gd_uniformoverlay <- reactive({
   gd <- geodist(uniformsamples(), count.paths=FALSE, inf.replace=NA)
   maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
-  for(k in 1:reps){
-    gd[[k]]$gdist[is.na(gd[[k]]$gdist)] <- Inf
-  }
   gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
     #list of tabulated geodesics for each draw, except those of 0 or Inf length
   gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == Inf))
-    gd_data_complete[,k] <- gd_data[[k]]
+    temp <- append(gd_data[[k]], sum(is.na(gd[[k]]$gdist)))
+    gd_data_complete[,k] <- temp
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
@@ -1652,15 +1649,12 @@ gd_bernoullioverlay <- reactive({
   gd <- geodist(bernoullisamples(), count.paths=FALSE, inf.replace=NA)
   maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
-  for(k in 1:reps){
-    gd[[k]]$gdist[is.na(gd[[k]]$gdist)] <- Inf
-  }
   gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
   #list of tabulated geodesics for each draw, except those of 0 or Inf length
   gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == Inf))
-    gd_data_complete[,k] <- gd_data[[k]]
+    temp <- append(gd_data[[k]], sum(is.na(gd[[k]]$gdist)))
+    gd_data_complete[,k] <- temp
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
