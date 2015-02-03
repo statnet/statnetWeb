@@ -9,7 +9,8 @@ Run the app in two ways:
     `install.packages(c("statnet", "shiny", "shinyBS", "RColorBrewer", "lattice", "latticeExtra"))`  
     `shiny::runGitHub("statnetWeb", "statnet")`
 
-*Note:* We will keep the master branch on this page consistent with the version deployed on shinyapps. Active development will occur on separate production branches. No branch other than master should be considered stable.
+*Note:* We will keep the master branch on this page consistent with the version deployed on shinyapps. Active development will occur on separate production branches. No branch other than master should be considered stable.  
+**The master branch is only compatible with Shiny v0.10.2.2 and below. Our next release will include the necessary modifications to run statnetWeb with the most recent Shiny (v0.11).**
 
 statnet wiki:  
 https://statnet.csde.washington.edu/trac 
