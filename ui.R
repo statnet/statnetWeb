@@ -145,10 +145,14 @@ url = {http://statnetproject.org}
                     )),       
              column(4, wellPanel( 
                           h5(tags$u('Resources')),
-                          a("statnet Wiki",
-                            href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
-                          column(11, offset = 1, p('The homepage of the statnet project. Find tutorials,',
-                                'publications and recent news here.'),
+                          div(class="tool",
+                              span(class="tip", "The homepage of the statnet project. Find tutorials,",
+                                   "publications and recent news here."),
+                              a("statnet Wiki",
+                                href = "https://statnet.csde.washington.edu/trac", target = "_blank")
+                          ),
+                          
+                          column(11, offset = 1,
                                 span('Key background papers'),br(),
                                 a("ergm: Journal of Statistical Software",
                                   href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
@@ -228,7 +232,7 @@ url = {http://statnetproject.org}
                    wellPanel(
                      fluidRow(
                        column(6,
-                              radioButtons('filetype',label=h5('File type'),
+                              selectInput('filetype',label='File type',
                                            choices=c('pre-loaded sample network'=5, 'statnet network object (R-object)'=1,
                                                      'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
                                                      'matrix of relational data (*.csv or R-object)'=4)),
@@ -247,9 +251,9 @@ url = {http://statnetproject.org}
                           ),
                        conditionalPanel(condition = 'input.filetype == 5',
                           column(6,
-                              br(),
-                              selectInput('samplenet', label='Choose a network',
-                                          choices=c('None', 'ecoli1', 'ecoli2',
+                              br(style="line-height:26px;"),
+                              selectInput('samplenet', label=NULL,
+                                          choices=c('Choose a network'='None', 'ecoli1', 'ecoli2',
                                                     'faux.mesa.high','flobusiness',
                                                     'flomarriage', 'kapferer', 'kapferer2',
                                                     'molecule', 'samplike'))
@@ -1152,10 +1156,13 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
            sidebarLayout(position = 'right',
                          sidebarPanel(
                            h5(tags$u('Resources')),
-                           a("statnet Wiki",
-                             href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
-                           column(11, offset = 1, p('The homepage of the statnet project. Find tutorials,',
-                                                    'publications and recent news here.'),
+                           div(class="tool",
+                               span(class="tip", "The homepage of the statnet project. Find tutorials,",
+                                    "publications and recent news here."),
+                               a("statnet Wiki",
+                                 href = "https://statnet.csde.washington.edu/trac", target = "_blank")
+                           ),
+                           column(11, offset = 1,
                                   span('Key background papers'),br(),
                                   a("ergm: Journal of Statistical Software",
                                     href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
