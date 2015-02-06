@@ -183,12 +183,22 @@ div.mischelperbox {
   z-index: 10;
 }
 
-#mixmxbox, #graphlevelbox,
+#linkbox1,
+#linkbox2,
+#linkbox3,
+#linkbox4,
+#mixmxbox, 
+#graphlevelbox,
 #nodelevelbox {
   display:none;
 }
 
-#mixmxtitle, #graphleveltitle,
+#linktitle1,
+#linktitle2,
+#linktitle3,
+#linktitle4,
+#mixmxtitle, 
+#graphleveltitle,
 #nodeleveltitle {
   cursor:pointer;
 }
