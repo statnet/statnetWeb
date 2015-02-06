@@ -368,7 +368,7 @@ url = {http://statnetproject.org}
                                  fileInput(inputId='newattrvalue', label=NULL),
                                  p('New attribute name(s):'),
                                  verbatimTextOutput('newattrname'),
-                                 actionButton('newattrButton', label='Set Attribute')              
+                                 actionButton('newattrButton', label='Set Attribute', class="btn-sm")              
                                  )
                               
                               )
@@ -639,7 +639,7 @@ url = {http://statnetproject.org}
                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                                      uiOutput('dynamicsize'),
                                      br(),
-                                     downloadButton('nwplotdownload', label = "Download Plot")),
+                                     downloadButton('nwplotdownload', label = "Download Plot", class="btn-sm")),
                     conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                                      selectInput('cmode', 
                                                  label = 'Type of degree (for directed graphs):',
@@ -680,7 +680,7 @@ url = {http://statnetproject.org}
                                                 "stochastic tie probability as the observed network.",
                                                 "The mean and 95% confidence intervals for each degree are plotted."))),
                                      br(),
-                                     downloadButton('degreedistdownload', label = "Download Plot")
+                                     downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
                                      bsButtonGroup(inputId='densplotgroup_gd',
@@ -724,7 +724,7 @@ url = {http://statnetproject.org}
                                                 "A pair of nodes without any path connecting",
                                                 'it has a geodesic distance of "inf".'))),
                                      br(),
-                                     downloadButton('geodistdownload', label= 'Download Plot')
+                                     downloadButton('geodistdownload', label= 'Download Plot', class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "More"',
                                      p("No display options at this time,",
@@ -772,8 +772,8 @@ url = {http://statnetproject.org}
                        span(class="tip", "Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                        textInput(inputId="terms", label=NULL, value="edges")
                    ),
-                   actionButton('addtermButton', 'Add Term(s)'),
-                            actionButton('resetformulaButton', 'Reset Formula')
+                   actionButton('addtermButton', 'Add Term(s)', class="btn-sm"),
+                            actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
                             
                    
             ),
@@ -848,20 +848,20 @@ url = {http://statnetproject.org}
            column(10,
                   verbatimTextOutput('prefitsum'))),
          fluidRow(column(12,
-                         actionButton('fitButton', 'Fit Model', class="btn-primary"),
+                         actionButton('fitButton', 'Fit Model', class="btn-primary btn-sm"),
                          uiOutput('savemodel'),
-                         actionButton('clearmodelButton', label='Clear All Models')
+                         actionButton('clearmodelButton', label='Clear All Models', class="btn-sm")
          )),
          br(),
          tabsetPanel(id = 'fittingTabs',
            tabPanel('Current Model Summary', br(),
                     verbatimTextOutput('modelfitsum'),
-                    downloadButton("modelfitdownload", "Download Summary (.txt)")),
+                    downloadButton("modelfitdownload", "Download Summary (.txt)", class="btn-sm")),
            tabPanel('Current Model Fit Report', br(),
                     verbatimTextOutput('modelfit')),
            tabPanel('Model Comparison', br(),
                     verbatimTextOutput('modelcomparison'),
-                    downloadButton("modelcompdownload", "Download Comparison (.txt)"))
+                    downloadButton("modelcompdownload", "Download Comparison (.txt)", class="btn-sm"))
           ), br(),br(),
   div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",
@@ -913,7 +913,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                 "models."))
                                              ),
                             uiOutput('diagnosticsplotspace'),
-                            downloadButton('mcmcplotdownload',label = 'Download Plots')),
+                            downloadButton('mcmcplotdownload',label = 'Download Plots', class="btn-sm")),
                    tabPanel('Summary', br(),
                             verbatimTextOutput('diagnostics'))
                  ),
@@ -958,7 +958,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                        'dspartners', 'triadcensus', 'model'),
                                      ))),
              fluidRow(
-                column(3, actionButton('gofButton', 'Run'))),
+                column(3, actionButton('gofButton', 'Run', class="btn-sm"))),
              br(),
          tabsetPanel(
            tabPanel("Current Model", br(),
@@ -967,13 +967,13 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              verbatimTextOutput('gofsummary')),  
                       column(7,
                              uiOutput('gofplotspace'),
-                             downloadButton('gofplotdownload', label = 'Download Plots')))
+                             downloadButton('gofplotdownload', label = 'Download Plots', class="btn-sm")))
                     ),
            tabPanel("Compare Saved Models",align="center", br(),
                     uiOutput('gofplotcompspace'),
                     fluidRow(align="left",
                              downloadButton('gofplotcompdownload', 
-                                            label='Download Plots'),
+                                            label='Download Plots', class="btn-sm"),
                              br())
                     )
            ),
@@ -1003,7 +1003,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                     label = 'Number of simulations:',
                                                     min = 1,
                                                     value = 1),
-                                 actionButton('simButton', 'Simulate'))
+                                 actionButton('simButton', 'Simulate',class="btn-sm"))
                           ),
                         p('ergm formula:',style="display:inline;"),
                         uiOutput('uichoosemodel_sim'),
@@ -1091,13 +1091,13 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                          span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
                                          uiOutput('dynamicsize2'),
                                          downloadButton('simplotdownload',
-                                                        label = 'Download Plot'))
+                                                        label = 'Download Plot', class="btn-sm"))
                                   ),
                                   conditionalPanel("input.simplotpanel == 'Simulation Statistics'",
                                          conditionalPanel("output.simnum > 1",
                                                    plotOutput('simstatslegend'),
                                                    downloadButton('simstatsplotdownload',
-                                                                  label='Download Plot')
+                                                                  label='Download Plot', class="btn-sm")
                                                    ))
                                 ),
                               tabPanel('Simulation Summary', br(),
@@ -1118,7 +1118,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                    fluidRow(
                                      column(7, 
                                           downloadButton('simstatsdownload', 
-                                                  label = 'Download Statistics')),
+                                                  label = 'Download Statistics', class="btn-sm")),
                                      column(4,
                                         div(class="tool", span(class="tip", id="statstip",".txt: Summary of simulations",
                                                                "plus full list of statistics.",br(), 
