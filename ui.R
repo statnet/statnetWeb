@@ -51,6 +51,7 @@
 library(shiny)
 library(shinyBS)
 library(shinyAce)
+library(shinythemes)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
 
 
@@ -62,7 +63,8 @@ library(shinyAce)
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(title=NULL, 
+  navbarPage(theme="mycosmo.css",
+    title=NULL, 
              id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
@@ -102,7 +104,7 @@ shinyUI(
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
                              "or by email to the statnet_help listserv (see Help tab)."),
-                           actionButton('startButton', label='Get Started', class="candisable"),
+                           actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
                            br(),
                            
                            h5('Citing statnetWeb'),
@@ -846,7 +848,7 @@ url = {http://statnetproject.org}
            column(10,
                   verbatimTextOutput('prefitsum'))),
          fluidRow(column(12,
-                         actionButton('fitButton', 'Fit Model'),
+                         actionButton('fitButton', 'Fit Model', class="btn-primary"),
                          uiOutput('savemodel'),
                          actionButton('clearmodelButton', label='Clear All Models')
          )),
