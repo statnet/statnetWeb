@@ -1239,13 +1239,14 @@ output$dynamiccolor_dd <- renderUI({
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
 
 observe({
+  if(!is.null(nw())){
   if(is.network(nw())){
     if(!is.directed(nw())){
       disableWidget('cmode', session, TRUE)
     } else {
       disableWidget('cmode', session, FALSE)
     }
-  }
+  }}
 })
 
 dd_plotdata <- reactive({
