@@ -109,10 +109,14 @@ div.busy {
 #swciteButton,
 #sciteButton {
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 0px;
   border:1px solid #CECED8;
   background: rgb(230, 230, 230);
   cursor: pointer;
+}
+#swciteButton:hover,
+#sciteButton:hover {
+  background-color:#CECED8;
 }
 
 #swcitation,

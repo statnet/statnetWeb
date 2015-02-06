@@ -84,7 +84,7 @@ shinyUI(
            value='tab1',
            fluidRow(
                     column(8,
-                           h5("About statnetWeb v0.3.1"),
+                           h5(tags$u("About statnetWeb v0.3.1")),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
@@ -107,7 +107,7 @@ shinyUI(
                            actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
                            br(),
                            
-                           h5('Citing statnetWeb'),
+                           h5(tags$u('Citing statnetWeb')),
                            p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
                            
                            span(id='swciteButton', 'statnetWeb'),
@@ -144,7 +144,7 @@ url = {http://statnetproject.org}
                                      target = '_blank'))
                     )),       
              column(4, wellPanel( 
-                          h5('Resources'),
+                          h5(tags$u('Resources')),
                           a("statnet Wiki",
                             href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
                           column(11, offset = 1, p('The homepage of the statnet project. Find tutorials,',
@@ -432,7 +432,7 @@ url = {http://statnetproject.org}
     fluidRow(      
      column(7,
         tabsetPanel(id='plottabs',
-          tabPanel('Network Plot',
+          tabPanel('Network Plot', br(),
             plotOutput('nwplot')
             ),
           tabPanel('Degree Distribution',
@@ -1151,7 +1151,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
   tabPanel(title='Help', value='tab8',
            sidebarLayout(position = 'right',
                          sidebarPanel(
-                           h5('Resources'),
+                           h5(tags$u('Resources')),
                            a("statnet Wiki",
                              href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
                            column(11, offset = 1, p('The homepage of the statnet project. Find tutorials,',
@@ -1178,13 +1178,13 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              target="_blank")
                          ),
                          mainPanel(
-                           h5('Help with the app'),
+                           h5(tags$u('Help with the app')),
                            p("This app is maintained on Github. To request new features or report a bug,",
                              "please interact with the", 
                              a("repository", href='https://github.com/statnet/statnetWeb',
                                target="_blank"), 
                              "or email the statnet_help listserv (below)."),
-                           h5('Help with statnet software'),
+                           h5(tags$u('Help with statnet software')),
                            p("The best way to contact us with questions, comments or suggestions",
                              "is through the statnet users group listserv."),
                            p("To post and receive messages from this listserv, you need to join.",
