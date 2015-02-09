@@ -55,7 +55,7 @@
 
 library(shiny)
 library(shinyBS)
-library(shinyAce)
+#library(shinyAce)
 library(ergm)
 library(sna)
 library(network)
