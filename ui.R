@@ -50,7 +50,7 @@
 # load necessary packages
 library(shiny)
 library(shinyBS)
-library(shinyAce)
+#library(shinyAce)
 library(shinythemes)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
 
