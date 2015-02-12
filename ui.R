@@ -91,7 +91,8 @@ shinyUI(
                              "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web app", 
                              "is written in R-Shiny, and development is via Github.  More information on the statnet software,",
                              "the ergm package, R-Shiny and our Github repository can be found in the resource links on the right."),
-                           p("This app is intended to serve as an introduction to the ergm package for those who",
+                           
+                           div(p("This app is intended to serve as an introduction to the ergm package for those who",
                              "are just getting started using statnet, or for those who are not familiar with programming",
                              "in R. If you are new to ergm, you may find it helpful to work through the", a("ergm tutorial", 
                             href="http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
@@ -103,7 +104,8 @@ shinyUI(
                              "They are best submitted through our", a('Github site,', 
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
-                             "or by email to the statnet_help listserv (see Help tab)."),
+                             "or by email to the statnet_help listserv (see Help tab).")
+                           ),
                            actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
                            br(),
                            
@@ -260,7 +262,6 @@ url = {http://statnetproject.org}
                        ),
                      fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
-                           h5('Specify'),
                            column(1, align="right", 
                                   style="margin-top:5px;margin-left:0px;",
                                   br(),br(),
@@ -302,7 +303,7 @@ url = {http://statnetproject.org}
                            
                            column(5,
                                   br(),
-                                  span('Network Attributes'),
+                                  span(strong('Network Attributes')),
                                   div(checkboxInput('dir', 'directed?', value=TRUE),
                                        style='padding-top:5px;'),
                                   checkboxInput('loops', 'loops?', value=FALSE),
@@ -310,7 +311,6 @@ url = {http://statnetproject.org}
                                   checkboxInput('bipartite', 'bipartite?', value=FALSE))
                        ),
                        conditionalPanel(condition='input.filetype == 3',
-                           h5('Specify'),
                            column(6,
                                   uiOutput('pajchooser'))),
                        conditionalPanel(condition='input.filetype == 1',
@@ -345,7 +345,7 @@ url = {http://statnetproject.org}
                        
                        column(5,strong('Import new attribute information'),
                               conditionalPanel(condition="output.nwsum != 'NA'",
-                                 radioButtons('newattrtype', label='Choose attribute type',
+                                 selectInput('newattrtype', label='Choose attribute type',
                                            choices=c('vertex attribute',
                                                      'vertex names',
                                                    'edge attribute',
