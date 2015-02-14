@@ -3,6 +3,9 @@
   font-family:Courier;
   font-size:13pt;
 }
+pre {
+  font-size:12px;
+}
 .form-group {
   margin-bottom: 5px;
 }
