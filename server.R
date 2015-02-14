@@ -2348,9 +2348,8 @@ output$listofterms <- renderUI({
     matchterms <- unique(matchterms)
     current.terms <- unlist(matchterms)
   }
-  selectInput('chooseterm',label = NULL,
-              choices = current.terms,
-              multiple=FALSE, width='150px')
+  inlineSelectInput('chooseterm',label = NULL,
+              choices = current.terms)
   
 })
 

@@ -792,11 +792,11 @@ url = {http://statnetproject.org}
                tabsetPanel(
                  tabPanel("Term Documentation",
                   div(class="placeholder",
-                      uiOutput("listofterms"),
                       bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
                                  value="matching",
                                  bsButton("matchingButton",label="Compatible Terms", value="matching"),
                                  bsButton("allButton",label="All Terms", value="all")),
+                      uiOutput("listofterms"),
                   div(id="termdocbox",
                     verbatimTextOutput("termdoc")
                     ),
