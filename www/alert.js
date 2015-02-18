@@ -30,6 +30,16 @@ $(document).ready(function(){
     $("#linkbox4").toggle(200);
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
+  
+  $("#symmdir").click(function(){
+    $("#symmdir").toggleClass("active", true);
+    $("#symmundir").toggleClass("active", false);
+  });
+
+  $("#symmundir").click(function(){
+    $("#symmdir").toggleClass("active", false);
+    $("#symmundir").toggleClass("active", true);
+  });
 
   $("#Robjhelp").click(function(){
     $("#Robjbox").toggle(500);
