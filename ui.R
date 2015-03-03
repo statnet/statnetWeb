@@ -796,6 +796,7 @@ url = {http://statnetproject.org}
             column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
+                  br(),
                   div(class="placeholder",
                       bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
                                  value="matching",
@@ -814,9 +815,8 @@ url = {http://statnetproject.org}
                     fluidRow(
                       column(3,
                         inlineSelectInput('controltype',label=NULL, 
-                                          choices=c("MCMC",
-                                                    "MCMLE",
-                                                    "Other"))),
+                                          choices=c("MCMC","MCMLE","Other"),
+                                          style="margin-top:10px;")),
                       column(4,
                         checkboxInput('controldefault','Use default options', value=TRUE))
                     ),
