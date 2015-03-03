@@ -104,7 +104,7 @@ shinyUI(
                              "They are best submitted through our", a('Github site,', 
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
-                             "or by email to the statnet_help listserv (see Help tab).")
+                             "or by email to the statnet_help listserv (see", actionLink("helpLink", "Help"), "tab).")
                            ),
                            actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
                            br(),

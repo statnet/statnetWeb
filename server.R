@@ -112,6 +112,14 @@ values$ev_attrNamesToAdd <- list(1)
 values$ev_attrValsToAdd <- list()
 values$input_termslist <- list()
 
+#move to Help page when user clicks Help link button
+observe({
+  if(input$helpLink == 0) {return()}
+  isolate({
+    updateTabsetPanel(session, 'navbar', selected='tab8')
+  })
+})
+
 #move to Data panel when user clicks Get Started button
 observe({
   if(input$startButton == 0) {return()}
