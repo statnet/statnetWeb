@@ -906,9 +906,9 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                           p('Network:', class="nwlabel"), 
                           verbatimTextOutput('currentdataset_mcmc')),
                    column(10,
-                          p('ergm formula:',style="display:inline;"),
-                            uiOutput('uichoosemodel_mcmc'),
-                            verbatimTextOutput('checkterms_mcmc'))
+                          div(p('ergm formula:',style="display:inline;"),
+                            uiOutput('uichoosemodel_mcmc'), class="nwlabel"),
+                          verbatimTextOutput('checkterms_mcmc'))
                  ),     
                  br(),
                  tags$hr(),
@@ -960,8 +960,8 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       p('Network:', class="nwlabel"), 
                       verbatimTextOutput('currentdataset_gof')),
                column(10,
-                      p('ergm formula:',style="display:inline;"),
-                      uiOutput('uichoosemodel_gof'),
+                      div(p('ergm formula:',style="display:inline;"),
+                      uiOutput('uichoosemodel_gof'), class="nwlabel"),
                       verbatimTextOutput('checkterms_gof'))
               ),
              p('If you do not specify a term the default formula for undirected 
@@ -1021,8 +1021,8 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                     value = 1),
                                  actionButton('simButton', 'Simulate',class="btn-sm"))
                           ),
-                        p('ergm formula:',style="display:inline;"),
-                        uiOutput('uichoosemodel_sim'),
+                        div(p('ergm formula:',style="display:inline;"),
+                        uiOutput('uichoosemodel_sim'), class="nwlabel"),
                         verbatimTextOutput('checkterms_sim')   
                         ),
                      column(5,
