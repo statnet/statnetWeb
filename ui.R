@@ -804,10 +804,10 @@ url = {http://statnetproject.org}
                                  bsButton("allButton",size='sm',label="All Terms", value="all")),
                       uiOutput("listofterms"),
                   div(id="termdocbox",
-                    verbatimTextOutput("termdoc")
+                      verbatimTextOutput("termdoc")
                     ),
                   div(id="termexpand",
-                          icon(name="expand"))
+                      icon(name="expand"))
                   )
                  ),
                  tabPanel("Control Options",
