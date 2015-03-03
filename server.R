@@ -2413,7 +2413,7 @@ output$prefitsum <- renderPrint({
 
 output$savemodel <- renderUI({
   m <- values$modeltotal
-  bsActionButton('savemodelButton',label=paste0('Save Current Model (',m,'/5)'),
+  bsActionButton('savemodelButton',size='sm',label=paste0('Save Current Model (',m,'/5)'),
                  block=FALSE)
 })
 outputOptions(output,'savemodel',suspendWhenHidden=FALSE)

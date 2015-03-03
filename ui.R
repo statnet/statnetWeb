@@ -344,8 +344,8 @@ url = {http://statnetproject.org}
 #                               bsButtonGroup(inputId='aftersymm',
 #                                             label='After symmetrizing, network should be',
 #                                             toggle='radio', value='directed',
-#                                             bsButton('symmdir', label='directed', value='directed'),
-#                                             bsButton('symmundir', label='undirected', value='undirected'))
+#                                             bsButton('symmdir', size='sm', label='directed', value='directed'),
+#                                             bsButton('symmundir', size='sm', label='undirected', value='undirected'))
                               )),
                        
                        column(5,strong('Import new attribute information'),
@@ -668,8 +668,8 @@ url = {http://statnetproject.org}
                                      bsButtonGroup(inputId='densplotgroup',
                                                    label='Y-axis units:',
                                                    toggle='radio', value='count',
-                                                   bsButton('freqplot', label = 'Count of nodes', value='count'),
-                                                   bsButton('densplot', label = 'Percent of nodes', value='percent')),
+                                                   bsButton('freqplot', size='sm', label = 'Count of nodes', value='count'),
+                                                   bsButton('densplot', size='sm', label = 'Percent of nodes', value='percent')),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -702,8 +702,8 @@ url = {http://statnetproject.org}
                                      bsButtonGroup(inputId='densplotgroup_gd',
                                                    label='Y-axis units:',
                                                    toggle='radio', value='count',
-                                                   bsButton('freqplot_gd', label = 'Count of vertex pairs', value='count'),
-                                                   bsButton('densplot_gd', label = 'Percent of vertex pairs', value='percent')),
+                                                   bsButton('freqplot_gd', size='sm', label = 'Count of vertex pairs', value='count'),
+                                                   bsButton('densplot_gd', size='sm', label = 'Percent of vertex pairs', value='percent')),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -799,8 +799,8 @@ url = {http://statnetproject.org}
                   div(class="placeholder",
                       bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
                                  value="matching",
-                                 bsButton("matchingButton",label="Compatible Terms", value="matching"),
-                                 bsButton("allButton",label="All Terms", value="all")),
+                                 bsButton("matchingButton",size='sm',label="Compatible Terms", value="matching"),
+                                 bsButton("allButton",size='sm',label="All Terms", value="all")),
                       uiOutput("listofterms"),
                   div(id="termdocbox",
                     verbatimTextOutput("termdoc")
