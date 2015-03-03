@@ -815,12 +815,12 @@ url = {http://statnetproject.org}
                     fluidRow(
                       column(3,
                         inlineSelectInput('controltype',label=NULL, 
-                                          choices=c("MCMC","MCMLE","Other"),
+                                          choices=c("MCMC","MCMLE"),
                                           style="margin-top:10px;")),
                       column(4,
                         checkboxInput('controldefault','Use default options', value=TRUE))
                     ),
-                        conditionalPanel(condition="input.controltype == 'MCMC'",
+                        conditionalPanel(condition="input.controltype == 'MCMC'", class="shiftright",
                           fluidRow(
                             div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                    img(src="callout2.png",class="callout")),
@@ -847,8 +847,6 @@ url = {http://statnetproject.org}
                                   textInput("customMCMCcontrol",label=NULL,value=""))
                             )),
                         conditionalPanel(condition="input.controltype == 'MCMLE'",
-                                         p("Coming soon")),
-                        conditionalPanel(condition="input.controltype == 'Other'",
                                          p("Coming soon"))
                         )))
                      )
@@ -1031,12 +1029,12 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                      fluidRow(
                                        column(3,
                                               inlineSelectInput('simcontroltype',label=NULL, 
-                                                                choices=c("MCMC",
-                                                                          "Parallel"))),
+                                                                choices=c("MCMC","Parallel"),
+                                                                style="margin:10px 0px;")),
                                        column(4,
                                               checkboxInput('simcontroldefault','Use default options', value=TRUE))
                                      ),
-                                     conditionalPanel(condition="input.simcontroltype == 'MCMC'",
+                                     conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
                                        fluidRow(
                                               div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                                      img(src="callout2.png",class="callout")),

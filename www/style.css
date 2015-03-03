@@ -291,7 +291,9 @@ div.placeholder {
   padding:4px 6px;
   margin-bottom:5px;
 }
-
+.shiftright {
+  margin-left:15px;
+}
 .nwlabel {
   margin:0px 0px 10px;
 }
