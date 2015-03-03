@@ -911,7 +911,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                  br(),
                  tags$hr(),
                  tabsetPanel(id='mcmctabs',
-                   tabPanel('Plot',
+                   tabPanel('Plot', br(),
                             #intercept error and give friendly message when MCMC doesn't run
                             conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored.'",
                                         column(1,span(class='helper', id='mcmchelper', icon('question-circle')),
