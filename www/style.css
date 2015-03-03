@@ -1,4 +1,9 @@
 
+.navbar .navbar-brand{ padding: 0px 12px;font-size: 16px;line-height: 40px; }
+.navbar-nav > li > a {padding-top: 0px; padding-bottom: 0px; line-height: 40px; height: 40px;}
+.navbar {min-height:40px; height:40px;}
+
+
 #sWtitle {
   font-family:Courier;
   font-size:13pt;
@@ -102,7 +107,7 @@ div.busy {
 #plotleft, #mcmcleft,
 #gofleft, #simleft {
   position: absolute;
-  top: 55px;
+  top: 50px;
   right: 65px;
   color: #A5A5AD;
   cursor: pointer; 
@@ -111,7 +116,7 @@ div.busy {
 #plotright, #mcmcright,
 #gofright, #simright {
   position: absolute;
-  top: 55px;
+  top: 50px;
   right: 38px;
   color: #A5A5AD;
   cursor: pointer; 
@@ -129,7 +134,7 @@ div.busy {
 
 .helper-btn {
     position:fixed;
-    top: 55px;
+    top: 50px;
     right: 10px;
     color: #A5A5AD;
     cursor: pointer;
