@@ -818,7 +818,7 @@ model1gof <- reactive({
   } else {
     mod <- values$modelfits[[1]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model1gof <- gof(mod)
   } else {
@@ -834,7 +834,7 @@ model2gof <- reactive({
   } else {
     mod <- values$modelfits[[2]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model2gof <- gof(mod)
   } else {
@@ -850,7 +850,7 @@ model3gof <- reactive({
   } else {
     mod <- values$modelfits[[3]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model3gof <- gof(mod)
   } else {
@@ -866,7 +866,7 @@ model4gof <- reactive({
   } else {
     mod <- values$modelfits[[4]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model4gof <- gof(mod)
   } else {
@@ -882,7 +882,7 @@ model5gof <- reactive({
   } else {
     mod <- values$modelfits[[5]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model5gof <- gof(mod)
   } else {
@@ -2694,7 +2694,7 @@ output$gofplot <- renderPlot({
     return()
   }
   gofterm <- isolate(input$gofterm)
-  if (gofterm == ''){
+  if (gofterm == 'Default'){
     par(mfrow=c(3,1))
     cex <- 1.5
   } else {
@@ -2719,7 +2719,7 @@ output$gofplot <- renderPlot({
 output$gofplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_gof.pdf',sep='')},
   content = function(file){
-    if(input$gofterm == ''){
+    if(input$gofterm == 'Default'){
       par(mfrow=c(3,1))
     } else {
       par(mfrow=c(1,1))
@@ -2749,7 +2749,7 @@ output$gofplotspace <- renderUI({
     return()
   }
   gofterm <- isolate(input$gofterm)
-  if (gofterm == ''){
+  if (gofterm == 'Default'){
     gofplotheight = 1000
   } else {
     gofplotheight = 400
@@ -2764,7 +2764,7 @@ output$gofplotcomp <- renderPlot({
   input$gofButton
   gofterm <- isolate(input$gofterm)
   n <- values$modeltotal
-  if (gofterm == ''){
+  if (gofterm == 'Default'){
     cols <- isolate(3)
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
     bottommat <- c(0,(n*cols+1):(n*cols+3))
@@ -2813,7 +2813,7 @@ output$gofplotcompspace <- renderUI({
   gofterm <- isolate(input$gofterm)
   n <- isolate(values$modeltotal)
   plotheight = n*250
-  if (gofterm == ''){
+  if (gofterm == 'Default'){
     plotwidth = "100%"
   } else {
     plotwidth = "50%"
@@ -2827,7 +2827,7 @@ output$gofplotcompdownload <- downloadHandler(
   content = function(file){
     gofterm <- input$gofterm
     n <- values$modeltotal
-    if (gofterm == ''){
+    if (gofterm == 'Default'){
       cols <- 3
       lastelt <- 15
       bottommat <- c(0,(n*cols+1):(n*cols+3))

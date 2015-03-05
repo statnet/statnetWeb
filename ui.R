@@ -968,8 +968,9 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                             distance'), '.'),
              fluidRow(
                column(3, selectInput('gofterm', 'Goodness of Fit Term:',
-                                     c(Default='', 'degree', 'distance', 'espartners', 
-                                       'dspartners', 'triadcensus', 'model'),
+                                     c('Default', 'degree','idegree','odegree',
+                                       'distance', 'espartners','dspartners', 'triadcensus',
+                                       'model'),
                                      ))),
              fluidRow(
                 column(3, actionButton('gofButton', 'Run', class="btn-sm"))),
