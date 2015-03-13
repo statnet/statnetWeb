@@ -2695,7 +2695,11 @@ output$gofplot <- renderPlot({
   }
   gofterm <- isolate(input$gofterm)
   if (gofterm == 'Default'){
-    par(mfrow=c(3,1))
+    if(is.directed(nw())){
+      par(mfrow=c(4,1))
+    } else {
+      par(mfrow=c(3,1))
+    }
     cex <- 1.5
   } else {
     par(mfrow=c(1,1))
@@ -2711,19 +2715,15 @@ output$gofplot <- renderPlot({
                               "4" = model4gof(),
                               "5" = model5gof())})      
   }
-  par(cex.lab=cex, mar=c(5,4.2,4,2)+.1)
-  isolate(plot.gofobject(gofobj, cex.axis=cex))
+  par(cex.lab=cex, mar=c(5,4.2,2,2)+.1)
+  isolate(plot.gofobject(gofobj, cex.axis=cex, main=NULL))
   par(mfrow=c(1,1), cex.lab=1, cex.axis=1)
 })
 
 output$gofplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_gof.pdf',sep='')},
   content = function(file){
-    if(input$gofterm == 'Default'){
-      par(mfrow=c(3,1))
-    } else {
-      par(mfrow=c(1,1))
-    }
+
     pdf(file=file, height=4, width=10)
     mod <- input$choosemodel_gof
     if(mod=="Current" | mod=="Model1"){
@@ -2735,8 +2735,7 @@ output$gofplotdownload <- downloadHandler(
                                 "4" = model4gof(),
                                 "5" = model5gof())})     
     }
-    isolate(plot.gofobject(gofobj, cex.axis=1))
-    par(mfrow=c(1,1))
+    isolate(plot.gofobject(gofobj, cex.axis=1, main=NULL))
     dev.off()
   }
 )
