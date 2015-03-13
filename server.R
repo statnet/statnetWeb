@@ -1461,8 +1461,8 @@ output$degreedist <- renderPlot({
                       col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
     points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-           code=3, length=0.1, angle=90, col='orangered')
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col='orangered'))
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "orangered")
     lty <- append(lty, 1)
@@ -1472,8 +1472,8 @@ output$degreedist <- renderPlot({
   }
   if(input$bernoullioverlay_dd){
     points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-           code=3, length=0.1, angle=90, col='firebrick')
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col='firebrick'))
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "firebrick")
     lty <- append(lty, 1)
@@ -1584,8 +1584,8 @@ output$degreedistdownload <- downloadHandler(
                         col=color, ylim=c(0,ylimit), plot=TRUE)
     if(input$uniformoverlay_dd){
       points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-             code=3, length=0.1, angle=90, col='orangered')
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col='orangered'))
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "orangered")
       lty <- append(lty, 1)
@@ -1595,8 +1595,8 @@ output$degreedistdownload <- downloadHandler(
     }
     if(input$bernoullioverlay_dd){
       points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-             code=3, length=0.1, angle=90, col='firebrick')
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col='firebrick'))
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "firebrick")
       lty <- append(lty, 1)
@@ -1750,15 +1750,15 @@ output$geodistplot <- renderPlot({
   
   if(input$uniformoverlay_gd){
     points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-           code=3, length=0.1, angle=90, col='orangered')
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col='orangered'))
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "orangered")
   }
   if(input$bernoullioverlay_gd){
     points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-           code=3, length=0.1, angle=90, col='firebrick')
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col='firebrick'))
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "firebrick")
   }
@@ -1844,15 +1844,15 @@ output$geodistdownload <- downloadHandler(
     
     if(input$uniformoverlay_gd){
       points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-             code=3, length=0.1, angle=90, col='orangered')
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col='orangered'))
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "orangered")
     }
     if(input$bernoullioverlay_gd){
       points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-             code=3, length=0.1, angle=90, col='firebrick')
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col='firebrick'))
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "firebrick")
     }
