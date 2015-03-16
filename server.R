@@ -1236,6 +1236,7 @@ bernoullisamples <- reactive({
 
 output$dynamiccolor_dd <- renderUI({
   menu <- menuattr()
+  if(is.network(nw())){
   if(input$cmode == "freeman" & is.directed(nw())){
     menu <- c()
   }
@@ -1243,6 +1244,7 @@ output$dynamiccolor_dd <- renderUI({
               label = 'Color bars according to:',
               c('None', menu),
               selected = 'None')
+  }
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
 
@@ -1250,9 +1252,9 @@ observe({
   if(!is.null(nw())){
   if(is.network(nw())){
     if(!is.directed(nw())){
-      disableWidget('cmode', session, TRUE)
+      disableWidget('cmode', session, disabled=TRUE)
     } else {
-      disableWidget('cmode', session, FALSE)
+      disableWidget('cmode', session, disabled=FALSE)
     }
   }}
 })
