@@ -2766,10 +2766,15 @@ output$gofplotcomp <- renderPlot({
   gofterm <- isolate(input$gofterm)
   n <- values$modeltotal
   if (gofterm == 'Default'){
-    cols <- isolate(3)
+    if(is.directed(nw())){
+      cols <- isolate(4)
+      bottomtext <- c("idegree","odegree","espartners","distance")
+    } else {
+      cols <- isolate(3)
+      bottomtext <- c("degree","espartners","distance")
+    }
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
     bottommat <- c(0,(n*cols+1):(n*cols+3))
-    bottomtext <- c("degree","espartners","distance")
   } else {
     cols <- isolate(1)
     innermat <- matrix(1:n,ncol=1,nrow=n, byrow=TRUE)
