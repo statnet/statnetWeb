@@ -239,7 +239,7 @@ url = {http://statnetproject.org}
                      fluidRow(
                        column(6,
                               selectInput('filetype',label='File type',
-                                           choices=c('pre-loaded sample network'=5, 'statnet network object (R-object)'=1,
+                                           choices=c('built-in network'=5, 'statnet network object (R-object)'=1,
                                                      'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
                                                      'matrix of relational data (*.csv or R-object)'=4))
                               ),
