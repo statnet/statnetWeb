@@ -766,13 +766,11 @@ values$modelcoefs <- list()
 values$modelformulas <- list()
 values$modelfits <- list()
 
-observe({
-  if(!is.null(input$savemodelButton)){
-    m <- isolate(values$modeltotal)
-    if(input$savemodelButton > 0 & m < 5){
-      #increment label on save model button
-      values$modeltotal <- m+1
-    }
+observeEvent(input$savemodelButton, {
+  m <- isolate(values$modeltotal)
+  if(m < 5){
+    #increment label on save model button
+    values$modeltotal <- m+1
   }
 })
 observe({
@@ -799,11 +797,8 @@ observe({
 #     updateButton(session, 'savemodelButton', disabled=FALSE)
 #   }
 # })
-observe({
+observeEvent(input$clearmodelButton, {
   #clear saved models after button click
-  if(input$clearmodelButton==0){
-    return()
-  }
   values$modeltotal<-isolate(0)
   values$modelcoefs <- list()
   values$modelformulas <- list()
@@ -2457,8 +2452,8 @@ output$prefitsum <- renderPrint({
 
 output$savemodel <- renderUI({
   m <- values$modeltotal
-#   bsActionButton('savemodelButton',size='sm',label=paste0('Save Current Model (',m,'/5)'),
-#                  block=FALSE)
+  actionButton('savemodelButton', label=paste0('Save Current Model (',m,'/5)'),
+                 class="btn-sm")
 })
 outputOptions(output,'savemodel',suspendWhenHidden=FALSE)
 

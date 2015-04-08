@@ -849,9 +849,9 @@ url = {http://statnetproject.org}
            column(10,
                   verbatimTextOutput('prefitsum'))),
          fluidRow(column(12,
-                         actionButton('fitButton', 'Fit Model', class="btn-primary btn-sm"),
-                         uiOutput('savemodel'),
-                         actionButton('clearmodelButton', label='Clear All Models', class="btn-sm")
+                         actionButton("fitButton", "Fit Model", class="btn-primary btn-sm"),
+                         uiOutput("savemodel"),
+                         actionButton("clearmodelButton", label="Clear All Models", class="btn-sm")
          )),
          br(),
          tabsetPanel(id = 'fittingTabs',
