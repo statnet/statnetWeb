@@ -767,10 +767,12 @@ values$modelformulas <- list()
 values$modelfits <- list()
 
 observeEvent(input$savemodelButton, {
-  m <- isolate(values$modeltotal)
-  if(m < 5){
-    #increment label on save model button
-    values$modeltotal <- m+1
+  if(input$fitButton > 0){
+    m <- isolate(values$modeltotal)
+    if(m < 5){
+      #increment label on save model button
+      values$modeltotal <- m+1
+    }
   }
 })
 observe({
