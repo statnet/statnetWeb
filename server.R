@@ -2359,6 +2359,7 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 #' they are working with. 
 
 #+ eval=FALSE
+
 output$listofterms <- renderUI({
   if(!is.network(nw())){
     return()
@@ -2676,13 +2677,11 @@ output$checkterms_gof <- renderPrint({
 #if gof plots are outdated compared to current ergm formula
 state <- reactiveValues(gof = 0)
 
-observe({
-  input$fitButton
+observeEvent(input$fitButton, {
   state$gof <- 0 #gof plots are outdated
 })
 
-observe({
-  input$gofButton
+observeEvent(input$gofButton, {
   state$gof <- 1 #gof plots are up to date
 })
 
