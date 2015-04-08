@@ -102,6 +102,10 @@ shinyServer(
 
 values <- reactiveValues()
 
+# when two options are available to the user, or when we need to know if one
+# variable is outdated this reactive value will keep track of the state
+state <- reactiveValues(symmdir = FALSE, plotperc_dd = FALSE, 
+                        plotperc_gd = FALSE, allterms = FALSE, gof = 0)
 
 # To keep a list of all attributes uploaded by the user:  
 values$v_attrNamesToAdd <- list(1)
@@ -446,6 +450,13 @@ observe({
   })
 })
 
+observeEvent(input$symmdir,{
+  state$symmdir <- TRUE
+})
+observeEvent(input$symmundir,{
+  state$symmdir <- FALSE
+})
+
 #attributes will be added to this network
 nwmid <- reactive({
     nw_var <- nwinit()
@@ -455,7 +466,7 @@ nwmid <- reactive({
       #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
         symnw <- symmetrize(nw_var, rule=input$symmetrize)
-        if(input$aftersymm == 'directed'){
+        if(state$symmdir){
           nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
                         hyper=nwattrinit()[2], loops=nwattrinit()[3],
                         multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
@@ -1361,10 +1372,6 @@ dd_bernoullioverlay <- reactive({
   mean_and_sd <- list(degreemeans, degreesd)
 })
 
-
-# when two options are available to the user, or when we need to know if one
-# variable is outdated this reactive value will keep track of the state
-state <- reactiveValues(plotperc_dd = FALSE, plotperc_gd = FALSE, allterms = FALSE, gof = 0)
 
 observeEvent(input$percButton_dd, {
   state$plotperc_dd <- TRUE

@@ -336,16 +336,9 @@ url = {http://statnetproject.org}
                                                      'lower: Copy lower triangle over upper triangle'='lower',
                                                      'strong: Intersection of ties'='strong',
                                                      'weak: Union of ties'='weak')),
-                              HTML('<div id="aftersymm" class="btn-group shiny-bound-input" data-toggle="buttons-radio">
-                                      <button id="symmdir" type="button" class="btn btn-sm btn-default active shiny-bound-input" data-value="directed">directed</button>
-                                      <button id="symmundir" type="button" class="btn btn-sm btn-default shiny-bound-input" data-value="undirected">undirected</button>
-                                    </div>')
-                                
-#                               bsButtonGroup(inputId='aftersymm',
-#                                             label='After symmetrizing, network should be',
-#                                             toggle='radio', value='directed',
-#                                             bsButton('symmdir', size='sm', label='directed', value='directed'),
-#                                             bsButton('symmundir', size='sm', label='undirected', value='undirected'))
+                              p("After symmetrizing, network should be:"),
+                              actionButton("symmdir", "directed", class="btn-sm"),
+                              actionButton("symmundir", "undirected", class="btn-sm")
                               )),
                        
                        column(5,strong('Import new attribute information'),
