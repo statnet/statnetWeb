@@ -1361,6 +1361,15 @@ dd_bernoullioverlay <- reactive({
   mean_and_sd <- list(degreemeans, degreesd)
 })
 
+dd <- reactiveValues(plotperc=FALSE)
+
+observeEvent(input$axisPerc, {
+  dd$plotperc <- TRUE
+})
+observeEvent(input$axisCount, {
+  dd$plotperc <- FALSE
+})
+
 output$degreedist <- renderPlot({
   if(!is.network(nw())){
     return()
@@ -1421,7 +1430,7 @@ output$degreedist <- renderPlot({
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   
-  observeEvent(input$axisPerc, {
+  if(dd$plotperc) {
     plotme <- dd_plotdata()/sum(dd_plotdata())
     unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
     unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1431,7 +1440,7 @@ output$degreedist <- renderPlot({
     bern_lowerline <- bern_lowerline/sum(dd_plotdata())
     ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
     ylabel <- 'Percent of Nodes'
-  })
+  }
   
   # make sure that barplot and lines have the same length
   maxdeg_total <- max(maxdeg_obs, maxdeg_u, maxdeg_b)

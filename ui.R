@@ -449,7 +449,7 @@ url = {http://statnetproject.org}
      column(7,
         tabsetPanel(id='plottabs',
           tabPanel('Network Plot', br(),
-            plotOutput('nwplot')
+                   plotOutput('nwplot')
             ),
           tabPanel('Degree Distribution',
                    p(class='helper', id='ddhelper', icon('question-circle')),
@@ -665,14 +665,9 @@ url = {http://statnetproject.org}
                                                             'outdegree'),
                                                  selected = 'freeman'),
                                      uiOutput('dynamiccolor_dd'),
-#                                      span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
-#                                      bsButtonGroup(inputId='densplotgroup',
-#                                                    label='Y-axis units:',
-#                                                    toggle='radio', value='count',
-#                                                    bsButton('freqplot', size='sm', label = 'Count of nodes', value='count'),
-#                                                    bsButton('densplot', size='sm', label = 'Percent of nodes', value='percent')),
-                                     actionButton("axisPerc", label="Count of nodes"),
-                                     actionButton("axisCount", label="Percent of nodes"),
+                                     p("Y-axis units:"),
+                                     actionButton("axisCount", label="Count of nodes", class="btn-sm"),
+                                     actionButton("axisPerc", label="Percent of nodes", class="btn-sm"),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
