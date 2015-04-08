@@ -786,19 +786,7 @@ observe({
     values$modelfits[[m]] <- isolate(model1reac())
   }
 })
-# observe({
-#   #disable savemodelButton before any models have been saved, 
-#   #after 5 models have been saved, or after the network changes
-#   if(input$fitButton == 0){
-#     updateButton(session, 'savemodelButton', disabled=TRUE)
-#   } else if(values$modeltotal == 5){
-#     updateButton(session, 'savemodelButton', disabled=TRUE)
-#   } else if(values$modelstate == 0){
-#     updateButton(session, 'savemodelButton', disabled=TRUE)
-#   } else {
-#     updateButton(session, 'savemodelButton', disabled=FALSE)
-#   }
-# })
+
 observeEvent(input$clearmodelButton, {
   #clear saved models after button click
   values$modeltotal<-isolate(0)
@@ -1079,13 +1067,6 @@ output$pajchooser <- renderUI({
               choices = pajlist)
 })
 
-# observe({
-#   if(input$symmetrize=="Do not symmetrize"){
-#     updateButtonGroup(session, 'aftersymm', disabled=TRUE)
-#   } else {
-#     updateButtonGroup(session, 'aftersymm', disabled=FALSE)
-#   }
-# })
 
 output$newattrname <- renderPrint({
   if(!is.null(input$newattrvalue)){
