@@ -1363,10 +1363,10 @@ dd_bernoullioverlay <- reactive({
 
 dd <- reactiveValues(plotperc=FALSE)
 
-observeEvent(input$axisPerc, {
+observeEvent(input$percButton_dd, {
   dd$plotperc <- TRUE
 })
-observeEvent(input$axisCount, {
+observeEvent(input$countButton_dd, {
   dd$plotperc <- FALSE
 })
 
@@ -1628,6 +1628,15 @@ output$degreedistdownload <- downloadHandler(
 
 #GEODESIC DISTRIBUTION
 
+gd <- reactiveValues(plotperc = FALSE)
+
+observeEvent(input$percButton_gd, {
+  gd$plotperc <- TRUE
+})
+observeEvent(input$countButton_gd, {
+  gd$plotperc <- FALSE
+})
+
 gdata <- reactive({
   g <- geodist(nw(), inf.replace=NA, count.paths=FALSE)
   gdata <- tabulate(g$gdist)
@@ -1708,7 +1717,7 @@ output$geodistplot <- renderPlot({
   ylabel <- "Count of Vertex Pairs"
   
   #for density plot
-  if(input$densplotgroup_gd == "percent"){
+  if(gd$plotperc){
     unif_means <- unif_means/sum(gdata)
     unif_upperline <- unif_upperline/sum(gdata)
     unif_lowerline <- unif_lowerline/sum(gdata)

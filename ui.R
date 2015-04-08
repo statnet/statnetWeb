@@ -666,8 +666,8 @@ url = {http://statnetproject.org}
                                                  selected = 'freeman'),
                                      uiOutput('dynamiccolor_dd'),
                                      p("Y-axis units:"),
-                                     actionButton("axisCount", label="Count of nodes", class="btn-sm"),
-                                     actionButton("axisPerc", label="Percent of nodes", class="btn-sm"),
+                                     actionButton("countButton_dd", label="Count of nodes", class="btn-sm"),
+                                     actionButton("percButton_dd", label="Percent of nodes", class="btn-sm"),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -697,11 +697,9 @@ url = {http://statnetproject.org}
                                      downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
-#                                      bsButtonGroup(inputId='densplotgroup_gd',
-#                                                    label='Y-axis units:',
-#                                                    toggle='radio', value='count',
-#                                                    bsButton('freqplot_gd', size='sm', label = 'Count of vertex pairs', value='count'),
-#                                                    bsButton('densplot_gd', size='sm', label = 'Percent of vertex pairs', value='percent')),
+                                     p("Y-axis units:"),
+                                     actionButton("countButton_gd", "Count of nodes", class="btn-sm"),
+                                     actionButton("percButton_gd", "Percent of nodes", class="btn-sm"),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
