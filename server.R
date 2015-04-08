@@ -54,7 +54,7 @@
 #+ eval=FALSE
 
 library(shiny)
-library(shinyBS)
+#library(shinyBS)
 #library(shinyAce)
 library(ergm)
 library(sna)
@@ -775,19 +775,19 @@ observe({
     values$modelfits[[m]] <- isolate(model1reac())
   }
 })
-observe({
-  #disable savemodelButton before any models have been saved, 
-  #after 5 models have been saved, or after the network changes
-  if(input$fitButton == 0){
-    updateButton(session, 'savemodelButton', disabled=TRUE)
-  } else if(values$modeltotal == 5){
-    updateButton(session, 'savemodelButton', disabled=TRUE)
-  } else if(values$modelstate == 0){
-    updateButton(session, 'savemodelButton', disabled=TRUE)
-  } else {
-    updateButton(session, 'savemodelButton', disabled=FALSE)
-  }
-})
+# observe({
+#   #disable savemodelButton before any models have been saved, 
+#   #after 5 models have been saved, or after the network changes
+#   if(input$fitButton == 0){
+#     updateButton(session, 'savemodelButton', disabled=TRUE)
+#   } else if(values$modeltotal == 5){
+#     updateButton(session, 'savemodelButton', disabled=TRUE)
+#   } else if(values$modelstate == 0){
+#     updateButton(session, 'savemodelButton', disabled=TRUE)
+#   } else {
+#     updateButton(session, 'savemodelButton', disabled=FALSE)
+#   }
+# })
 observe({
   #clear saved models after button click
   if(input$clearmodelButton==0){
@@ -1071,13 +1071,13 @@ output$pajchooser <- renderUI({
               choices = pajlist)
 })
 
-observe({
-  if(input$symmetrize=="Do not symmetrize"){
-    updateButtonGroup(session, 'aftersymm', disabled=TRUE)
-  } else {
-    updateButtonGroup(session, 'aftersymm', disabled=FALSE)
-  }
-})
+# observe({
+#   if(input$symmetrize=="Do not symmetrize"){
+#     updateButtonGroup(session, 'aftersymm', disabled=TRUE)
+#   } else {
+#     updateButtonGroup(session, 'aftersymm', disabled=FALSE)
+#   }
+# })
 
 output$newattrname <- renderPrint({
   if(!is.null(input$newattrvalue)){
@@ -1421,7 +1421,7 @@ output$degreedist <- renderPlot({
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   
-  if(input$densplotgroup == "percent"){
+  observeEvent(input$axisPerc, {
     plotme <- dd_plotdata()/sum(dd_plotdata())
     unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
     unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1431,7 +1431,7 @@ output$degreedist <- renderPlot({
     bern_lowerline <- bern_lowerline/sum(dd_plotdata())
     ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
     ylabel <- 'Percent of Nodes'
-  }
+  })
   
   # make sure that barplot and lines have the same length
   maxdeg_total <- max(maxdeg_obs, maxdeg_u, maxdeg_b)
@@ -2421,8 +2421,8 @@ output$prefitsum <- renderPrint({
 
 output$savemodel <- renderUI({
   m <- values$modeltotal
-  bsActionButton('savemodelButton',size='sm',label=paste0('Save Current Model (',m,'/5)'),
-                 block=FALSE)
+#   bsActionButton('savemodelButton',size='sm',label=paste0('Save Current Model (',m,'/5)'),
+#                  block=FALSE)
 })
 outputOptions(output,'savemodel',suspendWhenHidden=FALSE)
 

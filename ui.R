@@ -49,7 +49,7 @@
 #+ setup, eval=FALSE
 # load necessary packages
 library(shiny)
-library(shinyBS)
+#library(shinyBS)
 #library(shinyAce)
 library(shinythemes)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
@@ -652,10 +652,11 @@ url = {http://statnetproject.org}
                                                  min = 0, max = 1, value = 1),
                                      br(),
                                      uiOutput('dynamiccolor'),
-                                     span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
+#                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                                      uiOutput('dynamicsize'),
                                      br(),
                                      downloadButton('nwplotdownload', label = "Download Plot", class="btn-sm")),
+                    
                     conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                                      selectInput('cmode', 
                                                  label = 'Type of degree (for directed graphs):',
@@ -664,12 +665,14 @@ url = {http://statnetproject.org}
                                                             'outdegree'),
                                                  selected = 'freeman'),
                                      uiOutput('dynamiccolor_dd'),
-                                     span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
-                                     bsButtonGroup(inputId='densplotgroup',
-                                                   label='Y-axis units:',
-                                                   toggle='radio', value='count',
-                                                   bsButton('freqplot', size='sm', label = 'Count of nodes', value='count'),
-                                                   bsButton('densplot', size='sm', label = 'Percent of nodes', value='percent')),
+#                                      span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
+#                                      bsButtonGroup(inputId='densplotgroup',
+#                                                    label='Y-axis units:',
+#                                                    toggle='radio', value='count',
+#                                                    bsButton('freqplot', size='sm', label = 'Count of nodes', value='count'),
+#                                                    bsButton('densplot', size='sm', label = 'Percent of nodes', value='percent')),
+                                     actionButton("axisPerc", label="Count of nodes"),
+                                     actionButton("axisCount", label="Percent of nodes"),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -699,11 +702,11 @@ url = {http://statnetproject.org}
                                      downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
-                                     bsButtonGroup(inputId='densplotgroup_gd',
-                                                   label='Y-axis units:',
-                                                   toggle='radio', value='count',
-                                                   bsButton('freqplot_gd', size='sm', label = 'Count of vertex pairs', value='count'),
-                                                   bsButton('densplot_gd', size='sm', label = 'Percent of vertex pairs', value='percent')),
+#                                      bsButtonGroup(inputId='densplotgroup_gd',
+#                                                    label='Y-axis units:',
+#                                                    toggle='radio', value='count',
+#                                                    bsButton('freqplot_gd', size='sm', label = 'Count of vertex pairs', value='count'),
+#                                                    bsButton('densplot_gd', size='sm', label = 'Percent of vertex pairs', value='percent')),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -798,10 +801,10 @@ url = {http://statnetproject.org}
                  tabPanel("Term Documentation",
                   br(),
                   div(class="placeholder",
-                      bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
-                                 value="matching",
-                                 bsButton("matchingButton",size='sm',label="Compatible Terms", value="matching"),
-                                 bsButton("allButton",size='sm',label="All Terms", value="all")),
+#                       bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
+#                                  value="matching",
+#                                  bsButton("matchingButton",size='sm',label="Compatible Terms", value="matching"),
+#                                  bsButton("allButton",size='sm',label="All Terms", value="all")),
                       uiOutput("listofterms"),
                   div(id="termdocbox",
                       verbatimTextOutput("termdoc")
@@ -1103,7 +1106,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                      min = 0, max = 1, value = 1),
                                          br(),
                                          uiOutput('dynamiccolor2'),
-                                         span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
+#                                          span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
                                          uiOutput('dynamicsize2'),
                                          downloadButton('simplotdownload',
                                                         label = 'Download Plot', class="btn-sm"))
