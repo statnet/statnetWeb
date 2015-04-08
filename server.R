@@ -1361,13 +1361,16 @@ dd_bernoullioverlay <- reactive({
   mean_and_sd <- list(degreemeans, degreesd)
 })
 
-dd <- reactiveValues(plotperc=FALSE)
+
+# when two options are available to the user, or when we need to know if one
+# variable is outdated this reactive value will keep track of the state
+state <- reactiveValues(plotperc_dd = FALSE, plotperc_gd = FALSE, allterms = FALSE, gof = 0)
 
 observeEvent(input$percButton_dd, {
-  dd$plotperc <- TRUE
+  state$plotperc_dd <- TRUE
 })
 observeEvent(input$countButton_dd, {
-  dd$plotperc <- FALSE
+  state$plotperc_dd <- FALSE
 })
 
 output$degreedist <- renderPlot({
@@ -1430,7 +1433,7 @@ output$degreedist <- renderPlot({
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   
-  if(dd$plotperc) {
+  if(state$plotperc_dd) {
     plotme <- dd_plotdata()/sum(dd_plotdata())
     unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
     unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1628,13 +1631,12 @@ output$degreedistdownload <- downloadHandler(
 
 #GEODESIC DISTRIBUTION
 
-gd <- reactiveValues(plotperc = FALSE)
 
 observeEvent(input$percButton_gd, {
-  gd$plotperc <- TRUE
+  state$plotperc_gd <- TRUE
 })
 observeEvent(input$countButton_gd, {
-  gd$plotperc <- FALSE
+  state$plotperc_gd <- FALSE
 })
 
 gdata <- reactive({
@@ -1717,7 +1719,7 @@ output$geodistplot <- renderPlot({
   ylabel <- "Count of Vertex Pairs"
   
   #for density plot
-  if(gd$plotperc){
+  if(state$plotperc_gd){
     unif_means <- unif_means/sum(gdata)
     unif_upperline <- unif_upperline/sum(gdata)
     unif_lowerline <- unif_lowerline/sum(gdata)
@@ -2360,11 +2362,19 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
 #+ eval=FALSE
 
+
+observeEvent(input$matchingButton, {
+  state$allterms <- FALSE
+})
+observeEvent(input$allButton, {
+  state$allterms <- TRUE
+})
+
 output$listofterms <- renderUI({
   if(!is.network(nw())){
     return()
   }
-  if(input$matchingorall == "all"){
+  if(state$allterms){
     current.terms <- unlist(allterms)
   } else {
     matchterms <- search.ergmTerms(net=nw())
@@ -2675,7 +2685,6 @@ output$checkterms_gof <- renderPrint({
 
 #state$gof will toggle between two states, depending on
 #if gof plots are outdated compared to current ergm formula
-state <- reactiveValues(gof = 0)
 
 observeEvent(input$fitButton, {
   state$gof <- 0 #gof plots are outdated

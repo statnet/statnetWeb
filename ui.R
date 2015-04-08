@@ -794,10 +794,8 @@ url = {http://statnetproject.org}
                  tabPanel("Term Documentation",
                   br(),
                   div(class="placeholder",
-#                       bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
-#                                  value="matching",
-#                                  bsButton("matchingButton",size='sm',label="Compatible Terms", value="matching"),
-#                                  bsButton("allButton",size='sm',label="All Terms", value="all")),
+                      actionButton("matchingButton", "Compatible terms", class="btn-sm"),
+                      actionButton("allButton", "All terms", class="btn-sm"),
                       uiOutput("listofterms"),
                   div(id="termdocbox",
                       verbatimTextOutput("termdoc")
