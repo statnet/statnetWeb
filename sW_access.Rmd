@@ -1,0 +1,35 @@
+---
+title: "Accessing statnetWeb"
+author: "Emily Beylerian"
+output: html_document
+---
+
+### From the web
+
+No installation of R or RStudio necessary.
+
+https://ebey.shinyapps.io/statnetWeb/
+
+Issues:  
+
+* Refreshing page results in loss of data/results
+* Page might timeout
+* Need internet access
+
+### From RStudio
+#### On your own computer
+
+Must have R and RStudio installed, as well as the following packages necessary for the app to run:  
+
+* statnet (ergm, network, sna)
+* shiny
+* shinythemes (necessary?)
+* RColorBrewer
+* lattice
+* latticeExtra
+
+```
+install.packages(c("statnet","shiny","shinythemes","RColorBrewer","lattice","latticeExtra"))
+```
+
+Session will not time-out, 
