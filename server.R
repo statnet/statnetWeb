@@ -2776,12 +2776,14 @@ output$gofplotcomp <- renderPlot({
     if(is.directed(nw())){
       cols <- isolate(4)
       bottomtext <- c("idegree","odegree","espartners","distance")
+      bottommat <- c(0,(n*cols+1):(n*cols+4))
     } else {
       cols <- isolate(3)
       bottomtext <- c("degree","espartners","distance")
+      bottommat <- c(0,(n*cols+1):(n*cols+3))
     }
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
-    bottommat <- c(0,(n*cols+1):(n*cols+3))
+    
   } else {
     cols <- isolate(1)
     innermat <- matrix(1:n,ncol=1,nrow=n, byrow=TRUE)
