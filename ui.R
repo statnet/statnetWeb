@@ -798,9 +798,13 @@ url = {http://statnetproject.org}
                  tabPanel("Term Documentation",
                   br(),
                   div(class="placeholder",
-                      actionButton("matchingButton", "Compatible terms", class="btn-sm"),
-                      actionButton("allButton", "All terms", class="btn-sm"),
-                      uiOutput("listofterms"),
+                      fluidRow(
+                        column(6,
+                               actionButton("matchingButton", "Compatible terms", class="btn-sm"),
+                               actionButton("allButton", "All terms", class="btn-sm")
+                               ),
+                        column(4, uiOutput("listofterms"))
+                      ),
                   div(id="termdocbox",
                       verbatimTextOutput("termdoc")
                     ),
