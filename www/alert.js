@@ -10,6 +10,36 @@ $(document).ready(function(){
   $("#sciteButton").click(function(){
     $("#scitation").toggle(500);
   });
+  
+  $("#linktitle1").click(function(){
+    $("#linkbox1").toggle(200);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  
+  $("#linktitle2").click(function(){
+    $("#linkbox2").toggle(200);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  
+  $("#linktitle3").click(function(){
+    $("#linkbox3").toggle(200);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  
+  $("#linktitle4").click(function(){
+    $("#linkbox4").toggle(200);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  
+  $("#symmdir").click(function(){
+    $("#symmdir").toggleClass("active", true);
+    $("#symmundir").toggleClass("active", false);
+  });
+
+  $("#symmundir").click(function(){
+    $("#symmdir").toggleClass("active", false);
+    $("#symmundir").toggleClass("active", true);
+  });
 
   $("#Robjhelp").click(function(){
     $("#Robjbox").toggle(500);

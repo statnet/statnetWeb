@@ -1,9 +1,23 @@
 
+.navbar .navbar-brand{ padding: 0px 12px;font-size: 16px;line-height: 40px; }
+.navbar-nav > li > a {padding-top: 0px; padding-bottom: 0px; line-height: 40px; height: 40px;}
+.navbar {min-height:40px; height:40px;}
+
+
 #sWtitle {
   font-family:Courier;
-  font-size:14pt;
+  font-size:13pt;
 }
-
+pre {
+  font-size:12px;
+}
+.form-group {
+  margin-bottom: 5px;
+}
+.shiny-input-container:not {
+  width:150px;
+  margin:0px;
+}
 div.tool {
   display:inline;
 }
@@ -53,6 +67,41 @@ div.tool:hover .callout {
   top: -13px;
 }
 
+div.busy { 
+  position:fixed;
+  top: 40%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -50px;
+  display:none;
+  background: rgba(230, 230, 230, .8);
+  text-align: center;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-bottom: 40px;
+  padding-right: 30px;
+  border-radius: 5px;
+  z-index: 50;
+}
+
+#swciteButton,
+#sciteButton {
+  padding: 5px;
+  border-radius: 0px;
+  border:1px solid #CECED8;
+  background: rgb(230, 230, 230);
+  cursor: pointer;
+}
+#swciteButton:hover,
+#sciteButton:hover {
+  background-color:#CECED8;
+}
+
+#swcitation,
+#scitation {
+  display:none;
+  position:absolute;
+}
 
 #dataleft, #fitleft,
 #plotleft, #mcmcleft,
@@ -81,38 +130,6 @@ div.tool:hover .callout {
 #gofright:hover, #simright:hover,
 .helper-btn:hover {
   color: #737379;
-}
-
-div.busy { 
-  position:fixed;
-  top: 40%;
-  left: 50%;
-  margin-top: -100px;
-  margin-left: -50px;
-  display:none;
-  background: rgba(230, 230, 230, .8);
-  text-align: center;
-  padding-top: 20px;
-  padding-left: 30px;
-  padding-bottom: 40px;
-  padding-right: 30px;
-  border-radius: 5px;
-  z-index: 50;
-}
-
-#swciteButton,
-#sciteButton {
-  padding: 5px;
-  border-radius: 5px;
-  border:1px solid #CECED8;
-  background: rgb(230, 230, 230);
-  cursor: pointer;
-}
-
-#swcitation,
-#scitation {
-  display:none;
-  position:absolute;
 }
 
 .helper-btn {
@@ -173,12 +190,22 @@ div.mischelperbox {
   z-index: 10;
 }
 
-#mixmxbox, #graphlevelbox,
+#linkbox1,
+#linkbox2,
+#linkbox3,
+#linkbox4,
+#mixmxbox, 
+#graphlevelbox,
 #nodelevelbox {
   display:none;
 }
 
-#mixmxtitle, #graphleveltitle,
+#linktitle1,
+#linktitle2,
+#linktitle3,
+#linktitle4,
+#mixmxtitle, 
+#graphleveltitle,
 #nodeleveltitle {
   cursor:pointer;
 }
@@ -196,9 +223,7 @@ div.mischelperbox {
 }
 
 #fitButton {
-  background-color:#BABABA;
-  background-image:linear-gradient(to bottom,#e6e6e6,#BABABA);
-  border-bottom-color: #828282;
+  border-style:groove;
 }
 #savemodel {
   display:inline;
@@ -214,14 +239,15 @@ div .mcmcopt {
   padding: 2px;
   margin-bottom: 5px;
 }
-
+div.form-group.shiny-input-container {
+  width=150px;
+}
 #chooseterm {
   display:inline;
-  margin-bottom:2px;
-  width:150px;
 }
 #listofterms{
   display:inline;
+  width:150px;
 }
 #matchingorall {
   margin-bottom:2px;
@@ -229,6 +255,7 @@ div .mcmcopt {
 }
 div.placeholder {
   height:110px;
+  position:relative;
 }
 #termdoc {
   background:#FFFFFF;
@@ -236,6 +263,8 @@ div.placeholder {
 }
 #termdocbox {
   position:absolute;
+  right:0px;
+  left:5px;
   margin-right:10px;
   max-height:65px;
   border: 1px solid #CECED8;
@@ -245,7 +274,7 @@ div.placeholder {
 }
 #termexpand {
   position:absolute;
-  right:3px;
+  right:20px;
   width:30px;
   height:20px;
   color: #A5A5AD;
@@ -262,9 +291,11 @@ div.placeholder {
   padding:4px 6px;
   margin-bottom:5px;
 }
-
+.shiftright {
+  margin-left:15px;
+}
 .nwlabel {
-  margin:8px 0px 11px;
+  margin:0px 0px 10px;
 }
 
 #simsummary,

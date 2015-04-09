@@ -49,8 +49,7 @@
 #+ setup, eval=FALSE
 # load necessary packages
 library(shiny)
-library(shinyBS)
-library(shinyAce)
+library(shinythemes)
 #source("chooser.R") #need this for Kirk's widget that moves items left/right
 
 
@@ -62,8 +61,9 @@ library(shinyAce)
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(title=NULL, 
-             id= 'navbar', windowTitle = 'statnetWeb', collapsable=TRUE,
+  navbarPage(theme="mycosmo.css",
+    title=NULL, 
+             id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
@@ -82,14 +82,15 @@ shinyUI(
            value='tab1',
            fluidRow(
                     column(8,
-                           h5("About statnetWeb v0.3.1"),
+                           h5(tags$u("About statnetWeb v0.3.1")),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
                              "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web app", 
                              "is written in R-Shiny, and development is via Github.  More information on the statnet software,",
                              "the ergm package, R-Shiny and our Github repository can be found in the resource links on the right."),
-                           p("This app is intended to serve as an introduction to the ergm package for those who",
+                           
+                           div(p("This app is intended to serve as an introduction to the ergm package for those who",
                              "are just getting started using statnet, or for those who are not familiar with programming",
                              "in R. If you are new to ergm, you may find it helpful to work through the", a("ergm tutorial", 
                             href="http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
@@ -101,11 +102,12 @@ shinyUI(
                              "They are best submitted through our", a('Github site,', 
                                                                       href='https://github.com/statnet/statnetWeb',
                                                                       target='_blank'),
-                             "or by email to the statnet_help listserv (see Help tab)."),
-                           actionButton('startButton', label='Get Started', class="candisable"),
+                             "or by email to the statnet_help listserv (see", actionLink("helpLink", "Help"), "tab).")
+                           ),
+                           actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
                            br(),
                            
-                           h5('Citing statnetWeb'),
+                           h5(tags$u('Citing statnetWeb')),
                            p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
                            
                            span(id='swciteButton', 'statnetWeb'),
@@ -141,38 +143,46 @@ url = {http://statnetproject.org}
                                      href = 'http://statnet.csde.washington.edu/about_us.shtml',
                                      target = '_blank'))
                     )),       
-             column(4, wellPanel( 
-                          h5('Resources'),
-                          a("statnet Wiki",
-                            href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
-                          column(11, offset = 1, p('The homepage of the statnet project. Find tutorials,',
-                                'publications and recent news here.'),
-                                span('Key background papers'),br(),
+             column(4, 
+                    wellPanel( 
+                        h5(tags$u('Resources')),
+                        div(class="tool",
+                            span(class="tip", "The homepage of the statnet project. Find tutorials,",
+                                 "publications and recent news here."),
+                            a("statnet Wiki",
+                              href = "https://statnet.csde.washington.edu/trac", target = "_blank")
+                        ),
+                        
+                        column(11, offset = 1,
+                              span(id="linktitle1",'Key background papers',icon('angle-double-left')),br(),
+                              div(id="linkbox1",
                                 a("ergm: Journal of Statistical Software",
                                   href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
                                 br(),
                                 a("Using ergm: Journal of Statistical Software",
-                                  href = "http://www.jstatsoft.org/v24/i04/", target = "_blank"),
-                                br(),br(),
-                                span('Tutorials and documentation'),br(),
-                                a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
+                                  href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
+                              
+                              span(id="linktitle2",'Tutorials and documentation',icon('angle-double-left')),br(),
+                              div(id="linkbox2",
+                                  a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
                                   href = "http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
                                   target= "_blank"),
                                 br(),
                                 a("ergm documentation on CRAN", 
                                   href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
-                                  target = "_blank"), style="margin-bottom:10px;"),
-                          br(),
-                          p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
-                            target="_blank")),
-                          a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
-                            target="_blank")
+                                  target = "_blank")), 
+                              style="margin-bottom:10px;"),
+                        br(),
+                        p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
+                          target="_blank")),
+                        a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
+                          target="_blank")
              ),
-             fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200)),
+             fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200), style="margin-left:15px;"),
              fluidRow(a(img(src = 'csdelogo_crop.png', height = 40, width = 40),
                        href = 'https://csde.washington.edu/', target = '_blank'),
                       a(img(src = 'csde_goudy.fw.png', width=150), href = 'https://csde.washington.edu/',
-                       target = '_blank'))
+                       target = '_blank'), style="margin-left:15px;")
              )           
              )
            ),
@@ -222,21 +232,15 @@ url = {http://statnetproject.org}
     fluidRow(
       column(7,
         tabsetPanel(id='datatabs',
-          tabPanel('Upload Network',
+          tabPanel('Upload Network', br(),
                    wellPanel(
                      fluidRow(
                        column(6,
-                              radioButtons('filetype',label=h5('File type'),
-                                           choices=c('pre-loaded sample network'=5, 'statnet network object (R-object)'=1,
+                              selectInput('filetype',label='File type',
+                                           choices=c('built-in network'=5, 'statnet network object (R-object)'=1,
                                                      'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data (*.csv or R-object)'=4)),
-                              p(class="helper", id="Robjhelp", icon("question-circle"), span("What is an R-object?", style="font-size:0.85em;")),
-                              div(class="mischelperbox", id="Robjbox", 'When working in R, an object in your environment',
-                                  'can be saved to a file from the command line in the following way:', 
-                                  code('save(objectname, file="newfilename")'),br(),'By default the file will be saved',
-                                  'into the current working directory. The full path to a new location can be',
-                                  'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
-                                  'to use a save dialog box.')),
+                                                     'matrix of relational data (*.csv or R-object)'=4))
+                              ),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(6,
                               br(),
@@ -244,46 +248,46 @@ url = {http://statnetproject.org}
                               verbatimTextOutput('rawdatafile'))
                           ),
                        conditionalPanel(condition = 'input.filetype == 5',
-                              br(),
-                              selectInput('samplenet', label='Choose a network',
-                                          choices=c('None', 'ecoli1', 'ecoli2',
+                          column(6,
+                              br(style="line-height:26px;"),
+                              selectInput('samplenet', label=NULL,
+                                          choices=c('Choose a network'='None', 'ecoli1', 'ecoli2',
                                                     'faux.mesa.high','flobusiness',
                                                     'flomarriage', 'kapferer', 'kapferer2',
-                                                    'molecule', 'samplike'),
-                                          selectize=FALSE) 
-                                        )
+                                                    'molecule', 'samplike'))
+                          )
+                         )
                        ),
                      fluidRow(
                        conditionalPanel(condition='input.filetype == 4',
-                           h5('Specify'),
                            column(1, align="right", 
                                   style="margin-top:5px;margin-left:0px;",
                                   br(),br(),
                                   span(style="line-height:25px;", class="helper",
                                       span(id="filetypehelper1",
                                            icon('question-circle'),
-                                           div(id="filetypebox1", class="smallhelperbox",
+                                           div(id="filetypebox1", class="mischelperbox",
                                                "For adjacency matrices,",
                                                "the first row and column of .csv files",
                                                "should hold vertex labels.")),
                                       br(),
                                       span(id="filetypehelper2",
                                            icon('question-circle'),
-                                           div(id="filetypebox2", class="smallhelperbox",
+                                           div(id="filetypebox2", class="mischelperbox",
                                                "For adjacency matrices,",
                                                "the first row and column of .csv files",
                                                "should hold vertex labels.")),
                                       br(),
                                       span(id="filetypehelper3",
                                            icon('question-circle'),
-                                           div(id="filetypebox3", class="smallhelperbox",
+                                           div(id="filetypebox3", class="mischelperbox",
                                                "For incidence matrices,",
                                                "the first row of .csv files should hold",
                                                "edge labels, the first column should hold vertex labels")),
                                       br(),
                                       span(id="filetypehelper4",
                                            icon('question-circle'),
-                                           div(id="filetypebox4", class="smallhelperbox",
+                                           div(id="filetypebox4", class="mischelperbox",
                                                "For edge lists, .csv files should not have row or column labels.")),
 
                                       br())),
@@ -297,7 +301,7 @@ url = {http://statnetproject.org}
                            
                            column(5,
                                   br(),
-                                  span('Network Attributes'),
+                                  span(strong('Network Attributes')),
                                   div(checkboxInput('dir', 'directed?', value=TRUE),
                                        style='padding-top:5px;'),
                                   checkboxInput('loops', 'loops?', value=FALSE),
@@ -305,67 +309,84 @@ url = {http://statnetproject.org}
                                   checkboxInput('bipartite', 'bipartite?', value=FALSE))
                        ),
                        conditionalPanel(condition='input.filetype == 3',
-                           h5('Specify'),
                            column(6,
-                                  uiOutput('pajchooser')))
+                                  uiOutput('pajchooser'))),
+                       conditionalPanel(condition='input.filetype == 1',
+                                        p(class="helper", id="Robjhelp", icon("question-circle"), span("What is an R-object?", style="font-size:0.85em;")),
+                                        div(class="mischelperbox", id="Robjbox", 'When working in R, an object in your environment',
+                                            'can be saved to a file from the command line in the following way:', 
+                                            code('save(objectname, file="newfilename")'),br(),'By default the file will be saved',
+                                            'into the current working directory. The full path to a new location can be',
+                                            'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
+                                            'to use a save dialog box.')
+                                        )
                      ))
                    ),
-          tabPanel('Edit Network',
+          tabPanel('Edit Network', br(),
                    wellPanel(
                      fluidRow(
                       
                        column(6,strong('Symmetrize'),
                           conditionalPanel(condition="output.nwsum != 'NA'",
-                              radioButtons('symmetrize', label=NULL, 
+                              br(),
+                              selectizeInput('symmetrize', label=NULL, 
                                            choices=c('Do not symmetrize',
-                                                     'upper: Copy upper triangle over lower triangle'='upper',
-                                                     'lower: Copy lower triangle over upper triangle'='lower',
+                                                     'upper: Copy upper triangle over lower'='upper',
+                                                     'lower: Copy lower triangle over upper'='lower',
                                                      'strong: Intersection of ties'='strong',
                                                      'weak: Union of ties'='weak')),
-                              bsButtonGroup(inputId='aftersymm',
-                                            label='After symmetrizing, network should be',
-                                            toggle='radio', value='directed',
-                                            bsButton('symmdir', label='directed', value='directed'),
-                                            bsButton('symmundir', label='undirected', value='undirected'))
+                              conditionalPanel(condition="input.symmetrize != 'Do not symmetrize'",
+                                               p("After symmetrizing, network should be:"),
+                                               actionButton("symmdir", "directed", class="btn-sm"),
+                                               actionButton("symmundir", "undirected", class="btn-sm")
+                                               )
+                              
                               )),
                        
                        column(5,strong('Import new attribute information'),
                               conditionalPanel(condition="output.nwsum != 'NA'",
-                                 radioButtons('newattrtype', label='Choose attribute type',
+                                 br(),
+                                 selectizeInput('newattrtype', label=NULL,
                                            choices=c('vertex attribute',
                                                      'vertex names',
                                                    'edge attribute',
-                                                   'edge value')),
-                                 span('Upload a file of one of the following types:',br(),
-                                      tags$ul(
-                                        tags$li('R list object',
-                                      span(class="helper",id="filetypehelper5",
-                                           icon("question-circle"),
-                                           div(id="filetypebox5", class="mischelperbox",
-                                               strong("R lists"), "should be named, for example:",
-                                               br(),
-                                               code("mylist <- list()"),br(),
-                                               code("mylist$age <- c(18,27,20)"),br(),
-                                               code("mylist$sex <- c('M','F','F')"), br(),
-                                               "The names of the elements in the list (e.g. 'age'",
-                                               "and 'sex' in the list above)",
-                                               "will become the attribute names.",
-                                               br(),br(),tags$u("Note:"),'Attributes uploaded as vertex names',
-                                               "will automatically be saved into the", code("vertex.names"),
-                                               "attribute and the uploaded names will be ignored."))),
-                                      tags$li('.csv file',
-                                      span(class="helper", id="filetypehelper6",
-                                           icon("question-circle"),
-                                           div(id="filetypebox6", class="mischelperbox", 
-                                               strong(".csv files"), "should include a header in the first row.",
-                                               "The header of each column will become an attribute name.",
-                                               br(),br(),tags$u("Note:"),'Attributes uploaded as vertex names',
-                                               "will automatically be saved into the", code("vertex.names"),
-                                               "attribute and the uploaded names will be ignored."))))),
-                                 fileInput(inputId='newattrvalue', label=NULL),
-                                 p('New attribute name(s):'),
-                                 verbatimTextOutput('newattrname'),
-                                 actionButton('newattrButton', label='Set Attribute')              
+                                                   'edge value'),
+                                           options=list(placeholder="Select attribute type",
+                                                        onInitialize = I('function() { this.setValue(""); }')
+                                                        )),
+                                 conditionalPanel(condition="input.newattrtype != ''",
+                                                  span('Upload a file of one of the following types:',br(),
+                                                       tags$ul(
+                                                         tags$li('R list object',
+                                                                 span(class="helper",id="filetypehelper5",
+                                                                      icon("question-circle"),
+                                                                      div(id="filetypebox5", class="mischelperbox",
+                                                                          strong("R lists"), "should be named, for example:",
+                                                                          br(),
+                                                                          code("mylist <- list()"),br(),
+                                                                          code("mylist$age <- c(18,27,20)"),br(),
+                                                                          code("mylist$sex <- c('M','F','F')"), br(),
+                                                                          "The names of the elements in the list (e.g. 'age'",
+                                                                          "and 'sex' in the list above)",
+                                                                          "will become the attribute names.",
+                                                                          br(),br(),tags$u("Note:"),'Attributes uploaded as vertex names',
+                                                                          "will automatically be saved into the", code("vertex.names"),
+                                                                          "attribute and the uploaded names will be ignored."))),
+                                                         tags$li('.csv file',
+                                                                 span(class="helper", id="filetypehelper6",
+                                                                      icon("question-circle"),
+                                                                      div(id="filetypebox6", class="mischelperbox", 
+                                                                          strong(".csv files"), "should include a header in the first row.",
+                                                                          "The header of each column will become an attribute name.",
+                                                                          br(),br(),tags$u("Note:"),'Attributes uploaded as vertex names',
+                                                                          "will automatically be saved into the", code("vertex.names"),
+                                                                          "attribute and the uploaded names will be ignored."))))),
+                                                  fileInput(inputId='newattrvalue', label=NULL),
+                                                  p('New attribute name(s):'),
+                                                  verbatimTextOutput('newattrname'),
+                                                  actionButton('newattrButton', label='Set Attribute', class="btn-sm")
+                                                  )
+                                               
                                  )
                               
                               )
@@ -373,7 +394,7 @@ url = {http://statnetproject.org}
                      )
                      )
                    ),
-          tabPanel('Modify Attributes',
+          tabPanel('Modify Attributes', br(),
                    wellPanel(
                      p('In the future we will build in functions that will ',
                        'allow you to modify the attributes of your network.',
@@ -390,7 +411,7 @@ url = {http://statnetproject.org}
           
    column(4,
           tabsetPanel(
-            tabPanel('Network Summary',
+            tabPanel('Network Summary', br(),
                      verbatimTextOutput('nwsum')
                      ))
           )            
@@ -429,8 +450,8 @@ url = {http://statnetproject.org}
     fluidRow(      
      column(7,
         tabsetPanel(id='plottabs',
-          tabPanel('Network Plot',
-            plotOutput('nwplot')
+          tabPanel('Network Plot', br(),
+                   plotOutput('nwplot')
             ),
           tabPanel('Degree Distribution',
                    p(class='helper', id='ddhelper', icon('question-circle')),
@@ -452,7 +473,7 @@ url = {http://statnetproject.org}
                        "structure of network connectivity."),
                    plotOutput('geodistplot')
                    ),
-          tabPanel('More', value='More',
+          tabPanel('More', value='More', br(),
                    h5('Mixing Matrix', icon('angle-double-left'), 
                       id="mixmxtitle"),
                    wellPanel(id="mixmxbox",
@@ -470,14 +491,14 @@ url = {http://statnetproject.org}
                       column(4, inlineSelectInput('grecipmeas',label=NULL,
                                  choices=c('dyadic','dyadic.nonnull','edgewise',
                                            'edgewise.lrr','correlation'),
-                                 selectize=FALSE, style='margin-top:5px;'))),
+                                 style='margin-top:5px;'))),
                      fluidRow(
                       column(4, p('Transitivity:'), class='stitle'),
                       column(3, p(textOutput('gtrans'), class='snum')),
                       column(4, inlineSelectInput('gtransmeas',label=NULL,
                                     choices=c('weak','strong','weakcensus',
                                               'strongcensus','rank','correlation'),
-                                    selectize=FALSE, style='margin-top:0px;'))),
+                                    style='margin-top:0px;'))),
                      fluidRow(
                       column(4, p('Density:', class='stitle')),
                       column(3, p(textOutput('gden'), class='snum'))), 
@@ -618,7 +639,7 @@ url = {http://statnetproject.org}
           )),
      column(4,
          tabsetPanel(id='displaytabs',
-           tabPanel(title='Display Options',
+           tabPanel(title='Display Options', br(),
               wellPanel(
                     conditionalPanel(condition='input.plottabs == "Network Plot"',
                                      checkboxInput('iso',
@@ -633,25 +654,22 @@ url = {http://statnetproject.org}
                                                  min = 0, max = 1, value = 1),
                                      br(),
                                      uiOutput('dynamiccolor'),
-                                     span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
+#                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                                      uiOutput('dynamicsize'),
                                      br(),
-                                     downloadButton('nwplotdownload', label = "Download Plot")),
+                                     downloadButton('nwplotdownload', label = "Download Plot", class="btn-sm")),
+                    
                     conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                                      selectInput('cmode', 
                                                  label = 'Type of degree (for directed graphs):',
                                                  choices= c('total' = 'freeman',
                                                             'indegree',
                                                             'outdegree'),
-                                                 selected = 'freeman',
-                                                 selectize=FALSE),
+                                                 selected = 'freeman'),
                                      uiOutput('dynamiccolor_dd'),
-                                     span(bsAlert(inputId = 'colorwarning_dd'), style='font-size: 0.82em;'),
-                                     bsButtonGroup(inputId='densplotgroup',
-                                                   label='Y-axis units:',
-                                                   toggle='radio', value='count',
-                                                   bsButton('freqplot', label = 'Count of nodes', value='count'),
-                                                   bsButton('densplot', label = 'Percent of nodes', value='percent')),
+                                     p("Y-axis units:"),
+                                     actionButton("countButton_dd", label="Count of nodes", class="btn-sm"),
+                                     actionButton("percButton_dd", label="Percent of nodes", class="btn-sm"),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -678,14 +696,12 @@ url = {http://statnetproject.org}
                                                 "stochastic tie probability as the observed network.",
                                                 "The mean and 95% confidence intervals for each degree are plotted."))),
                                      br(),
-                                     downloadButton('degreedistdownload', label = "Download Plot")
+                                     downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
-                                     bsButtonGroup(inputId='densplotgroup_gd',
-                                                   label='Y-axis units:',
-                                                   toggle='radio', value='count',
-                                                   bsButton('freqplot_gd', label = 'Count of vertex pairs', value='count'),
-                                                   bsButton('densplot_gd', label = 'Percent of vertex pairs', value='percent')),
+                                     p("Y-axis units:"),
+                                     actionButton("countButton_gd", "Count of nodes", class="btn-sm"),
+                                     actionButton("percButton_gd", "Percent of nodes", class="btn-sm"),
                                      br(), br(),
                                      p('Expected values of null models:'),
                                      fluidRow(
@@ -722,14 +738,14 @@ url = {http://statnetproject.org}
                                                 "A pair of nodes without any path connecting",
                                                 'it has a geodesic distance of "inf".'))),
                                      br(),
-                                     downloadButton('geodistdownload', label= 'Download Plot')
+                                     downloadButton('geodistdownload', label= 'Download Plot', class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "More"',
                                      p("No display options at this time,",
                                        "stay tuned for updates!")
                                      )
                     )),
-           tabPanel(title='Network Summary',
+           tabPanel(title='Network Summary', br(),
             verbatimTextOutput('attr2'))
             )
          )
@@ -765,34 +781,33 @@ url = {http://statnetproject.org}
               ),
             
             column(4,
-                   p("Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
-                   fluidRow(
-                      fluidRow(
-                       textInput(inputId="terms", label=NULL,
-                                 value="edges")
-                       
-                       ),
-                       fluidRow(actionButton('addtermButton', 'Add Term(s)'),
-                                actionButton('resetformulaButton', 'Reset Formula')
-                                )
-                   )
+                   p("ERGM terms:"),
+                   div(class="tool",
+                       span(class="tip", "Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
+                       textInput(inputId="terms", label=NULL, value="edges")
+                   ),
+                   actionButton('addtermButton', 'Add Term(s)', class="btn-sm"),
+                            actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
+                            
+                   
             ),
-            column(6,
+            column(5,
                tabsetPanel(
                  tabPanel("Term Documentation",
+                  br(),
                   div(class="placeholder",
-                  fluidRow(
-                           bsButtonGroup("matchingorall", label=NULL, toggle="radio", 
-                                 value="matching",
-                                 bsButton("matchingButton",label="Compatible Terms", value="matching"),
-                                 bsButton("allButton",label="All Terms", value="all")),
-                           uiOutput("listofterms")
-                           ),
+                      fluidRow(
+                        column(6,
+                               actionButton("matchingButton", "Compatible terms", class="btn-sm"),
+                               actionButton("allButton", "All terms", class="btn-sm")
+                               ),
+                        column(4, uiOutput("listofterms"))
+                      ),
                   div(id="termdocbox",
-                    verbatimTextOutput("termdoc")
+                      verbatimTextOutput("termdoc")
                     ),
                   div(id="termexpand",
-                          icon(name="expand"))
+                      icon(name="expand"))
                   )
                  ),
                  tabPanel("Control Options",
@@ -800,13 +815,12 @@ url = {http://statnetproject.org}
                     fluidRow(
                       column(3,
                         inlineSelectInput('controltype',label=NULL, 
-                                          choices=c("MCMC",
-                                                    "MCMLE",
-                                                    "Other"))),
+                                          choices=c("MCMC","MCMLE"),
+                                          style="margin-top:10px;")),
                       column(4,
                         checkboxInput('controldefault','Use default options', value=TRUE))
                     ),
-                        conditionalPanel(condition="input.controltype == 'MCMC'",
+                        conditionalPanel(condition="input.controltype == 'MCMC'", class="shiftright",
                           fluidRow(
                             div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                    img(src="callout2.png",class="callout")),
@@ -833,8 +847,6 @@ url = {http://statnetproject.org}
                                   textInput("customMCMCcontrol",label=NULL,value=""))
                             )),
                         conditionalPanel(condition="input.controltype == 'MCMLE'",
-                                         p("Coming soon")),
-                        conditionalPanel(condition="input.controltype == 'Other'",
                                          p("Coming soon"))
                         )))
                      )
@@ -849,23 +861,21 @@ url = {http://statnetproject.org}
                   p('Summary statistics:')),
            column(10,
                   verbatimTextOutput('prefitsum'))),
-        actionButton('fitButton', 'Fit Model'),
-         tags$hr(),
          fluidRow(column(12,
-                         uiOutput('savemodel'),
-                         bsActionButton('clearmodelButton',
-                                        label='Clear All Models', block=FALSE)
+                         actionButton("fitButton", "Fit Model", class="btn-primary btn-sm"),
+                         uiOutput("savemodel"),
+                         actionButton("clearmodelButton", label="Clear All Models", class="btn-sm")
          )),
          br(),
          tabsetPanel(id = 'fittingTabs',
-           tabPanel('Current Model Summary',
+           tabPanel('Current Model Summary', br(),
                     verbatimTextOutput('modelfitsum'),
-                    downloadButton("modelfitdownload", "Download Summary (.txt)")),
-           tabPanel('Current Model Fit Report',
+                    downloadButton("modelfitdownload", "Download Summary (.txt)", class="btn-sm")),
+           tabPanel('Current Model Fit Report', br(),
                     verbatimTextOutput('modelfit')),
-           tabPanel('Model Comparison',
+           tabPanel('Model Comparison', br(),
                     verbatimTextOutput('modelcomparison'),
-                    downloadButton("modelcompdownload", "Download Comparison (.txt)"))
+                    downloadButton("modelcompdownload", "Download Comparison (.txt)", class="btn-sm"))
           ), br(),br(),
   div(id='fittabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
     div(class="helper-box", style="display:none",
@@ -894,14 +904,14 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                           p('Network:', class="nwlabel"), 
                           verbatimTextOutput('currentdataset_mcmc')),
                    column(10,
-                          p('ergm formula:',style="display:inline;"),
-                            uiOutput('uichoosemodel_mcmc'),
-                            verbatimTextOutput('checkterms_mcmc'))
+                          div(p('ergm formula:',style="display:inline;"),
+                            uiOutput('uichoosemodel_mcmc'), class="nwlabel"),
+                          verbatimTextOutput('checkterms_mcmc'))
                  ),     
                  br(),
                  tags$hr(),
                  tabsetPanel(id='mcmctabs',
-                   tabPanel('Plot',
+                   tabPanel('Plot', br(),
                             #intercept error and give friendly message when MCMC doesn't run
                             conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored.'",
                                         column(1,span(class='helper', id='mcmchelper', icon('question-circle')),
@@ -917,8 +927,8 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                 "models."))
                                              ),
                             uiOutput('diagnosticsplotspace'),
-                            downloadButton('mcmcplotdownload',label = 'Download Plots')),
-                   tabPanel('Summary', 
+                            downloadButton('mcmcplotdownload',label = 'Download Plots', class="btn-sm")),
+                   tabPanel('Summary', br(),
                             verbatimTextOutput('diagnostics'))
                  ),
                  div(id='mcmctabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
@@ -948,8 +958,8 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       p('Network:', class="nwlabel"), 
                       verbatimTextOutput('currentdataset_gof')),
                column(10,
-                      p('ergm formula:',style="display:inline;"),
-                      uiOutput('uichoosemodel_gof'),
+                      div(p('ergm formula:',style="display:inline;"),
+                      uiOutput('uichoosemodel_gof'), class="nwlabel"),
                       verbatimTextOutput('checkterms_gof'))
               ),
              p('If you do not specify a term the default formula for undirected 
@@ -958,26 +968,27 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                             distance'), '.'),
              fluidRow(
                column(3, selectInput('gofterm', 'Goodness of Fit Term:',
-                                     c(Default='', 'degree', 'distance', 'espartners', 
-                                       'dspartners', 'triadcensus', 'model'),
-                                     selectize = FALSE))),
+                                     c('Default', 'degree','idegree','odegree',
+                                       'distance', 'espartners','dspartners', 'triadcensus',
+                                       'model'),
+                                     ))),
              fluidRow(
-                column(3, actionButton('gofButton', 'Run'))),
+                column(3, actionButton('gofButton', 'Run', class="btn-sm"))),
              br(),
          tabsetPanel(
-           tabPanel("Current Model",
+           tabPanel("Current Model", br(),
                     fluidRow(
                       column(5,
                              verbatimTextOutput('gofsummary')),  
                       column(7,
                              uiOutput('gofplotspace'),
-                             downloadButton('gofplotdownload', label = 'Download Plots')))
+                             downloadButton('gofplotdownload', label = 'Download Plots', class="btn-sm")))
                     ),
-           tabPanel("Compare Saved Models",align="center",
+           tabPanel("Compare Saved Models",align="center", br(),
                     uiOutput('gofplotcompspace'),
                     fluidRow(align="left",
                              downloadButton('gofplotcompdownload', 
-                                            label='Download Plots'),
+                                            label='Download Plots', class="btn-sm"),
                              br())
                     )
            ),
@@ -1007,10 +1018,10 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                     label = 'Number of simulations:',
                                                     min = 1,
                                                     value = 1),
-                                 actionButton('simButton', 'Simulate'))
+                                 actionButton('simButton', 'Simulate',class="btn-sm"))
                           ),
-                        p('ergm formula:',style="display:inline;"),
-                        uiOutput('uichoosemodel_sim'),
+                        div(p('ergm formula:',style="display:inline;"),
+                        uiOutput('uichoosemodel_sim'), class="nwlabel"),
                         verbatimTextOutput('checkterms_sim')   
                         ),
                      column(5,
@@ -1019,12 +1030,12 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                      fluidRow(
                                        column(3,
                                               inlineSelectInput('simcontroltype',label=NULL, 
-                                                                choices=c("MCMC",
-                                                                          "Parallel"))),
+                                                                choices=c("MCMC","Parallel"),
+                                                                style="margin:10px 0px;")),
                                        column(4,
                                               checkboxInput('simcontroldefault','Use default options', value=TRUE))
                                      ),
-                                     conditionalPanel(condition="input.simcontroltype == 'MCMC'",
+                                     conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
                                        fluidRow(
                                               div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                                      img(src="callout2.png",class="callout")),
@@ -1056,7 +1067,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                    fluidRow(
                      column(7,
                        tabsetPanel(id="simplotpanel",
-                       tabPanel("Network Plots",
+                       tabPanel("Network Plots", br(),
                            customNumericInput('thissim', class="input-small",
                                               labelstyle="display:block;",
                                               label = 'Choose a simulation to plot:',
@@ -1077,7 +1088,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       
                    column(4,
                             tabsetPanel(
-                              tabPanel('Display Options',
+                              tabPanel('Display Options', br(),
                                   conditionalPanel("input.simplotpanel == 'Network Plots'",
                                        wellPanel(
                                          checkboxInput('iso2',
@@ -1092,19 +1103,19 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                      min = 0, max = 1, value = 1),
                                          br(),
                                          uiOutput('dynamiccolor2'),
-                                         span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
+#                                          span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
                                          uiOutput('dynamicsize2'),
                                          downloadButton('simplotdownload',
-                                                        label = 'Download Plot'))
+                                                        label = 'Download Plot', class="btn-sm"))
                                   ),
                                   conditionalPanel("input.simplotpanel == 'Simulation Statistics'",
                                          conditionalPanel("output.simnum > 1",
                                                    plotOutput('simstatslegend'),
                                                    downloadButton('simstatsplotdownload',
-                                                                  label='Download Plot')
+                                                                  label='Download Plot', class="btn-sm")
                                                    ))
                                 ),
-                              tabPanel('Simulation Summary',
+                              tabPanel('Simulation Summary', br(),
                                    wellPanel(    
                                    conditionalPanel(condition="output.simnum != 1",
                                           verbatimTextOutput('simsummary'),
@@ -1122,7 +1133,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                    fluidRow(
                                      column(7, 
                                           downloadButton('simstatsdownload', 
-                                                  label = 'Download Statistics')),
+                                                  label = 'Download Statistics', class="btn-sm")),
                                      column(4,
                                         div(class="tool", span(class="tip", id="statstip",".txt: Summary of simulations",
                                                                "plus full list of statistics.",br(), 
@@ -1155,26 +1166,32 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
   tabPanel(title='Help', value='tab8',
            sidebarLayout(position = 'right',
                          sidebarPanel(
-                           h5('Resources'),
-                           a("statnet Wiki",
-                             href = "https://statnet.csde.washington.edu/trac", target = "_blank"),
-                           column(11, offset = 1, p('The homepage of the statnet project. Find tutorials,',
-                                                    'publications and recent news here.'),
-                                  span('Key background papers'),br(),
-                                  a("ergm: Journal of Statistical Software",
-                                    href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
-                                  br(),
-                                  a("Using ergm: Journal of Statistical Software",
-                                    href = "http://www.jstatsoft.org/v24/i04/", target = "_blank"),
-                                  br(),br(),
-                                  span('Tutorials and documentation'),br(),
-                                  a("ergm tutorial from NME 2014 Workshop",
-                                    href = "http://statnet.csde.washington.edu/EpiModel/nme/2014/d2-tut1.html",
-                                    target= "_blank"),
-                                  br(),
-                                  a("ergm documentation on CRAN", 
-                                    href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
-                                    target = "_blank"), style="margin-bottom:10px;"),
+                           h5(tags$u('Resources')),
+                           div(class="tool",
+                               span(class="tip", "The homepage of the statnet project. Find tutorials,",
+                                    "publications and recent news here."),
+                               a("statnet Wiki",
+                                 href = "https://statnet.csde.washington.edu/trac", target = "_blank")
+                           ),
+                           column(11, offset = 1,
+                                  span(id="linktitle3",'Key background papers',icon('angle-double-left')),br(),
+                                  div(id="linkbox3",
+                                      a("ergm: Journal of Statistical Software",
+                                        href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
+                                      br(),
+                                      a("Using ergm: Journal of Statistical Software",
+                                        href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
+                                  
+                                  span(id="linktitle4",'Tutorials and documentation',icon('angle-double-left')),br(),
+                                  div(id="linkbox4",
+                                      a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
+                                        href = "http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
+                                        target= "_blank"),
+                                      br(),
+                                      a("ergm documentation on CRAN", 
+                                        href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
+                                        target = "_blank")), 
+                                  style="margin-bottom:10px;"),
                            br(),
                            p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
                                target="_blank")),
@@ -1182,13 +1199,13 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              target="_blank")
                          ),
                          mainPanel(
-                           h5('Help with the app'),
+                           h5(tags$u('Help with the app')),
                            p("This app is maintained on Github. To request new features or report a bug,",
                              "please interact with the", 
                              a("repository", href='https://github.com/statnet/statnetWeb',
                                target="_blank"), 
                              "or email the statnet_help listserv (below)."),
-                           h5('Help with statnet software'),
+                           h5(tags$u('Help with statnet software')),
                            p("The best way to contact us with questions, comments or suggestions",
                              "is through the statnet users group listserv."),
                            p("To post and receive messages from this listserv, you need to join.",

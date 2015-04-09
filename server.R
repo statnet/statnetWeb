@@ -54,8 +54,6 @@
 #+ eval=FALSE
 
 library(shiny)
-library(shinyBS)
-library(shinyAce)
 library(ergm)
 library(sna)
 library(network)
@@ -102,6 +100,10 @@ shinyServer(
 
 values <- reactiveValues()
 
+# when two options are available to the user, or when we need to know if one
+# variable is outdated this reactive value will keep track of the state
+state <- reactiveValues(symmdir = FALSE, plotperc_dd = FALSE, 
+                        plotperc_gd = FALSE, allterms = FALSE, gof = 0)
 
 # To keep a list of all attributes uploaded by the user:  
 values$v_attrNamesToAdd <- list(1)
@@ -111,6 +113,14 @@ values$e_attrValsToAdd <- list()
 values$ev_attrNamesToAdd <- list(1)
 values$ev_attrValsToAdd <- list()
 values$input_termslist <- list()
+
+#move to Help page when user clicks Help link button
+observe({
+  if(input$helpLink == 0) {return()}
+  isolate({
+    updateTabsetPanel(session, 'navbar', selected='tab8')
+  })
+})
 
 #move to Data panel when user clicks Get Started button
 observe({
@@ -438,6 +448,13 @@ observe({
   })
 })
 
+observeEvent(input$symmdir,{
+  state$symmdir <- TRUE
+})
+observeEvent(input$symmundir,{
+  state$symmdir <- FALSE
+})
+
 #attributes will be added to this network
 nwmid <- reactive({
     nw_var <- nwinit()
@@ -447,7 +464,7 @@ nwmid <- reactive({
       #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
         symnw <- symmetrize(nw_var, rule=input$symmetrize)
-        if(input$aftersymm == 'directed'){
+        if(state$symmdir){
           nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
                         hyper=nwattrinit()[2], loops=nwattrinit()[3],
                         multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
@@ -583,8 +600,6 @@ nodesize <- reactive({
   if(!is.network(nw())){return()}
   nw_var <- nw()
   #scale size of nodes onto range between .7 and 3.5
-  minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
-  maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
   if (input$sizeby == '1'){
     size = 1
   } else if (input$sizeby == 'Betweenness'){
@@ -749,10 +764,10 @@ values$modelcoefs <- list()
 values$modelformulas <- list()
 values$modelfits <- list()
 
-observe({
-  if(!is.null(input$savemodelButton)){
+observeEvent(input$savemodelButton, {
+  if(input$fitButton > 0){
     m <- isolate(values$modeltotal)
-    if(input$savemodelButton > 0 & m < 5){
+    if(m < 5){
       #increment label on save model button
       values$modeltotal <- m+1
     }
@@ -769,24 +784,9 @@ observe({
     values$modelfits[[m]] <- isolate(model1reac())
   }
 })
-observe({
-  #disable savemodelButton before any models have been saved, 
-  #after 5 models have been saved, or after the network changes
-  if(input$fitButton == 0){
-    updateButton(session, 'savemodelButton', disabled=TRUE)
-  } else if(values$modeltotal == 5){
-    updateButton(session, 'savemodelButton', disabled=TRUE)
-  } else if(values$modelstate == 0){
-    updateButton(session, 'savemodelButton', disabled=TRUE)
-  } else {
-    updateButton(session, 'savemodelButton', disabled=FALSE)
-  }
-})
-observe({
+
+observeEvent(input$clearmodelButton, {
   #clear saved models after button click
-  if(input$clearmodelButton==0){
-    return()
-  }
   values$modeltotal<-isolate(0)
   values$modelcoefs <- list()
   values$modelformulas <- list()
@@ -810,7 +810,7 @@ model1gof <- reactive({
   } else {
     mod <- values$modelfits[[1]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model1gof <- gof(mod)
   } else {
@@ -826,7 +826,7 @@ model2gof <- reactive({
   } else {
     mod <- values$modelfits[[2]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model2gof <- gof(mod)
   } else {
@@ -842,7 +842,7 @@ model3gof <- reactive({
   } else {
     mod <- values$modelfits[[3]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model3gof <- gof(mod)
   } else {
@@ -858,7 +858,7 @@ model4gof <- reactive({
   } else {
     mod <- values$modelfits[[4]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model4gof <- gof(mod)
   } else {
@@ -874,7 +874,7 @@ model5gof <- reactive({
   } else {
     mod <- values$modelfits[[5]]
   }
-  if(input$gofterm == ''){
+  if(input$gofterm == 'Default'){
     #use default gof formula
     model5gof <- gof(mod)
   } else {
@@ -1062,16 +1062,9 @@ output$pajchooser <- renderUI({
   names(pajlist) <- names(pajnws()$networks)
   }
   selectInput('choosepajnw', label='Upload a Pajek project file and choose a network from it',
-              choices = pajlist, selectize=FALSE)
+              choices = pajlist)
 })
 
-observe({
-  if(input$symmetrize=="Do not symmetrize"){
-    updateButtonGroup(session, 'aftersymm', disabled=TRUE)
-  } else {
-    updateButtonGroup(session, 'aftersymm', disabled=FALSE)
-  }
-})
 
 output$newattrname <- renderPrint({
   if(!is.null(input$newattrvalue)){
@@ -1083,8 +1076,7 @@ output$newattrname <- renderPrint({
 #   vattr <- list.vertex.attributes(nwmid())
 #   eattr <- list.edge.attributes(nwmid())
 #   attrlist <- c(vattr, eattr)
-#   selectInput('modifyattrs', label=NULL, choices=attrlist,
-#               selectize=FALSE)
+#   selectInput('modifyattrs', label=NULL, choices=attrlist)
 # })
 
 
@@ -1125,8 +1117,7 @@ output$attr2 <- renderPrint({
 output$dynamiccolor <- renderUI({
   selectInput('colorby',
               label = 'Color nodes according to:',
-              c('None' = 2, attrib()),
-              selectize = FALSE)
+              c('None' = 2, attrib()))
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 
@@ -1143,8 +1134,7 @@ outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
               label = 'Size nodes according to:',
-              c('None' = 1, 'Betweenness', numattr()),
-              selectize = FALSE)
+              c('None' = 1, 'Betweenness', numattr()))
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 
@@ -1231,25 +1221,27 @@ bernoullisamples <- reactive({
 
 output$dynamiccolor_dd <- renderUI({
   menu <- menuattr()
+  if(is.network(nw())){
   if(input$cmode == "freeman" & is.directed(nw())){
     menu <- c()
   }
   selectInput('colorby_dd',
               label = 'Color bars according to:',
               c('None', menu),
-              selected = 'None',
-              selectize = FALSE)
+              selected = 'None')
+  }
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
 
 observe({
+  if(!is.null(nw())){
   if(is.network(nw())){
     if(!is.directed(nw())){
-      disableWidget('cmode', session, TRUE)
+      disableWidget('cmode', session, disabled=TRUE)
     } else {
-      disableWidget('cmode', session, FALSE)
+      disableWidget('cmode', session, disabled=FALSE)
     }
-  }
+  }}
 })
 
 dd_plotdata <- reactive({
@@ -1356,6 +1348,14 @@ dd_bernoullioverlay <- reactive({
   mean_and_sd <- list(degreemeans, degreesd)
 })
 
+
+observeEvent(input$percButton_dd, {
+  state$plotperc_dd <- TRUE
+})
+observeEvent(input$countButton_dd, {
+  state$plotperc_dd <- FALSE
+})
+
 output$degreedist <- renderPlot({
   if(!is.network(nw())){
     return()
@@ -1416,7 +1416,7 @@ output$degreedist <- renderPlot({
   maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
   ylimit <- max(maxfreq, maxfreq_samples)
   
-  if(input$densplotgroup == "percent"){
+  if(state$plotperc_dd) {
     plotme <- dd_plotdata()/sum(dd_plotdata())
     unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
     unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1455,22 +1455,22 @@ output$degreedist <- renderPlot({
   bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
                       col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
-    points(x=bar_axis-.15, y=unif_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-           code=3, length=0.1, angle=90, col='firebrick')
+    points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col='orangered'))
     ltext <- append(ltext, "CUG")
-    lcol <- append(lcol, "firebrick")
+    lcol <- append(lcol, "orangered")
     lty <- append(lty, 1)
     lpch <- append(lpch, 18)
     lfill <- append(lfill, 0)
     lborder <- append(lborder, 0)
   }
   if(input$bernoullioverlay_dd){
-    points(x=bar_axis+.15, y=bern_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-           code=3, length=0.1, angle=90, col='orangered')
+    points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col='firebrick'))
     ltext <- append(ltext, "BRG")
-    lcol <- append(lcol, "orangered")
+    lcol <- append(lcol, "firebrick")
     lty <- append(lty, 1)
     lpch <- append(lpch, 18)
     lfill <- append(lfill, 0)
@@ -1578,22 +1578,22 @@ output$degreedistdownload <- downloadHandler(
     bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
                         col=color, ylim=c(0,ylimit), plot=TRUE)
     if(input$uniformoverlay_dd){
-      points(x=bar_axis-.15, y=unif_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-             code=3, length=0.1, angle=90, col='firebrick')
+      points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col='orangered'))
       ltext <- append(ltext, "CUG")
-      lcol <- append(lcol, "firebrick")
+      lcol <- append(lcol, "orangered")
       lty <- append(lty, 1)
       lpch <- append(lpch, 18)
       lfill <- append(lfill, 0)
       lborder <- append(lborder, 0)
     }
     if(input$bernoullioverlay_dd){
-      points(x=bar_axis+.15, y=bern_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-             code=3, length=0.1, angle=90, col='orangered')
+      points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col='firebrick'))
       ltext <- append(ltext, "BRG")
-      lcol <- append(lcol, "orangered")
+      lcol <- append(lcol, "firebrick")
       lty <- append(lty, 1)
       lpch <- append(lpch, 18)
       lfill <- append(lfill, 0)
@@ -1614,6 +1614,14 @@ output$degreedistdownload <- downloadHandler(
 
 #GEODESIC DISTRIBUTION
 
+
+observeEvent(input$percButton_gd, {
+  state$plotperc_gd <- TRUE
+})
+observeEvent(input$countButton_gd, {
+  state$plotperc_gd <- FALSE
+})
+
 gdata <- reactive({
   g <- geodist(nw(), inf.replace=NA, count.paths=FALSE)
   gdata <- tabulate(g$gdist)
@@ -1631,15 +1639,12 @@ gd_uniformoverlay <- reactive({
   gd <- geodist(uniformsamples(), count.paths=FALSE, inf.replace=NA)
   maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
-  for(k in 1:reps){
-    gd[[k]]$gdist[is.na(gd[[k]]$gdist)] <- Inf
-  }
   gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
     #list of tabulated geodesics for each draw, except those of 0 or Inf length
   gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == Inf))
-    gd_data_complete[,k] <- gd_data[[k]]
+    temp <- append(gd_data[[k]], sum(is.na(gd[[k]]$gdist)))
+    gd_data_complete[,k] <- temp
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
@@ -1656,15 +1661,12 @@ gd_bernoullioverlay <- reactive({
   gd <- geodist(bernoullisamples(), count.paths=FALSE, inf.replace=NA)
   maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
-  for(k in 1:reps){
-    gd[[k]]$gdist[is.na(gd[[k]]$gdist)] <- Inf
-  }
   gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
   #list of tabulated geodesics for each draw, except those of 0 or Inf length
   gd_data_complete <- matrix(0, nrow=maxgeo+1, ncol=reps)
   for(k in 1:reps){
-    gd_data[[k]] <- append(gd_data[[k]], sum(gd[[k]]$gdist == Inf))
-    gd_data_complete[,k] <- gd_data[[k]]
+    temp <- append(gd_data[[k]], sum(is.na(gd[[k]]$gdist)))
+    gd_data_complete[,k] <- temp
   }
   
   geomeans <- apply(gd_data_complete, MARGIN=1, FUN=mean)
@@ -1700,7 +1702,7 @@ output$geodistplot <- renderPlot({
   ylabel <- "Count of Vertex Pairs"
   
   #for density plot
-  if(input$densplotgroup_gd == "percent"){
+  if(state$plotperc_gd){
     unif_means <- unif_means/sum(gdata)
     unif_upperline <- unif_upperline/sum(gdata)
     unif_lowerline <- unif_lowerline/sum(gdata)
@@ -1750,18 +1752,18 @@ output$geodistplot <- renderPlot({
                       ylim = c(0,ylimit), plot=TRUE)
   
   if(input$uniformoverlay_gd){
-    points(x=bar_axis-.15, y=unif_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-           code=3, length=0.1, angle=90, col='firebrick')
+    points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col='orangered'))
     ltext <- append(ltext, "CUG")
-    lcol <- append(lcol, "firebrick")
+    lcol <- append(lcol, "orangered")
   }
   if(input$bernoullioverlay_gd){
-    points(x=bar_axis+.15, y=bern_means,col='orangered', lwd=1, pch=18, cex=1.25)
-    arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-           code=3, length=0.1, angle=90, col='orangered')
+    points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col='firebrick'))
     ltext <- append(ltext, "BRG")
-    lcol <- append(lcol, "orangered")
+    lcol <- append(lcol, "firebrick")
   }
   if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
     legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
@@ -1844,18 +1846,18 @@ output$geodistdownload <- downloadHandler(
                         ylim = c(0,ylimit), plot=TRUE)
     
     if(input$uniformoverlay_gd){
-      points(x=bar_axis-.15, y=unif_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-             code=3, length=0.1, angle=90, col='firebrick')
+      points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col='orangered'))
       ltext <- append(ltext, "CUG")
-      lcol <- append(lcol, "firebrick")
+      lcol <- append(lcol, "orangered")
     }
     if(input$bernoullioverlay_gd){
-      points(x=bar_axis+.15, y=bern_means,col='orangered', lwd=1, pch=18, cex=1.25)
-      arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-             code=3, length=0.1, angle=90, col='orangered')
+      points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col='firebrick'))
       ltext <- append(ltext, "BRG")
-      lcol <- append(lcol, "orangered")
+      lcol <- append(lcol, "firebrick")
     }
     if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
       legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
@@ -1897,7 +1899,7 @@ observe({
 #not suspend the output when hidden
 output$mixmxchooser <- renderUI({
   selectInput('mixmx', label='Choose attribute',
-              choices = menuattr(), selectize = FALSE)
+              choices = menuattr())
 })
 outputOptions(output,'mixmxchooser',suspendWhenHidden=FALSE)
 
@@ -2342,11 +2344,20 @@ outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 #' they are working with. 
 
 #+ eval=FALSE
+
+
+observeEvent(input$matchingButton, {
+  state$allterms <- FALSE
+})
+observeEvent(input$allButton, {
+  state$allterms <- TRUE
+})
+
 output$listofterms <- renderUI({
   if(!is.network(nw())){
     return()
   }
-  if(input$matchingorall == "all"){
+  if(state$allterms){
     current.terms <- unlist(allterms)
   } else {
     matchterms <- search.ergmTerms(net=nw())
@@ -2357,9 +2368,8 @@ output$listofterms <- renderUI({
     matchterms <- unique(matchterms)
     current.terms <- unlist(matchterms)
   }
-  selectInput('chooseterm',label = NULL,
-              choices = current.terms,
-              multiple=FALSE, selectize=FALSE)
+  selectizeInput('chooseterm',label = NULL,
+              choices = current.terms)
   
 })
 
@@ -2423,8 +2433,8 @@ output$prefitsum <- renderPrint({
 
 output$savemodel <- renderUI({
   m <- values$modeltotal
-  bsActionButton('savemodelButton',label=paste0('Save Current Model (',m,'/5)'),
-                 block=FALSE)
+  actionButton('savemodelButton', label=paste0('Save Current Model (',m,'/5)'),
+                 class="btn-sm")
 })
 outputOptions(output,'savemodel',suspendWhenHidden=FALSE)
 
@@ -2505,12 +2515,10 @@ output$uichoosemodel_mcmc <- renderUI({
   n <- values$modeltotal
   if(n == 0){
     inlineSelectInput("choosemodel_mcmc",label=NULL,
-                choices=c("Current"),
-                selectize=FALSE)
+                choices=c("Current"))
   } else {
     inlineSelectInput("choosemodel_mcmc",label=NULL,
-                choices=c(paste0("Model",1:n)),
-                selectize=FALSE)
+                choices=c(paste0("Model",1:n)))
   }
 })
 outputOptions(output,"uichoosemodel_mcmc",suspendWhenHidden=FALSE)
@@ -2634,12 +2642,10 @@ output$uichoosemodel_gof <- renderUI({
   n <- values$modeltotal
   if(n == 0){
     inlineSelectInput("choosemodel_gof",label=NULL,
-                      choices=c("Current"),
-                      selectize=FALSE)
+                      choices=c("Current"))
   } else {
     inlineSelectInput("choosemodel_gof",label=NULL,
-                      choices=c(paste0("Model",1:n)),
-                      selectize=FALSE)
+                      choices=c(paste0("Model",1:n)))
   }
 })
 outputOptions(output,"uichoosemodel_gof",suspendWhenHidden=FALSE)
@@ -2662,15 +2668,12 @@ output$checkterms_gof <- renderPrint({
 
 #state$gof will toggle between two states, depending on
 #if gof plots are outdated compared to current ergm formula
-state <- reactiveValues(gof = 0)
 
-observe({
-  input$fitButton
+observeEvent(input$fitButton, {
   state$gof <- 0 #gof plots are outdated
 })
 
-observe({
-  input$gofButton
+observeEvent(input$gofButton, {
   state$gof <- 1 #gof plots are up to date
 })
 
@@ -2700,8 +2703,12 @@ output$gofplot <- renderPlot({
     return()
   }
   gofterm <- isolate(input$gofterm)
-  if (gofterm == ''){
-    par(mfrow=c(3,1))
+  if (gofterm == 'Default'){
+    if(is.directed(nw())){
+      par(mfrow=c(4,1))
+    } else {
+      par(mfrow=c(3,1))
+    }
     cex <- 1.5
   } else {
     par(mfrow=c(1,1))
@@ -2717,19 +2724,15 @@ output$gofplot <- renderPlot({
                               "4" = model4gof(),
                               "5" = model5gof())})      
   }
-  par(cex.lab=cex, mar=c(5,4.2,4,2)+.1)
-  isolate(plot.gofobject(gofobj, cex.axis=cex))
+  par(cex.lab=cex, mar=c(5,4.2,2,2)+.1)
+  isolate(plot.gofobject(gofobj, cex.axis=cex, main=NULL))
   par(mfrow=c(1,1), cex.lab=1, cex.axis=1)
 })
 
 output$gofplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_gof.pdf',sep='')},
   content = function(file){
-    if(input$gofterm == ''){
-      par(mfrow=c(3,1))
-    } else {
-      par(mfrow=c(1,1))
-    }
+
     pdf(file=file, height=4, width=10)
     mod <- input$choosemodel_gof
     if(mod=="Current" | mod=="Model1"){
@@ -2741,8 +2744,7 @@ output$gofplotdownload <- downloadHandler(
                                 "4" = model4gof(),
                                 "5" = model5gof())})     
     }
-    isolate(plot.gofobject(gofobj, cex.axis=1))
-    par(mfrow=c(1,1))
+    isolate(plot.gofobject(gofobj, cex.axis=1, main=NULL))
     dev.off()
   }
 )
@@ -2755,7 +2757,7 @@ output$gofplotspace <- renderUI({
     return()
   }
   gofterm <- isolate(input$gofterm)
-  if (gofterm == ''){
+  if (gofterm == 'Default'){
     gofplotheight = 1000
   } else {
     gofplotheight = 400
@@ -2770,11 +2772,16 @@ output$gofplotcomp <- renderPlot({
   input$gofButton
   gofterm <- isolate(input$gofterm)
   n <- values$modeltotal
-  if (gofterm == ''){
-    cols <- isolate(3)
+  if (gofterm == 'Default'){
+    if(is.directed(nw())){
+      cols <- isolate(4)
+      bottomtext <- c("idegree","odegree","espartners","distance")
+    } else {
+      cols <- isolate(3)
+      bottomtext <- c("degree","espartners","distance")
+    }
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
     bottommat <- c(0,(n*cols+1):(n*cols+3))
-    bottomtext <- c("degree","espartners","distance")
   } else {
     cols <- isolate(1)
     innermat <- matrix(1:n,ncol=1,nrow=n, byrow=TRUE)
@@ -2819,7 +2826,7 @@ output$gofplotcompspace <- renderUI({
   gofterm <- isolate(input$gofterm)
   n <- isolate(values$modeltotal)
   plotheight = n*250
-  if (gofterm == ''){
+  if (gofterm == 'Default'){
     plotwidth = "100%"
   } else {
     plotwidth = "50%"
@@ -2833,7 +2840,7 @@ output$gofplotcompdownload <- downloadHandler(
   content = function(file){
     gofterm <- input$gofterm
     n <- values$modeltotal
-    if (gofterm == ''){
+    if (gofterm == 'Default'){
       cols <- 3
       lastelt <- 15
       bottommat <- c(0,(n*cols+1):(n*cols+3))
@@ -2910,12 +2917,10 @@ output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
   if(n == 0){
     inlineSelectInput("choosemodel_sim",label=NULL,
-                      choices=c("Current"),
-                      selectize=FALSE)
+                      choices=c("Current"))
   } else {
     inlineSelectInput("choosemodel_sim",label=NULL,
-                      choices=c(paste0("Model",1:n)),
-                      selectize=FALSE)
+                      choices=c(paste0("Model",1:n)))
   }
 })
 outputOptions(output,"uichoosemodel_sim",suspendWhenHidden=FALSE)
@@ -3149,8 +3154,7 @@ output$dynamiccolor2 <- renderUI({
   selectInput('colorby2',
               label = 'Color nodes according to:',
               c('None' = 2, attrib()),
-              selected = 2,
-              selectize = FALSE)
+              selected = 2)
 })
 outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
@@ -3167,8 +3171,7 @@ outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
               label = 'Size nodes according to:',
-              c('None' = 1, 'Betweenness',numattr()),
-              selectize = FALSE)
+              c('None' = 1, 'Betweenness',numattr()))
 })
 
 
