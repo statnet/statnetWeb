@@ -54,8 +54,6 @@
 #+ eval=FALSE
 
 library(shiny)
-#library(shinyBS)
-#library(shinyAce)
 library(ergm)
 library(sna)
 library(network)
