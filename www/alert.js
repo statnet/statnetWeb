@@ -68,7 +68,15 @@ $(document).ready(function(){
   $("#filetypehelper6").click(function(){
     $("#filetypebox6").toggle(500);
   });
-    
+      
+  $("#filetypehelper7").click(function(){
+    $("#filetypebox7").toggle(500);
+  });
+  
+  $("#filetypehelper8").click(function(){
+    $("#filetypebox8").toggle(500);
+  });
+  
   $("#ddhelper").click(function(){
     $("#ddhelperbox").toggle(500);
   });

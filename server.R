@@ -320,18 +320,21 @@ newattrnamereac <- reactive({
   try({
     path <- input$newattrvalue[1,4]
     filename <- input$newattrvalue[1,1]
+    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
 
-    if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+    if(fileext %in% c(".csv", ".CSV") ){
       newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
       newname <- names(newattrs)
-    } else {
-      objname <- load(paste(path))
-      newattrs <- get(objname)
+    } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS") ){
+      newattrs <- readRDS(paste(path))
       newname <- names(newattrs)
       if(class(newattrs) != "list"){
         newname <- "Attribute is not compatible, see help buttons and try again"
       }
+    } else {
+      newname <- "Attribute is not compatible, see help buttons and try again"
     }
+    
   })
   if(is.null(newname)){
     newname <- "Attribute is not named,  please fix and re-upload"
@@ -340,40 +343,33 @@ newattrnamereac <- reactive({
 })
 
 #save new vertex names
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-    if(input$newattrtype == 'vertex names'){
+observeEvent(input$newattrButton, {
+    if(input$newattrtype == "vertexnames"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      if(fileext %in% c(".csv", ".CSV")){
         newnames <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
         newnames <- newnames[[1]]
-      } else {
-        objname <- load(paste(path))
-        newnames <- get(objname)
+      } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+        newnames <- readRDS(paste(path))
       }
       
       values$vertexnames <- newnames
     }
-  })
 })
 
 #add vertex attributes to list
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-      if(input$newattrtype == 'vertex attribute'){
+observeEvent(input$newattrButton, {
+      if(input$newattrtype == "vertexattr"){
           path <- input$newattrvalue[1,4]
           filename <- input$newattrvalue[1,1]
-          
-          if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+          fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+          if(fileext %in% c(".csv", ".CSV")){
             newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
             newname <- names(newattrs)
-          } else {
-            objname <- load(paste(path))
-            newattrs <- get(objname)
+          } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+            newattrs <- readRDS(paste(path))
             newname <- names(newattrs)
           }
           
@@ -387,23 +383,19 @@ observe({
           values$v_attrNamesToAdd <- namesofar
           values$v_attrValsToAdd <- valsofar
         }
-  })
 })
 
 #add edge attributes to list
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-    if(input$newattrtype == 'edge attribute'){
+observeEvent(input$newattrButton, {
+    if(input$newattrtype == "edgeattr"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
         newname <- names(newattrs)
-      } else {
-        objname <- load(paste(path))
-        newattrs <- get(objname)
+      } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+        newattrs <- readRDS(paste(path))
         newname <- names(newattrs)
       }
 
@@ -416,23 +408,19 @@ observe({
         values$e_attrNamesToAdd <- namesofar
         values$e_attrValsToAdd <- valsofar
       }
-  })
 })
 
 #add edge values to list
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-    if(input$newattrtype == 'edge value'){
+observeEvent(input$newattrButton, {
+    if(input$newattrtype == "edgevalue"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
         newname <- names(newattrs)
-      } else {
-        objname <- load(paste(path))
-        newattrs <- get(objname)
+      } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+        newattrs <- readRDS(paste(path))
         newname <- names(newattrs)
       }
       namesofar <- values$ev_attrNamesToAdd
@@ -445,7 +433,6 @@ observe({
       values$ev_attrNamesToAdd <- namesofar
       values$ev_attrValsToAdd <- valsofar
     }
-  })
 })
 
 observeEvent(input$symmdir,{
