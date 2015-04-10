@@ -325,6 +325,9 @@ newattrnamereac <- reactive({
     if(fileext %in% c(".csv", ".CSV") ){
       newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
       newname <- names(newattrs)
+      if(input$newattrtype == "edgevalue"){
+        newname <- newname[1]
+      }
     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS") ){
       newattrs <- readRDS(paste(path))
       newname <- names(newattrs)
