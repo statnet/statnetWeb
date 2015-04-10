@@ -254,7 +254,7 @@ div.form-group.shiny-input-container {
   margin-left:2px;
 }
 div.placeholder {
-  height:110px;
+  height:150px;
   position:relative;
 }
 #termdoc {
@@ -266,7 +266,7 @@ div.placeholder {
   right:0px;
   left:5px;
   margin-right:10px;
-  max-height:65px;
+  max-height:95px;
   border: 1px solid #CECED8;
   border-radius: 5px;
   overflow:scroll;

@@ -136,7 +136,7 @@ $(document).ready(function(){
       });
     } else {
       $("#termdocbox").css({
-      "max-height":"65px"
+      "max-height":"95px"
       });
     }
     

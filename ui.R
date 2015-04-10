@@ -852,17 +852,17 @@ url = {http://statnetproject.org}
                     ),
                         conditionalPanel(condition="input.controltype == 'MCMC'", class="shiftright",
                           fluidRow(
-                            div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
+                            column(4,class="tool", span(class="tip","Number of proposals between sampled statistics.", 
                                                    img(src="callout2.png",class="callout")),
                                 span("Interval:"),
                                 customNumericInput('MCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
                             
-                            div(class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
+                            column(4,class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
                                                   img(src="callout2.png",class="callout")),  
                               span("Burn-in:"),
                               customNumericInput('MCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini")),
                             
-                            div(class="tool",span(class="tip","Number of network statistics, randomly drawn from a given distribution on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
+                            column(4,class="tool",span(class="tip","Number of network statistics, randomly drawn from a given distribution on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
                                                   img(src="callout2.png",class="callout")),  
                               span("Sample size:"),
                               customNumericInput('MCMCsamplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
@@ -870,8 +870,9 @@ url = {http://statnetproject.org}
                              
                           fluidRow(
                               div(class="tool",span(class ="tip", id="controltip",
-                                                    "Type in other arguments to be passed to", span("control.ergm", style="font-family:Courier;"),
-                                                    ", e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
+                                                    "Type in other arguments to be passed to", 
+                                                    span("control.ergm,", style="font-family:Courier;"),
+                                                    "e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
                                                     img(src="callout2.png",class="callout")),
                                   span("Other controls:"),
                                   textInput("customMCMCcontrol",label=NULL,value=""))
@@ -881,6 +882,7 @@ url = {http://statnetproject.org}
                         )))
                      )
             ),
+          br(),
          fluidRow(
            column(2,
                   p('Current ergm formula:')),
