@@ -371,7 +371,7 @@ url = {http://statnetproject.org}
                                                                      strong(".rds files"), "can be saved with",
                                                                      br(),
                                                                      code('saveRDS(objectname, file="newfilename.rds")'),br(),br(),
-                                                                     "Multiple edge value matrices can be uploaded from one list object.",
+                                                                     "Multiple edge value matrices can be uploaded from one list object."
                                                                      ))),
                                                     tags$li('.csv file',
                                                             span(class="helper", id="filetypehelper6",

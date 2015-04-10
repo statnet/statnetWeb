@@ -418,7 +418,8 @@ observeEvent(input$newattrButton, {
       fileext <- substr(filename,nchar(filename)-3,nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
-        newname <- names(newattrs)
+        newname <- names(newattrs)[1]
+        newattrs <- data.matrix(newattrs, rownames.force=FALSE)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newattrs <- readRDS(paste(path))
         newname <- names(newattrs)
