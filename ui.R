@@ -875,7 +875,7 @@ url = {http://statnetproject.org}
                                                     "e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
                                                     img(src="callout2.png",class="callout")),
                                   span("Other controls:"),
-                                  textInput("customMCMCcontrol",label=NULL,value=""))
+                                  customTextInput("customMCMCcontrol",label=NULL,value="",class="input-small"))
                             )),
                         conditionalPanel(condition="input.controltype == 'MCMLE'",
                                          p("Coming soon"))
