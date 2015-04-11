@@ -6,11 +6,10 @@ This is an R-shiny interface for the statnet suite of R packages. It currently i
 Run the app in two ways:  
 * Through the shinyapps server with this link: https://ebey.shinyapps.io/statnetWeb  
 * On your own machine through RStudio:  
-    `install.packages(c("statnet", "shiny", "shinyBS", "RColorBrewer", "lattice", "latticeExtra"))`  
+    `install.packages(c("statnet", "shiny", "shinythemes", "RColorBrewer", "lattice", "latticeExtra"))`  
     `shiny::runGitHub("statnetWeb", "statnet")`
 
 *Note:* We will keep the master branch on this page consistent with the version deployed on shinyapps. Active development will occur on separate production branches. No branch other than master should be considered stable.  
-**The master branch is only compatible with Shiny v0.10.2.2 and below. Our next release will include the necessary modifications to run statnetWeb with the most recent Shiny (v0.11).**
 
 statnet wiki:  
 https://statnet.csde.washington.edu/trac 
@@ -19,6 +18,14 @@ statnet packages on CRAN:
 http://cran.r-project.org/web/packages/ergm/  
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
+
+
+#### New in v0.3.2
+
+* App is compatible with Shiny v0.11.1.9002 (we have a new look!)
+* Only .rds files supported when saving and uploading from the R environment.
+* Issue solved where GOF plots from directed networks were not appearing.
+* Issue with uploading edge values solved.
 
 #### New in v0.3.1
 
