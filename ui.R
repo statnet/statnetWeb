@@ -237,9 +237,11 @@ url = {http://statnetproject.org}
                      fluidRow(
                        column(6,
                               selectInput('filetype',label='File type',
-                                           choices=c('built-in network'=5, 'statnet network object (R-object)'=1,
-                                                     'Pajek network (*.net)'=2,'Pajek project (*.paj)'=3,
-                                                     'matrix of relational data (*.csv or R-object)'=4))
+                                           choices=c('built-in network'=5, 
+                                                     'statnet network object (*.rds)'=1,
+                                                     'matrix of relational data (*.csv or *.rds)'=4,
+                                                     'Pajek network (*.net)'=2,
+                                                     'Pajek project (*.paj)'=3))
                               ),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(6,
@@ -312,10 +314,10 @@ url = {http://statnetproject.org}
                            column(6,
                                   uiOutput('pajchooser'))),
                        conditionalPanel(condition='input.filetype == 1',
-                                        p(class="helper", id="Robjhelp", icon("question-circle"), span("What is an R-object?", style="font-size:0.85em;")),
+                                        p(class="helper", id="Robjhelp", icon("question-circle"), span("What is a .rds file?", style="font-size:0.85em;")),
                                         div(class="mischelperbox", id="Robjbox", 'When working in R, an object in your environment',
-                                            'can be saved to a file from the command line in the following way:', 
-                                            code('save(objectname, file="newfilename")'),br(),'By default the file will be saved',
+                                            'can be saved to a .rds file from the command line in the following way:', 
+                                            code('saveRDS(objectname, file="newfilename.rds")'),br(),'By default the file will be saved',
                                             'into the current working directory. The full path to a new location can be',
                                             'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
                                             'to use a save dialog box.')

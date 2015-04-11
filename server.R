@@ -161,42 +161,32 @@ nwinit <- reactive({
   } else {
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
-  }
-  if(input$filetype == 1){
-    loadfile <- ''
-    if(!is.null(input$rawdatafile)){
-      nw_var <- tryCatch({
-        obj <- load(paste(filepath))
-      }, error = function(err){
-        return("Chosen file is not an R object")
-      }, finally = NULL
-      )
-      try(nw_var <- get(obj))
-    }
-  } else if(input$filetype == 2){
-    if(!is.null(input$rawdatafile)){
+    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+  
+    if(input$filetype == 1){
+      if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
+        nw_var <- readRDS(paste(filepath))
+      } else {
+        return("Upload a .rds file")
+      }
+    
+    } else if(input$filetype == 2){
       nw_var <- "Upload a .net file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
+      if(fileext %in% c(".net", ".NET")){
         nw_var <- read.paj(paste(filepath))
       }
-    }
-  } else if(input$filetype == 3){
-    if(!is.null(input$rawdatafile)){
+    } else if(input$filetype == 3){
       nw_var <- "Upload a .paj file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
+      if(fileext %in% c(".paj",".PAJ")){
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
           nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
         }
       }
-    }
-  } else if(input$filetype == 4){
-    loadfile <- ''
-    if(!is.null(input$rawdatafile)){
+    
+    } else if(input$filetype == 4){
       nw_var <- "Input the specified type of matrix"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      if(fileext %in% c(".csv",".CSV")){
         header <- TRUE
         row_names<-1
         if(input$matrixtype == "edgelist"){
@@ -210,24 +200,24 @@ nwinit <- reactive({
                           ignore.eval=FALSE, names.eval='edgevalue')
              })
         
-      }
-      try({
-        newmx <- load(paste(filepath))
-        nw_var <- network(get(newmx),
+      } else if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
+        newmx <- readRDS(paste(filepath))
+        nw_var <- network(newmx,
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
                         ignore.eval=FALSE, names.eval='edgevalue')
-           })
-    }
+           
+      }
     
-  } else if(input$filetype ==5){
-    if(input$samplenet == "None"){
-      nw_var <- NULL
-    } else {
-      nw_var <- eval(parse(text = input$samplenet))
-      if(!is.element('bipartite',names(nw_var$gal))){
-        set.network.attribute(nw_var,'bipartite',FALSE)
+    } else if(input$filetype ==5){
+      if(input$samplenet == "None"){
+        nw_var <- NULL
+      } else {
+        nw_var <- eval(parse(text = input$samplenet))
+        if(!is.element('bipartite',names(nw_var$gal))){
+          set.network.attribute(nw_var,'bipartite',FALSE)
+        }
       }
     }
   }
