@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ============
-#' ui.R, v0.3.1 
+#' ui.R, v0.3.2 
 #' ============
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
@@ -82,7 +82,7 @@ shinyUI(
            value='tab1',
            fluidRow(
                     column(8,
-                           h5(tags$u("About statnetWeb v0.3.1")),
+                          h5(tags$u("About statnetWeb v0.3.2")),
                            p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                              "package.", strong("ergm"), "is part of the statnet network analysis software --",
                              "a suite of packages written in R -- and this app also includes some of the functionality",
