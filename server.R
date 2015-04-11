@@ -161,42 +161,32 @@ nwinit <- reactive({
   } else {
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
-  }
-  if(input$filetype == 1){
-    loadfile <- ''
-    if(!is.null(input$rawdatafile)){
-      nw_var <- tryCatch({
-        obj <- load(paste(filepath))
-      }, error = function(err){
-        return("Chosen file is not an R object")
-      }, finally = NULL
-      )
-      try(nw_var <- get(obj))
-    }
-  } else if(input$filetype == 2){
-    if(!is.null(input$rawdatafile)){
+    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+  
+    if(input$filetype == 1){
+      if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
+        nw_var <- readRDS(paste(filepath))
+      } else {
+        return("Upload a .rds file")
+      }
+    
+    } else if(input$filetype == 2){
       nw_var <- "Upload a .net file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".net" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".NET"){
+      if(fileext %in% c(".net", ".NET")){
         nw_var <- read.paj(paste(filepath))
       }
-    }
-  } else if(input$filetype == 3){
-    if(!is.null(input$rawdatafile)){
+    } else if(input$filetype == 3){
       nw_var <- "Upload a .paj file"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".paj" |
-           substr(filename,nchar(filename)-3,nchar(filename))==".PAJ"){
+      if(fileext %in% c(".paj",".PAJ")){
         nws <- read.paj(paste(filepath))
         if(!is.null(pajnws())){
           nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
         }
       }
-    }
-  } else if(input$filetype == 4){
-    loadfile <- ''
-    if(!is.null(input$rawdatafile)){
+    
+    } else if(input$filetype == 4){
       nw_var <- "Input the specified type of matrix"
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      if(fileext %in% c(".csv",".CSV")){
         header <- TRUE
         row_names<-1
         if(input$matrixtype == "edgelist"){
@@ -210,24 +200,24 @@ nwinit <- reactive({
                           ignore.eval=FALSE, names.eval='edgevalue')
              })
         
-      }
-      try({
-        newmx <- load(paste(filepath))
-        nw_var <- network(get(newmx),
+      } else if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
+        newmx <- readRDS(paste(filepath))
+        nw_var <- network(newmx,
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
                         ignore.eval=FALSE, names.eval='edgevalue')
-           })
-    }
+           
+      }
     
-  } else if(input$filetype ==5){
-    if(input$samplenet == "None"){
-      nw_var <- NULL
-    } else {
-      nw_var <- eval(parse(text = input$samplenet))
-      if(!is.element('bipartite',names(nw_var$gal))){
-        set.network.attribute(nw_var,'bipartite',FALSE)
+    } else if(input$filetype ==5){
+      if(input$samplenet == "None"){
+        nw_var <- NULL
+      } else {
+        nw_var <- eval(parse(text = input$samplenet))
+        if(!is.element('bipartite',names(nw_var$gal))){
+          set.network.attribute(nw_var,'bipartite',FALSE)
+        }
       }
     }
   }
@@ -320,18 +310,24 @@ newattrnamereac <- reactive({
   try({
     path <- input$newattrvalue[1,4]
     filename <- input$newattrvalue[1,1]
+    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
 
-    if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+    if(fileext %in% c(".csv", ".CSV") ){
       newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
       newname <- names(newattrs)
-    } else {
-      objname <- load(paste(path))
-      newattrs <- get(objname)
+      if(input$newattrtype == "edgevalue"){
+        newname <- newname[1]
+      }
+    } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS") ){
+      newattrs <- readRDS(paste(path))
       newname <- names(newattrs)
       if(class(newattrs) != "list"){
         newname <- "Attribute is not compatible, see help buttons and try again"
       }
+    } else {
+      newname <- "Attribute is not compatible, see help buttons and try again"
     }
+    
   })
   if(is.null(newname)){
     newname <- "Attribute is not named,  please fix and re-upload"
@@ -340,40 +336,33 @@ newattrnamereac <- reactive({
 })
 
 #save new vertex names
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-    if(input$newattrtype == 'vertex names'){
+observeEvent(input$newattrButton, {
+    if(input$newattrtype == "vertexnames"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      if(fileext %in% c(".csv", ".CSV")){
         newnames <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
         newnames <- newnames[[1]]
-      } else {
-        objname <- load(paste(path))
-        newnames <- get(objname)
+      } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+        newnames <- readRDS(paste(path))
       }
       
       values$vertexnames <- newnames
     }
-  })
 })
 
 #add vertex attributes to list
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-      if(input$newattrtype == 'vertex attribute'){
+observeEvent(input$newattrButton, {
+      if(input$newattrtype == "vertexattr"){
           path <- input$newattrvalue[1,4]
           filename <- input$newattrvalue[1,1]
-          
-          if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+          fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+          if(fileext %in% c(".csv", ".CSV")){
             newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
             newname <- names(newattrs)
-          } else {
-            objname <- load(paste(path))
-            newattrs <- get(objname)
+          } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+            newattrs <- readRDS(paste(path))
             newname <- names(newattrs)
           }
           
@@ -387,23 +376,19 @@ observe({
           values$v_attrNamesToAdd <- namesofar
           values$v_attrValsToAdd <- valsofar
         }
-  })
 })
 
 #add edge attributes to list
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-    if(input$newattrtype == 'edge attribute'){
+observeEvent(input$newattrButton, {
+    if(input$newattrtype == "edgeattr"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
         newname <- names(newattrs)
-      } else {
-        objname <- load(paste(path))
-        newattrs <- get(objname)
+      } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+        newattrs <- readRDS(paste(path))
         newname <- names(newattrs)
       }
 
@@ -416,23 +401,20 @@ observe({
         values$e_attrNamesToAdd <- namesofar
         values$e_attrValsToAdd <- valsofar
       }
-  })
 })
 
 #add edge values to list
-observe({
-  if(input$newattrButton == 0) return()
-  isolate({
-    if(input$newattrtype == 'edge value'){
+observeEvent(input$newattrButton, {
+    if(input$newattrtype == "edgevalue"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      
-      if(substr(filename,nchar(filename)-3,nchar(filename))==".csv"){
+      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
-        newname <- names(newattrs)
-      } else {
-        objname <- load(paste(path))
-        newattrs <- get(objname)
+        newname <- names(newattrs)[1]
+        newattrs <- data.matrix(newattrs, rownames.force=FALSE)
+      } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+        newattrs <- readRDS(paste(path))
         newname <- names(newattrs)
       }
       namesofar <- values$ev_attrNamesToAdd
@@ -445,7 +427,6 @@ observe({
       values$ev_attrNamesToAdd <- namesofar
       values$ev_attrValsToAdd <- valsofar
     }
-  })
 })
 
 observeEvent(input$symmdir,{
@@ -2776,12 +2757,14 @@ output$gofplotcomp <- renderPlot({
     if(is.directed(nw())){
       cols <- isolate(4)
       bottomtext <- c("idegree","odegree","espartners","distance")
+      bottommat <- c(0,(n*cols+1):(n*cols+4))
     } else {
       cols <- isolate(3)
       bottomtext <- c("degree","espartners","distance")
+      bottommat <- c(0,(n*cols+1):(n*cols+3))
     }
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
-    bottommat <- c(0,(n*cols+1):(n*cols+3))
+    
   } else {
     cols <- isolate(1)
     innermat <- matrix(1:n,ncol=1,nrow=n, byrow=TRUE)
