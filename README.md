@@ -19,6 +19,10 @@ http://cran.r-project.org/web/packages/ergm/
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
 
+#### New in v0.3.3
+
+* Fix bug from v0.3.2 preventing built-in networks from loading
+* Prevent calls to search.ergmTerms() from printing to the console
 
 #### New in v0.3.2
 
