@@ -237,11 +237,11 @@ url = {http://statnetproject.org}
                      fluidRow(
                        column(6,
                               selectInput('filetype',label='File type',
-                                           choices=c('built-in network'=5, 
-                                                     'statnet network object (*.rds)'=1,
-                                                     'matrix of relational data (*.csv or *.rds)'=4,
-                                                     'Pajek network (*.net)'=2,
-                                                     'Pajek project (*.paj)'=3))
+                                           choices=c('built-in network'= 5, 
+                                                     'statnet network object (*.rds)' = 1,
+                                                     'matrix of relational data (*.csv or *.rds)' = 4,
+                                                     'Pajek network (*.net)' = 2,
+                                                     'Pajek project (*.paj)' = 3))
                               ),
                        conditionalPanel(condition = 'input.filetype < 5',
                          column(6,
@@ -253,7 +253,7 @@ url = {http://statnetproject.org}
                           column(6,
                               br(style="line-height:26px;"),
                               selectInput('samplenet', label=NULL,
-                                          choices=c('Choose a network'='None', 'ecoli1', 'ecoli2',
+                                          choices=c('Choose a network', 'ecoli1', 'ecoli2',
                                                     'faux.mesa.high','flobusiness',
                                                     'flomarriage', 'kapferer', 'kapferer2',
                                                     'molecule', 'samplike'))
