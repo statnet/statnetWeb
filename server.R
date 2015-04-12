@@ -162,55 +162,56 @@ nwinit <- reactive({
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
-  }
-  if(input$filetype == 1){
-    if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
-      nw_var <- readRDS(paste(filepath))
-    } else {
-      return("Upload a .rds file")
-    }
   
-  } else if(input$filetype == 2){
-    nw_var <- "Upload a .net file"
-    if(fileext %in% c(".net", ".NET")){
-      nw_var <- read.paj(paste(filepath))
-    }
-  } else if(input$filetype == 3){
-    nw_var <- "Upload a .paj file"
-    if(fileext %in% c(".paj",".PAJ")){
-      nws <- read.paj(paste(filepath))
-      if(!is.null(pajnws())){
-        nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
+    if(input$filetype == 1){
+      if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
+        nw_var <- readRDS(paste(filepath))
+      } else {
+        return("Upload a .rds file")
       }
-    }
-  
-  } else if(input$filetype == 4){
-    nw_var <- "Input the specified type of matrix"
-    if(fileext %in% c(".csv",".CSV")){
-      header <- TRUE
-      row_names<-1
-      if(input$matrixtype == "edgelist"){
-        header <- FALSE
-        row_names<-NULL
+    
+    } else if(input$filetype == 2){
+      nw_var <- "Upload a .net file"
+      if(fileext %in% c(".net", ".NET")){
+        nw_var <- read.paj(paste(filepath))
       }
-      try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row_names),
+    } else if(input$filetype == 3){
+      nw_var <- "Upload a .paj file"
+      if(fileext %in% c(".paj",".PAJ")){
+        nws <- read.paj(paste(filepath))
+        if(!is.null(pajnws())){
+          nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
+        }
+      }
+    
+    } else if(input$filetype == 4){
+      nw_var <- "Input the specified type of matrix"
+      if(fileext %in% c(".csv",".CSV")){
+        header <- TRUE
+        row_names<-1
+        if(input$matrixtype == "edgelist"){
+          header <- FALSE
+          row_names<-NULL
+        }
+        try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row_names),
+                          directed=input$dir, loops=input$loops,
+                          multiple=input$multiple, bipartite=input$bipartite,
+                          matrix.type=input$matrixtype,
+                          ignore.eval=FALSE, names.eval='edgevalue')
+             })
+        
+      } else if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
+        newmx <- readRDS(paste(filepath))
+        nw_var <- network(newmx,
                         directed=input$dir, loops=input$loops,
                         multiple=input$multiple, bipartite=input$bipartite,
                         matrix.type=input$matrixtype,
                         ignore.eval=FALSE, names.eval='edgevalue')
-           })
-      
-    } else if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
-      newmx <- readRDS(paste(filepath))
-      nw_var <- network(newmx,
-                      directed=input$dir, loops=input$loops,
-                      multiple=input$multiple, bipartite=input$bipartite,
-                      matrix.type=input$matrixtype,
-                      ignore.eval=FALSE, names.eval='edgevalue')
-         
+           
+      }
     }
-  
-  } else if(input$filetype == 5){
+  } 
+  if(input$filetype == 5){
     if(input$samplenet == "Choose a network"){
       nw_var <- NULL
     } else {
