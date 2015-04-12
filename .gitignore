@@ -9,5 +9,8 @@
 .Rproj.user
 *.Rproj
 
+# Connection that stores calls to search.ergmTerms
+NUL
+
 shinyapps/
 .DS_Store
