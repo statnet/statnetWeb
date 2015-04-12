@@ -26,7 +26,9 @@ inlineSelectInput<-function (inputId, label, choices,...) {
 }
 
 #create a list of unique term names
+sink("NUL") # prevents terms from printing to console
 allterms <- search.ergmTerms()
+sink()
 inds <- regexpr(pattern='\\(', allterms)
 for(i in 1:length(allterms)){
   allterms[i] <- substr(allterms[[i]], start=1, stop=inds[i]-1)
