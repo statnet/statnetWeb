@@ -2341,9 +2341,9 @@ output$listofterms <- renderUI({
   if(state$allterms){
     current.terms <- unlist(allterms)
   } else {
-    sink("NUL") # prevents terms from printing to console
+    #sink("NUL") # prevents terms from printing to console
     matchterms <- search.ergmTerms(net=nw())
-    sink()
+    #sink()
     ind <- regexpr(pattern='\\(', matchterms)
     for(i in 1:length(matchterms)){
       matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[i]-1)
@@ -2358,9 +2358,9 @@ output$listofterms <- renderUI({
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
-  sink("NUL") # prevents terms from printing to console
+  #sink("NUL") # prevents terms from printing to console
   search.ergmTerms(name=myterm)
-  sink()
+  #sink()
 })
 
 observe({
