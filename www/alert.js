@@ -73,8 +73,12 @@ $(document).ready(function(){
     $("#filetypebox7").toggle(500);
   });
   
-  $("#filetypehelper8").click(function(){
-    $("#filetypebox8").toggle(500);
+  $("#closewarning1").click(function(){
+    $("#colorwarning1").toggle(500);
+  });
+  
+  $("#ddhelper").click(function(){
+    $("#ddhelperbox").toggle(500);
   });
   
   $("#ddhelper").click(function(){

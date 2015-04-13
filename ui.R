@@ -685,14 +685,9 @@ url = {http://statnetproject.org}
                                                  label = 'Vertex opacity',
                                                  min = 0, max = 1, value = 1),
                                      br(),
-                                     uiOutput('dynamiccolor'),
-                                     column(10,
-                                            p(icon(name="remove"),class = "warning"),
-                                            div(class="warning",
-                                            span(tags$u("Note:"),br(), 
-                                                 "Color palette becomes a gradient for attributes with more than nine levels.")
-                                            )
-                                         ),
+                                     uiOutput("dynamiccolor"),
+                                     uiOutput("colorwarning"),
+                                     
 #                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                                      uiOutput('dynamicsize'),
                                      br(),

@@ -1103,15 +1103,17 @@ output$dynamiccolor <- renderUI({
 })
 outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
 
-# observe({
-#   if(length(legendlabels())>9){
-#     createAlert(session, inputId = "colorwarning",
-#                 title=NULL, 
-#                 message="Note: Color palette changes for attributes with more than nine levels.",
-#                 type="warning", dismiss=TRUE, 
-#                 block=FALSE, append=FALSE)
-#   }
-# })
+output$colorwarning <- renderUI({
+  if(length(legendlabels())>9){
+    column(10,
+           p(id = "closewarning1", icon(name = "remove"), class = "warning"),
+           div(class = "warning", id = "colorwarning1",
+               span(tags$u("Note:"), br(), 
+                    "Color palette becomes a gradient for attributes with more than nine levels.")
+           )
+    )
+  }
+})
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
