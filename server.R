@@ -2374,9 +2374,7 @@ output$listofterms <- renderUI({
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
-  sink("NUL") # prevents terms from printing to console
   search.ergmTerms(name=myterm)
-  sink()
 })
 
 observe({
