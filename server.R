@@ -193,7 +193,8 @@ nwinit <- reactive({
           header <- FALSE
           row_names<-NULL
         }
-        try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row_names),
+        try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, 
+                                        row.names=row_names),
                           directed=input$dir, loops=input$loops,
                           multiple=input$multiple, bipartite=input$bipartite,
                           matrix.type=input$matrixtype,
@@ -314,7 +315,8 @@ newattrnamereac <- reactive({
     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
 
     if(fileext %in% c(".csv", ".CSV") ){
-      newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+      newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                           stringsAsFactors=FALSE)
       newname <- names(newattrs)
       if(input$newattrtype == "edgevalue"){
         newname <- newname[1]
@@ -343,7 +345,8 @@ observeEvent(input$newattrButton, {
       filename <- input$newattrvalue[1,1]
       fileext <- substr(filename,nchar(filename)-3,nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
-        newnames <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newnames <- read.csv(paste(path), sep=",", header=TRUE, 
+                             stringsAsFactors=FALSE)
         newnames <- newnames[[1]]
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newnames <- readRDS(paste(path))
@@ -360,7 +363,8 @@ observeEvent(input$newattrButton, {
           filename <- input$newattrvalue[1,1]
           fileext <- substr(filename,nchar(filename)-3,nchar(filename))
           if(fileext %in% c(".csv", ".CSV")){
-            newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+            newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                                 stringsAsFactors=FALSE)
             newname <- names(newattrs)
           } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
             newattrs <- readRDS(paste(path))
@@ -386,7 +390,8 @@ observeEvent(input$newattrButton, {
       filename <- input$newattrvalue[1,1]
       fileext <- substr(filename,nchar(filename)-3,nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
-        newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                             stringsAsFactors=FALSE)
         newname <- names(newattrs)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newattrs <- readRDS(paste(path))
@@ -409,9 +414,10 @@ observeEvent(input$newattrButton, {
     if(input$newattrtype == "edgevalue"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      fileext <- substr(filename,nchar(filename)-3, nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
-        newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                             stringsAsFactors=FALSE)
         newname <- names(newattrs)[1]
         newattrs <- data.matrix(newattrs, rownames.force=FALSE)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
@@ -448,12 +454,12 @@ nwmid <- reactive({
         symnw <- symmetrize(nw_var, rule=input$symmetrize)
         if(state$symmdir){
           nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
-                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         } else {
           nw_var <- network(symnw, matrix.type="adjacency", directed=FALSE,
-                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         }
         #add initial vertex attributes back after symmetrizing
         #can't add edge attributes back because number of edges has changed
@@ -520,8 +526,7 @@ nw <- reactive({
 
 
 #get coordinates to plot network with
-coords <- reactive({
-		plot.network(nw())})
+coords <- reactive({plot.network(nw())})
 
 #initial network attributes
 #returns vector of true/falses
@@ -685,11 +690,11 @@ ergm.terms <- reactive({
   interms <- values$input_termslist
   if(length(interms)==0) {return('NA')}
   paste(interms, collapse = '+')
-  })
+})
 
 ergm.formula <- reactive({
   if(ergm.terms()=='NA') {return()}
-  formula(paste('nw() ~ ',ergm.terms(), sep = ''))})
+  formula(paste('nw() ~ ', ergm.terms(), sep = ''))})
 
 current.simterms <- reactive({
   mod <- input$choosemodel_sim
@@ -704,7 +709,7 @@ current.simterms <- reactive({
 
 current.simformula <- reactive ({
   terms <- current.simterms()
-  formula(paste('nw() ~ ',terms, sep=''))
+  formula(paste('nw() ~ ', terms, sep=''))
 })
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
@@ -717,22 +722,24 @@ model1reac <- reactive({
   }
   usingdefault <- isolate(input$controldefault)
   if(usingdefault){
-    f <- isolate(ergm(ergm.formula()))
+    mod <- isolate(ergm(ergm.formula()))
   } else {
     customcontrols <- isolate(paste(input$customMCMCcontrol, sep=","))
     if(customcontrols == ""){
-      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
-                                                             MCMC.burnin=isolate(input$MCMCburnin),
-                                                             MCMC.samplesize=isolate(input$MCMCsamplesize))))
+      mod <- isolate(ergm(ergm.formula(), 
+                          control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
+                                               MCMC.burnin=isolate(input$MCMCburnin),
+                                               MCMC.samplesize=isolate(input$MCMCsamplesize))))
     } else {
-      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
-                                                             MCMC.burnin=isolate(input$MCMCburnin),
-                                                             MCMC.samplesize=isolate(input$MCMCsamplesize),
-                                                             eval(parse(text=customcontrols)))))
+      mod <- isolate(ergm(ergm.formula(), 
+                          control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
+                                               MCMC.burnin=isolate(input$MCMCburnin),
+                                               MCMC.samplesize=isolate(input$MCMCsamplesize),
+                                               eval(parse(text=customcontrols)))))
     }
     
   }
-  f
+  return(mod)
   })
 
 # values$modelstate keeps track of whether model fit is oudated,
@@ -787,7 +794,7 @@ observe({
 model1gof <- reactive({
   input$gofButton
   mod <- input$choosemodel_gof
-  if(mod=="Current"){
+  if(mod == "Current"){
     mod <- model1reac()
   } else {
     mod <- values$modelfits[[1]]
@@ -799,7 +806,8 @@ model1gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model1gof <- gof(gofform)
   }
-  model1gof})
+  return(model1gof)
+})
 
 model2gof <- reactive({
   input$gofButton
@@ -815,7 +823,8 @@ model2gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model2gof <- gof(gofform)
   }
-  model2gof})
+  return(model2gof)
+})
 
 model3gof <- reactive({
   input$gofButton
@@ -831,7 +840,8 @@ model3gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model3gof <- gof(gofform)
   }
-  model3gof})
+  return(model3gof)
+})
 
 model4gof <- reactive({
   input$gofButton
@@ -847,7 +857,8 @@ model4gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model4gof <- gof(gofform)
   }
-  model4gof})
+  return(model4gof)
+})
 
 model5gof <- reactive({
   input$gofButton
@@ -863,7 +874,8 @@ model5gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model5gof <- gof(gofform)
   }
-  model5gof})
+  return(model5gof)
+})
 
 allmodelsimreac <- reactive({
   input$simButton
@@ -890,8 +902,8 @@ allmodelsimreac <- reactive({
                                                     eval(parse(text=customcontrols)))))
     }
   }
-  s
-  })
+  return(s)
+})
 
 #' Currently, the reactive statements that control the sizing/coloring/legend in the 
 #' simulation plots use the attributes from the original network as a point of reference.
@@ -927,7 +939,7 @@ nodebetw2 <- reactive({
     }
     b <- betweenness(allmodelsimreac()[[input$thissim]], gmode=gmode, cmode=cmode)
   }
-  b
+  return(b)
 })
 
 nodesize2 <- reactive({
@@ -947,7 +959,8 @@ nodesize2 <- reactive({
   }else{
     size <- (get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
   }}
-  size})
+  return(size)
+})
 
 vcol2 <- reactive({
   if(!is.network(nw())){return()}
@@ -978,7 +991,7 @@ vcol2 <- reactive({
     vcol <- pal[full_list]
   }
   }
-  vcol
+  return(vcol)
 })
 
 legendlabels2 <- reactive({
@@ -994,7 +1007,7 @@ legendlabels2 <- reactive({
     }
   }
   }
-  legendlabels
+  return(legendlabels)
 })
 
 legendfill2 <- reactive({
@@ -1011,7 +1024,7 @@ legendfill2 <- reactive({
     legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
   }
-  legendfill
+  return(legendfill)
 })
 
 
