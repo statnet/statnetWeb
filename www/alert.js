@@ -128,10 +128,6 @@ $(document).ready(function(){
     $(".docpopup").toggle(500);
   });
   
-  $(".chromewarning").click(function(){
-    $(".chromewarningbox").toggle(500);
-  });
-  
   $("#termexpand").click(function(){
     $("i",this).toggleClass("fa-expand fa-compress");
     if($("#termdocbox").height()<100){
