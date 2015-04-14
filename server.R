@@ -7,19 +7,21 @@
 #' server.R, v0.3.3 
 #' ===========
 
-#' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
-#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
-#' layout and appearance of the app, the script `server.R` controls the content that
-#' gets displayed in the app, and the folder "www" contains auxiliary files. If you are
-#' unfamiliar with Shiny apps, it may be more natural and helpful to start with the 
-#' documentation for `ui.R` and then move on to `server.R`.
+#' **Before reading this document:** The Shiny app "statnetWeb" is not contained 
+#' in a single R Script. Within the folder "statnetWeb" the script `ui.R` 
+#' controls the layout and appearance of the app, the script `server.R` controls
+#' the content that gets displayed in the app, and the folder "www" contains 
+#' auxiliary files. If you are unfamiliar with Shiny apps, it may be more 
+#' natural and helpful to start with the documentation for `ui.R` and then move
+#' on to `server.R`.
 #' 
 #' **Basics**
 #' 
-#' Every `server.R` script contains an unnamed function inside a call to `shinyServer`.
-#' The job of the unnamed function is to take input elements from the user and define
-#' output elements that will be displayed in the app. For more information on how this
-#' works, see [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/). 
+#' Every `server.R` script contains an unnamed function inside a call to
+#' `shinyServer`. The job of the unnamed function is to take input elements from
+#' the user and define output elements that will be displayed in the app. For 
+#' more information on how this works, see 
+#' [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/). 
 #' If the function is empty, e.g.
 #' ```
 #' shinyServer(
@@ -29,25 +31,27 @@
 #' 
 #' To create dynamic content, we will mainly rely on three types of expressions:
 #' 
-#' *Reactive:* Reactive expressions are expressions that can read reactive values and
-#' call other reactive expressions. Whenever a reactive value changes, any reactive
-#' expressions that depended on it are marked as "invalidated" and will automatically
-#' re-execute if necessary. If a reactive expression is marked as invalidated, any other
-#' reactive expressions that recently called it are also marked as invalidated. In this
-#' way, invalidations ripple through the expressions that depend on each other. Reactive
-#' expressions use lazy evaluation; when their dependencies change, they don't re-execute
-#' right away but rather wait until they are called by someone else.
+#' *Reactive:* Reactive expressions are expressions that can read reactive 
+#' values and call other reactive expressions. Whenever a reactive value 
+#' changes, any reactive expressions that depended on it are marked as 
+#' "invalidated" and will automatically re-execute if necessary. If a reactive 
+#' expression is marked as invalidated, any other reactive expressions that 
+#' recently called it are also marked as invalidated. In this way, invalidations
+#' ripple through the expressions that depend on each other. Reactive 
+#' expressions use lazy evaluation; when their dependencies change, they don't 
+#' re-execute right away but rather wait until they are called by someone else.
 #' 
-#' *Observer:* An observer is like a reactive expression in that it can read reactive
-#' values and call reactive expressions, and will automatically re-execute when those
-#' dependencies change. But unlike reactive expressions, it doesn't yield a result and
-#' can't be used as an input to other reactive expressions. Thus, observers are only useful
-#' for their side effects (for example, performing I/O). Observers use eager evaluation;
-#' as soon as their dependencies change, they schedule themselves to re-execute.
+#' *Observer:* An observer is like a reactive expression in that it can read 
+#' reactive values and call reactive expressions, and will automatically 
+#' re-execute when those dependencies change. But unlike reactive expressions, 
+#' it doesn't yield a result and can't be used as an input to other reactive 
+#' expressions. Thus, observers are only useful for their side effects (for 
+#' example, performing I/O). Observers use eager evaluation; as soon as their 
+#' dependencies change, they schedule themselves to re-execute.
 #' 
-#' *Render:* The `render*` functions are responsible for converting content to the form
-#' in which it should be displayed. Before assigning an object to an element of `output`,
-#' it gets passed to the appropriate `render*` function.
+#' *Render:* The `render*` functions are responsible for converting content to 
+#' the form in which it should be displayed. Before assigning an object to an 
+#' element of `output`, it gets passed to the appropriate `render*` function.
 #' 
 #' **Code**
 #' 
@@ -64,9 +68,9 @@ library(latticeExtra)
 source("modelcomp.R")
 
 #' Loading data and assigning variables outside of the call to `shinyServer`
-#' saves time because this code will not get re-run.These don't depend on any user input
-#' and will never change value, so they can be global variables (common to all
-#' shiny sessions). 
+#' saves time because this code will not get re-run.These don't depend on any 
+#' user input and will never change value, so they can be global variables 
+#' (common to all shiny sessions). 
 #+ eval=FALSE 
 
 data(faux.mesa.high)
@@ -86,16 +90,16 @@ shinyServer(
 
 #' Reactive Expressions
 #' ---------------------------------
-#' These expressions contain most of the code from the ergm package
-#' that we will be using. Objects created with a reactive expression
-#' can be accessed from any other reactive expression or render functions
-#' and they only get re-run when their values are outdated. Since many of 
-#' our render functions will be calling the same ergm objects, using 
-#' reactive expressions will help the app run much faster.
+#' These expressions contain most of the code from the ergm package that we will 
+#' be using. Objects created with a reactive expression can be accessed from any
+#' other reactive expression or render functions and they only get re-run when 
+#' their values are outdated. Since many of our render functions will be calling
+#' the same ergm objects, using reactive expressions will help the app run much 
+#' faster.
 #'
-#' Notice that already in this chunk of code we call previously declared reactive
-#' objects. For example, to use the reactive list of vertex attributes in the
-#' definition of the numeric vertex attributes, we call `attrib()`.    
+#' Notice that already in this chunk of code we call previously declared 
+#' reactive objects. For example, to use the reactive list of vertex attributes 
+#' in the definition of the numeric vertex attributes, we call `attrib()`.    
 #+ eval=FALSE
 
 values <- reactiveValues()
@@ -713,8 +717,8 @@ current.simformula <- reactive ({
 })
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
-#' and simulating from it is similar to what would be written in the command line,
-#' wrapped in a reactive statement.
+#' and simulating from it is similar to what would be written in the command 
+#' line, wrapped in a reactive statement.
 #+ eval=FALSE 
 model1reac <- reactive({
   if(input$fitButton == 0){
@@ -905,11 +909,11 @@ allmodelsimreac <- reactive({
   return(s)
 })
 
-#' Currently, the reactive statements that control the sizing/coloring/legend in the 
-#' simulation plots use the attributes from the original network as a point of reference.
-#' If the method for simulating networks changes from applying the same distribution of
-#' attributes, these `get.vertex.attribute` commands for `minsize` and `maxsize`
-#' would also need to change.
+#' Currently, the reactive statements that control the sizing/coloring/legend in
+#' thesimulation plots use the attributes from the original network as a point 
+#' of reference. If the method for simulating networks changes from applying the
+#' same distribution of attributes, these `get.vertex.attribute` commands for 
+#' `minsize` and `maxsize` would also need to change.
 #+ eval=FALSE
 
 #get coordinates to plot simulations with
@@ -955,9 +959,11 @@ nodesize2 <- reactive({
     minsize <- min(get.vertex.attribute(nw_var,input$sizeby2))
     maxsize <- max(get.vertex.attribute(nw_var,input$sizeby2))
     if(input$nsims==1){
-    size <- (get.vertex.attribute(allmodelsimreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(allmodelsimreac(),input$sizeby2)-minsize) / 
+            (maxsize-minsize) * (3.5-.7)+.7 
   }else{
-    size <- (get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$sizeby2)-minsize) /
+            (maxsize-minsize) * (3.5-.7)+.7 
   }}
   return(size)
 })
@@ -973,7 +979,8 @@ vcol2 <- reactive({
     if(nsim == 1){
       full_list <- get.vertex.attribute(allmodelsimreac(),input$colorby2)
     } else {
-      full_list <- get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$colorby2)
+      full_list <- get.vertex.attribute(allmodelsimreac()[[input$thissim]],
+                                        input$colorby2)
     }
     short_list <- sort(unique(full_list))
     ncolors <- length(short_list)
@@ -1056,7 +1063,8 @@ output$pajchooser <- renderUI({
     pajlist <- 1:length(pajnws()$networks)
   names(pajlist) <- names(pajnws()$networks)
   }
-  selectInput('choosepajnw', label='Upload a Pajek project file and choose a network from it',
+  selectInput('choosepajnw', 
+              label = 'Upload a Pajek project file and choose a network from it',
               choices = pajlist)
 })
 
@@ -1096,8 +1104,9 @@ output$nwsum <- renderPrint({
 #' depend on which network has been selected, we have to dynamically render 
 #' these input menus, rather than statically defining them in `ui.R`.  
 #' *Note*, the dynamic widget object for the color menu has been assigned to
-#' `output$dynamiccolor`, but when the user interacts with this menu, the input object
-#' will still be saved in `input$colorby` because that is the widget inputId.
+#' `output$dynamiccolor`, but when the user interacts with this menu, the input 
+#' object will still be saved in `input$colorby` because that is the widget 
+#' inputId.
 #' 
 #+ eval=FALSE
 #summary of network attributes
@@ -1135,13 +1144,14 @@ output$dynamicsize <- renderUI({
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 
-#' The network plot takes display options from the sidebar of the ui. Even though 
-#' I set the value of the 'None' option in the `sizeby` menu (above) as `1`, it gets
-#' coerced into the string `'1'` by the rest of the strings in the vector of menu 
-#' options. The variable `size` takes the value 1 if the user wants all the nodes
-#' to be the same size, and otherwise maps the values of the numeric attributes into 
-#' the range between .7 and 3.5 using the formula $y = (x-a)/(b-a) * (d-c) + c$, where
-#' $x$ is the input in some range $[a,b]$ and $y$ is the output in range $[c,d]$.
+#' The network plot takes display options from the sidebar of the ui. Even 
+#' though I set the value of the 'None' option in the `sizeby` menu (above) as 
+#' `1`, it gets coerced into the string `'1'` by the rest of the strings in the 
+#' vector of menu options. The variable `size` takes the value 1 if the user 
+#' wants all the nodes to be the same size, and otherwise maps the values of the
+#' numeric attributes into the range between .7 and 3.5 using the formula 
+#' $y = (x-a)/(b-a) * (d-c) + c$, where $x$ is the input in some range $[a,b]$ 
+#' and $y$ is the output in range $[c,d]$.
 #'
 #+ eval=FALSE
 output$nwplot <- renderPlot({
@@ -1328,9 +1338,11 @@ dd_bernoullioverlay <- reactive({
   reps = 50
   density <- gden(nw())
   if(is.directed(nw())){
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', cmode=input$cmode_dd)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', 
+                  cmode=input$cmode_dd)
   } else {
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', cmode=input$cmode_dd)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', 
+                  cmode=input$cmode_dd)
   }
   #now deg is a matrix where each element is a degree of a node 
   #each column is a different draw
@@ -1340,7 +1352,8 @@ dd_bernoullioverlay <- reactive({
   #each column is different draw
   z <- apply(deg, MARGIN=2, FUN=function(x){sum(x==0)})
   #tabulation of isolates in each draw
-  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, byrow=TRUE)
+  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, 
+                       byrow=TRUE)
   #complete tabulation of degrees for each draw
   degreemeans <- apply(degreedata, MARGIN=1, FUN=mean)
   names(degreemeans) <- paste(0:max(deg))
@@ -1432,7 +1445,8 @@ output$degreedist <- renderPlot({
     bern_samplemeans <- bern_samplemeans/sum(dd_plotdata())
     bern_upperline <- bern_upperline/sum(dd_plotdata())
     bern_lowerline <- bern_lowerline/sum(dd_plotdata())
-    ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
+    ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), 
+                  max(bern_upperline))
     ylabel <- 'Percent of Nodes'
   }
   
@@ -1463,8 +1477,10 @@ output$degreedist <- renderPlot({
   bar_axis <- barplot(plotme, xlab=xlabel, ylab=ylabel,
                       col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
-    points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+    points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                            x1=bar_axis-.15, y1=unif_lowerline,
            code=3, length=0.1, angle=90, col='orangered'))
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "orangered")
@@ -1474,8 +1490,10 @@ output$degreedist <- renderPlot({
     lborder <- append(lborder, 0)
   }
   if(input$bernoullioverlay_dd){
-    points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+    points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                            x1=bar_axis+.15, y1=bern_lowerline,
            code=3, length=0.1, angle=90, col='firebrick'))
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "firebrick")
@@ -1555,7 +1573,8 @@ output$degreedistdownload <- downloadHandler(
       bern_samplemeans <- bern_samplemeans/sum(dd_plotdata())
       bern_upperline <- bern_upperline/sum(dd_plotdata())
       bern_lowerline <- bern_lowerline/sum(dd_plotdata())
-      ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
+      ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), 
+                    max(bern_upperline))
       ylabel <- 'Percent of Nodes'
     }
     
@@ -1586,8 +1605,10 @@ output$degreedistdownload <- downloadHandler(
     bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
                         col=color, ylim=c(0,ylimit), plot=TRUE)
     if(input$uniformoverlay_dd){
-      points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+      points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', 
+             lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                              x1=bar_axis-.15, y1=unif_lowerline,
              code=3, length=0.1, angle=90, col='orangered'))
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "orangered")
@@ -1597,8 +1618,10 @@ output$degreedistdownload <- downloadHandler(
       lborder <- append(lborder, 0)
     }
     if(input$bernoullioverlay_dd){
-      points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+      points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', 
+             lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                              x1=bar_axis+.15, y1=bern_lowerline,
              code=3, length=0.1, angle=90, col='firebrick'))
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "firebrick")
@@ -1725,17 +1748,24 @@ output$geodistplot <- renderPlot({
   # make sure that barplot and lines have the same length
   maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
   if(maxgeo_u < maxgeo_total){
-    unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_means)-1)
-    unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_upperline)-1)
-    unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_lowerline)-1)
+    unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), 
+                         after=length(unif_means)-1)
+    unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), 
+                             after=length(unif_upperline)-1)
+    unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), 
+                             after=length(unif_lowerline)-1)
   } 
   if(maxgeo_b < maxgeo_total){
-    bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_means)-1)
-    bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_upperline)-1)
-    bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_lowerline)-1)
+    bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), 
+                         after=length(bern_means)-1)
+    bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), 
+                             after=length(bern_upperline)-1)
+    bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), 
+                             after=length(bern_lowerline)-1)
   }
   if(maxgeo < maxgeo_total){
-    gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
+    gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), 
+                    after=length(gdata)-1)
     names(gdata) <- c(paste(1:maxgeo_total), "Inf")
   }
   
@@ -1760,21 +1790,26 @@ output$geodistplot <- renderPlot({
                       ylim = c(0,ylimit), plot=TRUE)
   
   if(input$uniformoverlay_gd){
-    points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+    points(x=bar_axis-.15, y=unif_means,col='orangered', 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                            x1=bar_axis-.15, y1=unif_lowerline,
            code=3, length=0.1, angle=90, col='orangered'))
     ltext <- append(ltext, "CUG")
     lcol <- append(lcol, "orangered")
   }
   if(input$bernoullioverlay_gd){
-    points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+    points(x=bar_axis+.15, y=bern_means,col='firebrick', 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                            x1=bar_axis+.15, y1=bern_lowerline,
            code=3, length=0.1, angle=90, col='firebrick'))
     ltext <- append(ltext, "BRG")
     lcol <- append(lcol, "firebrick")
   }
   if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
+    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, 
+           pt.cex=1.25, merge=TRUE,
            inset=c(.12,0), bty="n")
   }
   
@@ -1818,14 +1853,20 @@ output$geodistdownload <- downloadHandler(
     # make sure that barplot and lines have the same length
     maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
     if(maxgeo_u < maxgeo_total){
-      unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_means)-1)
-      unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_upperline)-1)
-      unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_lowerline)-1)
+      unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), 
+                           after=length(unif_means)-1)
+      unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), 
+                               after=length(unif_upperline)-1)
+      unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), 
+                               after=length(unif_lowerline)-1)
     } 
     if(maxgeo_b < maxgeo_total){
-      bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_means)-1)
-      bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_upperline)-1)
-      bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_lowerline)-1)
+      bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), 
+                           after=length(bern_means)-1)
+      bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), 
+                               after=length(bern_upperline)-1)
+      bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), 
+                               after=length(bern_lowerline)-1)
     }
     if(maxgeo < maxgeo_total){
       gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
@@ -1854,21 +1895,26 @@ output$geodistdownload <- downloadHandler(
                         ylim = c(0,ylimit), plot=TRUE)
     
     if(input$uniformoverlay_gd){
-      points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
+      points(x=bar_axis-.15, y=unif_means,col='orangered', 
+             lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                              x1=bar_axis-.15, y1=unif_lowerline,
              code=3, length=0.1, angle=90, col='orangered'))
       ltext <- append(ltext, "CUG")
       lcol <- append(lcol, "orangered")
     }
     if(input$bernoullioverlay_gd){
-      points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
+      points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, 
+             pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                              x1=bar_axis+.15, y1=bern_lowerline,
              code=3, length=0.1, angle=90, col='firebrick'))
       ltext <- append(ltext, "BRG")
       lcol <- append(lcol, "firebrick")
     }
     if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-      legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
+      legend(x="topright", legend=ltext, col=lcol, lwd=1, 
+             pch=18, pt.cex=1.25, merge=TRUE,
              inset=c(.12,0), bty="n")
     }
     dev.off()
@@ -1890,8 +1936,10 @@ output$geodistdownload <- downloadHandler(
 #     format(v, justify="centre")
     v <- c(paste0(unif_means[cols],"(",round(unif_sd[cols], digits=2),")"),
            paste0(bern_means[cols],"(",round(bern_sd[cols], digits=2),")"))
-    cat(format("",width=4),format("Observed",width=8),format(c("CUG","BRG"),width=11,justify="centre"),"\n")
-    cat(format("Infs:",width=3,justify="centre"),format(paste(obs),width=8,justify="centre"),
+    cat(format("",width=4),format("Observed",width=8),
+        format(c("CUG","BRG"),width=11,justify="centre"),"\n")
+    cat(format("Infs:",width=3,justify="centre"),
+        format(paste(obs),width=8,justify="centre"),
         format(v,width=10,justify="centre"))
   })
 
@@ -1995,7 +2043,7 @@ output$gclose <- renderText({
   c <- NULL
   try(
     c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
-                   cmode=input$gclosecmode))
+                        cmode=input$gclosecmode))
   c
 })
 outputOptions(output,'gclose',suspendWhenHidden=FALSE)
@@ -2009,7 +2057,7 @@ output$gstress <- renderText({
   }
   s <- NULL
   try(s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
-                  cmode=input$gstresscmode))
+                          cmode=input$gstresscmode))
   s
 })
 outputOptions(output,'gstress',suspendWhenHidden=FALSE)
@@ -2023,7 +2071,7 @@ output$ggraphcent <- renderText({
   }
   g <- NULL
   try(g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
-                 cmode=input$ggraphcentcmode))
+                          cmode=input$ggraphcentcmode))
   g
 })
 outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
@@ -2051,7 +2099,7 @@ output$ginfocent <- renderText({
   i<-NULL
   try({
     i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
-                  cmode=input$ginfocentcmode)})
+                        cmode=input$ginfocentcmode)})
   i
 })
 outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
@@ -2069,7 +2117,7 @@ output$ndeg <- renderText({
   }
   d <- NULL
   try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-         cmode=cmode))
+                  cmode=cmode))
   d
 })
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
@@ -2108,8 +2156,9 @@ output$nbetw <- renderText({
     gmode <- 'graph'
   }
   b <- NULL
-  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                   cmode=input$nbetwcmode))
+  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, 
+                       diag=has.loops(nw()),
+                       cmode=input$nbetwcmode))
   b
 })
 outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
@@ -2189,8 +2238,9 @@ output$nstress <- renderText({
     gmode <- 'graph'
   }
   s <- NULL
-  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$nstresscmode))
+  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, 
+                      diag=has.loops(nw()),
+                      cmode=input$nstresscmode))
   s
 })
 outputOptions(output,'nstress',suspendWhenHidden=FALSE)
@@ -2229,8 +2279,9 @@ output$ngraphcent <- renderText({
     gmode <- 'graph'
   }
   g <- NULL
-  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ngraphcentcmode))
+  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, 
+                     diag=has.loops(nw()),
+                     cmode=input$ngraphcentcmode))
   g
 })
 outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
@@ -2308,7 +2359,7 @@ output$ninfocent <- renderText({
   i<-''
   try({
     i <- infocent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                   cmode=input$ninfocentcmode)})
+                  cmode=input$ninfocentcmode)})
   i
 })
 outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
@@ -2514,9 +2565,9 @@ outputOptions(output, "modelfitsum",priority=-10)
 #' **Diagnostics - MCMC Diagnostics**
 #' 
 #' When using the `mcmc.diagnostics` function in the command line, the printed 
-#' diagnostics and plots all output together. Instead of calling `mcmc.diagnositcs`
-#' in a reactive object, it gets called in both the plot output element and summary
-#' output element.
+#' diagnostics and plots all output together. Instead of calling
+#' `mcmc.diagnositcs` in a reactive object, it gets called in both the plot 
+#' output element and summary output element.
 #' 
 #+ eval=FALSE
 
@@ -2628,17 +2679,18 @@ outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 
 #' **Diagnostics - Goodness of Fit**
 #' 
-#' Again, we output the current dataset and the ergm formula for the user to verify.
-#' One drawback of the `navbarPage` layout option (we specified this in the top of
-#' `ui.R`) is that you can't specify certain elements or panels to show up on 
-#' multiple pages. Furthermore, as far as I can tell, Shiny will not let you use 
-#' the same piece of output from `server.R` twice in `ui.R`. Therefore, 
-#' `output$currentdataset2` and `output$check2` are the same as `output$currentdataset`
-#' and `output$check1` with different names.
+#' Again, we output the current dataset and the ergm formula for the user to 
+#' verify. One drawback of the `navbarPage` layout option (we specified this in 
+#' the top of `ui.R`) is that you can't specify certain elements or panels to 
+#' show up on multiple pages. Furthermore, as far as I can tell, Shiny will not 
+#' let you use the same piece of output from `server.R` twice in `ui.R`. 
+#' Therefore, `output$currentdataset2` and `output$check2` are the same as 
+#' `output$currentdataset` and `output$check1` with different names.
 #' 
-#' In the reactive section above the creation of `model1gof` depends on the term the 
-#' user inputs. After checking that the user has already clicked the `actionButton`
-#' on the page we can output the text of the gof object and the plot of the gof object.
+#' In the reactive section above the creation of `model1gof` depends on the term
+#' the user inputs. After checking that the user has already clicked the 
+#' `actionButton` on the page we can output the text of the gof object and the 
+#' plot of the gof object.
 #+ eval=FALSE
 #dataset only updates after goButton on first tab has been clicked
 output$currentdataset_gof <- renderPrint({
@@ -2916,14 +2968,14 @@ output$gofplotcompdownload <- downloadHandler(
 
 #' **Simulations**
 #' 
-#' On this page the user can choose how many simulations of the model to run. The 
-#' reactive object `model1simreac` contains all the simulations, which we can output
-#' a summary of and choose one simulation at a time to plot. *Note:* when the user
-#' chooses to simulate one network, `allmodelsimreac()` is a reactive object of class
-#' network. When the user chooses to simulate multiple networks, `allmodelsimreac()`
-#' contains a list of the generated networks. This is why we have to split up the plot
-#' command in an if-statement. The rest of the display options should look familiar
-#' from the 'Plot Network' tab.
+#' On this page the user can choose how many simulations of the model to run. 
+#' The reactive object `model1simreac` contains all the simulations, which we 
+#' can output a summary of and choose one simulation at a time to plot. *Note:* 
+#' when the user chooses to simulate one network, `allmodelsimreac()` is a 
+#' reactive object of class network. When the user chooses to simulate multiple 
+#' networks, `allmodelsimreac()` contains a list of the generated networks. This
+#' is why we have to split up the plot command in an if-statement. The rest of 
+#' the display options should look familiar from the 'Plot Network' tab.
 #+ eval=FALSE
 output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
@@ -3076,8 +3128,10 @@ output$simstatsdownload <- downloadHandler(
             sum <- list()
             sum[1] <- paste(" Number of Networks: ",n, "\n")
             sum[2] <- paste("Model: ", nwname(),' ~ ',terms, "\n")
-            sum[3] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
-            sum[4] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
+            sum[3] <- paste("Reference: ", 
+                            format(attr(sim,'reference')), "\n")
+            sum[4] <- paste("Constraints: ", 
+                            format(attr(sim, 'constraints')), "\n")
             sum[5] <- paste("Parameters: \n")
             cat(unlist(sum))
             
@@ -3170,16 +3224,6 @@ output$dynamiccolor2 <- renderUI({
 })
 outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
-# observe({
-#   if(length(legendlabels2())>9){
-#     createAlert(session, inputId = "colorwarning2",
-#                 title=NULL, 
-#                 message="Warning: Colors get recycled for attributes with more than nine levels.",
-#                 type="warning", dismiss=TRUE, 
-#                 block=FALSE, append=FALSE)
-#   }
-# })
-
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
               label = 'Size nodes according to:',
@@ -3217,7 +3261,8 @@ output$simplot <- renderPlot({
          vertex.cex = nodesize2())
   }
   if(input$colorby2 != 2){
-      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2(),
+      legend('bottomright', title=input$colorby2, 
+             legend = legendlabels2(), fill = legendfill2(),
              bty='n')
     }
   
@@ -3244,7 +3289,8 @@ output$simplotdownload <- downloadHandler(
            vertex.cex = nodesize2())
     }
     if(input$colorby2 != 2){
-      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2())
+      legend('bottomright', title=input$colorby2, 
+             legend = legendlabels2(), fill = legendfill2())
     }
     dev.off()
   }
