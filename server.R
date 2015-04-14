@@ -1216,16 +1216,32 @@ bernoullisamples <- reactive({
 
 #DEGREE DISTRIBUTION
 
+output$dynamiccmode_dd <- renderUI({
+  menu <- c()
+  if(is.network(nw())){
+    menu <- c("total" = "freeman")
+    if(is.directed(nw())){
+      menu <- c("total" = "freeman",
+                "indegree",
+                "outdegree")
+    }
+  }
+  selectInput("cmode_dd",
+              label = "Type of degree",
+              choices = menu)
+})
+outputOptions(output,'dynamiccmode_dd',suspendWhenHidden=FALSE, priority=10)
+
 output$dynamiccolor_dd <- renderUI({
   menu <- menuattr()
   if(is.network(nw())){
-  if(input$cmode == "freeman" & is.directed(nw())){
-    menu <- c()
-  }
-  selectInput('colorby_dd',
-              label = 'Color bars according to:',
-              c('None', menu),
-              selected = 'None')
+    if(input$cmode_dd == "freeman" & is.directed(nw())){
+      menu <- c()
+    }
+    selectInput('colorby_dd',
+                label = 'Color bars according to:',
+                c('None', menu),
+                selected = 'None')
   }
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
@@ -1255,7 +1271,7 @@ dd_plotdata <- reactive({
   } else {
     diag <- FALSE
   }
-  deg <- degree(nw(), gmode=gmode, cmode=input$cmode, diag=diag)
+  deg <- degree(nw(), gmode=gmode, cmode=input$cmode_dd, diag=diag)
   data <-tabulate(deg)
   data <- append(data,sum(deg==0),after=0)
   maxdeg <- max(deg)
@@ -1264,9 +1280,9 @@ dd_plotdata <- reactive({
   #for color-coded bars
   if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
     if(is.directed(nw())){
-      if(input$cmode=='indegree'){
+      if(input$cmode_dd=='indegree'){
         data <- summary(nw() ~ idegree(0:maxdeg, input$colorby_dd))
-      } else if(input$cmode=='outdegree'){
+      } else if(input$cmode_dd=='outdegree'){
         data <- summary(nw() ~ odegree(0:maxdeg, input$colorby_dd))
       } else {
         return('Cannot color code a directed graph using total degree.')
@@ -1280,19 +1296,6 @@ dd_plotdata <- reactive({
   data
 })
 
-# observe({
-#   if(!is.null(input$colorby_dd)){
-#     if(input$colorby_dd != "None"){
-#       if(dim(dd_plotdata())[1]>9){
-#         createAlert(session, inputId = "colorwarning_dd",
-#                     title=NULL, 
-#                     message="Warning: Colors get recycled for attributes with more than nine levels.",
-#                     type="warning", dismiss=TRUE, 
-#                     block=FALSE, append=FALSE)
-#       }
-#     }
-#   }
-# })
 
 dd_uniformoverlay <- reactive({
   if(!is.network(nw())){
@@ -1300,9 +1303,9 @@ dd_uniformoverlay <- reactive({
   }
   reps <- 50 #number of draws
   if(is.directed(nw())){
-    deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode_dd)
   } else {
-    deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode_dd)
   }
     #now deg is a matrix where each element is a degree of a node 
     #each column is a different draw
@@ -1325,9 +1328,9 @@ dd_bernoullioverlay <- reactive({
   reps = 50
   density <- gden(nw())
   if(is.directed(nw())){
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', cmode=input$cmode_dd)
   } else {
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', cmode=input$cmode_dd)
   }
   #now deg is a matrix where each element is a degree of a node 
   #each column is a different draw
@@ -1364,6 +1367,7 @@ output$degreedist <- renderPlot({
   plotme <- dd_plotdata()
   color <- "#79AED4"
   ylabel <- "Count of Nodes"
+  xlabel <- "Degree"
   ltext <- c()
   lcol <- c() #color for lines
   lty <- c()
@@ -1371,23 +1375,30 @@ output$degreedist <- renderPlot({
   lfill <- c() #color for boxes
   lborder <- c()
   ltitle <- NULL
+  
+  if(input$cmode_dd == "indegree"){
+    xlabel <- "In Degree"
+  } else if (input$cmode_dd == "outdegree"){
+    xlabel <- "Out Degree"
+  }
+  
   if(!is.null(input$colorby_dd)){
-  if(input$colorby_dd != "None"){
-    ncolors <- dim(dd_plotdata())[1]
-    if(ncolors == 2){
-      color <- c("#eff3ff", "#377FBC")
-    } else if(ncolors < 10){
-      color <- brewer.pal(ncolors,"Blues")
-    } else if(ncolors >= 10){
-      color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
-    }
-    ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
-    ltext <- append(ltext, "")
-    lfill <- c(color, 0)
-    lborder <- append(lborder, c(rep("black", times=ncolors), 0))
-    lty <- rep(0, times=ncolors+1)
-    lpch <- rep(26, times=ncolors+1)
-    ltitle <- input$colorby_dd
+    if(input$colorby_dd != "None"){
+      ncolors <- dim(dd_plotdata())[1]
+      if(ncolors == 2){
+        color <- c("#eff3ff", "#377FBC")
+      } else if(ncolors < 10){
+        color <- brewer.pal(ncolors,"Blues")
+      } else if(ncolors >= 10){
+        color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+      }
+      ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
+      ltext <- append(ltext, "")
+      lfill <- c(color, 0)
+      lborder <- append(lborder, c(rep("black", times=ncolors), 0))
+      lty <- rep(0, times=ncolors+1)
+      lpch <- rep(26, times=ncolors+1)
+      ltitle <- input$colorby_dd
   }}
   
   unif_samplemeans <- dd_uniformoverlay()[[1]]
@@ -1449,7 +1460,7 @@ output$degreedist <- renderPlot({
   }
   
   #save x-coordinates of bars, so that points are centered on bars
-  bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
+  bar_axis <- barplot(plotme, xlab=xlabel, ylab=ylabel,
                       col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
     points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
