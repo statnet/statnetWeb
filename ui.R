@@ -590,9 +590,11 @@ url = {http://statnetproject.org}
                    h5('Node-level descriptive indices',
                       icon('angle-double-left'), id="nodeleveltitle"),
                    wellPanel(id="nodelevelbox",
-                     span('Input node index:'),
-                     numericInput('nodeind', label=NULL, value=1,
-                                min=1),
+                     fluidRow(
+                         column(2,span("Node index:")),
+                         column(5, numericInput('nodeind', label=NULL, value=1,
+                                                min=1))
+                         ),
                      tags$hr(),
                      fluidRow(
                        column(2, offset=3, tags$u('Current node')),
@@ -701,11 +703,11 @@ url = {http://statnetproject.org}
                                                             'outdegree'),
                                                  selected = 'freeman'),
                                      uiOutput('dynamiccolor_dd'),
-                                     p("Y-axis units:"),
+                                     tags$label("Y-axis units:"), br(),
                                      actionButton("countButton_dd", label="Count of nodes", class="btn-sm"),
                                      actionButton("percButton_dd", label="Percent of nodes", class="btn-sm"),
                                      br(), br(),
-                                     p('Expected values of null models:'),
+                                     tags$label('Expected values of null models:'), br(),
                                      fluidRow(
                                        column(10,
                                               checkboxInput('uniformoverlay_dd', 
@@ -733,11 +735,11 @@ url = {http://statnetproject.org}
                                      downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
                       ),
                     conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
-                                     p("Y-axis units:"),
+                                     tags$label("Y-axis units:"), br(),
                                      actionButton("countButton_gd", "Count of nodes", class="btn-sm"),
                                      actionButton("percButton_gd", "Percent of nodes", class="btn-sm"),
                                      br(), br(),
-                                     p('Expected values of null models:'),
+                                     tags$label('Expected values of null models:'), br(),
                                      fluidRow(
                                        column(10,
                                          checkboxInput('uniformoverlay_gd', 
@@ -851,7 +853,7 @@ url = {http://statnetproject.org}
                         inlineSelectInput('controltype',label=NULL, 
                                           choices=c("MCMC","MCMLE"),
                                           style="margin-top:10px;")),
-                      column(4,
+                      column(5,
                         checkboxInput('controldefault','Use default options', value=TRUE))
                     ),
                         conditionalPanel(condition="input.controltype == 'MCMC'", class="shiftright",
@@ -878,8 +880,8 @@ url = {http://statnetproject.org}
                                                     span("control.ergm,", style="font-family:Courier;"),
                                                     "e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
                                                     img(src="callout2.png",class="callout")),
-                                  span("Other controls:"),
-                                  customTextInput("customMCMCcontrol",label=NULL,value="",class="input-small"))
+                                  span("Other controls:", class="shiftright"),
+                                  customTextInput("customMCMCcontrol", label=NULL, value="", class="input-small"))
                             )),
                         conditionalPanel(condition="input.controltype == 'MCMLE'",
                                          p("Coming soon"))
@@ -1088,7 +1090,7 @@ actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                                                      "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
                                                                      ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
                                                                      img(src="callout2.png",class="callout")),
-                                                  span("Other controls:"),
+                                                  span("Other controls:", class="shiftright"),
                                                   textInput("simcustomMCMCcontrol",label=NULL,value=""))
                                        )),
                                      conditionalPanel(condition="input.simcontroltype == 'Parallel'",
