@@ -74,7 +74,8 @@ $(document).ready(function(){
   });
   
   $("#closewarning1").click(function(){
-    $("#colorwarning1").toggle(500);
+    $("#colorwarning1").hide();
+    $("#closewarning1").hide();
   });
   
   $("#ddhelper").click(function(){

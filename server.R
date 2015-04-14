@@ -1123,19 +1123,12 @@ output$dynamiccolor <- renderUI({
               label = 'Color nodes according to:',
               c('None' = 2, attrib()))
 })
-outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
+outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
 
-output$colorwarning <- renderUI({
-  if(length(legendlabels())>9){
-    column(10,
-           p(id = "closewarning1", icon(name = "remove"), class = "warning"),
-           div(class = "warning", id = "colorwarning1",
-               span(tags$u("Note:"), br(), 
-                    "Color palette becomes a gradient for attributes with more than nine levels.")
-           )
-    )
-  }
+output$attrlevels <- renderText({
+  return(length(legendlabels()))
 })
+outputOptions(output,'attrlevels', suspendWhenHidden=FALSE, priority=10)
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',
