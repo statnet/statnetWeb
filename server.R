@@ -1125,10 +1125,19 @@ output$dynamiccolor <- renderUI({
 })
 outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
 
+# need this to know when color palette will change
 output$attrlevels <- renderText({
   return(length(legendlabels()))
 })
 outputOptions(output,'attrlevels', suspendWhenHidden=FALSE, priority=10)
+
+# # reactivate colorwarning when network changes
+# observeEvent(nw(),{
+#   tags$script(HTML(
+#     "document.getElementById('colorwarning1').style.display = 'block'"))
+#   tags$script(HTML(
+#     "document.getElementById('closewarning1').style.display = 'block'"))
+# })
 
 output$dynamicsize <- renderUI({
   selectInput('sizeby',

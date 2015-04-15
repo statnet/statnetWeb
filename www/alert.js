@@ -78,6 +78,11 @@ $(document).ready(function(){
     $("#closewarning1").hide();
   });
   
+  //$("#samplenet").change(function(){
+  //  $("#colorwarning1").show();
+  //  $("#closewarning1").show();
+  //});
+  
   $("#ddhelper").click(function(){
     $("#ddhelperbox").toggle(500);
   });
