@@ -249,7 +249,8 @@ p.warning:hover {
 }
 
 #simButton,
-.chromewarning {
+#matchingButton,
+#allButton {
   margin-bottom:10px;
 }
 
