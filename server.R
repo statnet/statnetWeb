@@ -756,6 +756,7 @@ values$modeltotal <- 0
 values$modelcoefs <- list()
 values$modelformulas <- list()
 values$modelfits <- list()
+values$modelsumstats <- list()
 
 observeEvent(input$savemodelButton, {
   if(input$fitButton > 0){
@@ -766,15 +767,16 @@ observeEvent(input$savemodelButton, {
     }
   }
 })
-observe({
+observeEvent(values$modeltotal, {
   # Add to lists that hold info for each model
   # values$modelcoefs is a list object, each element is a list of 
   # coefficients and stars for a single model
   m <- values$modeltotal
   if(m > 0 & m <= 5){
-    values$modelcoefs[[m]] <- isolate(ergminfo(model1reac()))
-    values$modelformulas[[m]] <- isolate(ergm.terms())
-    values$modelfits[[m]] <- isolate(model1reac())
+    values$modelcoefs[[m]] <- ergminfo(model1reac())
+    values$modelformulas[[m]] <- ergm.terms()
+    values$modelfits[[m]] <- model1reac()
+    values$modelsumstats[[m]] <- summary(ergm.formula())
   }
 })
 
@@ -784,6 +786,7 @@ observeEvent(input$clearmodelButton, {
   values$modelcoefs <- list()
   values$modelformulas <- list()
   values$modelfits <- list()
+  values$modelsumstats <- list()
 })
 observe({
   #clear saved models when network changes
@@ -792,6 +795,7 @@ observe({
     values$modelcoefs <- list()
     values$modelformulas <- list()
     values$modelfits <- list()
+    values$modelsumstats <- list()
   }
 })
 
@@ -2531,26 +2535,29 @@ output$modelfitsum <- renderPrint({
 })
 
 output$modelfitdownload <- downloadHandler(
-  filename = function() {paste0(nwname(),"_modelfit.txt")},
+  filename = function() {paste0(nwname(), "_modelfit.txt")},
   contentType = "text/csv",
   content = function(file) {
-    capture.output(summary(model1reac()),file=file)
+    capture.output(summary(model1reac()), file = file)
   }
 )
 
 output$modelcomparison <- renderPrint({
   x <- values$modelcoefs
-  if(length(x)==0){return(cat(""))}
-  model.comparison(x)
+  y <- values$modelsumstats
+  if(length(x) == 0){return(cat(""))}
+  coef.comparison(x)
+  cat("\n\n","Summary Statistics", "\n")
+  stat.comparison(y)
 })
 
 output$modelcompdownload <- downloadHandler(
-  filename = function() {paste0(nwname(),"_modelcomparison.txt")},
+  filename = function() {paste0(nwname(), "_modelcomparison.txt")},
   contentType = "text/csv",
   content = function(file) {
     x <- values$modelcoefs
-    x <- model.comparison(x)
-    capture.output(cat(nwname(),"\n"),x,file=file)
+    x <- coef.comparison(x)
+    capture.output(cat(nwname(),"\n"), x, file = file)
   }
 )
 
@@ -2561,8 +2568,8 @@ output$modelcompdownload <- downloadHandler(
 #observers, but this is the best and least complicated (and the only 
 #one that works)
 
-outputOptions(output, "modelfit",priority=10, suspendWhenHidden=FALSE)
-outputOptions(output, "modelfitsum",priority=-10)
+outputOptions(output, "modelfit",priority = 10, suspendWhenHidden = FALSE)
+outputOptions(output, "modelfitsum",priority = -10)
 
 #' **Diagnostics - MCMC Diagnostics**
 #' 
