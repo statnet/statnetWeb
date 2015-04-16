@@ -821,7 +821,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                        span(class="tip", "Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
                        textInput(inputId="terms", label=NULL, value="edges")
                    ),
-                   actionButton('addtermButton', 'Add Term(s)', class="btn-sm"),
+                   actionButton('addtermButton', 'Add Term(s)', class="btn-primary btn-sm"),
                             actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
                             
                    
