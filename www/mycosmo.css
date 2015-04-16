@@ -2658,6 +2658,15 @@ fieldset[disabled] .radio-inline,
 fieldset[disabled] .checkbox-inline {
   cursor: not-allowed;
 }
+
+input[type="text"][disabled],
+input[type="number"][disabled],
+input[type="text"].disabled,
+input[type="number"].disabled {
+  color: #c4c4c4;
+  background-color: #f5f5f5;
+}
+
 .radio.disabled label,
 .checkbox.disabled label,
 fieldset[disabled] .radio label,
