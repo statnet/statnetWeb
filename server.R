@@ -2556,8 +2556,11 @@ output$modelcompdownload <- downloadHandler(
   contentType = "text/csv",
   content = function(file) {
     x <- values$modelcoefs
-    x <- coef.comparison(x)
-    capture.output(cat(nwname(),"\n"), x, file = file)
+    y <- values$modelsumstats
+    capture.output(cat(nwname(),"\n"), coef.comparison(x),
+                   cat("\n\n","Summary Statistics", "\n"),
+                   stat.comparison(y),
+                   file = file)
   }
 )
 
@@ -2568,8 +2571,8 @@ output$modelcompdownload <- downloadHandler(
 #observers, but this is the best and least complicated (and the only 
 #one that works)
 
-outputOptions(output, "modelfit",priority = 10, suspendWhenHidden = FALSE)
-outputOptions(output, "modelfitsum",priority = -10)
+outputOptions(output, "modelfit", priority = 10, suspendWhenHidden = FALSE)
+outputOptions(output, "modelfitsum", priority = -10)
 
 #' **Diagnostics - MCMC Diagnostics**
 #' 
