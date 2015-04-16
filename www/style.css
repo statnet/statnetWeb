@@ -22,21 +22,20 @@ div.tool {
   display:inline;
 }
 
-div.tool span.tip {
+div.tool .tip {
     z-index:10;
     display:none; 
     padding:2px 3px;
-    margin-top:40px; 
+    margin-top:8px; 
     margin-left:5px;
     font-size:12px;
     max-width:300px;
 }
 #statstip,
-#controltip,
 #controltip2 {
   margin-top:60px;
 }
-div.tool:hover span.tip{
+div.tool:hover .tip{
   display:inline; 
   position:absolute; 
   color:#333333;

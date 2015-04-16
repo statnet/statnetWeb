@@ -818,11 +818,13 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
             column(4,
                    p("ERGM terms:"),
                    div(class="tool",
-                       span(class="tip", "Type in term(s) and their arguments. For multiple terms, separate with '+'. "),
-                       textInput(inputId="terms", label=NULL, value="edges")
+                       textInput(inputId="terms", label=NULL, value="edges"),
+                       span(class="tip", "Type in term(s) and their arguments.",
+                            "For multiple terms, separate with '+'. ",
+                            img(src = "callout2.png", class = "callout"))
                    ),
                    actionButton('addtermButton', 'Add Term(s)', class="btn-primary btn-sm"),
-                            actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
+                   actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
                             
                    
             ),
@@ -883,13 +885,14 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                              
                           fluidRow(
                               div(class = "tool",
+                                  span("Other controls:", class = "shiftright"),
+                                  customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small"),
+                                  br(),
                                   span(class = "tip", id = "controltip",
                                        "Type in other arguments to be passed to", 
                                        span("control.ergm,", style = "font-family:Courier;"),
                                        "e.g.", span("MCMC.burnin.retries = 1", style = "font-family:Courier;"), 
-                                       img(src = "callout2.png", class = "callout")),
-                                  span("Other controls:", class = "shiftright"),
-                                  customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small")
+                                       img(src = "callout2.png", class = "callout"))
                                   )
                             )),
                         conditionalPanel(condition = "input.controltype == 'MCMLE'",
