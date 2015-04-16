@@ -31,8 +31,7 @@ div.tool .tip {
     font-size:12px;
     max-width:300px;
 }
-#statstip,
-#controltip2 {
+#statstip {
   margin-top:60px;
 }
 div.tool:hover .tip{

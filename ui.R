@@ -862,6 +862,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                             column(4, class = "tool", 
                                    span("Interval:"),
                                    customNumericInput('MCMCinterval', label = NULL, value = 1024, class = "mcmcopt input-mini"),
+                                   br(),
                                    span(class = "tip", "Number of proposals between sampled statistics.", 
                                         img(src = "callout2.png", class = "callout"))
                                    ),
@@ -869,6 +870,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                             column(4,class = "tool",
                                    span("Burn-in:"),
                                    customNumericInput('MCMCburnin', label = NULL, value = 16384, class = "mcmcopt input-mini"),
+                                   br(),
                                    span(class = "tip", "Number of proposals before any MCMC sampling is done.",
                                         "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
                                         img(src = "callout2.png", class = "callout")) 
@@ -877,6 +879,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                             column(4,class = "tool",
                                    span("Sample size:"),
                                    customNumericInput('MCMCsamplesize', label = NULL, value = 1024, class = "mcmcopt input-mini"),
+                                   br(),
                                    span(class = "tip", "Number of network statistics, randomly drawn from a given distribution", 
                                         "on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
                                         img(src = "callout2.png", class = "callout"))
@@ -1087,23 +1090,33 @@ tabPanel(title='Simulations', value='tab7',
                            ),
                            conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
                              fluidRow(
-                                    div(class="tool", span(class="tip","Number of proposals between sampled statistics.", 
-                                                           img(src="callout2.png",class="callout")),
+                                    column(5, class="tool", 
                                         span("Interval:"),
-                                        customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
-                                    div(class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                                          img(src="callout2.png",class="callout")),  
+                                        customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini"),
+                                        br(),
+                                        span(class="tip","Number of proposals between sampled statistics.", 
+                                             img(src="callout2.png",class="callout"))
+                                        ),
+                                    column(5, class="tool",
                                         span("Burn-in:"),
-                                        customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"))
+                                        customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"),
+                                        br(),
+                                        span(class="tip","Number of proposals before any MCMC sampling is done.", 
+                                                          "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
+                                                          img(src="callout2.png",class="callout")) 
+                                        )
                                     
                              ),
                              fluidRow(
-                                    div(class="tool", span(class="tip", id="controltip2",
-                                                           "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
-                                                           ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
-                                                           img(src="callout2.png",class="callout")),
+                                    div(class="tool", 
                                         span("Other controls:"),
-                                        customTextInput("simcustomMCMCcontrol",label=NULL,value=""))
+                                        customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
+                                        br(),
+                                        span(class="tip", id="controltip2",
+                                             "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
+                                             ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
+                                             img(src="callout2.png",class="callout"))
+                                        )
                              )),
                            conditionalPanel(condition="input.simcontroltype == 'Parallel'",
                                            p("Coming soon"))
