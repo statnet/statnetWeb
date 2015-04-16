@@ -841,48 +841,58 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(id="termdocbox",
                       verbatimTextOutput("termdoc")
                     ),
-                  div(id="termexpand",
-                      icon(name="expand"))
+                  div(id = "termexpand",
+                      icon(name = "expand"))
                   )
                  ),
                  tabPanel("Control Options",
-                    div(class="placeholder",
+                    div(class = "placeholder",
                     fluidRow(
                       column(3,
-                        inlineSelectInput('controltype',label=NULL, 
-                                          choices=c("MCMC","MCMLE"),
-                                          style="margin-top:10px;")),
+                        inlineSelectInput('controltype',label = NULL, 
+                                          choices = c("MCMC","MCMLE"),
+                                          style = "margin-top:10px;")),
                       column(5,
-                        checkboxInput('controldefault','Use default options', value=TRUE))
+                        checkboxInput('controldefault', 'Use default options', value = TRUE))
                     ),
-                        conditionalPanel(condition="input.controltype == 'MCMC'", class="shiftright",
+                        conditionalPanel(condition = "input.controltype == 'MCMC'", class = "shiftright",
                           fluidRow(
-                            column(4,class="tool", span(class="tip","Number of proposals between sampled statistics.", 
-                                                   img(src="callout2.png",class="callout")),
-                                span("Interval:"),
-                                customNumericInput('MCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini")),
+                            column(4, class = "tool", 
+                                   span("Interval:"),
+                                   customNumericInput('MCMCinterval', label = NULL, value = 1024, class = "mcmcopt input-mini"),
+                                   span(class = "tip", "Number of proposals between sampled statistics.", 
+                                        img(src = "callout2.png", class = "callout"))
+                                   ),
                             
-                            column(4,class="tool",span(class="tip","Number of proposals before any MCMC sampling is done. Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                                  img(src="callout2.png",class="callout")),  
-                              span("Burn-in:"),
-                              customNumericInput('MCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini")),
+                            column(4,class = "tool",
+                                   span("Burn-in:"),
+                                   customNumericInput('MCMCburnin', label = NULL, value = 16384, class = "mcmcopt input-mini"),
+                                   span(class = "tip", "Number of proposals before any MCMC sampling is done.",
+                                        "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
+                                        img(src = "callout2.png", class = "callout")) 
+                                   ),
                             
-                            column(4,class="tool",span(class="tip","Number of network statistics, randomly drawn from a given distribution on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
-                                                  img(src="callout2.png",class="callout")),  
-                              span("Sample size:"),
-                              customNumericInput('MCMCsamplesize', label=NULL, value=1024, class="input-mini mcmcopt"))
+                            column(4,class = "tool",
+                                   span("Sample size:"),
+                                   customNumericInput('MCMCsamplesize', label = NULL, value = 1024, class = "mcmcopt input-mini"),
+                                   span(class = "tip", "Number of network statistics, randomly drawn from a given distribution", 
+                                        "on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
+                                        img(src = "callout2.png", class = "callout"))
+                                   )
                           ),
                              
                           fluidRow(
-                              div(class="tool",span(class ="tip", id="controltip",
-                                                    "Type in other arguments to be passed to", 
-                                                    span("control.ergm,", style="font-family:Courier;"),
-                                                    "e.g.", span("MCMC.burnin.retries=1", style="font-family:Courier;"), 
-                                                    img(src="callout2.png",class="callout")),
-                                  span("Other controls:", class="shiftright"),
-                                  customTextInput("customMCMCcontrol", label=NULL, value="", class="input-small"))
+                              div(class = "tool",
+                                  span(class = "tip", id = "controltip",
+                                       "Type in other arguments to be passed to", 
+                                       span("control.ergm,", style = "font-family:Courier;"),
+                                       "e.g.", span("MCMC.burnin.retries = 1", style = "font-family:Courier;"), 
+                                       img(src = "callout2.png", class = "callout")),
+                                  span("Other controls:", class = "shiftright"),
+                                  customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small")
+                                  )
                             )),
-                        conditionalPanel(condition="input.controltype == 'MCMLE'",
+                        conditionalPanel(condition = "input.controltype == 'MCMLE'",
                                          p("Coming soon"))
                         )))
                      )
