@@ -47,3 +47,9 @@ disableWidget <- function(id, session, disabled=TRUE){
                                               sep="")))
   }
 }
+
+# function to pass to cug.test
+cugFUN <- function(nw, term) {
+  nwname <- quote(nw)
+  summary.formula(as.formula(paste(nwname, "~", term)))
+}
