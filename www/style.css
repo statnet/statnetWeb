@@ -85,7 +85,7 @@ div.busy {
 #swciteButton,
 #sciteButton {
   padding: 5px;
-  border-radius: 0px;
+  border-radius: 4px;
   border:1px solid #CECED8;
   background: rgb(230, 230, 230);
   cursor: pointer;
@@ -239,9 +239,6 @@ p.warning:hover {
   margin-top:10px;
 }
 
-#fitButton {
-  border-style:groove;
-}
 #savemodel {
   display:inline;
 }
