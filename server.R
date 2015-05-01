@@ -1957,7 +1957,6 @@ observe({
 })
 
 output$dynamiccugterm <- renderUI({
-  
   if(is.directed(nw())){
     choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
                  "transitive triads" = "transitive", "twopath")
@@ -1967,6 +1966,7 @@ output$dynamiccugterm <- renderUI({
   selectInput("cugtestterm", label = "Select the term",
               choices = choices)
 })
+outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
 
 output$cugtest <- renderPlot({
   if(!is.network(nw())) {return()}
