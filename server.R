@@ -64,7 +64,6 @@ library(network)
 library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
-#source("chooser.R")
 source("modelcomp.R")
 
 #' Loading data and assigning variables outside of the call to `shinyServer`
@@ -1955,6 +1954,43 @@ observe({
   if(input$plottabs == "More"){
     updateTabsetPanel(session, 'displaytabs', selected="Network Summary")
   }
+})
+
+output$dynamiccugterm <- renderUI({
+  
+  if(is.directed(nw())){
+    choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
+                 "transitive triads" = "transitive", "twopath")
+  } else {
+    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
+  }
+  selectInput("cugtestterm", label = "Select the term",
+              choices = choices)
+})
+
+output$cugtest <- renderPlot({
+  if(!is.network(nw())) {return()}
+  term <- input$cugtestterm
+  n <- nodes()
+  obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+  
+  simvals <- cugsims(nw(), term = term)
+  
+  BRGcol <- adjustcolor("firebrick")
+  CUGcol <- adjustcolor("orangered")
+  obsblue <- "royalblue2"
+  tgray <- adjustcolor("gray", alpha.f = 0.4)
+  
+  hist(simvals[,1], col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+       xlab= NULL, xlim = range(simvals, obsval))
+  hist(simvals[,2], col = tgray, border = BRGcol, ylab = NULL, main = NULL, 
+       xlab= NULL, add = TRUE)
+  abline(v = obsval, col = obsblue, lwd = 2)
+  
+  legend(x = "topright", bty = "n", 
+         legend = c("observed value", "CUG distribution", "BRG distribution"), 
+         lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
+         border = c(0, CUGcol, BRGcol), merge = TRUE)
 })
 
 #since the visibility toggles between two states, set the options to 

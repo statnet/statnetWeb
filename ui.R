@@ -49,8 +49,6 @@
 #+ setup, eval=FALSE
 # load necessary packages
 library(shiny)
-#library(shinythemes)
-#source("chooser.R") #need this for Kirk's widget that moves items left/right
 
 
 #' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
@@ -503,6 +501,8 @@ fluidRow(
                plotOutput('geodistplot')
                ),
       tabPanel('More', value='More', br(),
+               uiOutput("dynamiccugterm"),
+               plotOutput("cugtest"),
                h5('Mixing Matrix', icon('angle-double-left'), 
                   id="mixmxtitle"),
                wellPanel(id="mixmxbox",
