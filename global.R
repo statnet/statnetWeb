@@ -48,8 +48,52 @@ disableWidget <- function(id, session, disabled=TRUE){
   }
 }
 
-# function to pass to cug.test
-cugFUN <- function(nw, term) {
-  nwname <- quote(nw)
-  summary.formula(as.formula(paste(nwname, "~", term)))
+# function to return tests on simulated graphs
+cugsims <- function(nw, term) {
+  
+  n <- nw$gal$n
+  s <- network.edgecount(nw)
+  if(nw$gal$directed){
+    mode <- "digraph"
+  } else {
+    mode <- "graph"
+  }
+  dens <- gden(nw, mode = mode)
+  
+  simvals <- NULL
+  
+  for (i in 1:500){
+      
+    Ybrg <- matrix(rbinom(n^2, 1, dens), n, n)
+    if(nw$gal$loops == FALSE){
+      diag(Ybrg) <- NA
+    }
+    if(mode == "graph"){
+      Ybrg <- symmetrize(Ybrg, rule = "upper")
+    }
+    
+      
+    Ycug <- matrix(0, n, n)
+    diag(Ycug) <- NA
+    if(mode == "graph"){
+      Ycug[upper.tri(Ycug)] <- sample(c(rep(1, s), rep(0, n*(n-1)/2-s)))
+      if(nw$gal$loops){
+        Ycug[upper.tri(Ycug, diag = TRUE)] <- sample(c(rep(1, s), 
+                                                       rep(0, n*(n-1)/2-s+n)))
+      }
+      Ycug <- symmetrize(Ycug, rule = "upper")
+    } else {
+      Ycug[!is.na(Ycug)] <- sample(c(rep(1,s), rep(0,n*(n-1)-s)))
+      if(nw$gal$loops){
+        Ycug <- matrix(sample(c(rep(1, s), rep(0, n*n - s))), n, n)
+      }
+    }
+      
+  nwcug <- network(Ycug, directed = nw$gal$directed, loops = nw$gal$loops)
+  nwbrg <- network(Ybrg, directed = nw$gal$directed, loops = nw$gal$loops)
+  val <- c(summary.formula(as.formula(paste("nwcug ~", term))),
+           summary.formula(as.formula(paste("nwbrg ~", term))))
+  simvals <- rbind(simvals, val)
+  }
+  return(simvals)
 }
