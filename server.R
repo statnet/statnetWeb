@@ -1981,10 +1981,13 @@ output$cugtest <- renderPlot({
   obsblue <- "royalblue2"
   tgray <- adjustcolor("gray", alpha.f = 0.4)
   
+  
+  brghist <- hist(simvals[,2], plot = FALSE)
   hist(simvals[,1], col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
-       xlab= NULL, xlim = range(simvals, obsval))
-  hist(simvals[,2], col = tgray, border = BRGcol, ylab = NULL, main = NULL, 
-       xlab= NULL, add = TRUE)
+       xlab= NULL, xlim = range(simvals, obsval), 
+       breaks = brghist$breaks)
+  hist(simvals[,2], col = tgray, border = BRGcol, ylab = NULL, 
+       main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
   abline(v = obsval, col = obsblue, lwd = 2)
   
   legend(x = "topright", bty = "n", 
