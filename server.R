@@ -659,6 +659,24 @@ legendfill <- reactive({
   legendfill
 })
 
+#simulated graphs for cug tests
+cugsims <- reactive({
+  if(!is.null(nw())){
+    if (is.directed(nw())){
+      mode <- "digraph"
+    } else {
+      mode <- "graph"
+    }
+    
+    brgsims <- rgraph(n = nodes(), m = 500, tprob = gden(nw()), mode = mode, 
+                      diag = nw()$gal$loops)
+    cugsims <- rgnm(n = 500, nv = nodes(), m = nedges(), mode = mode,
+                    diag = nw()$gal$loops)
+    
+    return(list(brgsims, cugsims))
+  }
+})
+
 #' ERGM fitting:  
 #' `ergm.terms` is a compilation of all the terms entered,
 #' which we then use to create a complete formula. 
@@ -1974,7 +1992,10 @@ output$cugtest <- renderPlot({
   n <- nodes()
   obsval <- summary.formula(as.formula(paste("nw() ~", term)))
   
-  simvals <- cugsims(nw(), term = term)
+  brgvals <- apply(cugsims()[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+                   directed = nw()$gal$directed, loops = nw()$gal$loops)
+  cugvals <- apply(cugsims()[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+                   directed = nw()$gal$directed, loops = nw()$gal$loops)
   
   BRGcol <- adjustcolor("firebrick")
   CUGcol <- adjustcolor("orangered")
@@ -1982,11 +2003,11 @@ output$cugtest <- renderPlot({
   tgray <- adjustcolor("gray", alpha.f = 0.4)
   
   
-  brghist <- hist(simvals[,2], plot = FALSE)
-  hist(simvals[,1], col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
-       xlab= NULL, xlim = range(simvals, obsval), 
+  brghist <- hist(brgvals, plot = FALSE)
+  hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+       xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
        breaks = brghist$breaks)
-  hist(simvals[,2], col = tgray, border = BRGcol, ylab = NULL, 
+  hist(brgvals, col = tgray, border = BRGcol, ylab = NULL, 
        main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
   abline(v = obsval, col = obsblue, lwd = 2)
   
