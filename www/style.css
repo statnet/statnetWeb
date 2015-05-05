@@ -247,7 +247,8 @@ p.warning:hover {
 #linktitle2,
 #linktitle3,
 #linktitle4,
-#mixmxtitle, 
+#mixmxtitle,
+#cugtitle,
 #graphleveltitle,
 #nodeleveltitle {
   cursor: pointer;

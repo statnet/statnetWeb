@@ -115,6 +115,11 @@ $(document).ready(function(){
     $("#infhelperbox_gd").toggle(500);
   });
   
+  $("#cugtitle").click(function(){
+    $("#cugbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  
   $("#mixmxtitle").click(function(){
     $("#mixmxbox").toggle(1000);
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
