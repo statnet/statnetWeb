@@ -84,6 +84,7 @@ data(kapferer)
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
 obsblue <- "royalblue2"
+histblue <- "#4F74E3"
 tgray <- adjustcolor("gray", alpha.f = 0.4)
 
 options(digits=3)
@@ -1406,7 +1407,7 @@ output$degreedist <- renderPlot({
   input$samplenet
   
   plotme <- dd_plotdata()
-  color <- "#79AED4"
+  color <- histblue
   ylabel <- "Count of Nodes"
   xlabel <- "Degree"
   ltext <- c()
@@ -1547,7 +1548,7 @@ output$degreedistdownload <- downloadHandler(
   content = function(file){
     pdf(file=file, height=8, width=12)
     plotme <- dd_plotdata()
-    color <- "#79AED4"
+    color <- histblue
     ylabel <- "Count of Nodes"
     ltext <- c()
     lcol <- c() #color for lines
@@ -1813,7 +1814,7 @@ output$geodistplot <- renderPlot({
   lcol <- c()
   
   #save x-coordinates of bars, so that points are centered on bars
-  bar_axis <- barplot(gdata,  col="#79AED4",
+  bar_axis <- barplot(gdata,  col=histblue,
                       xlab = "Geodesic Value", ylab = ylabel,
                       ylim = c(0,ylimit), plot=TRUE)
   
@@ -1918,7 +1919,7 @@ output$geodistdownload <- downloadHandler(
     lcol <- c()
     
     #save x-coordinates of bars, so that points are centered on bars
-    bar_axis <- barplot(gdata,  col="#79AED4",
+    bar_axis <- barplot(gdata,  col=histblue,
                         xlab = "Geodesic Value", ylab = ylabel,
                         ylim = c(0,ylimit), plot=TRUE)
     
