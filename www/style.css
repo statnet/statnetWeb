@@ -4,6 +4,11 @@
 .navbar {min-height:40px; height:40px;}
 
 
+.codetxt {
+  color: #333333;
+  background-color: inherit;
+}
+
 #sWtitle {
   font-family:Courier;
   font-size:13pt;

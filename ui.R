@@ -321,7 +321,11 @@ fluidRow(
                                   'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
                                   'to use a save dialog box.')
                               )
-           ))
+           )),
+         conditionalPanel(
+           condition="input.filetype == 5 & input.samplenet != 'Choose a network'",
+           uiOutput("datadesc")
+           )
          ),
     tabPanel('Edit Network', br(),
          wellPanel(

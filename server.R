@@ -1075,6 +1075,134 @@ legendfill2 <- reactive({
 #+ eval=FALSE
 
 
+output$datadesc <- renderUI({
+  net <- input$samplenet
+  if(net == "ecoli1" | net == "ecoli2"){
+    text <- wellPanel(
+      p("The", code("ecoli", class = "codetxt"), 
+        "network data set comprises two versions of a", 
+        "biological network in which the nodes are operons in", 
+        em("Escherichia Coli"), "and a directed edge from one node to another", 
+        "indicates that the first encodes the transcription factor that", 
+        "regulates the second."),
+      p("The network object", code("ecoli1", class = "codetxt"), 
+        "is directed, with 423 nodes", "and 519 ties. The object", 
+        code("ecoli2", class = "codetxt"), "is an undirected", 
+        "version of the same network, in which the five isolated nodes",
+        "(which exhibit only self-regulation in", 
+        code("ecoli1", class = "codetxt"), "are removed, leaving 418 nodes."),
+      p("The data set is based on the RegulonDB network (Salgado et al, 2001)", 
+        "and was modified by Shen-Orr et al (2002)."),
+      strong("References"),
+      p("Salgado et al (2001), Regulondb (version 3.2): Transcriptional", 
+        "Regulation and Operon Organization in Escherichia Coli K-12,", 
+        em("Nucleic Acids Research,"), "29(1): 72-74."),
+      p("Shen-Orr et al (2002), Network Motifs in the Transcriptional", 
+        "Regulation Network of Escerichia Coli,", em("Nature Genetics,"), 
+        "31(1): 64-68.")
+    )
+  }
+  if(net == "faux.mesa.high"){
+    text <- wellPanel(
+      p("This data set represents a simulation of an in-school friendship", 
+        "network. The network is named faux.mesa.high because the school", 
+        "commnunity on which it is based is in the rural western US, with a", 
+        "student body that is largely Hispanic and Native American."),
+      p(code("faux.mesa.high", class = "codetxt"), "is a network object with", 
+        "205 vertices (students, in this case) and 203 undirected edges", 
+        "(mutual friendships)."),
+      p("The vertex attributes are Grade, Sex, and Race. The Grade attribute", 
+        "has values 7 through 12, indicating each student's grade in school.", 
+        "The Race attribute is based on the answers to two questions, one on", 
+        "Hispanic identity and one on race, and takes six possible values:", 
+        "White (non-Hisp.), Black (non-Hisp.), Hispanic, Asian (non-Hisp.),", 
+        "Native American, and Other (non-Hisp.)"),
+      p("The data set is based upon a model fit to data from one school", 
+        "community from the AddHealth Study, Wave I (Resnick et al., 1997).",
+        "The processes for constructing the network are described in Hunter,",
+        "Goodreau & Handcock (2008)"),
+      strong("References"),
+      p("Hunter D.R., Goodreau S.M. and Handcock M.S. (2008).", 
+        em("Goodness of Fit of Social Network Models, Journal of the American", 
+           "Statistical Association.")),
+      p("Resnick M.D., Bearman, P.S., Blum R.W. et al. (1997).", 
+        em("Protecting adolescents from harm. Findings from the National", 
+           "Longitudinal Study on Adolescent Health, Journal of the American", 
+           "Medical Association,"), "278: 823-32.")
+      )
+  }
+  if(net == "flobusiness" | net == "flomarriage"){
+    text <- wellPanel(
+      p("The two", code("florentine", class = "codetxt"), "networks are of", 
+        "marriage and business ties among Renaissance", 
+        "Florentine families. The data is originally from Padgett (1994) via", 
+        "UCINET and stored as", code("statnet", class = "codetxt"), 
+        "network objects."),
+      p("Breiger & Pattison (1986), in their discussion of local role analysis,", 
+        "use a subset of data on the social relations among Renaissance", 
+        "Florentine families (person aggregates) collected by John Padgett from", 
+        "historical documents.", code("flobusiness", class = "codetxt"),
+        "contains business ties - specifically, recorded", 
+        "financial ties such as loans, credits and joint partnerships.", 
+        code("flomarriage", class = "codetxt"), "contains marriage alliances."),
+      p("As Breiger & Pattison point out, the original data are symmetrically", 
+        "coded. This is acceptable perhaps for marital ties, but is unfortunate", 
+        "for the financial ties (which are almost certainly directed). Both", 
+        "graphs provide vertex information on (1) each family's net wealth in",
+        "1427 (in thousands of lira); (2) the number of priorates (seats on the", 
+        "civic council) held between 1282- 1344; and (3) the total number of", 
+        "business or marriage ties in the total dataset of 116 families", 
+        "(see Breiger & Pattison (1986), p 239)."),
+      p("Substantively, the data include families who were locked in a struggle", 
+        "for political control of the city of Florence around 1430. Two", 
+        "factions were dominant in this struggle: one revolved around the", 
+        "infamous Medicis (9), the other around the powerful Strozzis (15)."),
+      strong("References"),
+      p("Wasserman, S. and Faust, K. (1994)", 
+        em("Social Network Analysis: Methods and Applications,"), 
+        "Cambridge University Press, Cambridge, England."),
+      p("Breiger, R. and Pattison, P. (1986).", 
+        em("Cumulated social roles: The duality of persons and their algebras,"), 
+        "Social Networks, 8, 215-256.")
+      )
+  }
+  if(net == "kapferer" | net == "kapferer2"){
+    text <- wellPanel(
+      p('This well-known social network dataset, collected by Bruce Kapferer',
+        'in Zambia from June 1965 to August 1965, involves interactions among', 
+        'workers in a tailor shop as observed by Kapferer himself. Here, an', 
+        'interaction is defined by Kapferer as "continuous uninterrupted social', 
+        'activity involving the participation of at least two persons"; only', 
+        'transactions that were relatively frequent are recorded. All of the', 
+        'interactions in this particular dataset are "sociational", as opposed', 
+        'to "instrumental". Kapferer explains the difference (p. 164) as follows:'),
+      p('"I have classed as transactions which were sociational in content those', 
+        'where the activity was markedly convivial such as general conversation,', 
+        'the sharing of gossip and the enjoyment of a drink together. Examples', 
+        'of instrumental transactions are the lending or giving of money,', 
+        'assistance at times of personal crisis and help at work."'),
+      p("Kapferer also observed and recorded instrumental transactions, many of", 
+        "which are unilateral (directed) rather than reciprocal (undirected),", 
+        "though those transactions are not recorded here. In addition, there was", 
+        "a second period of data collection, from September 1965 to January 1966,", 
+        "but these data are also not recorded here. All data are given in", 
+        "Kapferer's 1972 book on pp. 176-179."),
+      p("During the first time period, there were 43 individuals working in this", 
+        "particular tailor shop; however, the better-known dataset includes only", 
+        "those 39 individuals who were present during both time collection", 
+        "periods. (Missing are the workers named Lenard, Peter, Lazarus, and", 
+        "Laurent.) Thus, we give two separate networks here:", 
+        code("kapferer", class = "codetxt"), "is the well-known 39-individual", 
+        "dataset, whereas", code("kapferer2", class = "codetxt"), "is the full", 
+        "43-individual dataset."),
+      strong("References"),
+      p("Kapferer, Bruce (1972), Strategy and Transaction in an African Factory,", 
+        "Manchester University Press.")
+    )
+  }
+  text
+})
+
 output$rawdatafile <- renderPrint({
   raw <- matrix(nrow=2,ncol=1)
   rownames(raw)<-c("name:", "size:")
