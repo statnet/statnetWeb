@@ -1077,6 +1077,7 @@ legendfill2 <- reactive({
 
 output$datadesc <- renderUI({
   net <- input$samplenet
+  text <- wellPanel()
   if(net == "ecoli1" | net == "ecoli2"){
     text <- wellPanel(
       p("The", code("ecoli", class = "codetxt"), 
@@ -1200,6 +1201,65 @@ output$datadesc <- renderUI({
         "Manchester University Press.")
     )
   }
+  if(net == "molecule") {
+    text <- wellPanel(
+      p(code("molecule", class = "codetxt"), 
+        "is a synthetic network of 20 nodes that is used as an example within", 
+        "the", code("ergm", class = "codetxt"), 
+        "documentation. It has an interesting elongated shape - reminencent of", 
+        "a chemical molecule."))
+  }
+  if(net == "samplike" | net == "samplk1" | net == "samplk2" | net == "samplk3"){
+    text <- wellPanel(
+      p('Sampson (1969) recorded the social interactions among a group of monks', 
+        'while resident as an experimenter on vision, and collected numerous', 
+        'sociometric rankings. During his stay, a political “crisis in the', 
+        'cloister" resulted in the expulsion of four monks (Nos. 2, 3, 17, and', 
+        '18) and the voluntary departure of several others - most immediately,', 
+        'Nos. 1, 7, 14, 15, and 16. (In the end, only 5, 6, 9, and 11 remained).', 
+        'Of particular interest is the data on positive affect relations', 
+        '(“liking"), in which each monk was asked if they had positive', 
+        'relations to each of the other monks.'),
+      p('The data were gathered at three times to capture changes in group', 
+        'sentiment over time:', code("samplk1, samplk2", class = "codetxt"), "and", 
+        code("samplk3.", class = "codetxt"), 'They represent three time points', 
+        'in the period during which a new cohort entered the monastery near the', 
+        'end of the study but before the major conflict began. Each member', 
+        'ranked only his top three choices on “liking." (Some subjects offered', 
+        'tied ranks for their top four choices). A tie from monk A to monk B',  
+        'exists if A nominated B as one of his three best friends at that that', 
+        'time point.'),
+      p(code("samplk3", class = "codetxt"), 
+        "is a data set of Hoff, Raftery and Handcock (2002)."),
+      p(code('samplike', class = "codetxt"), 
+        'is the time-aggregated graph. It is the cumulative tie for “liking"', 
+        'over the three periods. For this, a tie from monk A to monk B exists', 
+        'if A nominated B as one of his three best friends at any of the three', 
+        'time points.'),
+      p('The graphs have three vertex attributes: ',
+        tags$ul(
+          tags$li('Groups of novices as classified by Sampson: "Loyal",', 
+                  '"Outcasts", and "Turks". There is also an interstitial', 
+                  'group not represented here.'),
+          tags$li('An indicator of attendance the minor seminary of', 
+                  '“Cloisterville" before coming to the monastery.'),
+          tags$li('The given names of the novices.')
+          )),
+      strong("References"),
+      p("Sampson, S.F. (1968), A novitiate in a period of change:", 
+        em("An experimental and case study of relationships,"), 
+        "Unpublished Ph.D. dissertation, Department of Sociology,", 
+        "Cornell University."),
+      p("White, H.C., Boorman, S.A. and Breiger, R.L. (1976).", 
+        em("Social structure from multiple networks. I. Blockmodels of roles", 
+           "and positions."), "American Journal of Sociology, 81(4), 730-780."),
+      p("Wouter de Nooy, Andrej Mrvar, Vladimir Batagelj (2005)", 
+        em("Exploratory Social Network Analysis with Pajek,"), 
+        "Cambridge: Cambridge University Press")
+      
+      )
+  }
+  
   text
 })
 
