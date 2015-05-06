@@ -84,7 +84,7 @@ data(kapferer)
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
 obsblue <- "royalblue2"
-histblue <- "#4F74E3"
+histblue <- "#445FB0"
 tgray <- adjustcolor("gray", alpha.f = 0.4)
 
 options(digits=3)

@@ -215,9 +215,9 @@ p.warning:hover {
 .irs-bar {
   height: 8px;
   top: 25px;
-  border-top: 1px solid #4F74E3;
-  border-bottom: 1px solid #4F74E3;
-  background: #4F74E3;
+  border-top: 1px solid #2F4DA7;
+  border-bottom: 1px solid #2F4DA7;
+  background: #2F4DA7;
 }
 .irs-from, .irs-to, .irs-single {
   color: #fff;
@@ -225,16 +225,16 @@ p.warning:hover {
   line-height: 1.333;
   text-shadow: none;
   padding: 1px 3px;
-  background: #4F74E3;
+  background: #2F4DA7;
   border-radius: 3px;
 }
 .irs-bar-edge {
   height: 8px;
   top: 25px;
   width: 14px;
-  border: 1px solid #4F74E3;
+  border: 1px solid #2F4DA7;
   border-right: 0;
-  background: #4F74E3;
+  background: #2F4DA7;
   border-radius: 16px 0 0 16px;
 }
 
