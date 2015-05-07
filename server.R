@@ -83,7 +83,8 @@ data(kapferer)
 
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
-obsblue <- "royalblue2"
+#obsblue <- "royalblue2"
+obsblue <- "#304FAB"
 histblue <- "#445FB0"
 tgray <- adjustcolor("gray", alpha.f = 0.4)
 
@@ -2204,6 +2205,36 @@ output$cugtest <- renderPlot({
          lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
          border = c(0, CUGcol, BRGcol), merge = TRUE)
 })
+
+output$cugtestdownload <- downloadHandler(
+  filename = function(){paste(nwname(),'_',input$cugtestterm,'.pdf',sep='')},
+  content = function(file){
+    
+    if(!is.network(nw())) {return()}
+    term <- input$cugtestterm
+    n <- nodes()
+    obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+    
+    brgvals <- apply(cugsims()[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+                     directed = nw()$gal$directed, loops = nw()$gal$loops)
+    cugvals <- apply(cugsims()[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+                     directed = nw()$gal$directed, loops = nw()$gal$loops)
+  
+    brghist <- hist(brgvals, plot = FALSE)
+    hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+         xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+         breaks = brghist$breaks)
+    hist(brgvals, col = tgray, border = BRGcol, ylab = NULL, 
+         main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
+    abline(v = obsval, col = obsblue, lwd = 2)
+    
+    legend(x = "topright", bty = "n", 
+           legend = c("observed value", "CUG distribution", "BRG distribution"), 
+           lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
+           border = c(0, CUGcol, BRGcol), merge = TRUE)
+    dev.off()
+  }
+)
 
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden
