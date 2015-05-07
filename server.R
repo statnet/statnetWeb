@@ -2170,6 +2170,7 @@ observe({
 })
 
 output$dynamiccugterm <- renderUI({
+  if(!is.network(nw())){return()}
   if(is.directed(nw())){
     choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
                  "transitive triads" = "transitive", "twopath")
@@ -2193,10 +2194,10 @@ output$cugtest <- renderPlot({
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
   
   brghist <- hist(brgvals, plot = FALSE)
-  hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
-       xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+  hist(cugvals, col = tgray, angle = 45, border = CUGcol, ylab = NULL,  
+       main = NULL, xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
        breaks = brghist$breaks)
-  hist(brgvals, col = tgray, border = BRGcol, ylab = NULL, 
+  hist(brgvals, col = tgray, angle = 90, border = BRGcol, ylab = NULL, 
        main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
   abline(v = obsval, col = obsblue, lwd = 2)
   
