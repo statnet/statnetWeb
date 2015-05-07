@@ -667,7 +667,7 @@ legendfill <- reactive({
 })
 
 #simulated graphs for cug tests
-observeEvent(nw(),{
+observeEvent(c(nw(), input$ncugsims),{
   if(!is.null(nw())){
     if (is.directed(nw())){
       mode <- "digraph"
@@ -675,9 +675,9 @@ observeEvent(nw(),{
       mode <- "graph"
     }
     
-    brgsims <- rgraph(n = nodes(), m = 500, tprob = gden(nw()), mode = mode, 
+    brgsims <- rgraph(n = nodes(), m = input$ncugsims, tprob = gden(nw()), mode = mode, 
                       diag = nw()$gal$loops)
-    cugsims <- rgnm(n = 500, nv = nodes(), m = nedges(), mode = mode,
+    cugsims <- rgnm(n = input$ncugsims, nv = nodes(), m = nedges(), mode = mode,
                     diag = nw()$gal$loops)
     
     values$cugsims <- list(brgsims, cugsims)
@@ -2176,7 +2176,7 @@ output$dynamiccugterm <- renderUI({
   } else {
     choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
   }
-  selectInput("cugtestterm", label = "Select the term",
+  selectInput("cugtestterm", label = "Test statistic",
               choices = choices)
 })
 outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
