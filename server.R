@@ -667,7 +667,7 @@ legendfill <- reactive({
 })
 
 #simulated graphs for cug tests
-cugsims <- reactive({
+observeEvent(nw(),{
   if(!is.null(nw())){
     if (is.directed(nw())){
       mode <- "digraph"
@@ -680,7 +680,7 @@ cugsims <- reactive({
     cugsims <- rgnm(n = 500, nv = nodes(), m = nedges(), mode = mode,
                     diag = nw()$gal$loops)
     
-    return(list(brgsims, cugsims))
+    values$cugsims <- list(brgsims, cugsims)
   }
 })
 
@@ -2187,9 +2187,9 @@ output$cugtest <- renderPlot({
   n <- nodes()
   obsval <- summary.formula(as.formula(paste("nw() ~", term)))
   
-  brgvals <- apply(cugsims()[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+  brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
-  cugvals <- apply(cugsims()[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+  cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
   
   brghist <- hist(brgvals, plot = FALSE)
@@ -2215,9 +2215,9 @@ output$cugtestdownload <- downloadHandler(
     n <- nodes()
     obsval <- summary.formula(as.formula(paste("nw() ~", term)))
     
-    brgvals <- apply(cugsims()[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+    brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
                      directed = nw()$gal$directed, loops = nw()$gal$loops)
-    cugvals <- apply(cugsims()[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+    cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
                      directed = nw()$gal$directed, loops = nw()$gal$loops)
   
     brghist <- hist(brgvals, plot = FALSE)
