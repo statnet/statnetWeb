@@ -112,7 +112,7 @@ div.busy {
   position: absolute;
   top: 50px;
   right: 65px;
-  color: #737379;
+  color: #B4B4B4;
   cursor: pointer; 
 }
 #dataright, #fitright,
@@ -121,7 +121,7 @@ div.busy {
   position: absolute;
   top: 50px;
   right: 38px;
-  color: #737379;
+  color: #B4B4B4;
   cursor: pointer; 
 }
 
@@ -132,14 +132,14 @@ div.busy {
 #plotright:hover, #mcmcright:hover,
 #gofright:hover, #simright:hover,
 .helper-btn:hover {
-  color: #A5A5AD;
+  color: #8C8C8C;
 }
 
 .helper-btn {
     position:fixed;
     top: 50px;
     right: 10px;
-    color: #737379;
+    color: #B4B4B4;
     cursor: pointer;
 }
 
