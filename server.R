@@ -2207,35 +2207,37 @@ output$cugtest <- renderPlot({
          border = c(0, CUGcol, BRGcol), merge = TRUE)
 })
 
-output$cugtestdownload <- downloadHandler(
-  filename = function(){paste(nwname(),'_',input$cugtestterm,'.pdf',sep='')},
-  content = function(file){
-    
-    if(!is.network(nw())) {return()}
-    term <- input$cugtestterm
-    n <- nodes()
-    obsval <- summary.formula(as.formula(paste("nw() ~", term)))
-    
-    brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
-                     directed = nw()$gal$directed, loops = nw()$gal$loops)
-    cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
-                     directed = nw()$gal$directed, loops = nw()$gal$loops)
-  
-    brghist <- hist(brgvals, plot = FALSE)
-    hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
-         xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
-         breaks = brghist$breaks)
-    hist(brgvals, col = tgray, border = BRGcol, ylab = NULL, 
-         main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
-    abline(v = obsval, col = obsblue, lwd = 2)
-    
-    legend(x = "topright", bty = "n", 
-           legend = c("observed value", "CUG distribution", "BRG distribution"), 
-           lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
-           border = c(0, CUGcol, BRGcol), merge = TRUE)
-    dev.off()
-  }
-)
+# output$cugtestdownload <- downloadHandler(
+#   filename = function(){paste0(nwname(), "_", input$cugtestterm, ".png")},
+#   content = function(file){
+#     
+#     term <- input$cugtestterm
+#     n <- nodes()
+#     obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+#     
+#     brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+#                      directed = nw()$gal$directed, loops = nw()$gal$loops)
+#     cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+#                      directed = nw()$gal$directed, loops = nw()$gal$loops)
+#   
+#     brghist <- hist(brgvals, plot = FALSE)
+#     hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+#          xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+#          breaks = brghist$breaks)
+#     hist(brgvals, col = tgray, border = BRGcol, ylab = NULL, 
+#          main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
+#     abline(v = obsval, col = obsblue, lwd = 2)
+#     
+#     legend(x = "topright", bty = "n", 
+#            legend = c("observed value", "CUG distribution", "BRG distribution"), 
+#            lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
+#            border = c(0, CUGcol, BRGcol), merge = TRUE)
+#     dev.off()
+#     if (file.exists(paste0(nwname(), "_", input$cugtestterm, ".png")))
+#       file.rename(paste0(nwname(), "_", input$cugtestterm, ".png"), file)
+#   },
+#   contentType = "image/png"
+# )
 
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden

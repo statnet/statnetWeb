@@ -515,8 +515,9 @@ fluidRow(
                                        choices = c(100, 200, 500))),
                  br(),
                  plotOutput("cugtest"),
-                 br(),
-                 downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")),
+                 br()
+#                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
+               ),
                h5('Mixing matrix', icon('angle-double-left'), 
                   id="mixmxtitle"),
                wellPanel(id="mixmxbox",
