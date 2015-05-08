@@ -2193,11 +2193,12 @@ output$cugtest <- renderPlot({
   cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
   
+  
   brghist <- hist(brgvals, plot = FALSE)
-  hist(cugvals, col = tgray, angle = 45, border = CUGcol, ylab = NULL,  
-       main = NULL, xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+  hist(cugvals, col = tgray, density = 10, angle = 45, border = CUGcol,  
+        ylab = NULL, main = NULL, xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
        breaks = brghist$breaks)
-  hist(brgvals, col = tgray, angle = 90, border = BRGcol, ylab = NULL, 
+  hist(brgvals, col = tgray, density = 10, angle = -45, border = BRGcol, ylab = NULL, 
        main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
   abline(v = obsval, col = obsblue, lwd = 2)
   
