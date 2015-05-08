@@ -1521,7 +1521,7 @@ output$degreedistdownload <- downloadHandler(
     maxfreq_samples <- max(max(bern_upperline), max(unif_upperline))
     ylimit <- max(maxfreq, maxfreq_samples)
     
-    if(input$densplot == "Percent of nodes"){
+    if(state$plotperc_dd) {
       plotme <- dd_plotdata()/sum(dd_plotdata())
       unif_samplemeans <- unif_samplemeans/sum(dd_plotdata())
       unif_upperline <- unif_upperline/sum(dd_plotdata())
@@ -1777,7 +1777,7 @@ output$geodistdownload <- downloadHandler(
     ylabel <- "Count of Vertex Pairs"
     
     #for density plot
-    if(input$densplot_gd == "Percent of vertex pairs"){
+    if(state$plotperc_gd){
       unif_means <- unif_means/sum(gdata)
       unif_upperline <- unif_upperline/sum(gdata)
       unif_lowerline <- unif_lowerline/sum(gdata)
