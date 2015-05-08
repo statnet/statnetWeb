@@ -83,10 +83,9 @@ data(kapferer)
 
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
-#obsblue <- "royalblue2"
-obsblue <- "#304FAB"
+obsblue <- "royalblue2"
 histblue <- "#445FB0"
-tgray <- adjustcolor("gray", alpha.f = 0.4)
+tgray <- adjustcolor("gray", alpha.f = 0.3)
 
 options(digits=3)
 
@@ -2195,16 +2194,18 @@ output$cugtest <- renderPlot({
   
   
   brghist <- hist(brgvals, plot = FALSE)
-  hist(cugvals, col = tgray, density = 10, angle = 45, border = CUGcol,  
-        ylab = NULL, main = NULL, xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+  hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+       xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
        breaks = brghist$breaks)
-  hist(brgvals, col = tgray, density = 10, angle = -45, border = BRGcol, ylab = NULL, 
-       main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
+  hist(brgvals, col = "gray60", density = 15, 
+       angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL, 
+       breaks = brghist$breaks, add = TRUE)
   abline(v = obsval, col = obsblue, lwd = 2)
   
   legend(x = "topright", bty = "n", 
          legend = c("observed value", "CUG distribution", "BRG distribution"), 
-         lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
+         lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, "gray60"),
+         angle = -45, density = c(0, 100, 15), 
          border = c(0, CUGcol, BRGcol), merge = TRUE)
 })
 
