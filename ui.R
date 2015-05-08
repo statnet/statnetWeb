@@ -979,10 +979,13 @@ tabPanel(title='MCMC Diagnostics', value='tab5',
          tags$hr(),
          tabsetPanel(id='mcmctabs',
            tabPanel('Plot', br(),
-                    wellPanel(p("Recent changes in the ergm estimation algorithm mean that these plots", 
-                              "can no longer be used to ensure that the mean statistics from the model match the", 
-                              "observed network statistics. For that functionality, please use the GOF page."),
-                              p(icon("close"), class = "topright")),
+                    wellPanel(
+                      class = "mcmcwarning",
+                      p("Recent changes in the ergm estimation algorithm mean that these plots", 
+                        "can no longer be used to ensure that the mean statistics from the model match the", 
+                        "observed network statistics. For that functionality, please use the GOF page.")
+                      #p(icon("close"), class = "topright")
+                       ),
                     #intercept error and give friendly message when MCMC doesn't run
                     conditionalPanel(condition="output.diagnostics == 'MCMC was not run or MCMC sample was not stored.'",
                                 column(1,span(class='helper', id='mcmchelper', icon('question-circle')),
@@ -1000,6 +1003,13 @@ tabPanel(title='MCMC Diagnostics', value='tab5',
                     uiOutput('diagnosticsplotspace'),
                     downloadButton('mcmcplotdownload',label = 'Download Plots', class="btn-sm")),
            tabPanel('Summary', br(),
+                    wellPanel(
+                      class = "mcmcwarning",
+                      p("Recent changes in the ergm estimation algorithm mean that these plots", 
+                        "can no longer be used to ensure that the mean statistics from the model match the", 
+                        "observed network statistics. For that functionality, please use the GOF page.")
+                      #p(icon("close"), class = "topright")
+                    ),
                     verbatimTextOutput('diagnostics'))
          ),
          div(id='mcmctabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
