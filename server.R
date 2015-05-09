@@ -2187,18 +2187,21 @@ output$cugtest <- renderPlot({
   n <- nodes()
   obsval <- summary.formula(as.formula(paste("nw() ~", term)))
   
+  # gets summary statistics of the already run simulations
   brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
   cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
   
-  
   brghist <- hist(brgvals, plot = FALSE)
+  cughist <- hist(cugvals, breaks = brghist$breaks, plot = FALSE)
   hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
        xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+       ylim = c(0, max(brghist$counts, cughist$counts)), 
        breaks = brghist$breaks)
   hist(brgvals, col = "gray60", density = 15, 
        angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL, 
+       ylim = c(0, max(brghist$counts, cughist$counts)), 
        breaks = brghist$breaks, add = TRUE)
   abline(v = obsval, col = obsblue, lwd = 2)
   
