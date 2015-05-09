@@ -73,8 +73,18 @@ $(document).ready(function(){
     $("#filetypebox7").toggle(500);
   });
   
-  $("#filetypehelper8").click(function(){
-    $("#filetypebox8").toggle(500);
+  $("#closewarning1").click(function(){
+    $("#colorwarning1").hide();
+    $("#closewarning1").hide();
+  });
+  
+  //$("#samplenet").change(function(){
+  //  $("#colorwarning1").show();
+  //  $("#closewarning1").show();
+  //});
+  
+  $("#ddhelper").click(function(){
+    $("#ddhelperbox").toggle(500);
   });
   
   $("#ddhelper").click(function(){
@@ -105,6 +115,11 @@ $(document).ready(function(){
     $("#infhelperbox_gd").toggle(500);
   });
   
+  $("#cugtitle").click(function(){
+    $("#cugbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  
   $("#mixmxtitle").click(function(){
     $("#mixmxbox").toggle(1000);
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
@@ -122,10 +137,6 @@ $(document).ready(function(){
 
   $("#termdocButton").click(function(){
     $(".docpopup").toggle(500);
-  });
-  
-  $(".chromewarning").click(function(){
-    $(".chromewarningbox").toggle(500);
   });
   
   $("#termexpand").click(function(){

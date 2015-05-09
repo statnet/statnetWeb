@@ -7,19 +7,21 @@
 #' server.R, v0.3.3 
 #' ===========
 
-#' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
-#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
-#' layout and appearance of the app, the script `server.R` controls the content that
-#' gets displayed in the app, and the folder "www" contains auxiliary files. If you are
-#' unfamiliar with Shiny apps, it may be more natural and helpful to start with the 
-#' documentation for `ui.R` and then move on to `server.R`.
+#' **Before reading this document:** The Shiny app "statnetWeb" is not contained 
+#' in a single R Script. Within the folder "statnetWeb" the script `ui.R` 
+#' controls the layout and appearance of the app, the script `server.R` controls
+#' the content that gets displayed in the app, and the folder "www" contains 
+#' auxiliary files. If you are unfamiliar with Shiny apps, it may be more 
+#' natural and helpful to start with the documentation for `ui.R` and then move
+#' on to `server.R`.
 #' 
 #' **Basics**
 #' 
-#' Every `server.R` script contains an unnamed function inside a call to `shinyServer`.
-#' The job of the unnamed function is to take input elements from the user and define
-#' output elements that will be displayed in the app. For more information on how this
-#' works, see [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/). 
+#' Every `server.R` script contains an unnamed function inside a call to
+#' `shinyServer`. The job of the unnamed function is to take input elements from
+#' the user and define output elements that will be displayed in the app. For 
+#' more information on how this works, see 
+#' [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/). 
 #' If the function is empty, e.g.
 #' ```
 #' shinyServer(
@@ -29,25 +31,27 @@
 #' 
 #' To create dynamic content, we will mainly rely on three types of expressions:
 #' 
-#' *Reactive:* Reactive expressions are expressions that can read reactive values and
-#' call other reactive expressions. Whenever a reactive value changes, any reactive
-#' expressions that depended on it are marked as "invalidated" and will automatically
-#' re-execute if necessary. If a reactive expression is marked as invalidated, any other
-#' reactive expressions that recently called it are also marked as invalidated. In this
-#' way, invalidations ripple through the expressions that depend on each other. Reactive
-#' expressions use lazy evaluation; when their dependencies change, they don't re-execute
-#' right away but rather wait until they are called by someone else.
+#' *Reactive:* Reactive expressions are expressions that can read reactive 
+#' values and call other reactive expressions. Whenever a reactive value 
+#' changes, any reactive expressions that depended on it are marked as 
+#' "invalidated" and will automatically re-execute if necessary. If a reactive 
+#' expression is marked as invalidated, any other reactive expressions that 
+#' recently called it are also marked as invalidated. In this way, invalidations
+#' ripple through the expressions that depend on each other. Reactive 
+#' expressions use lazy evaluation; when their dependencies change, they don't 
+#' re-execute right away but rather wait until they are called by someone else.
 #' 
-#' *Observer:* An observer is like a reactive expression in that it can read reactive
-#' values and call reactive expressions, and will automatically re-execute when those
-#' dependencies change. But unlike reactive expressions, it doesn't yield a result and
-#' can't be used as an input to other reactive expressions. Thus, observers are only useful
-#' for their side effects (for example, performing I/O). Observers use eager evaluation;
-#' as soon as their dependencies change, they schedule themselves to re-execute.
+#' *Observer:* An observer is like a reactive expression in that it can read 
+#' reactive values and call reactive expressions, and will automatically 
+#' re-execute when those dependencies change. But unlike reactive expressions, 
+#' it doesn't yield a result and can't be used as an input to other reactive 
+#' expressions. Thus, observers are only useful for their side effects (for 
+#' example, performing I/O). Observers use eager evaluation; as soon as their 
+#' dependencies change, they schedule themselves to re-execute.
 #' 
-#' *Render:* The `render*` functions are responsible for converting content to the form
-#' in which it should be displayed. Before assigning an object to an element of `output`,
-#' it gets passed to the appropriate `render*` function.
+#' *Render:* The `render*` functions are responsible for converting content to 
+#' the form in which it should be displayed. Before assigning an object to an 
+#' element of `output`, it gets passed to the appropriate `render*` function.
 #' 
 #' **Code**
 #' 
@@ -60,13 +64,12 @@ library(network)
 library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
-#source("chooser.R")
 source("modelcomp.R")
 
 #' Loading data and assigning variables outside of the call to `shinyServer`
-#' saves time because this code will not get re-run.These don't depend on any user input
-#' and will never change value, so they can be global variables (common to all
-#' shiny sessions). 
+#' saves time because this code will not get re-run.These don't depend on any 
+#' user input and will never change value, so they can be global variables 
+#' (common to all shiny sessions). 
 #+ eval=FALSE 
 
 data(faux.mesa.high)
@@ -78,6 +81,12 @@ data(ecoli)
 data(molecule)
 data(kapferer)
 
+BRGcol <- "firebrick"
+CUGcol <- "orangered"
+obsblue <- "royalblue2"
+histblue <- "#445FB0"
+tgray <- adjustcolor("gray", alpha.f = 0.3)
+
 options(digits=3)
 
 shinyServer(
@@ -86,16 +95,16 @@ shinyServer(
 
 #' Reactive Expressions
 #' ---------------------------------
-#' These expressions contain most of the code from the ergm package
-#' that we will be using. Objects created with a reactive expression
-#' can be accessed from any other reactive expression or render functions
-#' and they only get re-run when their values are outdated. Since many of 
-#' our render functions will be calling the same ergm objects, using 
-#' reactive expressions will help the app run much faster.
+#' These expressions contain most of the code from the ergm package that we will 
+#' be using. Objects created with a reactive expression can be accessed from any
+#' other reactive expression or render functions and they only get re-run when 
+#' their values are outdated. Since many of our render functions will be calling
+#' the same ergm objects, using reactive expressions will help the app run much 
+#' faster.
 #'
-#' Notice that already in this chunk of code we call previously declared reactive
-#' objects. For example, to use the reactive list of vertex attributes in the
-#' definition of the numeric vertex attributes, we call `attrib()`.    
+#' Notice that already in this chunk of code we call previously declared 
+#' reactive objects. For example, to use the reactive list of vertex attributes 
+#' in the definition of the numeric vertex attributes, we call `attrib()`.    
 #+ eval=FALSE
 
 values <- reactiveValues()
@@ -193,7 +202,8 @@ nwinit <- reactive({
           header <- FALSE
           row_names<-NULL
         }
-        try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, row.names=row_names),
+        try({nw_var <- network(read.csv(paste(filepath), sep=",", header=header, 
+                                        row.names=row_names),
                           directed=input$dir, loops=input$loops,
                           multiple=input$multiple, bipartite=input$bipartite,
                           matrix.type=input$matrixtype,
@@ -314,7 +324,8 @@ newattrnamereac <- reactive({
     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
 
     if(fileext %in% c(".csv", ".CSV") ){
-      newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+      newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                           stringsAsFactors=FALSE)
       newname <- names(newattrs)
       if(input$newattrtype == "edgevalue"){
         newname <- newname[1]
@@ -343,7 +354,8 @@ observeEvent(input$newattrButton, {
       filename <- input$newattrvalue[1,1]
       fileext <- substr(filename,nchar(filename)-3,nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
-        newnames <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newnames <- read.csv(paste(path), sep=",", header=TRUE, 
+                             stringsAsFactors=FALSE)
         newnames <- newnames[[1]]
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newnames <- readRDS(paste(path))
@@ -360,7 +372,8 @@ observeEvent(input$newattrButton, {
           filename <- input$newattrvalue[1,1]
           fileext <- substr(filename,nchar(filename)-3,nchar(filename))
           if(fileext %in% c(".csv", ".CSV")){
-            newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+            newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                                 stringsAsFactors=FALSE)
             newname <- names(newattrs)
           } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
             newattrs <- readRDS(paste(path))
@@ -386,7 +399,8 @@ observeEvent(input$newattrButton, {
       filename <- input$newattrvalue[1,1]
       fileext <- substr(filename,nchar(filename)-3,nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
-        newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                             stringsAsFactors=FALSE)
         newname <- names(newattrs)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newattrs <- readRDS(paste(path))
@@ -409,9 +423,10 @@ observeEvent(input$newattrButton, {
     if(input$newattrtype == "edgevalue"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
-      fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+      fileext <- substr(filename,nchar(filename)-3, nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
-        newattrs <- read.csv(paste(path), sep=",", header=TRUE, stringsAsFactors=FALSE)
+        newattrs <- read.csv(paste(path), sep=",", header=TRUE, 
+                             stringsAsFactors=FALSE)
         newname <- names(newattrs)[1]
         newattrs <- data.matrix(newattrs, rownames.force=FALSE)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
@@ -448,12 +463,12 @@ nwmid <- reactive({
         symnw <- symmetrize(nw_var, rule=input$symmetrize)
         if(state$symmdir){
           nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
-                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         } else {
           nw_var <- network(symnw, matrix.type="adjacency", directed=FALSE,
-                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         }
         #add initial vertex attributes back after symmetrizing
         #can't add edge attributes back because number of edges has changed
@@ -520,8 +535,7 @@ nw <- reactive({
 
 
 #get coordinates to plot network with
-coords <- reactive({
-		plot.network(nw())})
+coords <- reactive({plot.network(nw())})
 
 #initial network attributes
 #returns vector of true/falses
@@ -651,6 +665,24 @@ legendfill <- reactive({
   legendfill
 })
 
+#simulated graphs for cug tests
+observeEvent(c(nw(), input$ncugsims),{
+  if(!is.null(nw())){
+    if (is.directed(nw())){
+      mode <- "digraph"
+    } else {
+      mode <- "graph"
+    }
+    
+    brgsims <- rgraph(n = nodes(), m = input$ncugsims, tprob = gden(nw()), mode = mode, 
+                      diag = nw()$gal$loops)
+    cugsims <- rgnm(n = input$ncugsims, nv = nodes(), m = nedges(), mode = mode,
+                    diag = nw()$gal$loops)
+    
+    values$cugsims <- list(brgsims, cugsims)
+  }
+})
+
 #' ERGM fitting:  
 #' `ergm.terms` is a compilation of all the terms entered,
 #' which we then use to create a complete formula. 
@@ -685,11 +717,11 @@ ergm.terms <- reactive({
   interms <- values$input_termslist
   if(length(interms)==0) {return('NA')}
   paste(interms, collapse = '+')
-  })
+})
 
 ergm.formula <- reactive({
   if(ergm.terms()=='NA') {return()}
-  formula(paste('nw() ~ ',ergm.terms(), sep = ''))})
+  formula(paste('nw() ~ ', ergm.terms(), sep = ''))})
 
 current.simterms <- reactive({
   mod <- input$choosemodel_sim
@@ -704,12 +736,12 @@ current.simterms <- reactive({
 
 current.simformula <- reactive ({
   terms <- current.simterms()
-  formula(paste('nw() ~ ',terms, sep=''))
+  formula(paste('nw() ~ ', terms, sep=''))
 })
 
 #' Once we have a formula, creating a model object, checking the goodness of fit
-#' and simulating from it is similar to what would be written in the command line,
-#' wrapped in a reactive statement.
+#' and simulating from it is similar to what would be written in the command 
+#' line, wrapped in a reactive statement.
 #+ eval=FALSE 
 model1reac <- reactive({
   if(input$fitButton == 0){
@@ -717,22 +749,24 @@ model1reac <- reactive({
   }
   usingdefault <- isolate(input$controldefault)
   if(usingdefault){
-    f <- isolate(ergm(ergm.formula()))
+    mod <- isolate(ergm(ergm.formula()))
   } else {
     customcontrols <- isolate(paste(input$customMCMCcontrol, sep=","))
     if(customcontrols == ""){
-      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
-                                                             MCMC.burnin=isolate(input$MCMCburnin),
-                                                             MCMC.samplesize=isolate(input$MCMCsamplesize))))
+      mod <- isolate(ergm(ergm.formula(), 
+                          control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
+                                               MCMC.burnin=isolate(input$MCMCburnin),
+                                               MCMC.samplesize=isolate(input$MCMCsamplesize))))
     } else {
-      f <- isolate(ergm(ergm.formula(), control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
-                                                             MCMC.burnin=isolate(input$MCMCburnin),
-                                                             MCMC.samplesize=isolate(input$MCMCsamplesize),
-                                                             eval(parse(text=customcontrols)))))
+      mod <- isolate(ergm(ergm.formula(), 
+                          control=control.ergm(MCMC.interval=isolate(input$MCMCinterval),
+                                               MCMC.burnin=isolate(input$MCMCburnin),
+                                               MCMC.samplesize=isolate(input$MCMCsamplesize),
+                                               eval(parse(text=customcontrols)))))
     }
     
   }
-  f
+  return(mod)
   })
 
 # values$modelstate keeps track of whether model fit is oudated,
@@ -745,6 +779,7 @@ values$modeltotal <- 0
 values$modelcoefs <- list()
 values$modelformulas <- list()
 values$modelfits <- list()
+values$modelsumstats <- list()
 
 observeEvent(input$savemodelButton, {
   if(input$fitButton > 0){
@@ -755,15 +790,16 @@ observeEvent(input$savemodelButton, {
     }
   }
 })
-observe({
+observeEvent(values$modeltotal, {
   # Add to lists that hold info for each model
   # values$modelcoefs is a list object, each element is a list of 
   # coefficients and stars for a single model
   m <- values$modeltotal
   if(m > 0 & m <= 5){
-    values$modelcoefs[[m]] <- isolate(ergminfo(model1reac()))
-    values$modelformulas[[m]] <- isolate(ergm.terms())
-    values$modelfits[[m]] <- isolate(model1reac())
+    values$modelcoefs[[m]] <- ergminfo(model1reac())
+    values$modelformulas[[m]] <- ergm.terms()
+    values$modelfits[[m]] <- model1reac()
+    values$modelsumstats[[m]] <- summary(ergm.formula())
   }
 })
 
@@ -773,6 +809,7 @@ observeEvent(input$clearmodelButton, {
   values$modelcoefs <- list()
   values$modelformulas <- list()
   values$modelfits <- list()
+  values$modelsumstats <- list()
 })
 observe({
   #clear saved models when network changes
@@ -781,13 +818,14 @@ observe({
     values$modelcoefs <- list()
     values$modelformulas <- list()
     values$modelfits <- list()
+    values$modelsumstats <- list()
   }
 })
 
 model1gof <- reactive({
   input$gofButton
   mod <- input$choosemodel_gof
-  if(mod=="Current"){
+  if(mod == "Current"){
     mod <- model1reac()
   } else {
     mod <- values$modelfits[[1]]
@@ -799,7 +837,8 @@ model1gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model1gof <- gof(gofform)
   }
-  model1gof})
+  return(model1gof)
+})
 
 model2gof <- reactive({
   input$gofButton
@@ -815,7 +854,8 @@ model2gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model2gof <- gof(gofform)
   }
-  model2gof})
+  return(model2gof)
+})
 
 model3gof <- reactive({
   input$gofButton
@@ -831,7 +871,8 @@ model3gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model3gof <- gof(gofform)
   }
-  model3gof})
+  return(model3gof)
+})
 
 model4gof <- reactive({
   input$gofButton
@@ -847,7 +888,8 @@ model4gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model4gof <- gof(gofform)
   }
-  model4gof})
+  return(model4gof)
+})
 
 model5gof <- reactive({
   input$gofButton
@@ -863,7 +905,8 @@ model5gof <- reactive({
     gofform <- formula(paste('mod ~ ', input$gofterm, sep = ''))
     model5gof <- gof(gofform)
   }
-  model5gof})
+  return(model5gof)
+})
 
 allmodelsimreac <- reactive({
   input$simButton
@@ -890,14 +933,14 @@ allmodelsimreac <- reactive({
                                                     eval(parse(text=customcontrols)))))
     }
   }
-  s
-  })
+  return(s)
+})
 
-#' Currently, the reactive statements that control the sizing/coloring/legend in the 
-#' simulation plots use the attributes from the original network as a point of reference.
-#' If the method for simulating networks changes from applying the same distribution of
-#' attributes, these `get.vertex.attribute` commands for `minsize` and `maxsize`
-#' would also need to change.
+#' Currently, the reactive statements that control the sizing/coloring/legend in
+#' thesimulation plots use the attributes from the original network as a point 
+#' of reference. If the method for simulating networks changes from applying the
+#' same distribution of attributes, these `get.vertex.attribute` commands for 
+#' `minsize` and `maxsize` would also need to change.
 #+ eval=FALSE
 
 #get coordinates to plot simulations with
@@ -927,7 +970,7 @@ nodebetw2 <- reactive({
     }
     b <- betweenness(allmodelsimreac()[[input$thissim]], gmode=gmode, cmode=cmode)
   }
-  b
+  return(b)
 })
 
 nodesize2 <- reactive({
@@ -943,11 +986,14 @@ nodesize2 <- reactive({
     minsize <- min(get.vertex.attribute(nw_var,input$sizeby2))
     maxsize <- max(get.vertex.attribute(nw_var,input$sizeby2))
     if(input$nsims==1){
-    size <- (get.vertex.attribute(allmodelsimreac(),input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(allmodelsimreac(),input$sizeby2)-minsize) / 
+            (maxsize-minsize) * (3.5-.7)+.7 
   }else{
-    size <- (get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$sizeby2)-minsize)/(maxsize-minsize)*(3.5-.7)+.7 
+    size <- (get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$sizeby2)-minsize) /
+            (maxsize-minsize) * (3.5-.7)+.7 
   }}
-  size})
+  return(size)
+})
 
 vcol2 <- reactive({
   if(!is.network(nw())){return()}
@@ -960,7 +1006,8 @@ vcol2 <- reactive({
     if(nsim == 1){
       full_list <- get.vertex.attribute(allmodelsimreac(),input$colorby2)
     } else {
-      full_list <- get.vertex.attribute(allmodelsimreac()[[input$thissim]],input$colorby2)
+      full_list <- get.vertex.attribute(allmodelsimreac()[[input$thissim]],
+                                        input$colorby2)
     }
     short_list <- sort(unique(full_list))
     ncolors <- length(short_list)
@@ -978,7 +1025,7 @@ vcol2 <- reactive({
     vcol <- pal[full_list]
   }
   }
-  vcol
+  return(vcol)
 })
 
 legendlabels2 <- reactive({
@@ -994,7 +1041,7 @@ legendlabels2 <- reactive({
     }
   }
   }
-  legendlabels
+  return(legendlabels)
 })
 
 legendfill2 <- reactive({
@@ -1011,7 +1058,7 @@ legendfill2 <- reactive({
     legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
   }
-  legendfill
+  return(legendfill)
 })
 
 
@@ -1028,6 +1075,194 @@ legendfill2 <- reactive({
 #+ eval=FALSE
 
 
+output$datadesc <- renderUI({
+  net <- input$samplenet
+  text <- wellPanel()
+  if(net == "ecoli1" | net == "ecoli2"){
+    text <- wellPanel(
+      p("The", code("ecoli", class = "codetxt"), 
+        "network data set comprises two versions of a", 
+        "biological network in which the nodes are operons in", 
+        em("Escherichia Coli"), "and a directed edge from one node to another", 
+        "indicates that the first encodes the transcription factor that", 
+        "regulates the second."),
+      p("The network object", code("ecoli1", class = "codetxt"), 
+        "is directed, with 423 nodes", "and 519 ties. The object", 
+        code("ecoli2", class = "codetxt"), "is an undirected", 
+        "version of the same network, in which the five isolated nodes",
+        "(which exhibit only self-regulation in", 
+        code("ecoli1", class = "codetxt"), "are removed, leaving 418 nodes."),
+      p("The data set is based on the RegulonDB network (Salgado et al, 2001)", 
+        "and was modified by Shen-Orr et al (2002)."),
+      strong("References"),
+      p("Salgado et al (2001), Regulondb (version 3.2): Transcriptional", 
+        "Regulation and Operon Organization in Escherichia Coli K-12,", 
+        em("Nucleic Acids Research,"), "29(1): 72-74."),
+      p("Shen-Orr et al (2002), Network Motifs in the Transcriptional", 
+        "Regulation Network of Escerichia Coli,", em("Nature Genetics,"), 
+        "31(1): 64-68.")
+    )
+  }
+  if(net == "faux.mesa.high"){
+    text <- wellPanel(
+      p("This data set represents a simulation of an in-school friendship", 
+        "network. The network is named faux.mesa.high because the school", 
+        "commnunity on which it is based is in the rural western US, with a", 
+        "student body that is largely Hispanic and Native American."),
+      p(code("faux.mesa.high", class = "codetxt"), "is a network object with", 
+        "205 vertices (students, in this case) and 203 undirected edges", 
+        "(mutual friendships)."),
+      p("The vertex attributes are Grade, Sex, and Race. The Grade attribute", 
+        "has values 7 through 12, indicating each student's grade in school.", 
+        "The Race attribute is based on the answers to two questions, one on", 
+        "Hispanic identity and one on race, and takes six possible values:", 
+        "White (non-Hisp.), Black (non-Hisp.), Hispanic, Asian (non-Hisp.),", 
+        "Native American, and Other (non-Hisp.)"),
+      p("The data set is based upon a model fit to data from one school", 
+        "community from the AddHealth Study, Wave I (Resnick et al., 1997).",
+        "The processes for constructing the network are described in Hunter,",
+        "Goodreau & Handcock (2008)"),
+      strong("References"),
+      p("Hunter D.R., Goodreau S.M. and Handcock M.S. (2008).", 
+        em("Goodness of Fit of Social Network Models, Journal of the American", 
+           "Statistical Association.")),
+      p("Resnick M.D., Bearman, P.S., Blum R.W. et al. (1997).", 
+        em("Protecting adolescents from harm. Findings from the National", 
+           "Longitudinal Study on Adolescent Health, Journal of the American", 
+           "Medical Association,"), "278: 823-32.")
+      )
+  }
+  if(net == "flobusiness" | net == "flomarriage"){
+    text <- wellPanel(
+      p("The two", code("florentine", class = "codetxt"), "networks are of", 
+        "marriage and business ties among Renaissance", 
+        "Florentine families. The data is originally from Padgett (1994) via", 
+        "UCINET and stored as", code("statnet", class = "codetxt"), 
+        "network objects."),
+      p("Breiger & Pattison (1986), in their discussion of local role analysis,", 
+        "use a subset of data on the social relations among Renaissance", 
+        "Florentine families (person aggregates) collected by John Padgett from", 
+        "historical documents.", code("flobusiness", class = "codetxt"),
+        "contains business ties - specifically, recorded", 
+        "financial ties such as loans, credits and joint partnerships.", 
+        code("flomarriage", class = "codetxt"), "contains marriage alliances."),
+      p("As Breiger & Pattison point out, the original data are symmetrically", 
+        "coded. This is acceptable perhaps for marital ties, but is unfortunate", 
+        "for the financial ties (which are almost certainly directed). Both", 
+        "graphs provide vertex information on (1) each family's net wealth in",
+        "1427 (in thousands of lira); (2) the number of priorates (seats on the", 
+        "civic council) held between 1282- 1344; and (3) the total number of", 
+        "business or marriage ties in the total dataset of 116 families", 
+        "(see Breiger & Pattison (1986), p 239)."),
+      p("Substantively, the data include families who were locked in a struggle", 
+        "for political control of the city of Florence around 1430. Two", 
+        "factions were dominant in this struggle: one revolved around the", 
+        "infamous Medicis (9), the other around the powerful Strozzis (15)."),
+      strong("References"),
+      p("Wasserman, S. and Faust, K. (1994)", 
+        em("Social Network Analysis: Methods and Applications,"), 
+        "Cambridge University Press, Cambridge, England."),
+      p("Breiger, R. and Pattison, P. (1986).", 
+        em("Cumulated social roles: The duality of persons and their algebras,"), 
+        "Social Networks, 8, 215-256.")
+      )
+  }
+  if(net == "kapferer" | net == "kapferer2"){
+    text <- wellPanel(
+      p('This well-known social network dataset, collected by Bruce Kapferer',
+        'in Zambia from June 1965 to August 1965, involves interactions among', 
+        'workers in a tailor shop as observed by Kapferer himself. Here, an', 
+        'interaction is defined by Kapferer as "continuous uninterrupted social', 
+        'activity involving the participation of at least two persons"; only', 
+        'transactions that were relatively frequent are recorded. All of the', 
+        'interactions in this particular dataset are "sociational", as opposed', 
+        'to "instrumental". Kapferer explains the difference (p. 164) as follows:'),
+      p('"I have classed as transactions which were sociational in content those', 
+        'where the activity was markedly convivial such as general conversation,', 
+        'the sharing of gossip and the enjoyment of a drink together. Examples', 
+        'of instrumental transactions are the lending or giving of money,', 
+        'assistance at times of personal crisis and help at work."'),
+      p("Kapferer also observed and recorded instrumental transactions, many of", 
+        "which are unilateral (directed) rather than reciprocal (undirected),", 
+        "though those transactions are not recorded here. In addition, there was", 
+        "a second period of data collection, from September 1965 to January 1966,", 
+        "but these data are also not recorded here. All data are given in", 
+        "Kapferer's 1972 book on pp. 176-179."),
+      p("During the first time period, there were 43 individuals working in this", 
+        "particular tailor shop; however, the better-known dataset includes only", 
+        "those 39 individuals who were present during both time collection", 
+        "periods. (Missing are the workers named Lenard, Peter, Lazarus, and", 
+        "Laurent.) Thus, we give two separate networks here:", 
+        code("kapferer", class = "codetxt"), "is the well-known 39-individual", 
+        "dataset, whereas", code("kapferer2", class = "codetxt"), "is the full", 
+        "43-individual dataset."),
+      strong("References"),
+      p("Kapferer, Bruce (1972), Strategy and Transaction in an African Factory,", 
+        "Manchester University Press.")
+    )
+  }
+  if(net == "molecule") {
+    text <- wellPanel(
+      p(code("molecule", class = "codetxt"), 
+        "is a synthetic network of 20 nodes that is used as an example within", 
+        "the", code("ergm", class = "codetxt"), 
+        "documentation. It has an interesting elongated shape - reminencent of", 
+        "a chemical molecule."))
+  }
+  if(net == "samplike" | net == "samplk1" | net == "samplk2" | net == "samplk3"){
+    text <- wellPanel(
+      p('Sampson (1969) recorded the social interactions among a group of monks', 
+        'while resident as an experimenter on vision, and collected numerous', 
+        'sociometric rankings. During his stay, a political “crisis in the', 
+        'cloister" resulted in the expulsion of four monks (Nos. 2, 3, 17, and', 
+        '18) and the voluntary departure of several others - most immediately,', 
+        'Nos. 1, 7, 14, 15, and 16. (In the end, only 5, 6, 9, and 11 remained).', 
+        'Of particular interest is the data on positive affect relations', 
+        '(“liking"), in which each monk was asked if they had positive', 
+        'relations to each of the other monks.'),
+      p('The data were gathered at three times to capture changes in group', 
+        'sentiment over time:', code("samplk1, samplk2", class = "codetxt"), "and", 
+        code("samplk3.", class = "codetxt"), 'They represent three time points', 
+        'in the period during which a new cohort entered the monastery near the', 
+        'end of the study but before the major conflict began. Each member', 
+        'ranked only his top three choices on “liking." (Some subjects offered', 
+        'tied ranks for their top four choices). A tie from monk A to monk B',  
+        'exists if A nominated B as one of his three best friends at that that', 
+        'time point.'),
+      p(code("samplk3", class = "codetxt"), 
+        "is a data set of Hoff, Raftery and Handcock (2002)."),
+      p(code('samplike', class = "codetxt"), 
+        'is the time-aggregated graph. It is the cumulative tie for “liking"', 
+        'over the three periods. For this, a tie from monk A to monk B exists', 
+        'if A nominated B as one of his three best friends at any of the three', 
+        'time points.'),
+      p('The graphs have three vertex attributes: ',
+        tags$ul(
+          tags$li('Groups of novices as classified by Sampson: "Loyal",', 
+                  '"Outcasts", and "Turks". There is also an interstitial', 
+                  'group not represented here.'),
+          tags$li('An indicator of attendance the minor seminary of', 
+                  '“Cloisterville" before coming to the monastery.'),
+          tags$li('The given names of the novices.')
+          )),
+      strong("References"),
+      p("Sampson, S.F. (1968), A novitiate in a period of change:", 
+        em("An experimental and case study of relationships,"), 
+        "Unpublished Ph.D. dissertation, Department of Sociology,", 
+        "Cornell University."),
+      p("White, H.C., Boorman, S.A. and Breiger, R.L. (1976).", 
+        em("Social structure from multiple networks. I. Blockmodels of roles", 
+           "and positions."), "American Journal of Sociology, 81(4), 730-780."),
+      p("Wouter de Nooy, Andrej Mrvar, Vladimir Batagelj (2005)", 
+        em("Exploratory Social Network Analysis with Pajek,"), 
+        "Cambridge: Cambridge University Press")
+      
+      )
+  }
+  
+  text
+})
+
 output$rawdatafile <- renderPrint({
   raw <- matrix(nrow=2,ncol=1)
   rownames(raw)<-c("name:", "size:")
@@ -1043,7 +1278,8 @@ output$pajchooser <- renderUI({
     pajlist <- 1:length(pajnws()$networks)
   names(pajlist) <- names(pajnws()$networks)
   }
-  selectInput('choosepajnw', label='Upload a Pajek project file and choose a network from it',
+  selectInput('choosepajnw', 
+              label = 'Upload a Pajek project file and choose a network from it',
               choices = pajlist)
 })
 
@@ -1083,8 +1319,9 @@ output$nwsum <- renderPrint({
 #' depend on which network has been selected, we have to dynamically render 
 #' these input menus, rather than statically defining them in `ui.R`.  
 #' *Note*, the dynamic widget object for the color menu has been assigned to
-#' `output$dynamiccolor`, but when the user interacts with this menu, the input object
-#' will still be saved in `input$colorby` because that is the widget inputId.
+#' `output$dynamiccolor`, but when the user interacts with this menu, the input 
+#' object will still be saved in `input$colorby` because that is the widget 
+#' inputId.
 #' 
 #+ eval=FALSE
 #summary of network attributes
@@ -1101,16 +1338,20 @@ output$dynamiccolor <- renderUI({
               label = 'Color nodes according to:',
               c('None' = 2, attrib()))
 })
-outputOptions(output,'dynamiccolor',suspendWhenHidden=FALSE, priority=10)
+outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
 
-# observe({
-#   if(length(legendlabels())>9){
-#     createAlert(session, inputId = "colorwarning",
-#                 title=NULL, 
-#                 message="Note: Color palette changes for attributes with more than nine levels.",
-#                 type="warning", dismiss=TRUE, 
-#                 block=FALSE, append=FALSE)
-#   }
+# need this to know when color palette will change
+output$attrlevels <- renderText({
+  return(length(legendlabels()))
+})
+outputOptions(output,'attrlevels', suspendWhenHidden=FALSE, priority=10)
+
+# # reactivate colorwarning when network changes
+# observeEvent(nw(),{
+#   tags$script(HTML(
+#     "document.getElementById('colorwarning1').style.display = 'block'"))
+#   tags$script(HTML(
+#     "document.getElementById('closewarning1').style.display = 'block'"))
 # })
 
 output$dynamicsize <- renderUI({
@@ -1120,13 +1361,14 @@ output$dynamicsize <- renderUI({
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 
-#' The network plot takes display options from the sidebar of the ui. Even though 
-#' I set the value of the 'None' option in the `sizeby` menu (above) as `1`, it gets
-#' coerced into the string `'1'` by the rest of the strings in the vector of menu 
-#' options. The variable `size` takes the value 1 if the user wants all the nodes
-#' to be the same size, and otherwise maps the values of the numeric attributes into 
-#' the range between .7 and 3.5 using the formula $y = (x-a)/(b-a) * (d-c) + c$, where
-#' $x$ is the input in some range $[a,b]$ and $y$ is the output in range $[c,d]$.
+#' The network plot takes display options from the sidebar of the ui. Even 
+#' though I set the value of the 'None' option in the `sizeby` menu (above) as 
+#' `1`, it gets coerced into the string `'1'` by the rest of the strings in the 
+#' vector of menu options. The variable `size` takes the value 1 if the user 
+#' wants all the nodes to be the same size, and otherwise maps the values of the
+#' numeric attributes into the range between .7 and 3.5 using the formula 
+#' $y = (x-a)/(b-a) * (d-c) + c$, where $x$ is the input in some range $[a,b]$ 
+#' and $y$ is the output in range $[c,d]$.
 #'
 #+ eval=FALSE
 output$nwplot <- renderPlot({
@@ -1201,16 +1443,32 @@ bernoullisamples <- reactive({
 
 #DEGREE DISTRIBUTION
 
+output$dynamiccmode_dd <- renderUI({
+  menu <- c()
+  if(is.network(nw())){
+    menu <- c("total" = "freeman")
+    if(is.directed(nw())){
+      menu <- c("total" = "freeman",
+                "indegree",
+                "outdegree")
+    }
+  }
+  selectInput("cmode_dd",
+              label = "Type of degree",
+              choices = menu)
+})
+outputOptions(output,'dynamiccmode_dd',suspendWhenHidden=FALSE, priority=10)
+
 output$dynamiccolor_dd <- renderUI({
   menu <- menuattr()
   if(is.network(nw())){
-  if(input$cmode == "freeman" & is.directed(nw())){
-    menu <- c()
-  }
-  selectInput('colorby_dd',
-              label = 'Color bars according to:',
-              c('None', menu),
-              selected = 'None')
+    if(input$cmode_dd == "freeman" & is.directed(nw())){
+      menu <- c()
+    }
+    selectInput('colorby_dd',
+                label = 'Color bars according to:',
+                c('None', menu),
+                selected = 'None')
   }
 })
 outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
@@ -1240,7 +1498,7 @@ dd_plotdata <- reactive({
   } else {
     diag <- FALSE
   }
-  deg <- degree(nw(), gmode=gmode, cmode=input$cmode, diag=diag)
+  deg <- degree(nw(), gmode=gmode, cmode=input$cmode_dd, diag=diag)
   data <-tabulate(deg)
   data <- append(data,sum(deg==0),after=0)
   maxdeg <- max(deg)
@@ -1249,9 +1507,9 @@ dd_plotdata <- reactive({
   #for color-coded bars
   if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
     if(is.directed(nw())){
-      if(input$cmode=='indegree'){
+      if(input$cmode_dd=='indegree'){
         data <- summary(nw() ~ idegree(0:maxdeg, input$colorby_dd))
-      } else if(input$cmode=='outdegree'){
+      } else if(input$cmode_dd=='outdegree'){
         data <- summary(nw() ~ odegree(0:maxdeg, input$colorby_dd))
       } else {
         return('Cannot color code a directed graph using total degree.')
@@ -1265,19 +1523,6 @@ dd_plotdata <- reactive({
   data
 })
 
-# observe({
-#   if(!is.null(input$colorby_dd)){
-#     if(input$colorby_dd != "None"){
-#       if(dim(dd_plotdata())[1]>9){
-#         createAlert(session, inputId = "colorwarning_dd",
-#                     title=NULL, 
-#                     message="Warning: Colors get recycled for attributes with more than nine levels.",
-#                     type="warning", dismiss=TRUE, 
-#                     block=FALSE, append=FALSE)
-#       }
-#     }
-#   }
-# })
 
 dd_uniformoverlay <- reactive({
   if(!is.network(nw())){
@@ -1285,9 +1530,9 @@ dd_uniformoverlay <- reactive({
   }
   reps <- 50 #number of draws
   if(is.directed(nw())){
-    deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode_dd)
   } else {
-    deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode)
+    deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode_dd)
   }
     #now deg is a matrix where each element is a degree of a node 
     #each column is a different draw
@@ -1310,9 +1555,11 @@ dd_bernoullioverlay <- reactive({
   reps = 50
   density <- gden(nw())
   if(is.directed(nw())){
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph', 
+                  cmode=input$cmode_dd)
   } else {
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', cmode=input$cmode)
+    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph', 
+                  cmode=input$cmode_dd)
   }
   #now deg is a matrix where each element is a degree of a node 
   #each column is a different draw
@@ -1322,7 +1569,8 @@ dd_bernoullioverlay <- reactive({
   #each column is different draw
   z <- apply(deg, MARGIN=2, FUN=function(x){sum(x==0)})
   #tabulation of isolates in each draw
-  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, byrow=TRUE)
+  degreedata <- matrix(data=c(z,t(degreedata)),nrow=max(deg)+1,ncol=reps, 
+                       byrow=TRUE)
   #complete tabulation of degrees for each draw
   degreemeans <- apply(degreedata, MARGIN=1, FUN=mean)
   names(degreemeans) <- paste(0:max(deg))
@@ -1347,8 +1595,9 @@ output$degreedist <- renderPlot({
   input$samplenet
   
   plotme <- dd_plotdata()
-  color <- "#79AED4"
+  color <- histblue
   ylabel <- "Count of Nodes"
+  xlabel <- "Degree"
   ltext <- c()
   lcol <- c() #color for lines
   lty <- c()
@@ -1356,23 +1605,30 @@ output$degreedist <- renderPlot({
   lfill <- c() #color for boxes
   lborder <- c()
   ltitle <- NULL
+  
+  if(input$cmode_dd == "indegree"){
+    xlabel <- "In Degree"
+  } else if (input$cmode_dd == "outdegree"){
+    xlabel <- "Out Degree"
+  }
+  
   if(!is.null(input$colorby_dd)){
-  if(input$colorby_dd != "None"){
-    ncolors <- dim(dd_plotdata())[1]
-    if(ncolors == 2){
-      color <- c("#eff3ff", "#377FBC")
-    } else if(ncolors < 10){
-      color <- brewer.pal(ncolors,"Blues")
-    } else if(ncolors >= 10){
-      color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
-    }
-    ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
-    ltext <- append(ltext, "")
-    lfill <- c(color, 0)
-    lborder <- append(lborder, c(rep("black", times=ncolors), 0))
-    lty <- rep(0, times=ncolors+1)
-    lpch <- rep(26, times=ncolors+1)
-    ltitle <- input$colorby_dd
+    if(input$colorby_dd != "None"){
+      ncolors <- dim(dd_plotdata())[1]
+      if(ncolors == 2){
+        color <- c("#eff3ff", "#377FBC")
+      } else if(ncolors < 10){
+        color <- brewer.pal(ncolors,"Blues")
+      } else if(ncolors >= 10){
+        color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+      }
+      ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
+      ltext <- append(ltext, "")
+      lfill <- c(color, 0)
+      lborder <- append(lborder, c(rep("black", times=ncolors), 0))
+      lty <- rep(0, times=ncolors+1)
+      lpch <- rep(26, times=ncolors+1)
+      ltitle <- input$colorby_dd
   }}
   
   unif_samplemeans <- dd_uniformoverlay()[[1]]
@@ -1406,7 +1662,8 @@ output$degreedist <- renderPlot({
     bern_samplemeans <- bern_samplemeans/sum(dd_plotdata())
     bern_upperline <- bern_upperline/sum(dd_plotdata())
     bern_lowerline <- bern_lowerline/sum(dd_plotdata())
-    ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
+    ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), 
+                  max(bern_upperline))
     ylabel <- 'Percent of Nodes'
   }
   
@@ -1434,25 +1691,29 @@ output$degreedist <- renderPlot({
   }
   
   #save x-coordinates of bars, so that points are centered on bars
-  bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
+  bar_axis <- barplot(plotme, xlab=xlabel, ylab=ylabel,
                       col=color, ylim=c(0,ylimit), plot=TRUE)
   if(input$uniformoverlay_dd){
-    points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-           code=3, length=0.1, angle=90, col='orangered'))
+    points(x=bar_axis-.15, y=unif_samplemeans,col=CUGcol, 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                            x1=bar_axis-.15, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col=CUGcol))
     ltext <- append(ltext, "CUG")
-    lcol <- append(lcol, "orangered")
+    lcol <- append(lcol, CUGcol)
     lty <- append(lty, 1)
     lpch <- append(lpch, 18)
     lfill <- append(lfill, 0)
     lborder <- append(lborder, 0)
   }
   if(input$bernoullioverlay_dd){
-    points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-           code=3, length=0.1, angle=90, col='firebrick'))
+    points(x = bar_axis+.15, y = bern_samplemeans, col = BRGcol, 
+           lwd = 1, pch = 18, cex = 1.25)
+    suppressWarnings(arrows(x0 = bar_axis+.15, y0 = bern_upperline, 
+                            x1 = bar_axis+.15, y1 = bern_lowerline,
+           code = 3, length = 0.1, angle = 90, col = BRGcol))
     ltext <- append(ltext, "BRG")
-    lcol <- append(lcol, "firebrick")
+    lcol <- append(lcol, BRGcol)
     lty <- append(lty, 1)
     lpch <- append(lpch, 18)
     lfill <- append(lfill, 0)
@@ -1475,7 +1736,7 @@ output$degreedistdownload <- downloadHandler(
   content = function(file){
     pdf(file=file, height=8, width=12)
     plotme <- dd_plotdata()
-    color <- "#79AED4"
+    color <- histblue
     ylabel <- "Count of Nodes"
     ltext <- c()
     lcol <- c() #color for lines
@@ -1529,7 +1790,8 @@ output$degreedistdownload <- downloadHandler(
       bern_samplemeans <- bern_samplemeans/sum(dd_plotdata())
       bern_upperline <- bern_upperline/sum(dd_plotdata())
       bern_lowerline <- bern_lowerline/sum(dd_plotdata())
-      ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), max(bern_upperline))
+      ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline), 
+                    max(bern_upperline))
       ylabel <- 'Percent of Nodes'
     }
     
@@ -1560,22 +1822,26 @@ output$degreedistdownload <- downloadHandler(
     bar_axis <- barplot(plotme, xlab="Degree", ylab=ylabel,
                         col=color, ylim=c(0,ylimit), plot=TRUE)
     if(input$uniformoverlay_dd){
-      points(x=bar_axis-.15, y=unif_samplemeans,col='orangered', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-             code=3, length=0.1, angle=90, col='orangered'))
+      points(x=bar_axis-.15, y=unif_samplemeans,col=CUGcol, 
+             lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                              x1=bar_axis-.15, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col=CUGcol))
       ltext <- append(ltext, "CUG")
-      lcol <- append(lcol, "orangered")
+      lcol <- append(lcol, CUGcol)
       lty <- append(lty, 1)
       lpch <- append(lpch, 18)
       lfill <- append(lfill, 0)
       lborder <- append(lborder, 0)
     }
     if(input$bernoullioverlay_dd){
-      points(x=bar_axis+.15, y=bern_samplemeans,col='firebrick', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-             code=3, length=0.1, angle=90, col='firebrick'))
+      points(x=bar_axis+.15, y=bern_samplemeans,col=BRGcol, 
+             lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                              x1=bar_axis+.15, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col=BRGcol))
       ltext <- append(ltext, "BRG")
-      lcol <- append(lcol, "firebrick")
+      lcol <- append(lcol, BRGcol)
       lty <- append(lty, 1)
       lpch <- append(lpch, 18)
       lfill <- append(lfill, 0)
@@ -1699,17 +1965,24 @@ output$geodistplot <- renderPlot({
   # make sure that barplot and lines have the same length
   maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
   if(maxgeo_u < maxgeo_total){
-    unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_means)-1)
-    unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_upperline)-1)
-    unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_lowerline)-1)
+    unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), 
+                         after=length(unif_means)-1)
+    unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), 
+                             after=length(unif_upperline)-1)
+    unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), 
+                             after=length(unif_lowerline)-1)
   } 
   if(maxgeo_b < maxgeo_total){
-    bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_means)-1)
-    bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_upperline)-1)
-    bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_lowerline)-1)
+    bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), 
+                         after=length(bern_means)-1)
+    bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), 
+                             after=length(bern_upperline)-1)
+    bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), 
+                             after=length(bern_lowerline)-1)
   }
   if(maxgeo < maxgeo_total){
-    gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
+    gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), 
+                    after=length(gdata)-1)
     names(gdata) <- c(paste(1:maxgeo_total), "Inf")
   }
   
@@ -1729,26 +2002,31 @@ output$geodistplot <- renderPlot({
   lcol <- c()
   
   #save x-coordinates of bars, so that points are centered on bars
-  bar_axis <- barplot(gdata,  col="#79AED4",
+  bar_axis <- barplot(gdata,  col=histblue,
                       xlab = "Geodesic Value", ylab = ylabel,
                       ylim = c(0,ylimit), plot=TRUE)
   
   if(input$uniformoverlay_gd){
-    points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-           code=3, length=0.1, angle=90, col='orangered'))
+    points(x=bar_axis-.15, y=unif_means,col=CUGcol, 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                            x1=bar_axis-.15, y1=unif_lowerline,
+           code=3, length=0.1, angle=90, col=CUGcol))
     ltext <- append(ltext, "CUG")
-    lcol <- append(lcol, "orangered")
+    lcol <- append(lcol, CUGcol)
   }
   if(input$bernoullioverlay_gd){
-    points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-           code=3, length=0.1, angle=90, col='firebrick'))
+    points(x=bar_axis+.15, y=bern_means,col=BRGcol, 
+           lwd=1, pch=18, cex=1.25)
+    suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                            x1=bar_axis+.15, y1=bern_lowerline,
+           code=3, length=0.1, angle=90, col=BRGcol))
     ltext <- append(ltext, "BRG")
-    lcol <- append(lcol, "firebrick")
+    lcol <- append(lcol, BRGcol)
   }
   if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
+    legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, 
+           pt.cex=1.25, merge=TRUE,
            inset=c(.12,0), bty="n")
   }
   
@@ -1792,14 +2070,20 @@ output$geodistdownload <- downloadHandler(
     # make sure that barplot and lines have the same length
     maxgeo_total <- max(maxgeo, maxgeo_u, maxgeo_b)
     if(maxgeo_u < maxgeo_total){
-      unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_means)-1)
-      unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_upperline)-1)
-      unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), after=length(unif_lowerline)-1)
+      unif_means <- append(unif_means, rep(0, times=maxgeo_total-maxgeo_u), 
+                           after=length(unif_means)-1)
+      unif_upperline <- append(unif_upperline, rep(0, times=maxgeo_total-maxgeo_u), 
+                               after=length(unif_upperline)-1)
+      unif_lowerline <- append(unif_lowerline, rep(0, times=maxgeo_total-maxgeo_u), 
+                               after=length(unif_lowerline)-1)
     } 
     if(maxgeo_b < maxgeo_total){
-      bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_means)-1)
-      bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_upperline)-1)
-      bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), after=length(bern_lowerline)-1)
+      bern_means <- append(bern_means, rep(0, times=maxgeo_total-maxgeo_b), 
+                           after=length(bern_means)-1)
+      bern_upperline <- append(bern_upperline, rep(0, times=maxgeo_total-maxgeo_b), 
+                               after=length(bern_upperline)-1)
+      bern_lowerline <- append(bern_lowerline, rep(0, times=maxgeo_total-maxgeo_b), 
+                               after=length(bern_lowerline)-1)
     }
     if(maxgeo < maxgeo_total){
       gdata <- append(gdata, rep(0,times=maxgeo_total-maxgeo), after=length(gdata)-1)
@@ -1823,26 +2107,31 @@ output$geodistdownload <- downloadHandler(
     lcol <- c()
     
     #save x-coordinates of bars, so that points are centered on bars
-    bar_axis <- barplot(gdata,  col="#79AED4",
+    bar_axis <- barplot(gdata,  col=histblue,
                         xlab = "Geodesic Value", ylab = ylabel,
                         ylim = c(0,ylimit), plot=TRUE)
     
     if(input$uniformoverlay_gd){
-      points(x=bar_axis-.15, y=unif_means,col='orangered', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, x1=bar_axis-.15, y1=unif_lowerline,
-             code=3, length=0.1, angle=90, col='orangered'))
+      points(x=bar_axis-.15, y=unif_means,col=CUGcol, 
+             lwd=1, pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis-.15, y0=unif_upperline, 
+                              x1=bar_axis-.15, y1=unif_lowerline,
+             code=3, length=0.1, angle=90, col=CUGcol))
       ltext <- append(ltext, "CUG")
-      lcol <- append(lcol, "orangered")
+      lcol <- append(lcol, CUGcol)
     }
     if(input$bernoullioverlay_gd){
-      points(x=bar_axis+.15, y=bern_means,col='firebrick', lwd=1, pch=18, cex=1.25)
-      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, x1=bar_axis+.15, y1=bern_lowerline,
-             code=3, length=0.1, angle=90, col='firebrick'))
+      points(x=bar_axis+.15, y=bern_means,col=BRGcol, lwd=1, 
+             pch=18, cex=1.25)
+      suppressWarnings(arrows(x0=bar_axis+.15, y0=bern_upperline, 
+                              x1=bar_axis+.15, y1=bern_lowerline,
+             code=3, length=0.1, angle=90, col=BRGcol))
       ltext <- append(ltext, "BRG")
-      lcol <- append(lcol, "firebrick")
+      lcol <- append(lcol, BRGcol)
     }
     if(input$uniformoverlay_gd | input$bernoullioverlay_gd){
-      legend(x="topright", legend=ltext, col=lcol, lwd=1, pch=18, pt.cex=1.25, merge=TRUE,
+      legend(x="topright", legend=ltext, col=lcol, lwd=1, 
+             pch=18, pt.cex=1.25, merge=TRUE,
              inset=c(.12,0), bty="n")
     }
     dev.off()
@@ -1864,8 +2153,10 @@ output$geodistdownload <- downloadHandler(
 #     format(v, justify="centre")
     v <- c(paste0(unif_means[cols],"(",round(unif_sd[cols], digits=2),")"),
            paste0(bern_means[cols],"(",round(bern_sd[cols], digits=2),")"))
-    cat(format("",width=4),format("Observed",width=8),format(c("CUG","BRG"),width=11,justify="centre"),"\n")
-    cat(format("Infs:",width=3,justify="centre"),format(paste(obs),width=8,justify="centre"),
+    cat(format("",width=4),format("Observed",width=8),
+        format(c("CUG","BRG"),width=11,justify="centre"),"\n")
+    cat(format("Infs:",width=3,justify="centre"),
+        format(paste(obs),width=8,justify="centre"),
         format(v,width=10,justify="centre"))
   })
 
@@ -1876,6 +2167,82 @@ observe({
     updateTabsetPanel(session, 'displaytabs', selected="Network Summary")
   }
 })
+
+output$dynamiccugterm <- renderUI({
+  if(!is.network(nw())){return()}
+  if(is.directed(nw())){
+    choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
+                 "transitive triads" = "transitive", "twopath")
+  } else {
+    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
+  }
+  selectInput("cugtestterm", label = "Test statistic",
+              choices = choices)
+})
+outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
+
+output$cugtest <- renderPlot({
+  if(!is.network(nw())) {return()}
+  term <- input$cugtestterm
+  n <- nodes()
+  obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+  
+  # gets summary statistics of the already run simulations
+  brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+                   directed = nw()$gal$directed, loops = nw()$gal$loops)
+  cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+                   directed = nw()$gal$directed, loops = nw()$gal$loops)
+  
+  brghist <- hist(brgvals, plot = FALSE)
+  cughist <- hist(cugvals, breaks = brghist$breaks, plot = FALSE)
+  hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+       xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+       ylim = c(0, max(brghist$counts, cughist$counts)), 
+       breaks = brghist$breaks)
+  hist(brgvals, col = "gray60", density = 15, 
+       angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL, 
+       ylim = c(0, max(brghist$counts, cughist$counts)), 
+       breaks = brghist$breaks, add = TRUE)
+  abline(v = obsval, col = obsblue, lwd = 2)
+  
+  legend(x = "topright", bty = "n", 
+         legend = c("observed value", "CUG distribution", "BRG distribution"), 
+         lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, "gray60"),
+         angle = -45, density = c(0, 100, 15), 
+         border = c(0, CUGcol, BRGcol), merge = TRUE)
+})
+
+# output$cugtestdownload <- downloadHandler(
+#   filename = function(){paste0(nwname(), "_", input$cugtestterm, ".png")},
+#   content = function(file){
+#     
+#     term <- input$cugtestterm
+#     n <- nodes()
+#     obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+#     
+#     brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term, 
+#                      directed = nw()$gal$directed, loops = nw()$gal$loops)
+#     cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term, 
+#                      directed = nw()$gal$directed, loops = nw()$gal$loops)
+#   
+#     brghist <- hist(brgvals, plot = FALSE)
+#     hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
+#          xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
+#          breaks = brghist$breaks)
+#     hist(brgvals, col = tgray, border = BRGcol, ylab = NULL, 
+#          main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
+#     abline(v = obsval, col = obsblue, lwd = 2)
+#     
+#     legend(x = "topright", bty = "n", 
+#            legend = c("observed value", "CUG distribution", "BRG distribution"), 
+#            lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray), 
+#            border = c(0, CUGcol, BRGcol), merge = TRUE)
+#     dev.off()
+#     if (file.exists(paste0(nwname(), "_", input$cugtestterm, ".png")))
+#       file.rename(paste0(nwname(), "_", input$cugtestterm, ".png"), file)
+#   },
+#   contentType = "image/png"
+# )
 
 #since the visibility toggles between two states, set the options to 
 #not suspend the output when hidden
@@ -1969,7 +2336,7 @@ output$gclose <- renderText({
   c <- NULL
   try(
     c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
-                   cmode=input$gclosecmode))
+                        cmode=input$gclosecmode))
   c
 })
 outputOptions(output,'gclose',suspendWhenHidden=FALSE)
@@ -1983,7 +2350,7 @@ output$gstress <- renderText({
   }
   s <- NULL
   try(s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
-                  cmode=input$gstresscmode))
+                          cmode=input$gstresscmode))
   s
 })
 outputOptions(output,'gstress',suspendWhenHidden=FALSE)
@@ -1997,7 +2364,7 @@ output$ggraphcent <- renderText({
   }
   g <- NULL
   try(g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
-                 cmode=input$ggraphcentcmode))
+                          cmode=input$ggraphcentcmode))
   g
 })
 outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
@@ -2025,7 +2392,7 @@ output$ginfocent <- renderText({
   i<-NULL
   try({
     i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
-                  cmode=input$ginfocentcmode)})
+                        cmode=input$ginfocentcmode)})
   i
 })
 outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
@@ -2043,7 +2410,7 @@ output$ndeg <- renderText({
   }
   d <- NULL
   try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-         cmode=cmode))
+                  cmode=cmode))
   d
 })
 outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
@@ -2082,8 +2449,9 @@ output$nbetw <- renderText({
     gmode <- 'graph'
   }
   b <- NULL
-  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                   cmode=input$nbetwcmode))
+  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, 
+                       diag=has.loops(nw()),
+                       cmode=input$nbetwcmode))
   b
 })
 outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
@@ -2163,8 +2531,9 @@ output$nstress <- renderText({
     gmode <- 'graph'
   }
   s <- NULL
-  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$nstresscmode))
+  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, 
+                      diag=has.loops(nw()),
+                      cmode=input$nstresscmode))
   s
 })
 outputOptions(output,'nstress',suspendWhenHidden=FALSE)
@@ -2203,8 +2572,9 @@ output$ngraphcent <- renderText({
     gmode <- 'graph'
   }
   g <- NULL
-  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ngraphcentcmode))
+  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, 
+                     diag=has.loops(nw()),
+                     cmode=input$ngraphcentcmode))
   g
 })
 outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
@@ -2282,7 +2652,7 @@ output$ninfocent <- renderText({
   i<-''
   try({
     i <- infocent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                   cmode=input$ninfocentcmode)})
+                  cmode=input$ninfocentcmode)})
   i
 })
 outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
@@ -2359,9 +2729,7 @@ output$listofterms <- renderUI({
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
-  sink("NUL") # prevents terms from printing to console
   search.ergmTerms(name=myterm)
-  sink()
 })
 
 observe({
@@ -2454,26 +2822,32 @@ output$modelfitsum <- renderPrint({
 })
 
 output$modelfitdownload <- downloadHandler(
-  filename = function() {paste0(nwname(),"_modelfit.txt")},
+  filename = function() {paste0(nwname(), "_modelfit.txt")},
   contentType = "text/csv",
   content = function(file) {
-    capture.output(summary(model1reac()),file=file)
+    capture.output(summary(model1reac()), file = file)
   }
 )
 
 output$modelcomparison <- renderPrint({
   x <- values$modelcoefs
-  if(length(x)==0){return(cat(""))}
-  model.comparison(x)
+  y <- values$modelsumstats
+  if(length(x) == 0){return(cat(""))}
+  coef.comparison(x)
+  cat("\n\n","Summary Statistics", "\n")
+  stat.comparison(y)
 })
 
 output$modelcompdownload <- downloadHandler(
-  filename = function() {paste0(nwname(),"_modelcomparison.txt")},
+  filename = function() {paste0(nwname(), "_modelcomparison.txt")},
   contentType = "text/csv",
   content = function(file) {
     x <- values$modelcoefs
-    x <- model.comparison(x)
-    capture.output(cat(nwname(),"\n"),x,file=file)
+    y <- values$modelsumstats
+    capture.output(cat(nwname(),"\n"), coef.comparison(x),
+                   cat("\n\n","Summary Statistics", "\n"),
+                   stat.comparison(y),
+                   file = file)
   }
 )
 
@@ -2484,15 +2858,15 @@ output$modelcompdownload <- downloadHandler(
 #observers, but this is the best and least complicated (and the only 
 #one that works)
 
-outputOptions(output, "modelfit",priority=10, suspendWhenHidden=FALSE)
-outputOptions(output, "modelfitsum",priority=-10)
+outputOptions(output, "modelfit", priority = 10, suspendWhenHidden = FALSE)
+outputOptions(output, "modelfitsum", priority = -10)
 
 #' **Diagnostics - MCMC Diagnostics**
 #' 
 #' When using the `mcmc.diagnostics` function in the command line, the printed 
-#' diagnostics and plots all output together. Instead of calling `mcmc.diagnositcs`
-#' in a reactive object, it gets called in both the plot output element and summary
-#' output element.
+#' diagnostics and plots all output together. Instead of calling
+#' `mcmc.diagnositcs` in a reactive object, it gets called in both the plot 
+#' output element and summary output element.
 #' 
 #+ eval=FALSE
 
@@ -2604,17 +2978,18 @@ outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 
 #' **Diagnostics - Goodness of Fit**
 #' 
-#' Again, we output the current dataset and the ergm formula for the user to verify.
-#' One drawback of the `navbarPage` layout option (we specified this in the top of
-#' `ui.R`) is that you can't specify certain elements or panels to show up on 
-#' multiple pages. Furthermore, as far as I can tell, Shiny will not let you use 
-#' the same piece of output from `server.R` twice in `ui.R`. Therefore, 
-#' `output$currentdataset2` and `output$check2` are the same as `output$currentdataset`
-#' and `output$check1` with different names.
+#' Again, we output the current dataset and the ergm formula for the user to 
+#' verify. One drawback of the `navbarPage` layout option (we specified this in 
+#' the top of `ui.R`) is that you can't specify certain elements or panels to 
+#' show up on multiple pages. Furthermore, as far as I can tell, Shiny will not 
+#' let you use the same piece of output from `server.R` twice in `ui.R`. 
+#' Therefore, `output$currentdataset2` and `output$check2` are the same as 
+#' `output$currentdataset` and `output$check1` with different names.
 #' 
-#' In the reactive section above the creation of `model1gof` depends on the term the 
-#' user inputs. After checking that the user has already clicked the `actionButton`
-#' on the page we can output the text of the gof object and the plot of the gof object.
+#' In the reactive section above the creation of `model1gof` depends on the term
+#' the user inputs. After checking that the user has already clicked the 
+#' `actionButton` on the page we can output the text of the gof object and the 
+#' plot of the gof object.
 #+ eval=FALSE
 #dataset only updates after goButton on first tab has been clicked
 output$currentdataset_gof <- renderPrint({
@@ -2892,14 +3267,14 @@ output$gofplotcompdownload <- downloadHandler(
 
 #' **Simulations**
 #' 
-#' On this page the user can choose how many simulations of the model to run. The 
-#' reactive object `model1simreac` contains all the simulations, which we can output
-#' a summary of and choose one simulation at a time to plot. *Note:* when the user
-#' chooses to simulate one network, `allmodelsimreac()` is a reactive object of class
-#' network. When the user chooses to simulate multiple networks, `allmodelsimreac()`
-#' contains a list of the generated networks. This is why we have to split up the plot
-#' command in an if-statement. The rest of the display options should look familiar
-#' from the 'Plot Network' tab.
+#' On this page the user can choose how many simulations of the model to run. 
+#' The reactive object `model1simreac` contains all the simulations, which we 
+#' can output a summary of and choose one simulation at a time to plot. *Note:* 
+#' when the user chooses to simulate one network, `allmodelsimreac()` is a 
+#' reactive object of class network. When the user chooses to simulate multiple 
+#' networks, `allmodelsimreac()` contains a list of the generated networks. This
+#' is why we have to split up the plot command in an if-statement. The rest of 
+#' the display options should look familiar from the 'Plot Network' tab.
 #+ eval=FALSE
 output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
@@ -3052,8 +3427,10 @@ output$simstatsdownload <- downloadHandler(
             sum <- list()
             sum[1] <- paste(" Number of Networks: ",n, "\n")
             sum[2] <- paste("Model: ", nwname(),' ~ ',terms, "\n")
-            sum[3] <- paste("Reference: ", format(attr(sim,'reference')), "\n")
-            sum[4] <- paste("Constraints: ", format(attr(sim, 'constraints')), "\n")
+            sum[3] <- paste("Reference: ", 
+                            format(attr(sim,'reference')), "\n")
+            sum[4] <- paste("Constraints: ", 
+                            format(attr(sim, 'constraints')), "\n")
             sum[5] <- paste("Parameters: \n")
             cat(unlist(sum))
             
@@ -3146,16 +3523,6 @@ output$dynamiccolor2 <- renderUI({
 })
 outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
-# observe({
-#   if(length(legendlabels2())>9){
-#     createAlert(session, inputId = "colorwarning2",
-#                 title=NULL, 
-#                 message="Warning: Colors get recycled for attributes with more than nine levels.",
-#                 type="warning", dismiss=TRUE, 
-#                 block=FALSE, append=FALSE)
-#   }
-# })
-
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
               label = 'Size nodes according to:',
@@ -3193,7 +3560,8 @@ output$simplot <- renderPlot({
          vertex.cex = nodesize2())
   }
   if(input$colorby2 != 2){
-      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2(),
+      legend('bottomright', title=input$colorby2, 
+             legend = legendlabels2(), fill = legendfill2(),
              bty='n')
     }
   
@@ -3220,7 +3588,8 @@ output$simplotdownload <- downloadHandler(
            vertex.cex = nodesize2())
     }
     if(input$colorby2 != 2){
-      legend('bottomright', title=input$colorby2, legend = legendlabels2(), fill = legendfill2())
+      legend('bottomright', title=input$colorby2, 
+             legend = legendlabels2(), fill = legendfill2())
     }
     dev.off()
   }

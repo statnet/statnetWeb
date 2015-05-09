@@ -4,6 +4,11 @@
 .navbar {min-height:40px; height:40px;}
 
 
+.codetxt {
+  color: #333333;
+  background-color: inherit;
+}
+
 #sWtitle {
   font-family:Courier;
   font-size:13pt;
@@ -22,21 +27,19 @@ div.tool {
   display:inline;
 }
 
-div.tool span.tip {
+div.tool .tip {
     z-index:10;
     display:none; 
     padding:2px 3px;
-    margin-top:40px; 
+    margin-top:8px; 
     margin-left:5px;
     font-size:12px;
     max-width:300px;
 }
-#statstip,
-#controltip,
-#controltip2 {
+#statstip {
   margin-top:60px;
 }
-div.tool:hover span.tip{
+div.tool:hover .tip{
   display:inline; 
   position:absolute; 
   color:#333333;
@@ -87,7 +90,7 @@ div.busy {
 #swciteButton,
 #sciteButton {
   padding: 5px;
-  border-radius: 0px;
+  border-radius: 4px;
   border:1px solid #CECED8;
   background: rgb(230, 230, 230);
   cursor: pointer;
@@ -109,7 +112,7 @@ div.busy {
   position: absolute;
   top: 50px;
   right: 65px;
-  color: #A5A5AD;
+  color: #B4B4B4;
   cursor: pointer; 
 }
 #dataright, #fitright,
@@ -118,7 +121,7 @@ div.busy {
   position: absolute;
   top: 50px;
   right: 38px;
-  color: #A5A5AD;
+  color: #B4B4B4;
   cursor: pointer; 
 }
 
@@ -129,14 +132,14 @@ div.busy {
 #plotright:hover, #mcmcright:hover,
 #gofright:hover, #simright:hover,
 .helper-btn:hover {
-  color: #737379;
+  color: #8C8C8C;
 }
 
 .helper-btn {
     position:fixed;
     top: 50px;
     right: 10px;
-    color: #A5A5AD;
+    color: #B4B4B4;
     cursor: pointer;
 }
 
@@ -163,31 +166,76 @@ div.helper-box {
 div.smallhelperbox {
   position:absolute;
   z-index: 10;
-  display:none;
-  max-width: 200px;
-  max-height: 100px;
+  display: none;
+  width: 200px;
+  height: 100px;
   background: #FFFFFF;
   text-align: left;
   font-size: 12px;
   padding: 5px;
-  border:1px solid #CECED8;
+  border: 1px solid #CECED8;
   border-radius: 5px;
   z-index: 10;
 }
 
 div.mischelperbox {
-  position:absolute;
+  position: absolute;
   z-index: 10;
-  display:none;
+  display: none;
   max-width: 400px;
   max-height: 300px;
   background: #FFFFFF;
   text-align: left;
   font-size: 12px;
   padding: 5px;
-  border:1px solid #CECED8;
+  border: 1px solid #CECED8;
   border-radius: 5px;
   z-index: 10;
+}
+
+div.warning {
+    position: absolute;
+    display: block;
+    background: #fff8c4 url('images/warning.png') no-repeat 10px 50%;
+    border: 1px solid #f2c779;
+    font-size: 0.82em;
+    z-index: 10;
+}
+p.warning {
+  position: absolute;
+  right: 3px;
+  z-index: 12;
+  color: #A5A5AD;
+}
+p.warning:hover {
+  color: #737379;
+  cursor: pointer;
+}
+
+.irs-bar {
+  height: 8px;
+  top: 25px;
+  border-top: 1px solid #2F4DA7;
+  border-bottom: 1px solid #2F4DA7;
+  background: #2F4DA7;
+}
+.irs-from, .irs-to, .irs-single {
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.333;
+  text-shadow: none;
+  padding: 1px 3px;
+  background: #2F4DA7;
+  border-radius: 3px;
+}
+.irs-bar-edge {
+  height: 8px;
+  top: 25px;
+  width: 14px;
+  border: 1px solid #2F4DA7;
+  border-right: 0;
+  background: #2F4DA7;
+  border-radius: 16px 0 0 16px;
 }
 
 #linkbox1,
@@ -197,17 +245,18 @@ div.mischelperbox {
 #mixmxbox, 
 #graphlevelbox,
 #nodelevelbox {
-  display:none;
+  display: none;
 }
 
 #linktitle1,
 #linktitle2,
 #linktitle3,
 #linktitle4,
-#mixmxtitle, 
+#mixmxtitle,
+#cugtitle,
 #graphleveltitle,
 #nodeleveltitle {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .stitle {
@@ -222,15 +271,13 @@ div.mischelperbox {
   margin-top:10px;
 }
 
-#fitButton {
-  border-style:groove;
-}
 #savemodel {
   display:inline;
 }
 
 #simButton,
-.chromewarning {
+#matchingButton,
+#allButton {
   margin-bottom:10px;
 }
 
@@ -290,6 +337,20 @@ div.placeholder {
   display:inline;
   padding:4px 6px;
   margin-bottom:5px;
+}
+
+.mcmcwarning {
+  font-size: 13px;
+  padding: 8px 8px 8px 8px;
+}
+.mcmcwarning > p {
+  margin: 0px 0px 0px 0px;
+}
+.topright {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  z-index: 12;
 }
 .shiftright {
   margin-left:15px;

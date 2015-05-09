@@ -47,3 +47,9 @@ disableWidget <- function(id, session, disabled=TRUE){
                                               sep="")))
   }
 }
+
+# function to return tests on simulated graphs
+cugstats <- function(x, term, directed, loops){
+  nw <- network(x, directed = directed, loops = loops)
+  summary.statistics(as.formula(paste("nw ~ ", term)))
+}
