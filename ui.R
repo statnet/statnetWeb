@@ -59,9 +59,10 @@ library(shiny)
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(theme="mycosmo.css",
+  navbarPage(
+    #theme="mycosmo.css",
     title=NULL, 
-             id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
+    id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
