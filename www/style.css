@@ -286,9 +286,9 @@ div .mcmcopt {
   padding: 2px;
   margin-bottom: 5px;
 }
-div.form-group.shiny-input-container {
-  width=150px;
-}
+/*div.form-group.shiny-input-container {
+  width: 150px;
+}*/
 #chooseterm {
   display:inline;
 }
@@ -377,4 +377,21 @@ div.placeholder {
   border-style: none;
   padding: 5px;
   margin: 0 0 0 15px;
+}
+
+
+.btn-primary {
+  color: #ffffff;
+  background-color: #076EC3;
+  border-color: #06589C;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  color: #ffffff;
+  background-color: #054D88;
+  border-color: #02213A;
 }
