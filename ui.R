@@ -847,8 +847,10 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(6,
-                               actionButton("matchingButton", "Compatible terms", class="btn-sm"),
-                               actionButton("allButton", "All terms", class="btn-sm")
+                               actionButton("matchingButton", "Compatible terms", 
+                                            class="btn-sm active"),
+                               actionButton("allButton", "All terms", 
+                                            class="btn-sm")
                                ),
                         column(4, uiOutput("listofterms"))
                       ),

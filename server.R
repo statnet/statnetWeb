@@ -2745,12 +2745,18 @@ output$listofterms <- renderUI({
     current.terms <- unlist(matchterms)
   }
   selectizeInput('chooseterm',label = NULL,
-              choices = current.terms)
+              choices = c("Select a term", current.terms))
   
 })
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
+  if(is.null(myterm)){
+    return(cat("Choose a term from the dropdown menu."))
+  }
+  if(myterm == "Select a term"){
+    return(cat("Choose a term from the dropdown menu."))
+  }
   search.ergmTerms(name=myterm)
 })
 
