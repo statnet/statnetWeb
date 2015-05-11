@@ -1,6 +1,6 @@
 
-.navbar .navbar-brand{ padding: 0px 12px;font-size: 16px;line-height: 40px; }
-.navbar-nav > li > a {padding-top: 0px; padding-bottom: 0px; line-height: 40px; height: 40px;}
+.navbar .navbar-brand{ padding: 0 12px;font-size: 16px;line-height: 40px; }
+.navbar-nav > li > a {padding-top: 0; padding-bottom: 0; line-height: 40px; height: 40px;}
 .navbar {min-height:40px; height:40px;}
 
 
@@ -21,7 +21,7 @@ pre {
 }
 .shiny-input-container:not {
   width:150px;
-  margin:0px;
+  margin:0;
 }
 div.tool {
   display:inline;
@@ -46,7 +46,7 @@ div.tool:hover .tip{
   border:1px solid #CCCCCC; 
   border-radius:3px;
   background:#FFFFFF;
-  box-shadow: 3px 2px 5px 0px #CCCCCC;
+  box-shadow: 3px 2px 5px 0 #CCCCCC;
   }
 /*div.tool span.tip::before{
   z-index:20;
@@ -310,7 +310,7 @@ div.placeholder {
 }
 #termdocbox {
   position:absolute;
-  right:0px;
+  right:0;
   left:5px;
   margin-right:10px;
   max-height:95px;
@@ -344,7 +344,7 @@ div.placeholder {
   padding: 8px 8px 8px 8px;
 }
 .mcmcwarning > p {
-  margin: 0px 0px 0px 0px;
+  margin: 0 0 0 0;
 }
 .topright {
   position: absolute;
@@ -363,13 +363,13 @@ div.placeholder {
 #simstatslabel,
 #simsummary2 {
   border-style: none;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
 }
 #infsummary {
   border-style: none;
-  padding: 0 0 8 0px;
-  margin: 0px;
+  padding: 0 0 8 0;
+  margin: 0;
 }
 #simcoef,
 #simstats,
