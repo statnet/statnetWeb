@@ -261,8 +261,8 @@ nodes <- reactive({
   nwinit()$gal$n
 })
 
-#number of edges in nw
-nedges <- reactive({
+#number of edges in initial nw
+nedgesinit <- reactive({
   if(!is.network(nwinit())) return()
   network.edgecount(nwinit())
 })
@@ -295,7 +295,7 @@ observe({
   evdf <- list()
   if (is.network(nwinit())){
     n <- nodes()
-    e <- nedges()
+    e <- nedgesinit()
     for (i in 1:n){
       vdf <- rbind(vdf,i)
     }
@@ -668,6 +668,7 @@ legendfill <- reactive({
 #simulated graphs for cug tests
 observeEvent(c(nw(), input$ncugsims),{
   if(!is.null(nw())){
+    s <- network.edgecount(nw())
     if (is.directed(nw())){
       mode <- "digraph"
     } else {
@@ -676,7 +677,7 @@ observeEvent(c(nw(), input$ncugsims),{
     
     brgsims <- rgraph(n = nodes(), m = input$ncugsims, tprob = gden(nw()), mode = mode, 
                       diag = nw()$gal$loops)
-    cugsims <- rgnm(n = input$ncugsims, nv = nodes(), m = nedges(), mode = mode,
+    cugsims <- rgnm(n = input$ncugsims, nv = nodes(), m = s, mode = mode,
                     diag = nw()$gal$loops)
     
     values$cugsims <- list(brgsims, cugsims)
@@ -1416,11 +1417,12 @@ uniformsamples <- reactive({
   if(!is.network(nw())){
     return()
   }
+  s <- network.edgecount(nw())
   if(is.directed(nw())){
-    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='digraph',
+    samples <- rgnm(n=50, nv=nodes(), m=s, mode='digraph',
                     diag=has.loops(nw()))
   } else {
-    samples <- rgnm(n=50, nv=nodes(), m=nedges(), mode='graph',
+    samples <- rgnm(n=50, nv=nodes(), m=s, mode='graph',
                     diag=has.loops(nw()))
   }
   samples
