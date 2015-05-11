@@ -59,9 +59,10 @@ library(shiny)
 #'
 #+ eval=FALSE 
 shinyUI(
-  navbarPage(theme="mycosmo.css",
+  navbarPage(
+    #theme="mycosmo.css",
     title=NULL, 
-             id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
+    id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
              
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
@@ -144,8 +145,7 @@ url = {http://statnetproject.org}
    column(4, 
           wellPanel( 
               h5(tags$u('Resources')),
-              div(class="tool",
-                  span(class="tip", "The homepage of the statnet project. Find tutorials,",
+              div(title=paste("The homepage of the statnet project. Find tutorials,",
                        "publications and recent news here."),
                   a("statnet Wiki",
                     href = "https://statnet.csde.washington.edu/trac", target = "_blank")
@@ -324,7 +324,7 @@ fluidRow(
            )),
          conditionalPanel(
            condition="input.filetype == 5 & input.samplenet != 'Choose a network'",
-           uiOutput("datadesc")
+           wellPanel(uiOutput("datadesc"))
            )
          ),
     tabPanel('Edit Network', br(),
@@ -343,7 +343,7 @@ fluidRow(
                     conditionalPanel(condition="input.symmetrize != 'Do not symmetrize'",
                                      p("After symmetrizing, network should be:"),
                                      actionButton("symmdir", "directed", class="btn-sm"),
-                                     actionButton("symmundir", "undirected", class="btn-sm")
+                                     actionButton("symmundir", "undirected", class="btn-sm active")
                                      )
                     
                     )),
@@ -514,8 +514,7 @@ fluidRow(
                                        label = "Number of simulations",
                                        choices = c(100, 200, 500))),
                  br(),
-                 plotOutput("cugtest"),
-                 br()
+                 plotOutput("cugtest")
 #                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'), 
@@ -718,7 +717,7 @@ fluidRow(
                                  uiOutput("dynamiccmode_dd"),
                                  uiOutput("dynamiccolor_dd"),
                                  tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_dd", label="Count of nodes", class="btn-sm"),
+                                 actionButton("countButton_dd", label="Count of nodes", class="btn-sm active"),
                                  actionButton("percButton_dd", label="Percent of nodes", class="btn-sm"),
                                  br(), br(),
                                  tags$label('Expected values of null models:'), br(),
@@ -750,8 +749,8 @@ fluidRow(
                   ),
                 conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
                                  tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_gd", "Count of nodes", class="btn-sm"),
-                                 actionButton("percButton_gd", "Percent of nodes", class="btn-sm"),
+                                 actionButton("countButton_gd", "Count of vertex pairs", class="btn-sm active"),
+                                 actionButton("percButton_gd", "Percent of vertex pairs", class="btn-sm"),
                                  br(), br(),
                                  tags$label('Expected values of null models:'), br(),
                                  fluidRow(
@@ -832,11 +831,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
             
             column(4,
                    p("ERGM terms:"),
-                   div(class="tool",
-                       textInput(inputId="terms", label=NULL, value="edges"),
-                       span(class="tip", "Type in term(s) and their arguments.",
-                            "For multiple terms, separate with '+'. ",
-                            img(src = "callout2.png", class = "callout"))
+                   div(textInput(inputId="terms", label=NULL, value="edges"),
+                       title=paste("Type in term(s) and their arguments.",
+                                   "For multiple terms, separate with '+'. ")
                    ),
                    actionButton('addtermButton', 'Add Term(s)', class="btn-primary btn-sm"),
                    actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
@@ -874,43 +871,32 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     ),
                         conditionalPanel(condition = "input.controltype == 'MCMC'", class = "shiftright",
                           fluidRow(
-                            column(4, class = "tool", 
+                            column(4, 
                                    span("Interval:"),
                                    customNumericInput('MCMCinterval', label = NULL, value = 1024, class = "mcmcopt input-mini"),
-                                   br(),
-                                   span(class = "tip", "Number of proposals between sampled statistics.", 
-                                        img(src = "callout2.png", class = "callout"))
+                                   title = paste("Number of proposals between sampled statistics.")
                                    ),
                             
-                            column(4,class = "tool",
+                            column(4,
                                    span("Burn-in:"),
                                    customNumericInput('MCMCburnin', label = NULL, value = 16384, class = "mcmcopt input-mini"),
-                                   br(),
-                                   span(class = "tip", "Number of proposals before any MCMC sampling is done.",
-                                        "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                        img(src = "callout2.png", class = "callout")) 
+                                   title = paste("Number of proposals before any MCMC sampling is done.",
+                                                 "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.") 
                                    ),
                             
-                            column(4,class = "tool",
+                            column(4,
                                    span("Sample size:"),
                                    customNumericInput('MCMCsamplesize', label = NULL, value = 1024, class = "mcmcopt input-mini"),
-                                   br(),
-                                   span(class = "tip", "Number of network statistics, randomly drawn from a given distribution", 
-                                        "on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
-                                        img(src = "callout2.png", class = "callout"))
+                                   title = paste("Number of network statistics, randomly drawn from a given distribution", 
+                                                 "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
                                    )
                           ),
                              
                           fluidRow(
-                              div(class = "tool",
-                                  span("Other controls:", class = "shiftright"),
+                              div(span("Other controls:", class = "shiftright"),
                                   customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small"),
-                                  br(),
-                                  span(class = "tip", id = "controltip",
-                                       "Type in other arguments to be passed to", 
-                                       span("control.ergm,", style = "font-family:Courier;"),
-                                       "e.g.", span("MCMC.burnin.retries = 1", style = "font-family:Courier;"), 
-                                       img(src = "callout2.png", class = "callout"))
+                                  title = paste("Other arguments to be passed to", 
+                                       "control.ergm, e.g. MCMC.burnin.retries = 1")
                                   )
                             )),
                         conditionalPanel(condition = "input.controltype == 'MCMLE'",
@@ -1119,32 +1105,25 @@ tabPanel(title='Simulations', value='tab7',
                            ),
                            conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
                              fluidRow(
-                                    column(5, class="tool", 
+                                    column(5,
                                         span("Interval:"),
                                         customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini"),
-                                        br(),
-                                        span(class="tip","Number of proposals between sampled statistics.", 
-                                             img(src="callout2.png",class="callout"))
+                                        title=paste("Number of proposals between sampled statistics.")
                                         ),
-                                    column(5, class="tool",
+                                    column(5,
                                         span("Burn-in:"),
                                         customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"),
-                                        br(),
-                                        span(class="tip","Number of proposals before any MCMC sampling is done.", 
-                                                          "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                                          img(src="callout2.png",class="callout")) 
+                                        title=paste("Number of proposals before any MCMC sampling is done.", 
+                                                    "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.") 
                                         )
                                     
                              ),
                              fluidRow(
-                                    div(class="tool", 
+                                    div(
                                         span("Other controls:"),
                                         customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
-                                        br(),
-                                        span(class="tip", id="controltip2",
-                                             "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
-                                             ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
-                                             img(src="callout2.png",class="callout"))
+                                        title=paste("Type in other arguments to be passed to control.simulate,",
+                                                    "e.g. MCMC.init.maxedges=200")
                                         )
                              )),
                            conditionalPanel(condition="input.simcontroltype == 'Parallel'",
@@ -1227,10 +1206,9 @@ tabPanel(title='Simulations', value='tab7',
                                 downloadButton('simstatsdownload', 
                                         label = 'Download Statistics', class="btn-sm")),
                            column(4,
-                              div(class="tool", span(class="tip", id="statstip",".txt: Summary of simulations",
-                                                     "plus full list of statistics.",br(), 
-                                                     ".csv: Full list of statistics only.",
-                                                     img(src="callout2.png",class="callout")),
+                              div(title=paste0(".txt: Summary of simulations",
+                                              " plus full list of statistics. \n", 
+                                              ".csv: Full list of statistics only."),
                                 radioButtons('simstatsfiletype', label=NULL,
                                              choices=c('.txt','.csv'))
                                 )
@@ -1259,9 +1237,8 @@ tabPanel(title='Help', value='tab8',
          sidebarLayout(position = 'right',
                        sidebarPanel(
                          h5(tags$u('Resources')),
-                         div(class="tool",
-                             span(class="tip", "The homepage of the statnet project. Find tutorials,",
-                                  "publications and recent news here."),
+                         div(title=paste("The homepage of the statnet project. Find tutorials,",
+                                         "publications and recent news here."),
                              a("statnet Wiki",
                                href = "https://statnet.csde.washington.edu/trac", target = "_blank")
                          ),

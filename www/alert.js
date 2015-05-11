@@ -40,6 +40,26 @@ $(document).ready(function(){
     $("#symmdir").toggleClass("active", false);
     $("#symmundir").toggleClass("active", true);
   });
+  
+  $("#countButton_dd").click(function(){
+    $("#countButton_dd").toggleClass("active", true);
+    $("#percButton_dd").toggleClass("active", false);
+  });
+
+  $("#percButton_dd").click(function(){
+    $("#countButton_dd").toggleClass("active", false);
+    $("#percButton_dd").toggleClass("active", true);
+  });
+  
+    $("#countButton_gd").click(function(){
+    $("#countButton_gd").toggleClass("active", true);
+    $("#percButton_gd").toggleClass("active", false);
+  });
+
+  $("#percButton_gd").click(function(){
+    $("#countButton_gd").toggleClass("active", false);
+    $("#percButton_gd").toggleClass("active", true);
+  });
 
   $("#Robjhelp").click(function(){
     $("#Robjbox").toggle(500);
