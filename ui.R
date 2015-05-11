@@ -751,8 +751,8 @@ fluidRow(
                   ),
                 conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
                                  tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_gd", "Count of nodes", class="btn-sm"),
-                                 actionButton("percButton_gd", "Percent of nodes", class="btn-sm"),
+                                 actionButton("countButton_gd", "Count of vertex pairs", class="btn-sm"),
+                                 actionButton("percButton_gd", "Percent of vertex pairs", class="btn-sm"),
                                  br(), br(),
                                  tags$label('Expected values of null models:'), br(),
                                  fluidRow(
