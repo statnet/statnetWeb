@@ -343,7 +343,7 @@ fluidRow(
                     conditionalPanel(condition="input.symmetrize != 'Do not symmetrize'",
                                      p("After symmetrizing, network should be:"),
                                      actionButton("symmdir", "directed", class="btn-sm"),
-                                     actionButton("symmundir", "undirected", class="btn-sm")
+                                     actionButton("symmundir", "undirected", class="btn-sm active")
                                      )
                     
                     )),
@@ -718,7 +718,7 @@ fluidRow(
                                  uiOutput("dynamiccmode_dd"),
                                  uiOutput("dynamiccolor_dd"),
                                  tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_dd", label="Count of nodes", class="btn-sm"),
+                                 actionButton("countButton_dd", label="Count of nodes", class="btn-sm active"),
                                  actionButton("percButton_dd", label="Percent of nodes", class="btn-sm"),
                                  br(), br(),
                                  tags$label('Expected values of null models:'), br(),
@@ -750,7 +750,7 @@ fluidRow(
                   ),
                 conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
                                  tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_gd", "Count of vertex pairs", class="btn-sm"),
+                                 actionButton("countButton_gd", "Count of vertex pairs", class="btn-sm active"),
                                  actionButton("percButton_gd", "Percent of vertex pairs", class="btn-sm"),
                                  br(), br(),
                                  tags$label('Expected values of null models:'), br(),
