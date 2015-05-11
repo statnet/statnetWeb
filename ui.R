@@ -145,8 +145,7 @@ url = {http://statnetproject.org}
    column(4, 
           wellPanel( 
               h5(tags$u('Resources')),
-              div(class="tool",
-                  span(class="tip", "The homepage of the statnet project. Find tutorials,",
+              div(title=paste("The homepage of the statnet project. Find tutorials,",
                        "publications and recent news here."),
                   a("statnet Wiki",
                     href = "https://statnet.csde.washington.edu/trac", target = "_blank")
@@ -833,11 +832,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
             
             column(4,
                    p("ERGM terms:"),
-                   div(class="tool",
-                       textInput(inputId="terms", label=NULL, value="edges"),
-                       span(class="tip", "Type in term(s) and their arguments.",
-                            "For multiple terms, separate with '+'. ",
-                            img(src = "callout2.png", class = "callout"))
+                   div(textInput(inputId="terms", label=NULL, value="edges"),
+                       title=paste("Type in term(s) and their arguments.",
+                                   "For multiple terms, separate with '+'. ")
                    ),
                    actionButton('addtermButton', 'Add Term(s)', class="btn-primary btn-sm"),
                    actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
@@ -875,43 +872,32 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     ),
                         conditionalPanel(condition = "input.controltype == 'MCMC'", class = "shiftright",
                           fluidRow(
-                            column(4, class = "tool", 
+                            column(4, 
                                    span("Interval:"),
                                    customNumericInput('MCMCinterval', label = NULL, value = 1024, class = "mcmcopt input-mini"),
-                                   br(),
-                                   span(class = "tip", "Number of proposals between sampled statistics.", 
-                                        img(src = "callout2.png", class = "callout"))
+                                   title = paste("Number of proposals between sampled statistics.")
                                    ),
                             
-                            column(4,class = "tool",
+                            column(4,
                                    span("Burn-in:"),
                                    customNumericInput('MCMCburnin', label = NULL, value = 16384, class = "mcmcopt input-mini"),
-                                   br(),
-                                   span(class = "tip", "Number of proposals before any MCMC sampling is done.",
-                                        "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                        img(src = "callout2.png", class = "callout")) 
+                                   title = paste("Number of proposals before any MCMC sampling is done.",
+                                                 "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.") 
                                    ),
                             
-                            column(4,class = "tool",
+                            column(4,
                                    span("Sample size:"),
                                    customNumericInput('MCMCsamplesize', label = NULL, value = 1024, class = "mcmcopt input-mini"),
-                                   br(),
-                                   span(class = "tip", "Number of network statistics, randomly drawn from a given distribution", 
-                                        "on the set of all networks, returned by the Metropolis-Hastings algorithm.", 
-                                        img(src = "callout2.png", class = "callout"))
+                                   title = paste("Number of network statistics, randomly drawn from a given distribution", 
+                                                 "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
                                    )
                           ),
                              
                           fluidRow(
-                              div(class = "tool",
-                                  span("Other controls:", class = "shiftright"),
+                              div(span("Other controls:", class = "shiftright"),
                                   customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small"),
-                                  br(),
-                                  span(class = "tip", id = "controltip",
-                                       "Type in other arguments to be passed to", 
-                                       span("control.ergm,", style = "font-family:Courier;"),
-                                       "e.g.", span("MCMC.burnin.retries = 1", style = "font-family:Courier;"), 
-                                       img(src = "callout2.png", class = "callout"))
+                                  title = paste("Other arguments to be passed to", 
+                                       "control.ergm, e.g. MCMC.burnin.retries = 1")
                                   )
                             )),
                         conditionalPanel(condition = "input.controltype == 'MCMLE'",
@@ -1120,32 +1106,25 @@ tabPanel(title='Simulations', value='tab7',
                            ),
                            conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
                              fluidRow(
-                                    column(5, class="tool", 
+                                    column(5,
                                         span("Interval:"),
                                         customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini"),
-                                        br(),
-                                        span(class="tip","Number of proposals between sampled statistics.", 
-                                             img(src="callout2.png",class="callout"))
+                                        title=paste("Number of proposals between sampled statistics.")
                                         ),
-                                    column(5, class="tool",
+                                    column(5,
                                         span("Burn-in:"),
                                         customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"),
-                                        br(),
-                                        span(class="tip","Number of proposals before any MCMC sampling is done.", 
-                                                          "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.", 
-                                                          img(src="callout2.png",class="callout")) 
+                                        title=paste("Number of proposals before any MCMC sampling is done.", 
+                                                    "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.") 
                                         )
                                     
                              ),
                              fluidRow(
-                                    div(class="tool", 
+                                    div(
                                         span("Other controls:"),
                                         customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
-                                        br(),
-                                        span(class="tip", id="controltip2",
-                                             "Type in other arguments to be passed to", span("control.simulate", style="font-family:Courier;"),
-                                             ", e.g.", span("MCMC.init.maxedges=200", style="font-family:Courier;"), 
-                                             img(src="callout2.png",class="callout"))
+                                        title=paste("Type in other arguments to be passed to control.simulate,",
+                                                    "e.g. MCMC.init.maxedges=200")
                                         )
                              )),
                            conditionalPanel(condition="input.simcontroltype == 'Parallel'",
@@ -1228,10 +1207,9 @@ tabPanel(title='Simulations', value='tab7',
                                 downloadButton('simstatsdownload', 
                                         label = 'Download Statistics', class="btn-sm")),
                            column(4,
-                              div(class="tool", span(class="tip", id="statstip",".txt: Summary of simulations",
-                                                     "plus full list of statistics.",br(), 
-                                                     ".csv: Full list of statistics only.",
-                                                     img(src="callout2.png",class="callout")),
+                              div(title=paste0(".txt: Summary of simulations",
+                                              " plus full list of statistics. \n", 
+                                              ".csv: Full list of statistics only."),
                                 radioButtons('simstatsfiletype', label=NULL,
                                              choices=c('.txt','.csv'))
                                 )
@@ -1260,9 +1238,8 @@ tabPanel(title='Help', value='tab8',
          sidebarLayout(position = 'right',
                        sidebarPanel(
                          h5(tags$u('Resources')),
-                         div(class="tool",
-                             span(class="tip", "The homepage of the statnet project. Find tutorials,",
-                                  "publications and recent news here."),
+                         div(title=paste("The homepage of the statnet project. Find tutorials,",
+                                         "publications and recent news here."),
                              a("statnet Wiki",
                                href = "https://statnet.csde.washington.edu/trac", target = "_blank")
                          ),
