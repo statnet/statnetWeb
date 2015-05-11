@@ -1079,9 +1079,9 @@ legendfill2 <- reactive({
 
 output$datadesc <- renderUI({
   net <- input$samplenet
-  text <- wellPanel()
+  text <- div()
   if(net == "ecoli1" | net == "ecoli2"){
-    text <- wellPanel(
+    text <- div(
       p("The", code("ecoli", class = "codetxt"), 
         "network data set comprises two versions of a", 
         "biological network in which the nodes are operons in", 
@@ -1106,7 +1106,7 @@ output$datadesc <- renderUI({
     )
   }
   if(net == "faux.mesa.high"){
-    text <- wellPanel(
+    text <- div(
       p("This data set represents a simulation of an in-school friendship", 
         "network. The network is named faux.mesa.high because the school", 
         "commnunity on which it is based is in the rural western US, with a", 
@@ -1135,7 +1135,7 @@ output$datadesc <- renderUI({
       )
   }
   if(net == "flobusiness" | net == "flomarriage"){
-    text <- wellPanel(
+    text <- div(
       p("The two", code("florentine", class = "codetxt"), "networks are of", 
         "marriage and business ties among Renaissance", 
         "Florentine families. The data is originally from Padgett (1994) via", 
@@ -1170,7 +1170,7 @@ output$datadesc <- renderUI({
       )
   }
   if(net == "kapferer" | net == "kapferer2"){
-    text <- wellPanel(
+    text <- div(
       p('This well-known social network dataset, collected by Bruce Kapferer',
         'in Zambia from June 1965 to August 1965, involves interactions among', 
         'workers in a tailor shop as observed by Kapferer himself. Here, an', 
@@ -1204,7 +1204,7 @@ output$datadesc <- renderUI({
     )
   }
   if(net == "molecule") {
-    text <- wellPanel(
+    text <- div(
       p(code("molecule", class = "codetxt"), 
         "is a synthetic network of 20 nodes that is used as an example within", 
         "the", code("ergm", class = "codetxt"), 
@@ -1212,7 +1212,7 @@ output$datadesc <- renderUI({
         "a chemical molecule."))
   }
   if(net == "samplike" | net == "samplk1" | net == "samplk2" | net == "samplk3"){
-    text <- wellPanel(
+    text <- div(
       p('Sampson (1969) recorded the social interactions among a group of monks', 
         'while resident as an experimenter on vision, and collected numerous', 
         'sociometric rankings. During his stay, a political “crisis in the', 

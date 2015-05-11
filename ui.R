@@ -324,7 +324,7 @@ fluidRow(
            )),
          conditionalPanel(
            condition="input.filetype == 5 & input.samplenet != 'Choose a network'",
-           uiOutput("datadesc")
+           wellPanel(uiOutput("datadesc"))
            )
          ),
     tabPanel('Edit Network', br(),
