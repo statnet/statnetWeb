@@ -514,8 +514,7 @@ fluidRow(
                                        label = "Number of simulations",
                                        choices = c(100, 200, 500))),
                  br(),
-                 plotOutput("cugtest"),
-                 br()
+                 plotOutput("cugtest")
 #                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'), 
