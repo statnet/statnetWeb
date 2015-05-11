@@ -2196,11 +2196,29 @@ output$cugtest <- renderPlot({
                    directed = nw()$gal$directed, loops = nw()$gal$loops)
   
   brghist <- hist(brgvals, plot = FALSE)
-  cughist <- hist(cugvals, breaks = brghist$breaks, plot = FALSE)
+  
+  getbreaks <- function(x){  
+    breaks <- brghist$breaks
+    r <- range(brghist$breaks)
+    int <- breaks[2] - breaks[1]
+    if(min(x) < r[1]){
+      toadd <- ceiling((r[1] - min(x))/int)
+      front <- c((r[1]-toadd*int):(r[1]-int))
+      breaks <- c(front, breaks)
+    }
+    if (max(x) > r[2]) {
+      toadd <- ceiling((max(x)-r[2])/int)
+      back <- c((r[2]+int):(r[2]+toadd*int))
+      breaks <- c(breaks, back)
+    }
+    return(breaks)
+  }
+  
+  cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
   hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL, 
        xlab= NULL, xlim = range(brgvals, cugvals, obsval), 
        ylim = c(0, max(brghist$counts, cughist$counts)), 
-       breaks = brghist$breaks)
+       breaks = getbreaks)
   hist(brgvals, col = "gray60", density = 15, 
        angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL, 
        ylim = c(0, max(brghist$counts, cughist$counts)), 
