@@ -251,7 +251,7 @@ fluidRow(
                 column(6,
                     br(style="line-height:26px;"),
                     selectInput('samplenet', label=NULL,
-                                choices=c('Choose a network', 'ecoli1', 'ecoli2',
+                                choices=c('Choose a network',
                                           'faux.mesa.high','flobusiness',
                                           'flomarriage', 'kapferer', 'kapferer2',
                                           'molecule', 'samplike', 'samplk1',
