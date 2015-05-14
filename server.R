@@ -2284,7 +2284,7 @@ outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 # update all the menu selection options when network changes
 observeEvent(nw(), {
   if(is.directed(nw())){
-    degmenu <- c('indegree', 'outdegree', 'total')
+    degmenu <- c('indegree', 'outdegree')
     betwmenu <- c('directed', 'endpoints', 'proximalsrc',
                   'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
     closemenu <- c('directed', 'suminvdir')
