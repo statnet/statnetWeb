@@ -2704,10 +2704,15 @@ output$ninfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i<-''
-  try({
-    i <- infocent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ninfocentcmode)})
+  i <- ''
+  i <- tryCatch({infocent(nw(), nodes=input$nodeind, gmode=gmode,
+                          diag=has.loops(nw()), cmode=input$ninfocentcmode)},
+                error = function(e) {e})
+  if(typeof(i) == "list") {
+    values$infocenterr <- i
+    state$infocenterr <- 1
+    i <- ""
+  }
   i
 })
 outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
