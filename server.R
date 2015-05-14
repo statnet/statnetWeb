@@ -2281,6 +2281,37 @@ output$mixingmatrix <- renderPrint({
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
+# update all the menu selection options when network changes
+observeEvent(nw(), {
+  if(is.directed(nw())){
+    degmenu <- c('indegree', 'outdegree', 'total')
+    betwmenu <- c('directed', 'endpoints', 'proximalsrc',
+                  'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
+    closemenu <- c('directed', 'suminvdir')
+    stressmenu <- c('directed')
+    hgmenu <- c('directed')
+  } else {
+    degmenu <- c('total')
+    betwmenu <- c('undirected', 'endpoints', 'proximalsrc',
+                  'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
+    closemenu <- c('undirected', 'suminvundir')
+    stressmenu <- c('undirected')
+    hgmenu <- c('undirected')
+  }
+  updateNumericInput(session, "nodeind", label = NULL, value = 1,
+                     min = 1, max = nodes())
+  updateSelectInput(session, "gdegcmode", choices = degmenu)
+  updateSelectInput(session, "gbetwcmode", choices = betwmenu)
+  updateSelectInput(session, "gclosecmode", choices = closemenu)
+  updateSelectInput(session, "gstresscmode", choices = stressmenu)
+  updateSelectInput(session, "ggraphcentcmode", choices = hgmenu)
+  updateSelectInput(session, "ndegcmode", choices = degmenu)
+  updateSelectInput(session, "nbetwcmode", choices = betwmenu)
+  updateSelectInput(session, "nclosecmode", choices = closemenu)
+  updateSelectInput(session, "nstresscmode", choices = stressmenu)
+  updateSelectInput(session, "ngraphcentcmode", choices = hgmenu)
+})
+
 output$gden <- renderText({
   if(!is.network(nw())) {return()}
   if(is.directed(nw())){
@@ -2391,331 +2422,331 @@ output$ggraphcent <- renderText({
 })
 outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
 
-# output$gevcent <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   e <- NULL
-#   try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
-#   e
-# })
-# outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
+output$gevcent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- NULL
+  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
+  e
+})
+outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
 
-# output$ginfocent <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   i<-NULL
-#   try({
-#     i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
-#                         cmode=input$ginfocentcmode)})
-#   i
-# })
-# outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
+output$ginfocent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i<-NULL
+  try({
+    i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
+                        cmode=input$ginfocentcmode)})
+  i
+})
+outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
 
-# output$ndeg <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   cmode <- input$ndegcmode
-#   if(cmode == 'total'){
-#     cmode <- 'freeman'
-#   }
-#   d <- NULL
-#   try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-#                   cmode=cmode))
-#   d
-# })
-# outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
-# 
-# output$ndegmin <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   d <- degree(nw(), gmode=gmode, diag=has.loops(nw()),
-#               cmode=input$ndegcmode)
-#   min(d)
-# })
-# outputOptions(output,'ndegmin',suspendWhenHidden=FALSE)
-# 
-# output$ndegmax <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   d <- degree(nw(), gmode=gmode, diag=has.loops(nw()),
-#               cmode=input$ndegcmode)
-#   max(d)
-# })
-# outputOptions(output,'ndegmax',suspendWhenHidden=FALSE)
-# 
-# output$nbetw <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   b <- NULL
-#   try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode, 
-#                        diag=has.loops(nw()),
-#                        cmode=input$nbetwcmode))
-#   b
-# })
-# outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
-# 
-# output$nbetwmin <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   b <- betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
-#                    cmode=input$nbetwcmode)
-#   min(b)
-# })
-# outputOptions(output,'nbetwmin',suspendWhenHidden=FALSE)
-# 
-# output$nbetwmax <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   b <- betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
-#                    cmode=input$nbetwcmode)
-#   max(b)
-# })
-# outputOptions(output,'nbetwmax',suspendWhenHidden=FALSE)
-# 
-# output$nclose <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   c <- NULL
-#   try(
-#     c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-#                    cmode=input$nclosecmode))
-#   c
-# })
-# outputOptions(output,'nclose',suspendWhenHidden=FALSE)
-# 
-# output$nclosemin <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   c <- closeness(nw(), gmode=gmode, diag=has.loops(nw()),
-#                  cmode=input$nclosecmode)
-#   min(c)
-# })
-# outputOptions(output,'nclosemin',suspendWhenHidden=FALSE)
-# 
-# output$nclosemax <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   c <- closeness(nw(), gmode=gmode, diag=has.loops(nw()),
-#                  cmode=input$nclosecmode)
-#   max(c)
-# })
-# outputOptions(output,'nclosemax',suspendWhenHidden=FALSE)
-# 
-# output$nstress <- renderText({
-#   if(!is.network(nw())){ return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   s <- NULL
-#   try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode, 
-#                       diag=has.loops(nw()),
-#                       cmode=input$nstresscmode))
-#   s
-# })
-# outputOptions(output,'nstress',suspendWhenHidden=FALSE)
-# 
-# output$nstressmin <- renderText({
-#   if(!is.network(nw())){ return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   s <- stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
-#                   cmode=input$nstresscmode)
-#   min(s)
-# })
-# outputOptions(output,'nstressmin',suspendWhenHidden=FALSE)
-# 
-# output$nstressmax <- renderText({
-#   if(!is.network(nw())){ return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   s <- stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
-#                   cmode=input$nstresscmode)
-#   max(s)
-# })
-# outputOptions(output,'nstressmax',suspendWhenHidden=FALSE)
-# 
-# output$ngraphcent <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   g <- NULL
-#   try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode, 
-#                      diag=has.loops(nw()),
-#                      cmode=input$ngraphcentcmode))
-#   g
-# })
-# outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
-# 
-# output$ngraphcentmin <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   g <- graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
-#                  cmode=input$ngraphcentcmode)
-#   min(g)
-# })
-# outputOptions(output,'ngraphcentmin',suspendWhenHidden=FALSE)
-# 
-# output$ngraphcentmax <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   g <- graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
-#                  cmode=input$ngraphcentcmode)
-#   max(g)
-# })
-# outputOptions(output,'ngraphcentmax',suspendWhenHidden=FALSE)
-# 
-# output$nevcent <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   e <- NULL
-#   try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
-#   e
-# })
-# outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
-# 
-# output$nevcentmin <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
-#   min(e)
-# })
-# outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
-# 
-# output$nevcentmax <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
-#   max(e)
-# })
-# outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
-# 
-# output$ninfocent <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   i<-''
-#   try({
-#     i <- infocent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-#                   cmode=input$ninfocentcmode)})
-#   i
-# })
-# outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
-# 
-# output$ninfocentmin <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   i<-''
-#   try({
-#     i <- infocent(nw(), gmode=gmode, diag=has.loops(nw()),
-#                   cmode=input$ninfocentcmode)
-#     i<-min(i)})
-#   i
-# })
-# outputOptions(output,'ninfocentmin',suspendWhenHidden=FALSE)
-# 
-# output$ninfocentmax <- renderText({
-#   if(!is.network(nw())) {return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#   } else {
-#     gmode <- 'graph'
-#   }
-#   i <- ''
-#   try({
-#     i <- infocent(nw(), gmode=gmode, diag=has.loops(nw()),
-#                   cmode=input$ninfocentcmode)
-#     i<-max(i)})
-#   i
-# })
-# outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
+output$ndeg <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  cmode <- input$ndegcmode
+  if(cmode == 'total'){
+    cmode <- 'freeman'
+  }
+  d <- NULL
+  try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                  cmode=cmode))
+  d
+})
+outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
+
+output$ndegmin <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- degree(nw(), gmode=gmode, diag=has.loops(nw()),
+              cmode=input$ndegcmode)
+  min(d)
+})
+outputOptions(output,'ndegmin',suspendWhenHidden=FALSE)
+
+output$ndegmax <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- degree(nw(), gmode=gmode, diag=has.loops(nw()),
+              cmode=input$ndegcmode)
+  max(d)
+})
+outputOptions(output,'ndegmax',suspendWhenHidden=FALSE)
+
+output$nbetw <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- NULL
+  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode,
+                       diag=has.loops(nw()),
+                       cmode=input$nbetwcmode))
+  b
+})
+outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
+
+output$nbetwmin <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+                   cmode=input$nbetwcmode)
+  min(b)
+})
+outputOptions(output,'nbetwmin',suspendWhenHidden=FALSE)
+
+output$nbetwmax <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+                   cmode=input$nbetwcmode)
+  max(b)
+})
+outputOptions(output,'nbetwmax',suspendWhenHidden=FALSE)
+
+output$nclose <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- NULL
+  try(
+    c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                   cmode=input$nclosecmode))
+  c
+})
+outputOptions(output,'nclose',suspendWhenHidden=FALSE)
+
+output$nclosemin <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- closeness(nw(), gmode=gmode, diag=has.loops(nw()),
+                 cmode=input$nclosecmode)
+  min(c)
+})
+outputOptions(output,'nclosemin',suspendWhenHidden=FALSE)
+
+output$nclosemax <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- closeness(nw(), gmode=gmode, diag=has.loops(nw()),
+                 cmode=input$nclosecmode)
+  max(c)
+})
+outputOptions(output,'nclosemax',suspendWhenHidden=FALSE)
+
+output$nstress <- renderText({
+  if(!is.network(nw())){ return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- NULL
+  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode,
+                      diag=has.loops(nw()),
+                      cmode=input$nstresscmode))
+  s
+})
+outputOptions(output,'nstress',suspendWhenHidden=FALSE)
+
+output$nstressmin <- renderText({
+  if(!is.network(nw())){ return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$nstresscmode)
+  min(s)
+})
+outputOptions(output,'nstressmin',suspendWhenHidden=FALSE)
+
+output$nstressmax <- renderText({
+  if(!is.network(nw())){ return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$nstresscmode)
+  max(s)
+})
+outputOptions(output,'nstressmax',suspendWhenHidden=FALSE)
+
+output$ngraphcent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- NULL
+  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode,
+                     diag=has.loops(nw()),
+                     cmode=input$ngraphcentcmode))
+  g
+})
+outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
+
+output$ngraphcentmin <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
+                 cmode=input$ngraphcentcmode)
+  min(g)
+})
+outputOptions(output,'ngraphcentmin',suspendWhenHidden=FALSE)
+
+output$ngraphcentmax <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
+                 cmode=input$ngraphcentcmode)
+  max(g)
+})
+outputOptions(output,'ngraphcentmax',suspendWhenHidden=FALSE)
+
+output$nevcent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- NULL
+  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
+  e
+})
+outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
+
+output$nevcentmin <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  min(e)
+})
+outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
+
+output$nevcentmax <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  max(e)
+})
+outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
+
+output$ninfocent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i<-''
+  try({
+    i <- infocent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$ninfocentcmode)})
+  i
+})
+outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
+
+output$ninfocentmin <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i<-''
+  try({
+    i <- infocent(nw(), gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$ninfocentcmode)
+    i<-min(i)})
+  i
+})
+outputOptions(output,'ninfocentmin',suspendWhenHidden=FALSE)
+
+output$ninfocentmax <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i <- ''
+  try({
+    i <- infocent(nw(), gmode=gmode, diag=has.loops(nw()),
+                  cmode=input$ninfocentcmode)
+    i<-max(i)})
+  i
+})
+outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
 #' **Fit Model**
-#' 
+#'
 #' The user is only allowed to change the dataset on the first tab; on the
 #' following tabs I output the current dataset as a reminder of what network
-#' they are working with. 
+#' they are working with.
 
 #+ eval=FALSE
 
