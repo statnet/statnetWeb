@@ -4,45 +4,45 @@
 #' ---
 #' statnetWeb
 #' ============
-#' ui.R, v0.3.3 
+#' ui.R, v0.3.3
 #' ============
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
-#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the 
+#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the
 #' layout and appearance of the app, the script `server.R` controls the content that
 #' gets displayed in the app, and the folder "www" contains auxiliary files (javascript,
-#' css, and image files). If you are unfamiliar with Shiny apps, it may be more 
+#' css, and image files). If you are unfamiliar with Shiny apps, it may be more
 #' natural and helpful to start with the documentation for `ui.R` and then move on to
 #' `server.R`.
-#' 
+#'
 #' **Basics**
-#' 
-#' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp. 
+#'
+#' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp.
 #' Widgets are specific functions in Shiny that correspond to elements of the UI that the
 #' user can interact with to influence the content that the app produces (see widget
-#' examples in the [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags 
-#' (e.g. `h1`,`p` and `a` below) have built-in functions in Shiny, many others are 
-#' included in the `tags` object (see all the `tags` 
-#' [here](http://shiny.rstudio.com/articles/tag-glossary.html)). 
-#' It is also possible to write the entire UI 
+#' examples in the [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags
+#' (e.g. `h1`,`p` and `a` below) have built-in functions in Shiny, many others are
+#' included in the `tags` object (see all the `tags`
+#' [here](http://shiny.rstudio.com/articles/tag-glossary.html)).
+#' It is also possible to write the entire UI
 #' [directly in HTML](http://shiny.rstudio.com/articles/html-ui.html).
-#' 
+#'
 #' Since the `server.R` script generates all the dynamic content of the app,
-#' if the script only contains an empty function in the call to the Shiny server, 
+#' if the script only contains an empty function in the call to the Shiny server,
 #' e.g.
 #' ```
 #' shinyServer(
 #'  function(input,output){})
 #' ```
 #' then all the UI elements will still be displayed statically without any content.
-#' 
+#'
 #' In a functioning app, `server.R` takes input objects and reactively (because the user
 #' might change an input object) creates output objects. In order to display the output
 #' object in the interface so the user can see it, it must be called with an appropriate
-#' output function (`plotOutput`, `textOuput`, `verbatimTextOutput`, etc.) back in `ui.R`. 
-#' 
+#' output function (`plotOutput`, `textOuput`, `verbatimTextOutput`, etc.) back in `ui.R`.
+#'
 #' **Code**
-#' 
+#'
 #' Before the call to `shinyUI`, make sure that necessary packages are loaded
 #' and create any custom widgets that we will use in the app.(Custom widgets are
 #' in global.R now)
@@ -52,30 +52,30 @@ library(shiny)
 
 
 #' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
-#' The first thing to be specified is the type of page to display. The `navbarPage` 
-#' includes a navigation bar at the top of the page and each tab leads to different 
-#' pages of content. Find out more about layout options 
+#' The first thing to be specified is the type of page to display. The `navbarPage`
+#' includes a navigation bar at the top of the page and each tab leads to different
+#' pages of content. Find out more about layout options
 #' [here](http://shiny.rstudio.com/articles/layout-guide.html).
 #'
-#+ eval=FALSE 
+#+ eval=FALSE
 shinyUI(
   navbarPage(
     #theme="mycosmo.css",
-    title=NULL, 
+    title=NULL,
     id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
-             
+
 #' Within each panel of the navbar, the content can be arranged by nesting rows and
 #' columns. The first argument to `column` is the desired width, where the whole
-#' browser window has a width of 12. Within any column, nested columns set their 
+#' browser window has a width of 12. Within any column, nested columns set their
 #' width relative to the parent column. Rows are specified by enclosing elements
 #' in `fluidRow()`. It is often necessary to specify rows even when elements seem like
 #' they should naturally be aligned horizontally, or when a `wellPanel` that is supposed
 #' to hold some content doesn't quite enclose everything correctly.
-#' 
+#'
 #' **Front Page (About)**
-#' 
+#'
 #' This page might move to the last tab to be combined with the Help Page.
-#' 
+#'
 #+ eval=FALSE
 tabPanel(title=span('statnetWeb', id="sWtitle"),
          value='tab1',
@@ -85,33 +85,33 @@ tabPanel(title=span('statnetWeb', id="sWtitle"),
                          p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                            "package.", strong("ergm"), "is part of the statnet network analysis software --",
                            "a suite of packages written in R -- and this app also includes some of the functionality",
-                           "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web app", 
+                           "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web app",
                            "is written in R-Shiny, and development is via Github.  More information on the statnet software,",
                            "the ergm package, R-Shiny and our Github repository can be found in the resource links on the right."),
-                         
+
                          div(p("This app is intended to serve as an introduction to the ergm package for those who",
                            "are just getting started using statnet, or for those who are not familiar with programming",
-                           "in R. If you are new to ergm, you may find it helpful to work through the", a("ergm tutorial", 
+                           "in R. If you are new to ergm, you may find it helpful to work through the", a("ergm tutorial",
                           href="http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
                           target="_blank"), "using this app. Advanced users will still want to interact",
                           "via the command line in order to access the full functionality of ergm."),
                          p("A typical network analysis will move sequentially through the tabs at the top of the page.",
                            "Click on the help icon at the top of any page for guidance."),
                          p("Do you have comments/suggestions/complaints on this prototype app? Please share them with us.",
-                           "They are best submitted through our", a('Github site,', 
+                           "They are best submitted through our", a('Github site,',
                                                                     href='https://github.com/statnet/statnetWeb',
                                                                     target='_blank'),
                            "or by email to the statnet_help listserv (see", actionLink("helpLink", "Help"), "tab).")
                          ),
                          actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
                          br(),
-                         
+
                          h5(tags$u('Citing statnetWeb')),
                          p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
-                         
+
                          span(id='swciteButton', 'statnetWeb'),
                          span(id='sciteButton', 'statnet'), br(),br(),
-                                  
+
 
 tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
 title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
@@ -128,11 +128,11 @@ year = {2003},
 address = {Seattle, WA},
 url = {http://statnetproject.org}
 }'),
-                           
+
                  p('Additional citation information for statnet',
                    'and the component packages can be found here:'),
                  tags$ul(
-                   tags$li(a('Citing statnet', 
+                   tags$li(a('Citing statnet',
                              href='https://statnet.csde.washington.edu/trac/wiki/citation%20information',
                              target='_blank')),
                    tags$li(a('License and source code attribution requirements',
@@ -141,16 +141,16 @@ url = {http://statnetproject.org}
                    tags$li(a('statnet Development Team',
                            href = 'http://statnet.csde.washington.edu/about_us.shtml',
                            target = '_blank'))
-          )),       
-   column(4, 
-          wellPanel( 
+          )),
+   column(4,
+          wellPanel(
               h5(tags$u('Resources')),
               div(title=paste("The homepage of the statnet project. Find tutorials,",
                        "publications and recent news here."),
                   a("statnet Wiki",
                     href = "https://statnet.csde.washington.edu/trac", target = "_blank")
               ),
-              
+
               column(11, offset = 1,
                     span(id="linktitle1",'Key background papers',icon('angle-double-left')),br(),
                     div(id="linkbox1",
@@ -159,16 +159,16 @@ url = {http://statnetproject.org}
                       br(),
                       a("Using ergm: Journal of Statistical Software",
                         href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
-                    
+
                     span(id="linktitle2",'Tutorials and documentation',icon('angle-double-left')),br(),
                     div(id="linkbox2",
                         a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
                         href = "http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
                         target= "_blank"),
                       br(),
-                      a("ergm documentation on CRAN", 
+                      a("ergm documentation on CRAN",
                         href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
-                        target = "_blank")), 
+                        target = "_blank")),
                     style="margin-bottom:10px;"),
               br(),
               p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
@@ -181,26 +181,26 @@ url = {http://statnetproject.org}
              href = 'https://csde.washington.edu/', target = '_blank'),
             a(img(src = 'csde_goudy.fw.png', width=150), href = 'https://csde.washington.edu/',
              target = '_blank'), style="margin-left:15px;")
-   )           
+   )
    )
  ),
-#' 
+#'
 #' **Data Upload**
-#' 
+#'
 #' Before the code for what is displayed on the Data Upload page,
 #' various javaScript and CSS files that will be useful later in the
-#' script are linked. For example, since network plotting and model 
+#' script are linked. For example, since network plotting and model
 #' fitting do not happen instantly (especially for large networks),
-#' a loading icon will help to assure users that the app is still working 
-#' on producing output. The file `busy.js` controls the behavior of the 
-#' loading message and `style.css` controls the appearance. To display 
-#' the loading message on subsequent tabs, we only need to include the 
+#' a loading icon will help to assure users that the app is still working
+#' on producing output. The file `busy.js` controls the behavior of the
+#' loading message and `style.css` controls the appearance. To display
+#' the loading message on subsequent tabs, we only need to include the
 #' `div` statement within those tabs.
 #+ eval=FALSE
 
 tabPanel(title='Data', value='tab2',
          #busy.js is for calculation in progress boxes
-         #alert.js is for popup boxes, 
+         #alert.js is for popup boxes,
          #jquery libraries are loaded from google cdn, needed for autocomplete
          #this tagList command has to go inside a tabPanel
          tagList(
@@ -224,9 +224,9 @@ tabPanel(title='Data', value='tab2',
 #' Conditional panels are only displayed when a specified condition is true.
 #' The condition is a javascript expression that can refer to the current
 #' values of input or output objects. When the condition is false, the panel
-#' does not take up any space in the UI.  
-           
-     
+#' does not take up any space in the UI.
+
+
 fluidRow(
   column(7,
     tabsetPanel(id='datatabs',
@@ -235,7 +235,7 @@ fluidRow(
            fluidRow(
              column(6,
                     selectInput('filetype',label='File type',
-                                 choices=c('built-in network'= 5, 
+                                 choices=c('built-in network'= 5,
                                            'statnet network object (*.rds)' = 1,
                                            'matrix of relational data (*.csv or *.rds)' = 4,
                                            'Pajek network (*.net)' = 2,
@@ -261,7 +261,7 @@ fluidRow(
              ),
            fluidRow(
              conditionalPanel(condition='input.filetype == 4',
-                 column(1, align="right", 
+                 column(1, align="right",
                         style="margin-top:5px; margin-left:0px;",
                         br(),br(),
                         span(style="line-height:25px;", class="helper",
@@ -295,11 +295,11 @@ fluidRow(
                  column(4,
                         br(),
                         radioButtons('matrixtype', label='Matrix Type',
-                                     choices=c('Adjacency matrix'='adjacency', 
+                                     choices=c('Adjacency matrix'='adjacency',
                                                'Bipartite adjacency matrix'='bipartite',
-                                               'Incidence matrix' = 'incidence', 
+                                               'Incidence matrix' = 'incidence',
                                                'Edge list' = 'edgelist'))),
-                 
+
                  column(5,
                         br(),
                         span(strong('Network Attributes')),
@@ -315,7 +315,7 @@ fluidRow(
              conditionalPanel(condition='input.filetype == 1',
                               p(class="helper", id="Robjhelp", icon("question-circle"), span("What is an .rds file?", style="font-size:0.85em;")),
                               div(class="mischelperbox", id="Robjbox", 'When working in R, an object in your environment',
-                                  'can be saved to a .rds file from the command line in the following way:', 
+                                  'can be saved to a .rds file from the command line in the following way:',
                                   code('saveRDS(objectname, file="newfilename.rds")'),br(),'By default the file will be saved',
                                   'into the current working directory. The full path to a new location can be',
                                   'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
@@ -330,11 +330,11 @@ fluidRow(
     tabPanel('Edit Network', br(),
          wellPanel(
            fluidRow(
-            
+
              column(6,strong('Symmetrize'),
                 conditionalPanel(condition="output.nwsum != 'NA'",
                     br(),
-                    selectizeInput('symmetrize', label=NULL, 
+                    selectizeInput('symmetrize', label=NULL,
                                  choices=c('Do not symmetrize',
                                            'upper: Copy upper triangle over lower'='upper',
                                            'lower: Copy lower triangle over upper'='lower',
@@ -345,9 +345,9 @@ fluidRow(
                                      actionButton("symmdir", "directed", class="btn-sm"),
                                      actionButton("symmundir", "undirected", class="btn-sm active")
                                      )
-                    
+
                     )),
-             
+
              column(5,strong('Import new attribute information'),
                     conditionalPanel(condition="output.nwsum != 'NA'",
                        br(),
@@ -371,7 +371,7 @@ fluidRow(
                                                code("mylist <- list()"),br(),
                                                code("mylist$eval1 <- matrix(...)"), br(),
                                                code("mylist$eval2 <- matrix(...)"), br(),
-                                               "The named elements of the list ('eval1' and 'eval2') will", 
+                                               "The named elements of the list ('eval1' and 'eval2') will",
                                                "become the names of the edge values in statnetWeb.",br(),br(),
                                                strong(".rds files"), "can be saved with",
                                                br(),
@@ -381,7 +381,7 @@ fluidRow(
                               tags$li('.csv file',
                                       span(class="helper", id="filetypehelper6",
                                            icon("question-circle"),
-                                           div(id="filetypebox6", class="mischelperbox", 
+                                           div(id="filetypebox6", class="mischelperbox",
                                                strong(".csv files"), "should include a single header in the",
                                                "first row, which will become the name of the set of edge values.",
                                                "The values should be in matrix form.",br(),br(),
@@ -408,7 +408,7 @@ fluidRow(
                                    tags$li('.csv file',
                                            span(class="helper", id="filetypehelper8",
                                                 icon("question-circle"),
-                                                div(id="filetypebox8", class="mischelperbox", 
+                                                div(id="filetypebox8", class="mischelperbox",
                                                     strong(".csv files"), "should include a header in the first row.",
                                                     "The header of each column will become an attribute name.",
                                                     br(),br(),tags$u("Note:"),"Attributes uploaded as vertex names",
@@ -421,11 +421,11 @@ fluidRow(
                           verbatimTextOutput('newattrname'),
                           actionButton('newattrButton', label='Set Attribute', class="btn-sm")
                                         )
-                                     
+
                        )
-                    
+
                     )
-             
+
            )
            )
          ),
@@ -449,37 +449,37 @@ tabsetPanel(
   tabPanel('Network Summary', br(),
            verbatimTextOutput('nwsum')
            ))
-  )            
+  )
 ),
 
 icon('question-circle', class='fa-2x helper-btn'),
 div(class="helper-box", style="display:none",
-    p('Upload a file of observed network data (must be of a supported type).', 
+    p('Upload a file of observed network data (must be of a supported type).',
     'Add custom attributes or symmetrize on the "Edit Network" tab.')),
 actionLink('dataleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
 actionLink('dataright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 ),
 
 #' **Network Plots**
-#' 
-#' Notice that 
+#'
+#' Notice that
 #' there are no calls to `selectInput` for the options to color code or size the nodes,
 #' even though they appear in the app. Most widget functions are called in `ui.R`, but
 #' this means that all the options passed to them must be static. If the options depend
 #' on user input (the coloring and sizing menus depend on which network the user
-#' selects), the widget must be rendered in `server.R` and output in `ui.R` with 
+#' selects), the widget must be rendered in `server.R` and output in `ui.R` with
 #' `iuOutput`.
-#' 
+#'
 #+ eval=FALSE
 
 tabPanel(title='Network Descriptives', value='tab3',
  #include progress box when this tab is loading
- div(class = "busy", 
+ div(class = "busy",
      p("Calculation in progress..."),
      img(src="ajax-loader.gif")
  ),
 
-fluidRow(      
+fluidRow(
  column(7,
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
@@ -500,24 +500,24 @@ fluidRow(
                p(class='helper', id='gdhelper', icon('question-circle')),
                div(class='mischelperbox', id='gdhelperbox',
                    "Geodesics are a dyad level measure for the shortest possible path between a pair of nodes.",
-                   'If there is no path between a pair of nodes, the geodesic distance is "inf".', 
+                   'If there is no path between a pair of nodes, the geodesic distance is "inf".',
                    "The geodesic distribution among all possible dyads contributes to the",
                    "structure of network connectivity."),
                plotOutput('geodistplot')
                ),
       tabPanel('More', value='More', br(),
-               h5('Conditional uniform graph tests', icon('angle-double-down'), 
+               h5('Conditional uniform graph tests', icon('angle-double-down'),
                   id="cugtitle"),
                wellPanel(id="cugbox",
                  column(5, uiOutput("dynamiccugterm")),
-                 column(5, selectInput("ncugsims", 
+                 column(5, selectInput("ncugsims",
                                        label = "Number of simulations",
                                        choices = c(100, 200, 500))),
                  br(),
                  plotOutput("cugtest")
 #                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
                ),
-               h5('Mixing matrix', icon('angle-double-left'), 
+               h5('Mixing matrix', icon('angle-double-left'),
                   id="mixmxtitle"),
                wellPanel(id="mixmxbox",
                  uiOutput('mixmxchooser'),
@@ -703,16 +703,16 @@ fluidRow(
                                    column(10,
                                           p(id = "closewarning1", icon(name = "remove"), class = "warning"),
                                           div(class = "warning", id = "colorwarning1",
-                                              span(tags$u("Note:"), br(), 
+                                              span(tags$u("Note:"), br(),
                                                    "Color palette becomes a gradient for attributes with more than nine levels.")
                                           )
                                    )),
-                                 
+
 #                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                                  uiOutput('dynamicsize'),
                                  br(),
                                  downloadButton('nwplotdownload', label = "Download Plot", class="btn-sm")),
-                
+
                 conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                                  uiOutput("dynamiccmode_dd"),
                                  uiOutput("dynamiccolor_dd"),
@@ -723,11 +723,11 @@ fluidRow(
                                  tags$label('Expected values of null models:'), br(),
                                  fluidRow(
                                    column(10,
-                                          checkboxInput('uniformoverlay_dd', 
-                                                 label='Conditional uniform graphs (CUG)', 
+                                          checkboxInput('uniformoverlay_dd',
+                                                 label='Conditional uniform graphs (CUG)',
                                                  value=FALSE)
                                           ),
-                                   
+
                                     span(icon('question-circle'), id="cughelper_dd", class="helper",
                                          div(id="cughelperbox_dd", class="mischelperbox",
                                              "Draws from the distribution of simple random graphs with the same",
@@ -741,7 +741,7 @@ fluidRow(
                                           ),
                                    span(icon('question-circle'), id="brghelper_dd", class="helper",
                                         div(id="brghelperbox_dd", class="mischelperbox",
-                                            "Draws from the distribution of simple random graphs with the same", 
+                                            "Draws from the distribution of simple random graphs with the same",
                                             "stochastic tie probability as the observed network.",
                                             "The mean and 95% confidence intervals for each degree are plotted."))),
                                  br(),
@@ -755,9 +755,9 @@ fluidRow(
                                  tags$label('Expected values of null models:'), br(),
                                  fluidRow(
                                    column(10,
-                                     checkboxInput('uniformoverlay_gd', 
-                                                 label='Conditional uniform graphs (CUG)', 
-                                                 value=FALSE)     
+                                     checkboxInput('uniformoverlay_gd',
+                                                 label='Conditional uniform graphs (CUG)',
+                                                 value=FALSE)
                                           ),
                                    span(icon('question-circle'), id="cughelper_gd", class="helper",
                                         div(id="cughelperbox_gd", class="mischelperbox",
@@ -768,19 +768,19 @@ fluidRow(
                                    column(10,
                                      checkboxInput('bernoullioverlay_gd',
                                                label='Bernoulli random graphs (BRG)',
-                                               value=FALSE)     
+                                               value=FALSE)
                                           ),
                                    span(icon('question-circle'), id="brghelper_gd", class="helper",
                                         div(id="brghelperbox_gd", class="mischelperbox",
-                                            "Draws from the distribution of simple random graphs with the same", 
+                                            "Draws from the distribution of simple random graphs with the same",
                                             "stochastic tie probability as the observed network.",
                                             "The mean and 95% confidence intervals for each degree are plotted."))),
                                  br(),
                                  verbatimTextOutput('infsummary'),
                                  fluidRow(
                                    column(10,
-                                          checkboxInput('excludeInfs', 
-                                                        label=span('Exclude "inf"s from plot'), 
+                                          checkboxInput('excludeInfs',
+                                                        label=span('Exclude "inf"s from plot'),
                                                         value=FALSE)),
                                    span(icon('question-circle'), id="infhelper_gd", class="helper",
                                         div(id="infhelperbox_gd", class="mischelperbox",
@@ -801,7 +801,7 @@ fluidRow(
  ),
 div(id='plottabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
  div(class="helper-box", style="display:none",
-     p('Use the network plots to gain insight to the observed network.', 
+     p('Use the network plots to gain insight to the observed network.',
        'Edit the display options in the panel on the right and download a PDF of any of the plots.')),
 actionLink('plotleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
 actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
@@ -810,25 +810,25 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 
 
 #' **Fit Model**
-#' 
-#' The output objects for the current dataset and current formula have default values 
-#' specified in server.R to prevent errors from NULL values and so that there are 
+#'
+#' The output objects for the current dataset and current formula have default values
+#' specified in server.R to prevent errors from NULL values and so that there are
 #' helpful messages for the user before they begin entering data.
-#+ eval=FALSE                  
+#+ eval=FALSE
       tabPanel(title='Fit Model',value='tab4',
 
           #include progress bar when this tab is loading
-           div(class = "busy", 
+           div(class = "busy",
                p("Calculation in progress..."),
                img(src="ajax-loader.gif")
-           ),  
-                                                  
+           ),
+
           fluidRow(
             column(2,
-               p('Network:', class="nwlabel"), 
+               p('Network:', class="nwlabel"),
                verbatimTextOutput('currentdataset1')
               ),
-            
+
             column(4,
                    p("ERGM terms:"),
                    div(textInput(inputId="terms", label=NULL, value="edges"),
@@ -837,8 +837,8 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                    ),
                    actionButton('addtermButton', 'Add Term(s)', class="btn-primary btn-sm"),
                    actionButton('resetformulaButton', 'Reset Formula', class="btn-sm")
-                            
-                   
+
+
             ),
             column(5,
                tabsetPanel(
@@ -863,7 +863,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     div(class = "placeholder",
                     fluidRow(
                       column(3,
-                        inlineSelectInput('controltype',label = NULL, 
+                        inlineSelectInput('controltype',label = NULL,
                                           choices = c("MCMC","MCMLE"),
                                           style = "margin-top:10px;")),
                       column(5,
@@ -871,31 +871,31 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     ),
                         conditionalPanel(condition = "input.controltype == 'MCMC'", class = "shiftright",
                           fluidRow(
-                            column(4, 
+                            column(4,
                                    span("Interval:"),
                                    customNumericInput('MCMCinterval', label = NULL, value = 1024, class = "mcmcopt input-mini"),
                                    title = paste("Number of proposals between sampled statistics.")
                                    ),
-                            
+
                             column(4,
                                    span("Burn-in:"),
                                    customNumericInput('MCMCburnin', label = NULL, value = 16384, class = "mcmcopt input-mini"),
                                    title = paste("Number of proposals before any MCMC sampling is done.",
-                                                 "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.") 
+                                                 "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
                                    ),
-                            
+
                             column(4,
                                    span("Sample size:"),
                                    customNumericInput('MCMCsamplesize', label = NULL, value = 1024, class = "mcmcopt input-mini"),
-                                   title = paste("Number of network statistics, randomly drawn from a given distribution", 
+                                   title = paste("Number of network statistics, randomly drawn from a given distribution",
                                                  "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
                                    )
                           ),
-                             
+
                           fluidRow(
                               div(span("Other controls:", class = "shiftright"),
                                   customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small"),
-                                  title = paste("Other arguments to be passed to", 
+                                  title = paste("Other arguments to be passed to",
                                        "control.ergm, e.g. MCMC.burnin.retries = 1")
                                   )
                             )),
@@ -937,39 +937,39 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
         'Notice the summary statistics populate for each term added to the formula. ',
         'After fitting the model, the "Fitting" tab will show MCMC iterations (if any) and MLE coefficients,',
         'while the "Summary" tab shows a comprehensive summary of the model fit.',br(),
-        'Find more help in the', a('ergm tutorial.', 
+        'Find more help in the', a('ergm tutorial.',
                         href='http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html',
                         target="_blank"))),
 actionLink('fitleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
 actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
           ),
 #' **MCMC Diagnostics**
-#' 
-#+ eval=FALSE          
+#'
+#+ eval=FALSE
 tabPanel(title='MCMC Diagnostics', value='tab5',
          #include progress bar when this tab is loading
-         div(class = "busy", 
+         div(class = "busy",
              p("Calculation in progress..."),
              img(src="ajax-loader.gif")
          ),
-         
+
          fluidRow(
            column(2,
-                  p('Network:', class="nwlabel"), 
+                  p('Network:', class="nwlabel"),
                   verbatimTextOutput('currentdataset_mcmc')),
            column(10,
                   div(p('ergm formula:',style="display:inline;"),
                     uiOutput('uichoosemodel_mcmc'), class="nwlabel"),
                   verbatimTextOutput('checkterms_mcmc'))
-         ),     
+         ),
          br(),
          tags$hr(),
          tabsetPanel(id='mcmctabs',
            tabPanel('Plot', br(),
                     wellPanel(
                       class = "mcmcwarning",
-                      p("Recent changes in the ergm estimation algorithm mean that these plots", 
-                        "can no longer be used to ensure that the mean statistics from the model match the", 
+                      p("Recent changes in the ergm estimation algorithm mean that these plots",
+                        "can no longer be used to ensure that the mean statistics from the model match the",
                         "observed network statistics. For that functionality, please use the GOF page.")
                       #p(icon("close"), class = "topright")
                        ),
@@ -979,7 +979,7 @@ tabPanel(title='MCMC Diagnostics', value='tab5',
                                        style='width:20px; margin-left:0px'),
                                 column(11,pre('MCMC was not run or MCMC sample was not stored.'),
                                        style='margin-left:0px;'),
-                                column(3, 
+                                column(3,
                                        div(class='mischelperbox', id='mcmchelpbox',
                                         "MCMC is only run when at least one of the terms in the model represents",
                                         "dyad dependence (e.g., degree terms, or triad related terms).  For",
@@ -992,8 +992,8 @@ tabPanel(title='MCMC Diagnostics', value='tab5',
            tabPanel('Summary', br(),
                     wellPanel(
                       class = "mcmcwarning",
-                      p("Recent changes in the ergm estimation algorithm mean that these plots", 
-                        "can no longer be used to ensure that the mean statistics from the model match the", 
+                      p("Recent changes in the ergm estimation algorithm mean that these plots",
+                        "can no longer be used to ensure that the mean statistics from the model match the",
                         "observed network statistics. For that functionality, please use the GOF page.")
                       #p(icon("close"), class = "topright")
                     ),
@@ -1008,31 +1008,31 @@ tabPanel(title='MCMC Diagnostics', value='tab5',
                'have a roughly bell shaped distribution, centered at 0.')),
          actionLink('mcmcleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
          actionLink('mcmcright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
-         
+
 ),
 #' **Goodness of Fit**
-#' 
-#+ eval=FALSE  
+#'
+#+ eval=FALSE
 tabPanel(title='Goodness of Fit',value='tab6',
-         
+
          #include progress bar when this tab is loading
-         div(class = "busy", 
+         div(class = "busy",
              p("Calculation in progress..."),
              img(src="ajax-loader.gif")
          ),
-         
+
          fluidRow(
            column(2,
-                  p('Network:', class="nwlabel"), 
+                  p('Network:', class="nwlabel"),
                   verbatimTextOutput('currentdataset_gof')),
            column(10,
                   div(p('ergm formula:',style="display:inline;"),
                   uiOutput('uichoosemodel_gof'), class="nwlabel"),
                   verbatimTextOutput('checkterms_gof'))
           ),
-         p('If you do not specify a term the default formula for undirected 
-           networks is ', code('~ degree + espartners + distance'), 'and for 
-           directed networks is ', code('~ idegree + odegree + espartners + 
+         p('If you do not specify a term the default formula for undirected
+           networks is ', code('~ degree + espartners + distance'), 'and for
+           directed networks is ', code('~ idegree + odegree + espartners +
                                         distance'), '.'),
          fluidRow(
            column(3, selectInput('gofterm', 'Goodness of Fit Term:',
@@ -1047,7 +1047,7 @@ tabPanel(title='Goodness of Fit',value='tab6',
        tabPanel("Current Model", br(),
                 fluidRow(
                   column(5,
-                         verbatimTextOutput('gofsummary')),  
+                         verbatimTextOutput('gofsummary')),
                   column(7,
                          uiOutput('gofplotspace'),
                          downloadButton('gofplotdownload', label = 'Download Plots', class="btn-sm")))
@@ -1055,12 +1055,12 @@ tabPanel(title='Goodness of Fit',value='tab6',
        tabPanel("Compare Saved Models",align="center", br(),
                 uiOutput('gofplotcompspace'),
                 fluidRow(align="left",
-                         downloadButton('gofplotcompdownload', 
+                         downloadButton('gofplotcompdownload',
                                         label='Download Plots', class="btn-sm"),
                          br())
                 )
        ),
-     
+
    div(id='goftabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
    div(class="helper-box", style="display:none",
        p('Test how well your model fits the original data by choosing a network',
@@ -1072,8 +1072,8 @@ tabPanel(title='Goodness of Fit',value='tab6',
 ),
 
 #' **Simulations**
-#' 
-#+ eval=FALSE  
+#'
+#+ eval=FALSE
 tabPanel(title='Simulations', value='tab7',
          fluidRow(
            column(7,
@@ -1090,14 +1090,14 @@ tabPanel(title='Simulations', value='tab7',
                 ),
               div(p('ergm formula:',style="display:inline;"),
               uiOutput('uichoosemodel_sim'), class="nwlabel"),
-              verbatimTextOutput('checkterms_sim')   
+              verbatimTextOutput('checkterms_sim')
               ),
            column(5,
                 tabsetPanel(
                   tabPanel("Control Options",
                            fluidRow(
                              column(3,
-                                    inlineSelectInput('simcontroltype',label=NULL, 
+                                    inlineSelectInput('simcontroltype',label=NULL,
                                                       choices=c("MCMC","Parallel"),
                                                       style="margin:10px 0px;")),
                              column(4,
@@ -1113,10 +1113,10 @@ tabPanel(title='Simulations', value='tab7',
                                     column(5,
                                         span("Burn-in:"),
                                         customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"),
-                                        title=paste("Number of proposals before any MCMC sampling is done.", 
-                                                    "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.") 
+                                        title=paste("Number of proposals before any MCMC sampling is done.",
+                                                    "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
                                         )
-                                    
+
                              ),
                              fluidRow(
                                     div(
@@ -1132,9 +1132,9 @@ tabPanel(title='Simulations', value='tab7',
                   )
            )
          ),
-         
+
          tags$hr(),
-         
+
          fluidRow(
            column(7,
              tabsetPanel(id="simplotpanel",
@@ -1152,18 +1152,18 @@ tabPanel(title='Simulations', value='tab7',
                                           "plotted over horizontal \n",
                                           "lines of the corresponding target statistics."))
                        )
-               )    
+               )
               )
              ),
-           
-            
+
+
          column(4,
                   tabsetPanel(
                     tabPanel('Display Options', br(),
                         conditionalPanel("input.simplotpanel == 'Network Plots'",
                              wellPanel(
                                checkboxInput('iso2',
-                                             label = 'Display isolates?', 
+                                             label = 'Display isolates?',
                                              value = TRUE),
                                checkboxInput('vnames2',
                                              label = 'Display vertex names?',
@@ -1187,7 +1187,7 @@ tabPanel(title='Simulations', value='tab7',
                                          ))
                       ),
                     tabPanel('Simulation Summary', br(),
-                         wellPanel(    
+                         wellPanel(
                          conditionalPanel(condition="output.simnum != 1",
                                 verbatimTextOutput('simsummary'),
                                 verbatimTextOutput('simcoef'),
@@ -1202,20 +1202,20 @@ tabPanel(title='Simulations', value='tab7',
                            ),
                          br(),
                          fluidRow(
-                           column(7, 
-                                downloadButton('simstatsdownload', 
+                           column(7,
+                                downloadButton('simstatsdownload',
                                         label = 'Download Statistics', class="btn-sm")),
                            column(4,
                               div(title=paste0(".txt: Summary of simulations",
-                                              " plus full list of statistics. \n", 
+                                              " plus full list of statistics. \n",
                                               ".csv: Full list of statistics only."),
                                 radioButtons('simstatsfiletype', label=NULL,
                                              choices=c('.txt','.csv'))
                                 )
                               )
                            )
-                         
-                         
+
+
                            )
                         )
                     )
@@ -1231,8 +1231,8 @@ tabPanel(title='Simulations', value='tab7',
          actionLink('simright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
          ),
 #' **Help**
-#' 
-#+ eval=FALSE  
+#'
+#+ eval=FALSE
 tabPanel(title='Help', value='tab8',
          sidebarLayout(position = 'right',
                        sidebarPanel(
@@ -1250,16 +1250,16 @@ tabPanel(title='Help', value='tab8',
                                     br(),
                                     a("Using ergm: Journal of Statistical Software",
                                       href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
-                                
+
                                 span(id="linktitle4",'Tutorials and documentation',icon('angle-double-left')),br(),
                                 div(id="linkbox4",
                                     a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
                                       href = "http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
                                       target= "_blank"),
                                     br(),
-                                    a("ergm documentation on CRAN", 
+                                    a("ergm documentation on CRAN",
                                       href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
-                                      target = "_blank")), 
+                                      target = "_blank")),
                                 style="margin-bottom:10px;"),
                          br(),
                          p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
@@ -1270,15 +1270,15 @@ tabPanel(title='Help', value='tab8',
                        mainPanel(
                          h5(tags$u('Help with statnetWeb')),
                          p("This app is maintained on Github. To request new features or report a bug,",
-                           "please interact with the", 
+                           "please interact with the",
                            a("repository", href='https://github.com/statnet/statnetWeb',
-                             target="_blank"), 
+                             target="_blank"),
                            "or email the statnet_help listserv (below)."),
                          h5(tags$u('Help with statnet software')),
                          p("The best way to contact us with questions, comments or suggestions",
                            "is through the statnet users group listserv."),
                          p("To post and receive messages from this listserv, you need to join.",
-                           "See the", 
+                           "See the",
                            a("statnet_help info page",
                              href = "https://mailman.u.washington.edu/mailman/listinfo/statnet_help",
                              target = "_blank"),
@@ -1298,8 +1298,7 @@ tabPanel(title='Help', value='tab8',
                              target = "_blank"))
                          ))
          )
-                
-  
+
+
   )
 )
-    
