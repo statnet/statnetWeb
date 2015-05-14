@@ -2430,7 +2430,8 @@ output$gevcent <- renderText({
     gmode <- 'graph'
   }
   e <- NULL
-  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
+  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw()),
+                          use.eigen = TRUE))
   e
 })
 outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
@@ -2666,7 +2667,8 @@ output$nevcent <- renderText({
     gmode <- 'graph'
   }
   e <- NULL
-  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
+  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                  use.eigen = TRUE))
   e
 })
 outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
@@ -2678,7 +2680,7 @@ output$nevcentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()), use.eigen = TRUE)
   min(e)
 })
 outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
@@ -2690,7 +2692,7 @@ output$nevcentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()), use.eigen = TRUE)
   max(e)
 })
 outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
