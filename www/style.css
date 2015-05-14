@@ -29,9 +29,9 @@ div.tool {
 
 div.tool .tip {
     z-index:10;
-    display:none; 
+    display:none;
     padding:2px 3px;
-    margin-top:8px; 
+    margin-top:8px;
     margin-left:5px;
     font-size:12px;
     max-width:300px;
@@ -40,10 +40,10 @@ div.tool .tip {
   margin-top:60px;
 }
 div.tool:hover .tip{
-  display:inline; 
-  position:absolute; 
+  display:inline;
+  position:absolute;
   color:#333333;
-  border:1px solid #CCCCCC; 
+  border:1px solid #CCCCCC;
   border-radius:3px;
   background:#FFFFFF;
   box-shadow: 3px 2px 5px 0 #CCCCCC;
@@ -70,7 +70,7 @@ div.tool:hover .callout {
   top: -13px;
 }
 
-div.busy { 
+div.busy {
   position:fixed;
   top: 40%;
   left: 50%;
@@ -113,7 +113,7 @@ div.busy {
   top: 50px;
   right: 65px;
   color: #B4B4B4;
-  cursor: pointer; 
+  cursor: pointer;
 }
 #dataright, #fitright,
 #plotright, #mcmcright,
@@ -122,7 +122,7 @@ div.busy {
   top: 50px;
   right: 38px;
   color: #B4B4B4;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 #dataleft:hover, #fitleft:hover,
@@ -143,7 +143,7 @@ div.busy {
     cursor: pointer;
 }
 
-div.helper-box { 
+div.helper-box {
   position:fixed;
   top: 90px;
   right: 20px;
@@ -242,7 +242,7 @@ p.warning:hover {
 #linkbox2,
 #linkbox3,
 #linkbox4,
-#mixmxbox, 
+#mixmxbox,
 #graphlevelbox,
 #nodelevelbox {
   display: none;
@@ -260,15 +260,22 @@ p.warning:hover {
 }
 
 .stitle {
-  font-size:12px; 
-  line-height:26px; 
+  font-size:12px;
+  line-height:26px;
   margin-top:10px;
 }
 .snum {
   font-family:Courier;
   font-size:12px;
-  line-height:27px; 
+  line-height:27px;
   margin-top:10px;
+}
+.smallselect > .shiny-input-control > .selectize-input {
+  padding: 5px;
+  font-size: 12pt;
+  width: 100px;
+  height: 27px;
+  line-height: 27px;
 }
 
 #savemodel {

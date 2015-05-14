@@ -612,7 +612,8 @@ fluidRow(
                      column(3, p('Degree:', class='stitle')),
                      column(2, p(textOutput('ndeg'), class='snum')),
                      column(3, selectInput('ndegcmode', label=NULL,
-                                           choices=c('indegree', 'outdegree', 'total'))),
+                                           choices=c('indegree', 'outdegree', 'total')),
+                            class = "smallselect"),
                      column(2, p(textOutput('ndegmin'), class='snum', align='center')),
                      column(2, p(textOutput('ndegmax'), class='snum', align='center'))
                      ),
@@ -623,7 +624,8 @@ fluidRow(
                                            choices=c('directed','undirected',
                                                      'endpoints','proximalsrc',
                                                      'proximaltar','proximalsum',
-                                                     'lengthscaled', 'linearscaled'))),
+                                                     'lengthscaled', 'linearscaled')),
+                            class = "smallselect"),
                      column(2, p(textOutput('nbetwmin'), class='snum')),
                      column(2, p(textOutput('nbetwmax'), class='snum'))
                      ),
@@ -632,7 +634,8 @@ fluidRow(
                      column(2, p(textOutput('nclose'), class='snum')),
                      column(3, selectInput('nclosecmode', label=NULL,
                                            choices=c('directed','undirected',
-                                                     'suminvdir','suminvundir'))),
+                                                     'suminvdir','suminvundir')),
+                            class = "smallselect"),
                      column(2, p(textOutput('nclosemin'))),
                      column(2, p(textOutput('nclosemax')))
                      ),
@@ -640,7 +643,8 @@ fluidRow(
                      column(3, p('Stress Centrality:', class='stitle')),
                      column(2, p(textOutput('nstress'), class='snum')),
                      column(3, selectInput('nstresscmode', label=NULL,
-                                           choices=c('directed','undirected'))),
+                                           choices=c('directed','undirected')),
+                            class = "smallselect"),
                      column(2, p(textOutput('nstressmin'))),
                      column(2, p(textOutput('nstressmax')))
                      ),
@@ -648,7 +652,8 @@ fluidRow(
                      column(3, p('(Harary) Graph Centrality:', class='stitle')),
                      column(2, p(textOutput('ngraphcent'), class='snum')),
                      column(3, selectInput('ngraphcentcmode', label=NULL,
-                                           choices=c('directed', 'undirected'))),
+                                           choices=c('directed', 'undirected')),
+                            class = "smallselect"),
                      column(2, p(textOutput('ngraphcentmin'))),
                      column(2, p(textOutput('ngraphcentmax')))
                      ),
@@ -664,7 +669,8 @@ fluidRow(
                      column(2, p(textOutput('ninfocent'), class='snum')),
                      column(3, selectInput('ninfocentcmode',label=NULL,
                                            choices=c('weak', 'strong', 'upper',
-                                                     'lower'))),
+                                                     'lower')),
+                            class = "smallselect"),
                      column(2, p(textOutput('ninfocentmin'))),
                      column(2, p(textOutput('ninfocentmax')))
                      )
