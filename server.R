@@ -2678,7 +2678,8 @@ output$nevcentmax <- renderText({
 })
 
 observeEvent(nw(), {
-  state$infocent <- FALSE
+  state$err <- FALSE
+  values$err <- list()
 })
 
 output$ninfocent <- renderText({
@@ -2689,30 +2690,30 @@ output$ninfocent <- renderText({
     gmode <- 'graph'
   }
   i <- ''
-  state$infocenterr <- FALSE
+  state$err <- FALSE
   i <- tryCatch({infocent(nw(), nodes=input$nodeind, gmode=gmode,
                           diag=has.loops(nw()), cmode=input$ninfocentcmode)},
                 error = function(e) {e})
-  if(typeof(i) == "list") {
-    values$infocenterr <- i
-    state$infocenterr <- TRUE
-    i <- ""
+  if("error" %in% class(i)) {
+    state$err <- TRUE
+    values$err <- i
+    i <- paste("Error", length(values$err))
   }
   i
 })
 
 
-output$infocenterr <- renderText({
+output$errbox <- renderText({
   err <- FALSE
-  if(!is.null(state$infocenterr)){
-    err <- state$infocenterr
+  if(!is.null(state$err)){
+    err <- state$err
     if(err){
-      err <- paste("Error:", values$infocenterr[[1]])
+      err <- paste("Error:", values$err[[1]])
     }
   }
   err
 })
-outputOptions(output, "infocenterr", suspendWhenHidden = FALSE)
+outputOptions(output, "errbox", suspendWhenHidden = FALSE)
 
 output$ninfocentmin <- renderText({
   if(!is.network(nw())) {return()}
