@@ -251,7 +251,7 @@ fluidRow(
                 column(6,
                     br(style="line-height:26px;"),
                     selectInput('samplenet', label=NULL,
-                                choices=c('Choose a network',
+                                choices=c('Choose a network', 'ecoli1', 'ecoli2',
                                           'faux.mesa.high','flobusiness',
                                           'flomarriage', 'kapferer', 'kapferer2',
                                           'molecule', 'samplike', 'samplk1',
@@ -261,7 +261,7 @@ fluidRow(
              ),
            fluidRow(
              conditionalPanel(condition='input.filetype == 4',
-                 column(1, align="right", 
+                 column(1, align="right",
                         style="margin-top:5px; margin-left:0px;",
                         br(),br(),
                         span(style="line-height:25px;", class="helper",
