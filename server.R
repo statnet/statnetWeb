@@ -2183,53 +2183,65 @@ output$dynamiccugterm <- renderUI({
 })
 outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
 
+observeEvent(input$cugButton, {
+  state$cugplot <- 1
+})
+observeEvent(nw(), {
+  state$cugplot <- 0
+})
+
 output$cugtest <- renderPlot({
   if(!is.network(nw())) {return()}
-  term <- input$cugtestterm
-  n <- nodes()
-  obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+  if(input$cugButton == 0) {return()}
+  if(state$cugplot == 0){return()}
 
-  # gets summary statistics of the already run simulations
-  brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term,
-                   directed = nw()$gal$directed, loops = nw()$gal$loops)
-  cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term,
-                   directed = nw()$gal$directed, loops = nw()$gal$loops)
+  isolate({
+    term <- input$cugtestterm
+    n <- nodes()
+    obsval <- summary.formula(as.formula(paste("nw() ~", term)))
 
-  brghist <- hist(brgvals, plot = FALSE)
+    # gets summary statistics of the already run simulations
+    brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term,
+                     directed = nw()$gal$directed, loops = nw()$gal$loops)
+    cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term,
+                     directed = nw()$gal$directed, loops = nw()$gal$loops)
 
-  getbreaks <- function(x){
-    breaks <- brghist$breaks
-    r <- range(brghist$breaks)
-    int <- breaks[2] - breaks[1]
-    if(min(x) < r[1]){
-      toadd <- ceiling((r[1] - min(x))/int)
-      front <- c((r[1]-toadd*int):(r[1]-int))
-      breaks <- c(front, breaks)
+    brghist <- hist(brgvals, plot = FALSE)
+
+    getbreaks <- function(x){
+      breaks <- brghist$breaks
+      r <- range(brghist$breaks)
+      int <- breaks[2] - breaks[1]
+      if(min(x) < r[1]){
+        toadd <- ceiling((r[1] - min(x))/int)
+        front <- c((r[1]-toadd*int):(r[1]-int))
+        breaks <- c(front, breaks)
+      }
+      if (max(x) > r[2]) {
+        toadd <- ceiling((max(x)-r[2])/int)
+        back <- c((r[2]+int):(r[2]+toadd*int))
+        breaks <- c(breaks, back)
+      }
+      return(breaks)
     }
-    if (max(x) > r[2]) {
-      toadd <- ceiling((max(x)-r[2])/int)
-      back <- c((r[2]+int):(r[2]+toadd*int))
-      breaks <- c(breaks, back)
-    }
-    return(breaks)
-  }
 
-  cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
-  hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL,
-       xlab= NULL, xlim = range(brgvals, cugvals, obsval),
-       ylim = c(0, max(brghist$counts, cughist$counts)),
-       breaks = getbreaks)
-  hist(brgvals, col = "gray60", density = 15,
-       angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
-       ylim = c(0, max(brghist$counts, cughist$counts)),
-       breaks = brghist$breaks, add = TRUE)
-  abline(v = obsval, col = obsblue, lwd = 2)
+    cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
+    hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL,
+         xlab= NULL, xlim = range(brgvals, cugvals, obsval),
+         ylim = c(0, max(brghist$counts, cughist$counts)),
+         breaks = getbreaks)
+    hist(brgvals, col = "gray60", density = 15,
+         angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
+         ylim = c(0, max(brghist$counts, cughist$counts)),
+         breaks = brghist$breaks, add = TRUE)
+    abline(v = obsval, col = obsblue, lwd = 2)
 
-  legend(x = "topright", bty = "n",
-         legend = c("observed value", "CUG distribution", "BRG distribution"),
-         lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, "gray60"),
-         angle = -45, density = c(0, 100, 15),
-         border = c(0, CUGcol, BRGcol), merge = TRUE)
+    legend(x = "topright", bty = "n",
+           legend = c("observed value", "CUG distribution", "BRG distribution"),
+           lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, "gray60"),
+           angle = -45, density = c(0, 100, 15),
+           border = c(0, CUGcol, BRGcol), merge = TRUE)
+  })
 })
 
 # output$cugtestdownload <- downloadHandler(
