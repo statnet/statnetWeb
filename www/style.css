@@ -193,13 +193,22 @@ div.mischelperbox {
   z-index: 10;
 }
 
+div.warning, div.error {
+  position: absolute;
+  display: inline;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid;
+  font-size: 0.82em;
+  z-index: 10;
+}
 div.warning {
-    position: absolute;
-    display: block;
-    background: #fff8c4 url('images/warning.png') no-repeat 10px 50%;
-    border: 1px solid #f2c779;
-    font-size: 0.82em;
-    z-index: 10;
+  background-color: #fff8c4;
+  border-color: #f2c779;
+}
+div.error {
+  margin-top: 6px;
+  border-color: #D8000C;
+  background-color: #FFE3E3;
 }
 p.warning {
   position: absolute;

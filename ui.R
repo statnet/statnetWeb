@@ -666,6 +666,7 @@ fluidRow(
                      ),
                    fluidRow(
                      column(3, p('Information Centrality:', class='stitle')),
+                     div(class = "error", textOutput("infocenterr")),
                      column(2, p(textOutput('ninfocent'), class='snum')),
                      column(3, selectInput('ninfocentcmode',label=NULL,
                                            choices=c('weak', 'strong', 'upper',
@@ -700,7 +701,7 @@ fluidRow(
                                    column(10,
                                           p(id = "closewarning1", icon(name = "remove"), class = "warning"),
                                           div(class = "warning", id = "colorwarning1",
-                                              span(tags$u("Note:"), br(),
+                                              span(tags$u("Note:"),
                                                    "Color palette becomes a gradient for attributes with more than nine levels.")
                                           )
                                    )),

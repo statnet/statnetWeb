@@ -2434,7 +2434,6 @@ output$gevcent <- renderText({
                           use.eigen = TRUE))
   e
 })
-outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
 
 output$ginfocent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2449,7 +2448,6 @@ output$ginfocent <- renderText({
                         cmode=input$ginfocentcmode)})
   i
 })
-outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
 
 output$ndeg <- renderText({
   if(!is.network(nw())) {return()}
@@ -2467,7 +2465,6 @@ output$ndeg <- renderText({
                   cmode=cmode))
   d
 })
-outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
 output$ndegmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2480,7 +2477,6 @@ output$ndegmin <- renderText({
               cmode=input$ndegcmode)
   min(d)
 })
-outputOptions(output,'ndegmin',suspendWhenHidden=FALSE)
 
 output$ndegmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2493,7 +2489,6 @@ output$ndegmax <- renderText({
               cmode=input$ndegcmode)
   max(d)
 })
-outputOptions(output,'ndegmax',suspendWhenHidden=FALSE)
 
 output$nbetw <- renderText({
   if(!is.network(nw())) {return()}
@@ -2508,7 +2503,6 @@ output$nbetw <- renderText({
                        cmode=input$nbetwcmode))
   b
 })
-outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
 
 output$nbetwmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2521,7 +2515,6 @@ output$nbetwmin <- renderText({
                    cmode=input$nbetwcmode)
   min(b)
 })
-outputOptions(output,'nbetwmin',suspendWhenHidden=FALSE)
 
 output$nbetwmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2534,7 +2527,6 @@ output$nbetwmax <- renderText({
                    cmode=input$nbetwcmode)
   max(b)
 })
-outputOptions(output,'nbetwmax',suspendWhenHidden=FALSE)
 
 output$nclose <- renderText({
   if(!is.network(nw())) {return()}
@@ -2549,7 +2541,6 @@ output$nclose <- renderText({
                    cmode=input$nclosecmode))
   c
 })
-outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
 output$nclosemin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2562,7 +2553,6 @@ output$nclosemin <- renderText({
                  cmode=input$nclosecmode)
   min(c)
 })
-outputOptions(output,'nclosemin',suspendWhenHidden=FALSE)
 
 output$nclosemax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2575,7 +2565,6 @@ output$nclosemax <- renderText({
                  cmode=input$nclosecmode)
   max(c)
 })
-outputOptions(output,'nclosemax',suspendWhenHidden=FALSE)
 
 output$nstress <- renderText({
   if(!is.network(nw())){ return()}
@@ -2590,7 +2579,6 @@ output$nstress <- renderText({
                       cmode=input$nstresscmode))
   s
 })
-outputOptions(output,'nstress',suspendWhenHidden=FALSE)
 
 output$nstressmin <- renderText({
   if(!is.network(nw())){ return()}
@@ -2603,7 +2591,6 @@ output$nstressmin <- renderText({
                   cmode=input$nstresscmode)
   min(s)
 })
-outputOptions(output,'nstressmin',suspendWhenHidden=FALSE)
 
 output$nstressmax <- renderText({
   if(!is.network(nw())){ return()}
@@ -2616,7 +2603,6 @@ output$nstressmax <- renderText({
                   cmode=input$nstresscmode)
   max(s)
 })
-outputOptions(output,'nstressmax',suspendWhenHidden=FALSE)
 
 output$ngraphcent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2631,7 +2617,6 @@ output$ngraphcent <- renderText({
                      cmode=input$ngraphcentcmode))
   g
 })
-outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
 output$ngraphcentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2644,7 +2629,6 @@ output$ngraphcentmin <- renderText({
                  cmode=input$ngraphcentcmode)
   min(g)
 })
-outputOptions(output,'ngraphcentmin',suspendWhenHidden=FALSE)
 
 output$ngraphcentmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2657,7 +2641,6 @@ output$ngraphcentmax <- renderText({
                  cmode=input$ngraphcentcmode)
   max(g)
 })
-outputOptions(output,'ngraphcentmax',suspendWhenHidden=FALSE)
 
 output$nevcent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2671,7 +2654,6 @@ output$nevcent <- renderText({
                   use.eigen = TRUE))
   e
 })
-outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
 
 output$nevcentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2683,7 +2665,6 @@ output$nevcentmin <- renderText({
   e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()), use.eigen = TRUE)
   min(e)
 })
-outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
 
 output$nevcentmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2695,7 +2676,10 @@ output$nevcentmax <- renderText({
   e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()), use.eigen = TRUE)
   max(e)
 })
-outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
+
+observeEvent(nw(), {
+  state$infocent <- FALSE
+})
 
 output$ninfocent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2705,17 +2689,27 @@ output$ninfocent <- renderText({
     gmode <- 'graph'
   }
   i <- ''
+  state$infocenterr <- FALSE
   i <- tryCatch({infocent(nw(), nodes=input$nodeind, gmode=gmode,
                           diag=has.loops(nw()), cmode=input$ninfocentcmode)},
                 error = function(e) {e})
   if(typeof(i) == "list") {
     values$infocenterr <- i
-    state$infocenterr <- 1
+    state$infocenterr <- TRUE
     i <- ""
   }
   i
 })
-outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
+
+
+output$infocenterr <- renderText({
+  err <- state$infocenterr
+  if(err){
+    err <- paste(values$infocenterr[[1]])
+  }
+  err
+})
+outputOptions(output, "infocenterr", suspendWhenHidden = FALSE)
 
 output$ninfocentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2731,7 +2725,6 @@ output$ninfocentmin <- renderText({
     i<-min(i)})
   i
 })
-outputOptions(output,'ninfocentmin',suspendWhenHidden=FALSE)
 
 output$ninfocentmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2747,7 +2740,6 @@ output$ninfocentmax <- renderText({
     i<-max(i)})
   i
 })
-outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
 #' **Fit Model**
 #'
