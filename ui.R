@@ -512,10 +512,12 @@ fluidRow(
                h5('Conditional uniform graph tests', icon('angle-double-down'),
                   id="cugtitle"),
                wellPanel(id="cugbox",
-                 column(5, uiOutput("dynamiccugterm")),
-                 column(5, selectInput("ncugsims",
+                 column(4, uiOutput("dynamiccugterm")),
+                 column(4, selectInput("ncugsims",
                                        label = "Number of simulations",
                                        choices = c(100, 200, 500))),
+                 column(3, actionButton("cugButton", label = "Run",
+                                        style="margin-top: 25px;")),
                  br(),
                  plotOutput("cugtest")
 #                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
@@ -847,7 +849,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(6,
-                               actionButton("matchingButton", "Compatible terms", class="btn-sm"),
+                               actionButton("matchingButton", "Compatible terms", class="btn-sm active"),
                                actionButton("allButton", "All terms", class="btn-sm")
                                ),
                         column(4, uiOutput("listofterms"))
