@@ -666,7 +666,9 @@ fluidRow(
                      ),
                    fluidRow(
                      column(3, p('Information Centrality:', class='stitle')),
-                     div(class = "error", textOutput("infocenterr")),
+                     conditionalPanel("output.infocenterr != 'FALSE'",
+                       div(class = "error", textOutput("infocenterr"))
+                       ),
                      column(2, p(textOutput('ninfocent'), class='snum')),
                      column(3, selectInput('ninfocentcmode',label=NULL,
                                            choices=c('weak', 'strong', 'upper',

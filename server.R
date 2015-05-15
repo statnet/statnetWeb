@@ -2703,9 +2703,12 @@ output$ninfocent <- renderText({
 
 
 output$infocenterr <- renderText({
-  err <- state$infocenterr
-  if(err){
-    err <- paste(values$infocenterr[[1]])
+  err <- FALSE
+  if(!is.null(state$infocenterr)){
+    err <- state$infocenterr
+    if(err){
+      err <- paste("Error:", values$infocenterr[[1]])
+    }
   }
   err
 })
