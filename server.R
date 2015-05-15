@@ -83,10 +83,8 @@ data(kapferer)
 
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
-#obsblue <- "royalblue2"
 obsblue <- "#076EC3"
-#histblue <- "#445FB0"
-histblue <- "#398BCF"
+histblue <- "#83B6E1"
 tgray <- adjustcolor("gray", alpha.f = 0.3)
 
 options(digits=3)
@@ -2778,13 +2776,18 @@ output$listofterms <- renderUI({
     matchterms <- unique(matchterms)
     current.terms <- unlist(matchterms)
   }
-  selectizeInput('chooseterm',label = NULL,
-              choices = current.terms)
-
+  selectizeInput('chooseterm',label = NULL
+              choices = c("Select a term", current.terms))
 })
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
+  if(is.null(myterm)){
+    return(cat("Choose a term from the dropdown menu."))
+  }
+  if(myterm == "Select a term"){
+    return(cat("Choose a term from the dropdown menu."))
+  }
   search.ergmTerms(name=myterm)
 })
 

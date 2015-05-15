@@ -51,7 +51,7 @@ $(document).ready(function(){
     $("#percButton_dd").toggleClass("active", true);
   });
 
-    $("#countButton_gd").click(function(){
+  $("#countButton_gd").click(function(){
     $("#countButton_gd").toggleClass("active", true);
     $("#percButton_gd").toggleClass("active", false);
   });
@@ -59,6 +59,16 @@ $(document).ready(function(){
   $("#percButton_gd").click(function(){
     $("#countButton_gd").toggleClass("active", false);
     $("#percButton_gd").toggleClass("active", true);
+  });
+
+  $("#matchingButton").click(function(){
+    $("#matchingButton").toggleClass("active", true);
+    $("#allButton").toggleClass("active", false);
+  });
+
+  $("#allButton").click(function(){
+    $("#matchingButton").toggleClass("active", false);
+    $("#allButton").toggleClass("active", true);
   });
 
   $("#Robjhelp").click(function(){
