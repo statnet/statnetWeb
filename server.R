@@ -2689,7 +2689,11 @@ output$nevcentmax <- renderText({
 
 observeEvent(nw(), {
   state$err <- FALSE
-  values$err <- list()
+  values$err <- c()
+})
+
+observeEvent(values$err, {
+  values$allerr <- append(values$allerr, values$err)
 })
 
 output$ninfocent <- renderText({
@@ -2706,24 +2710,25 @@ output$ninfocent <- renderText({
                 error = function(e) {e})
   if("error" %in% class(i)) {
     state$err <- TRUE
-    values$err <- i
+    values$err <- i[[1]]
     i <- paste("Error", length(values$err))
   }
   i
 })
+outputOptions(output, "ninfocent", priority = 1)
 
 
-output$errbox <- renderText({
+output$errbox <- renderUI({
   err <- FALSE
   if(!is.null(state$err)){
     err <- state$err
     if(err){
-      err <- paste("Error:", values$err[[1]])
+      err <- paste0("Error ", c(1:length(values$errall)), ": ", values$errall, "\n")
     }
   }
-  err
+  p(err)
 })
-outputOptions(output, "errbox", suspendWhenHidden = FALSE)
+outputOptions(output, "errbox", suspendWhenHidden = FALSE, priority = 2)
 
 output$ninfocentmin <- renderText({
   if(!is.network(nw())) {return()}

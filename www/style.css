@@ -219,7 +219,7 @@ div.error {
   bottom: 10px;
   right: 10px;
   display: block;
-  padding: 15px;
+  padding: 15px 15px 5px 15px;
   max-width: 350px;
   border: 1px solid;
   border-radius: 3px;
@@ -317,7 +317,7 @@ div .mcmcopt {
 }
 
 #MCMCburnin, #MCMCinterval,
-#MCMCsamplesize, #simMCMCburnin, 
+#MCMCsamplesize, #simMCMCburnin,
 #simMCMCinterval{
   width: 100px;
 }

@@ -479,7 +479,7 @@ tabPanel(title='Network Descriptives', value='tab3',
      img(src="ajax-loader.gif")
  ),
  conditionalPanel("output.errbox != 'FALSE'",
-                  div(class = "error", textOutput("errbox"))
+                  div(class = "error", uiOutput("errbox"))
  ),
 
 fluidRow(
