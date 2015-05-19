@@ -478,7 +478,7 @@ tabPanel(title='Network Descriptives', value='tab3',
      p("Calculation in progress..."),
      img(src="ajax-loader.gif")
  ),
- conditionalPanel("output.errbox != 'FALSE'",
+ conditionalPanel("output.errstate != 'FALSE'",
                   div(class = "error", uiOutput("errbox"))
  ),
 
