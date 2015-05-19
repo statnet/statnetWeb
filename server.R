@@ -2658,8 +2658,9 @@ output$nevcentmin <- renderText({
     gmode <- 'graph'
   }
   e <- ""
-  try(e <- evcent(nw(), gmode=gmode, diag=has.loops(nw())))
-  min(e)
+  try({e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+       e <- min(e)})
+  e
 })
 outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
 
@@ -2671,8 +2672,9 @@ output$nevcentmax <- renderText({
     gmode <- 'graph'
   }
   e <- ""
-  try(e <- evcent(nw(), gmode=gmode, diag=has.loops(nw())))
-  max(e)
+  try({e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+       e <- max(e)})
+  e
 })
 outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
 
