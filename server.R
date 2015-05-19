@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ===========
-#' server.R, v0.3.3
+#' server.R, v0.3.4
 #' ===========
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained
