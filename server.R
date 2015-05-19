@@ -2321,7 +2321,7 @@ output$gdeg <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- NULL
+  d <- ""
   cmode <- input$gdegcmode
   if(cmode == 'total'){
     cmode <- 'freeman'
@@ -2339,7 +2339,7 @@ output$gbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- NULL
+  b <- ""
   try(b <- centralization(nw(), betweenness, mode=gmode, diag=has.loops(nw()),
                    cmode=input$gbetwcmode))
   b
@@ -2353,7 +2353,7 @@ output$gclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- NULL
+  c <- ""
   try(
     c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
                         cmode=input$gclosecmode))
@@ -2368,7 +2368,7 @@ output$gstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- NULL
+  s <- ""
   try(s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
                           cmode=input$gstresscmode))
   s
@@ -2382,7 +2382,7 @@ output$ggraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- NULL
+  g <- ""
   try(g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
                           cmode=input$ggraphcentcmode))
   g
@@ -2396,7 +2396,7 @@ output$gevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- NULL
+  e <- ""
   try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
   e
 })
@@ -2409,7 +2409,7 @@ output$ginfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i<-NULL
+  i<-""
   try({
     i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
                         cmode=input$ginfocentcmode)})
@@ -2428,7 +2428,7 @@ output$ndeg <- renderText({
   if(cmode == 'total'){
     cmode <- 'freeman'
   }
-  d <- NULL
+  d <- ""
   try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
                   cmode=cmode))
   d
@@ -2468,7 +2468,7 @@ output$nbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- NULL
+  b <- ""
   try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode,
                        diag=has.loops(nw()),
                        cmode=input$nbetwcmode))
@@ -2509,7 +2509,7 @@ output$nclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- NULL
+  c <- ""
   try(
     c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nclosecmode))
@@ -2550,7 +2550,7 @@ output$nstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- NULL
+  s <- ""
   try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode,
                       diag=has.loops(nw()),
                       cmode=input$nstresscmode))
@@ -2591,7 +2591,7 @@ output$ngraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- NULL
+  g <- ""
   try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode,
                      diag=has.loops(nw()),
                      cmode=input$ngraphcentcmode))
@@ -2632,7 +2632,7 @@ output$nevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- NULL
+  e <- ""
   try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
   e
 })
@@ -2645,7 +2645,8 @@ output$nevcentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  e <- ""
+  try(e <- evcent(nw(), gmode=gmode, diag=has.loops(nw())))
   min(e)
 })
 outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
@@ -2657,7 +2658,8 @@ output$nevcentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  e <- ""
+  try(e <- evcent(nw(), gmode=gmode, diag=has.loops(nw())))
   max(e)
 })
 outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
