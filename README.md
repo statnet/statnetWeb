@@ -6,7 +6,7 @@ This is an R-shiny interface for the statnet suite of R packages. It currently i
 Run the app in two ways:  
 * Through the shinyapps server with this link: https://statnet.shinyapps.io/statnetWeb  
 * On your own machine through RStudio:  
-    `install.packages(c("statnet", "shiny", "shinythemes", "RColorBrewer", "lattice", "latticeExtra"))`  
+    `install.packages(c("statnet", "shiny", "RColorBrewer", "lattice", "latticeExtra"))`  
     `shiny::runGitHub("statnetWeb", "statnet")`
 
 *Note:* We will keep the master branch on this page consistent with the version deployed on shinyapps. Active development will occur on separate production branches. No branch other than master should be considered stable.  
@@ -18,6 +18,12 @@ statnet packages on CRAN:
 http://cran.r-project.org/web/packages/ergm/  
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
+
+#### New in v0.3.4
+
+* Conditional uniform graph test histograms in Network Descriptives
+* Descriptions of built-in networks
+* Minor bug fixes
 
 #### New in v0.3.3
 
