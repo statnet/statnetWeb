@@ -278,11 +278,11 @@ vattrinit <- reactive({
 
 #matrix of vertex attribute values
 vattrinit.vals <- reactive({
-  m <- matrix(nrow=nodes(),ncol=length(vattrinit()))
-  for(j in 1:length(vattrinit())){
-    m[,j]<-get.vertex.attribute(nwinit(),vattrinit()[j])
+  v <- list()
+  for (j in 1:length(vattrinit())) {
+    v[[j]] <- get.vertex.attribute(nwinit(), vattrinit()[j])
   }
-  m
+  v
 })
 
 #set correct number of rows for the attribute value lists,
@@ -461,21 +461,15 @@ nwmid <- reactive({
       #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
         symnw <- symmetrize(nw_var, rule=input$symmetrize)
-        if(state$symmdir){
-          nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
-                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
-        } else {
-          nw_var <- network(symnw, matrix.type="adjacency", directed=FALSE,
-                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
-        }
+        nw_var <- network(symnw, matrix.type="adjacency", directed=state$symmdir,
+                          hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                          multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         #add initial vertex attributes back after symmetrizing
         #can't add edge attributes back because number of edges has changed
         for(k in 1:length(vattrinit())){
           attr_names <- vattrinit()
-          attr_matrix <- vattrinit.vals()
-          set.vertex.attribute(nw_var,attr_names[k],attr_matrix[,k])
+          attr_list <- vattrinit.vals()
+          set.vertex.attribute(nw_var, attr_names[k], attr_list[[k]])
         }
       }
 
