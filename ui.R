@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ============
-#' ui.R, v0.3.3
+#' ui.R, v0.3.4
 #' ============
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
@@ -81,7 +81,7 @@ tabPanel(title=span('statnetWeb', id="sWtitle"),
          value='tab1',
          fluidRow(
                   column(8,
-                         h5(tags$u("About statnetWeb v0.3.3")),
+                         h5(tags$u("About statnetWeb v0.3.4")),
                          p("Welcome to our prototype web interactive interface for the", strong("ergm"),
                            "package.", strong("ergm"), "is part of the statnet network analysis software --",
                            "a suite of packages written in R -- and this app also includes some of the functionality",
@@ -509,10 +509,13 @@ fluidRow(
                h5('Conditional uniform graph tests', icon('angle-double-down'),
                   id="cugtitle"),
                wellPanel(id="cugbox",
-                 column(5, uiOutput("dynamiccugterm")),
-                 column(5, selectInput("ncugsims",
+
+                 column(4, uiOutput("dynamiccugterm")),
+                 column(4, selectInput("ncugsims",
                                        label = "Number of simulations",
                                        choices = c(100, 200, 500))),
+                 column(3, actionButton("cugButton", label = "Run",
+                                        style="margin-top: 25px;")),
                  br(),
                  plotOutput("cugtest")
 #                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
@@ -847,8 +850,11 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(6,
-                               actionButton("matchingButton", "Compatible terms", class="btn-sm"),
-                               actionButton("allButton", "All terms", class="btn-sm")
+                               actionButton("matchingButton", "Compatible terms",
+                                            class="btn-sm active"),
+                               actionButton("allButton", "All terms",
+                                            class="btn-sm")
+
                                ),
                         column(4, uiOutput("listofterms"))
                       ),
@@ -873,20 +879,23 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                           fluidRow(
                             column(4,
                                    span("Interval:"),
-                                   customNumericInput('MCMCinterval', label = NULL, value = 1024, class = "mcmcopt input-mini"),
+                                   customNumericInput('MCMCinterval', label = NULL, value = 1024,
+                                                      class = "mcmcopt input-mini round"),
                                    title = paste("Number of proposals between sampled statistics.")
                                    ),
 
                             column(4,
                                    span("Burn-in:"),
-                                   customNumericInput('MCMCburnin', label = NULL, value = 16384, class = "mcmcopt input-mini"),
+                                   customNumericInput('MCMCburnin', label = NULL, value = 16384,
+                                                      class = "mcmcopt input-mini round"),
                                    title = paste("Number of proposals before any MCMC sampling is done.",
                                                  "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
                                    ),
 
                             column(4,
                                    span("Sample size:"),
-                                   customNumericInput('MCMCsamplesize', label = NULL, value = 1024, class = "mcmcopt input-mini"),
+                                   customNumericInput('MCMCsamplesize', label = NULL, value = 1024,
+                                                      class = "mcmcopt input-mini round"),
                                    title = paste("Number of network statistics, randomly drawn from a given distribution",
                                                  "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
                                    )
@@ -894,7 +903,8 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 
                           fluidRow(
                               div(span("Other controls:", class = "shiftright"),
-                                  customTextInput("customMCMCcontrol", label = NULL, value = "", class = "input-small"),
+                                  customTextInput("customMCMCcontrol", label = NULL, value = "",
+                                                  class = "input-small round"),
                                   title = paste("Other arguments to be passed to",
                                        "control.ergm, e.g. MCMC.burnin.retries = 1")
                                   )
@@ -1081,7 +1091,7 @@ tabPanel(title='Simulations', value='tab7',
                 column(4,
                     p('Network:', verbatimTextOutput('currentdataset_sim'))),
                 column(5,
-                       customNumericInput('nsims', class="input-small",
+                       customNumericInput('nsims', class="input-small round",
                                           labelstyle="display:block; padding-bottom:5px;",
                                           label = 'Number of simulations:',
                                           min = 1,
@@ -1107,21 +1117,25 @@ tabPanel(title='Simulations', value='tab7',
                              fluidRow(
                                     column(5,
                                         span("Interval:"),
-                                        customNumericInput('simMCMCinterval',label=NULL, value=1024, class="mcmcopt input-mini"),
+                                        customNumericInput('simMCMCinterval',label=NULL, value=1024,
+                                                           class="mcmcopt input-mini round"),
                                         title=paste("Number of proposals between sampled statistics.")
                                         ),
                                     column(5,
                                         span("Burn-in:"),
-                                        customNumericInput('simMCMCburnin', label=NULL, value=16384, class="mcmcopt input-mini"),
+                                        customNumericInput('simMCMCburnin', label=NULL, value=16384,
+                                                           class="mcmcopt input-mini round"),
                                         title=paste("Number of proposals before any MCMC sampling is done.",
                                                     "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
                                         )
 
                              ),
                              fluidRow(
-                                    div(
+                                    div(class = "shiftright",
                                         span("Other controls:"),
-                                        customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
+                                        customTextInput("simcustomMCMCcontrol",
+                                                        label=NULL, value="",
+                                                        class="round"),
                                         title=paste("Type in other arguments to be passed to control.simulate,",
                                                     "e.g. MCMC.init.maxedges=200")
                                         )
@@ -1139,7 +1153,7 @@ tabPanel(title='Simulations', value='tab7',
            column(7,
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
-                 customNumericInput('thissim', class="input-small",
+                 customNumericInput('thissim', class="input-small round",
                                     labelstyle="display:block;",
                                     label = 'Choose a simulation to plot:',
                                     min = 1, value = 1),

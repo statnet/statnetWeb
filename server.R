@@ -4,7 +4,7 @@
 #' ---
 #' statnetWeb
 #' ===========
-#' server.R, v0.3.3
+#' server.R, v0.3.4
 #' ===========
 
 #' **Before reading this document:** The Shiny app "statnetWeb" is not contained
@@ -83,10 +83,8 @@ data(kapferer)
 
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
-#obsblue <- "royalblue2"
 obsblue <- "#076EC3"
-#histblue <- "#445FB0"
-histblue <- "#398BCF"
+histblue <- "#83B6E1"
 tgray <- adjustcolor("gray", alpha.f = 0.3)
 
 options(digits=3)
@@ -2185,6 +2183,13 @@ output$dynamiccugterm <- renderUI({
 })
 outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
 
+observeEvent(input$cugButton, {
+  state$cugplot <- 1
+})
+observeEvent(nw(), {
+  state$cugplot <- 0
+})
+
 output$cugtest <- renderPlot({
   if(!is.network(nw())) {return()}
   term <- input$cugtestterm
@@ -2354,7 +2359,7 @@ output$gdeg <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- NULL
+  d <- ""
   cmode <- input$gdegcmode
   if(cmode == 'total'){
     cmode <- 'freeman'
@@ -2372,7 +2377,7 @@ output$gbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- NULL
+  b <- ""
   try(b <- centralization(nw(), betweenness, mode=gmode, diag=has.loops(nw()),
                    cmode=input$gbetwcmode))
   b
@@ -2386,7 +2391,7 @@ output$gclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- NULL
+  c <- ""
   try(
     c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
                         cmode=input$gclosecmode))
@@ -2401,7 +2406,7 @@ output$gstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- NULL
+  s <- ""
   try(s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
                           cmode=input$gstresscmode))
   s
@@ -2415,7 +2420,7 @@ output$ggraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- NULL
+  g <- ""
   try(g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
                           cmode=input$ggraphcentcmode))
   g
@@ -2429,9 +2434,8 @@ output$gevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- NULL
-  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw()),
-                          use.eigen = TRUE))
+  e <- ""
+  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
   e
 })
 
@@ -2442,7 +2446,7 @@ output$ginfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i<-NULL
+  i<-""
   try({
     i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
                         cmode=input$ginfocentcmode)})
@@ -2460,7 +2464,7 @@ output$ndeg <- renderText({
   if(cmode == 'total'){
     cmode <- 'freeman'
   }
-  d <- NULL
+  d <- ""
   try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
                   cmode=cmode))
   d
@@ -2497,7 +2501,7 @@ output$nbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- NULL
+  b <- ""
   try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode,
                        diag=has.loops(nw()),
                        cmode=input$nbetwcmode))
@@ -2535,7 +2539,7 @@ output$nclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- NULL
+  c <- ""
   try(
     c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nclosecmode))
@@ -2573,7 +2577,7 @@ output$nstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- NULL
+  s <- ""
   try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode,
                       diag=has.loops(nw()),
                       cmode=input$nstresscmode))
@@ -2611,7 +2615,7 @@ output$ngraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- NULL
+  g <- ""
   try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode,
                      diag=has.loops(nw()),
                      cmode=input$ngraphcentcmode))
@@ -2649,9 +2653,8 @@ output$nevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- NULL
-  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  use.eigen = TRUE))
+  e <- ""
+  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
   e
 })
 
@@ -2662,8 +2665,10 @@ output$nevcentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()), use.eigen = TRUE)
-  min(e)
+  e <- ""
+  try({e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+       e <- min(e)})
+  e
 })
 
 output$nevcentmax <- renderText({
@@ -2673,8 +2678,10 @@ output$nevcentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()), use.eigen = TRUE)
-  max(e)
+  e <- ""
+  try({e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+       e <- max(e)})
+  e
 })
 
 observeEvent(nw(), {
@@ -2778,12 +2785,17 @@ output$listofterms <- renderUI({
     current.terms <- unlist(matchterms)
   }
   selectizeInput('chooseterm',label = NULL,
-              choices = current.terms)
-
+              choices = c("Select a term", current.terms))
 })
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
+  if(is.null(myterm)){
+    return(cat("Choose a term from the dropdown menu."))
+  }
+  if(myterm == "Select a term"){
+    return(cat("Choose a term from the dropdown menu."))
+  }
   search.ergmTerms(name=myterm)
 })
 

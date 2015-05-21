@@ -51,7 +51,7 @@ $(document).ready(function(){
     $("#percButton_dd").toggleClass("active", true);
   });
 
-    $("#countButton_gd").click(function(){
+  $("#countButton_gd").click(function(){
     $("#countButton_gd").toggleClass("active", true);
     $("#percButton_gd").toggleClass("active", false);
   });
@@ -59,6 +59,16 @@ $(document).ready(function(){
   $("#percButton_gd").click(function(){
     $("#countButton_gd").toggleClass("active", false);
     $("#percButton_gd").toggleClass("active", true);
+  });
+
+  $("#matchingButton").click(function(){
+    $("#matchingButton").toggleClass("active", true);
+    $("#allButton").toggleClass("active", false);
+  });
+
+  $("#allButton").click(function(){
+    $("#matchingButton").toggleClass("active", false);
+    $("#allButton").toggleClass("active", true);
   });
 
   $("#Robjhelp").click(function(){
@@ -93,6 +103,10 @@ $(document).ready(function(){
     $("#filetypebox7").toggle(500);
   });
 
+  $("#filetypehelper8").click(function(){
+    $("#filetypebox8").toggle(500);
+  });
+
   $("#closewarning1").click(function(){
     $("#colorwarning1").hide();
     $("#closewarning1").hide();
@@ -102,10 +116,6 @@ $(document).ready(function(){
   //  $("#colorwarning1").show();
   //  $("#closewarning1").show();
   //});
-
-  $("#ddhelper").click(function(){
-    $("#ddhelperbox").toggle(500);
-  });
 
   $("#ddhelper").click(function(){
     $("#ddhelperbox").toggle(500);
