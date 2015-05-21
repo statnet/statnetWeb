@@ -1104,6 +1104,27 @@ output$datadesc <- renderUI({
         "31(1): 64-68.")
     )
   }
+  if(net == "faux.magnolia.high"){
+    text <- div(
+      p("This data set represents a simulation of an in-school friendship network.",
+        "The network is named faux.magnolia.high because the school commnunities",
+        "on which it is based are large and located in the southern US."),
+      p(code("faux.magnolia.high", class = "codetxt"), "is a network object",
+        "with 1461 vertices (students, in this case) and 974 undirected edges",
+        "(mutual friendships)."),
+      p("The vertex attributes are Grade, Sex, and Race. The Grade attribute",
+        "has values 7 through 12, indicating each student's grade in school.",
+        "The Race attribute is based on the answers to two questions, one on",
+        "Hispanic identity and one on race, and takes six possible values:",
+        "White (non-Hisp.), Black (non-Hisp.), Hispanic, Asian (non-Hisp.),",
+        "Native American, and Other (non-Hisp.)"),
+      strong("References"),
+      p("Resnick M.D., Bearman, P.S., Blum R.W. et al. (1997).",
+        em("Protecting adolescents from harm. Findings from the National",
+           "Longitudinal Study on Adolescent Health, Journal of the American",
+           "Medical Association,"), "278: 823-32.")
+    )
+  }
   if(net == "faux.mesa.high"){
     text <- div(
       p("This data set represents a simulation of an in-school friendship",

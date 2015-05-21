@@ -252,9 +252,10 @@ fluidRow(
                     br(style="line-height:26px;"),
                     selectInput('samplenet', label=NULL,
                                 choices=c('Choose a network', 'ecoli1', 'ecoli2',
-                                          'faux.mesa.high','flobusiness',
-                                          'flomarriage', 'kapferer', 'kapferer2',
-                                          'molecule', 'samplike', 'samplk1',
+                                          'faux.magnolia.high', 'faux.mesa.high',
+                                          'flobusiness', 'flomarriage',
+                                          'kapferer', 'kapferer2', 'molecule',
+                                          'samplike', 'samplk1',
                                           'samplk2', 'samplk3'))
                 )
                )
