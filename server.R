@@ -3377,6 +3377,7 @@ state$sim <- 0
 
 observe({
   nwname()
+  input$choosemodel_sim
   input$fitButton
   state$sim <- 0 #simulations are outdated
   updateNumericInput(session, "nsims", value=1)
