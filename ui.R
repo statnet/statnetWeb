@@ -478,6 +478,9 @@ tabPanel(title='Network Descriptives', value='tab3',
      p("Calculation in progress..."),
      img(src="ajax-loader.gif")
  ),
+ conditionalPanel("output.errstate != 'FALSE'",
+                  div(class = "error", uiOutput("errbox"))
+ ),
 
 fluidRow(
  column(7,
@@ -509,7 +512,6 @@ fluidRow(
                h5('Conditional uniform graph tests', icon('angle-double-down'),
                   id="cugtitle"),
                wellPanel(id="cugbox",
-
                  column(4, uiOutput("dynamiccugterm")),
                  column(4, selectInput("ncugsims",
                                        label = "Number of simulations",
@@ -669,9 +671,6 @@ fluidRow(
                      ),
                    fluidRow(
                      column(3, p('Information Centrality:', class='stitle')),
-                     conditionalPanel("output.infocenterr != 'FALSE'",
-                       div(class = "error", textOutput("infocenterr"))
-                       ),
                      column(2, p(textOutput('ninfocent'), class='snum')),
                      column(3, selectInput('ninfocentcmode',label=NULL,
                                            choices=c('weak', 'strong', 'upper',
@@ -854,7 +853,6 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                             class="btn-sm active"),
                                actionButton("allButton", "All terms",
                                             class="btn-sm")
-
                                ),
                         column(4, uiOutput("listofterms"))
                       ),
@@ -1091,7 +1089,7 @@ tabPanel(title='Simulations', value='tab7',
                 column(4,
                     p('Network:', verbatimTextOutput('currentdataset_sim'))),
                 column(5,
-                       customNumericInput('nsims', class="input-small round",
+                       customNumericInput('nsims', class="input-small",
                                           labelstyle="display:block; padding-bottom:5px;",
                                           label = 'Number of simulations:',
                                           min = 1,
@@ -1131,11 +1129,9 @@ tabPanel(title='Simulations', value='tab7',
 
                              ),
                              fluidRow(
-                                    div(class = "shiftright",
+                                    div(
                                         span("Other controls:"),
-                                        customTextInput("simcustomMCMCcontrol",
-                                                        label=NULL, value="",
-                                                        class="round"),
+                                        customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
                                         title=paste("Type in other arguments to be passed to control.simulate,",
                                                     "e.g. MCMC.init.maxedges=200")
                                         )
@@ -1153,7 +1149,7 @@ tabPanel(title='Simulations', value='tab7',
            column(7,
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
-                 customNumericInput('thissim', class="input-small round",
+                 customNumericInput('thissim', class="input-small",
                                     labelstyle="display:block;",
                                     label = 'Choose a simulation to plot:',
                                     min = 1, value = 1),

@@ -193,22 +193,16 @@ div.mischelperbox {
   z-index: 10;
 }
 
-div.warning, div.error {
+
+div.warning {
   position: absolute;
   display: inline;
   padding: 5px 10px 5px 5px;
   border: 1px solid;
   font-size: 0.82em;
   z-index: 10;
-}
-div.warning {
   background-color: #fff8c4;
   border-color: #f2c779;
-}
-div.error {
-  margin-top: 6px;
-  border-color: #D8000C;
-  background-color: #FFE3E3;
 }
 p.warning {
   position: absolute;
@@ -219,6 +213,20 @@ p.warning {
 p.warning:hover {
   color: #737379;
   cursor: pointer;
+}
+div.error {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  display: block;
+  padding: 15px 15px 5px 15px;
+  max-width: 350px;
+  border: 1px solid;
+  border-radius: 3px;
+  font-size: 0.82em;
+  z-index: 10;
+  border-color: #D8000C;
+  background-color: #FFFFFF;
 }
 
 .irs-bar {
