@@ -537,6 +537,16 @@ fluidRow(
                  fluidRow(
                   column(4, offset=7,tags$u('Measure')),
                  fluidRow(
+                  column(4, p('Density:', class='stitle')),
+                  column(3, p(textOutput('gden'), class='snum'))),
+
+                 fluidRow(
+                  column(4, p('Degree:', class='stitle')),
+                  column(3, p(textOutput('gdeg'), class='snum')),
+                  column(4, inlineSelectInput('gdegcmode', label=NULL,
+                                              choices=c('indegree', 'outdegree', 'total'),
+                                              style='margin-top:0px;'))),
+                 fluidRow(
                   column(4, p('Reciprocity:', class='stitle')),
                   column(3, p(textOutput('grecip'), class='snum')),
                   column(4, inlineSelectInput('grecipmeas',label=NULL,
@@ -550,16 +560,6 @@ fluidRow(
                                 choices=c('weak','strong','weakcensus',
                                           'strongcensus','rank','correlation'),
                                 style='margin-top:0px;'))),
-                 fluidRow(
-                  column(4, p('Density:', class='stitle')),
-                  column(3, p(textOutput('gden'), class='snum'))),
-
-                 fluidRow(
-                  column(4, p('Degree:', class='stitle')),
-                  column(3, p(textOutput('gdeg'), class='snum')),
-                  column(4, inlineSelectInput('gdegcmode', label=NULL,
-                                             choices=c('indegree', 'outdegree', 'total'),
-                                             style='margin-top:0px;'))),
                  fluidRow(
                   column(4, p('Betweenness:', class='stitle')),
                   column(3, p(textOutput('gbetw'), class='snum')),
