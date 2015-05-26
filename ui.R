@@ -390,10 +390,11 @@ fluidRow(
                        conditionalPanel(condition="input.newattrtype != '' & input.newattrtype != 'edgevalue'",
                             span('Upload a file of one of the following types:',br(),
                                  tags$ul(
-                                   tags$li('R list object',
+                                   tags$li('.rds file',
                                            span(class="helper",id="filetypehelper7",
                                                 icon("question-circle"),
                                                 div(id="filetypebox7", class="mischelperbox",
+                                                    "Each attribute should be an element of an R list object.",
                                                     strong("R lists"), "should be named, for example:",
                                                     br(),
                                                     code("mylist <- list()"),br(),
@@ -404,7 +405,12 @@ fluidRow(
                                                     "will become the attribute names.",
                                                     br(),br(),tags$u("Note:"),'Attributes uploaded as vertex names',
                                                     "will automatically be saved into the", code("vertex.names"),
-                                                    "attribute and the name of the list or .csv header will be ignored."))),
+                                                    "attribute and the names of the list will be ignored.",
+                                                    br(),br(),
+                                                    strong(".rds files"), "can be saved with",
+                                                    br(),
+                                                    code('saveRDS(objectname, file="newfilename.rds")')
+                                                    ))),
                                    tags$li('.csv file',
                                            span(class="helper", id="filetypehelper8",
                                                 icon("question-circle"),
@@ -413,7 +419,7 @@ fluidRow(
                                                     "The header of each column will become an attribute name.",
                                                     br(),br(),tags$u("Note:"),"Attributes uploaded as vertex names",
                                                     "will automatically be saved into the", code("vertex.names"),
-                                                    "attribute and the uploaded names will be ignored.")))))
+                                                    "attribute and the names in the .csv file will be ignored.")))))
                                         ),
                     conditionalPanel(condition="input.newattrtype != ''",
                           fileInput(inputId='newattrvalue', label=NULL),
