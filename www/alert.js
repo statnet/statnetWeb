@@ -102,9 +102,17 @@ $(document).ready(function(){
   $("#filetypehelper7").click(function(){
     $("#filetypebox7").toggle(500);
   });
-  
+
   $("#filetypehelper8").click(function(){
     $("#filetypebox8").toggle(500);
+  });
+
+  $("#filetypehelper9").click(function(){
+    $("#filetypebox9").toggle(500);
+  });
+
+  $("#filetypehelper10").click(function(){
+    $("#filetypebox10").toggle(500);
   });
 
   $("#closewarning1").click(function(){
