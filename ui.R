@@ -303,8 +303,7 @@ fluidRow(
                  column(5,
                         br(),
                         span(strong('Network Attributes')),
-                        div(checkboxInput('dir', 'directed?', value=TRUE),
-                             style='padding-top:5px;'),
+                        checkboxInput('dir', 'directed?', value=TRUE),
                         checkboxInput('loops', 'loops?', value=FALSE),
                         checkboxInput('multiple', 'multiple?', value=FALSE),
                         checkboxInput('bipartite', 'bipartite?', value=FALSE))
