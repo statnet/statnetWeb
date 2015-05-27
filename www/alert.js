@@ -3,12 +3,18 @@ $(document).ready(function(){
     $(".helper-box").toggle(500);
   });
 
-  $("#swciteButton").click(function(){
-    $("#swcitation").toggle(500);
+  $("#aboutButton").click(function(){
+    $("#aboutbox").show();
+    $("#citebox").hide();
+    $("#aboutButton").toggleClass("active", true);
+    $("#citeButton").toggleClass("active", false);
   });
 
-  $("#sciteButton").click(function(){
-    $("#scitation").toggle(500);
+  $("#citeButton").click(function(){
+    $("#citebox").show();
+    $("#aboutbox").hide();
+    $("#citeButton").toggleClass("active", true);
+    $("#aboutButton").toggleClass("active", false);
   });
 
   $("#linktitle1").click(function(){

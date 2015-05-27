@@ -87,23 +87,15 @@ div.busy {
   z-index: 50;
 }
 
-#swciteButton,
-#sciteButton {
-  padding: 5px;
-  border-radius: 4px;
-  border:1px solid #CECED8;
-  background: rgb(230, 230, 230);
-  cursor: pointer;
-}
-#swciteButton:hover,
-#sciteButton:hover {
-  background-color:#CECED8;
+#aboutButton,
+#citeButton,
+#startButton {
+  margin-bottom: 5px;
+  width: 137px;
 }
 
-#swcitation,
-#scitation {
-  display:none;
-  position:absolute;
+#citebox {
+  display: none;
 }
 
 #dataleft, #fitleft,
