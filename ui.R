@@ -94,14 +94,14 @@ tabPanel(title=span('statnetWeb', id="sWtitle"),
               "package!", strong("ergm"), "is part of the statnet network analysis software -",
               "a suite of packages written in R - and this GUI also includes some of the functionality",
               "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web application",
-              "is written with the Shiny framework from RStudio and development is via GitHub.  More information", 
-              "on the statnet software, the ergm package, Shiny and our GitHub repository can be found in the", 
+              "is written with the Shiny framework from RStudio and development is via GitHub.  More information",
+              "on the statnet software, the ergm package, Shiny and our GitHub repository can be found in the",
               "resource links on the right."),
 
-            p("This interface is useful for teachers and students of introductory network analysis,", 
-              "for newcomers to exponential random graphs models, and for experienced network modelers", 
-              "who want easier access to analysis results. If you are new to ergm, you may find it helpful", 
-              "to work through the", a("ergm tutorial", 
+            p("This interface is useful for teachers and students of introductory network analysis,",
+              "for newcomers to exponential random graphs models, and for experienced network modelers",
+              "who want easier access to analysis results. If you are new to ergm, you may find it helpful",
+              "to work through the", a("ergm tutorial",
                                        href="http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
                                        target="_blank"), "using this interface. Advanced users will still want to interact",
               "via the command line in order to access the full functionality of ergm."),
@@ -687,7 +687,7 @@ fluidRow(
                      column(2, p(textOutput('ninfocentmax')))
                      )
                  ),
-              conditionalPanel(condition = "output.errstate == 1",
+              conditionalPanel(condition = "output.errstate == '1'",
                                div(class = "error", uiOutput("errbox")))
 
 )
