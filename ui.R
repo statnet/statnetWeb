@@ -486,9 +486,6 @@ tabPanel(title='Network Descriptives', value='tab3',
      p("Calculation in progress..."),
      img(src="ajax-loader.gif")
  ),
- conditionalPanel("output.errstate != 'FALSE'",
-                  div(class = "error", uiOutput("errbox"))
- ),
 
 fluidRow(
  column(7,
@@ -687,7 +684,11 @@ fluidRow(
                      column(2, p(textOutput('ninfocentmin'))),
                      column(2, p(textOutput('ninfocentmax')))
                      )
-                 ))
+                 ),
+              conditionalPanel(condition = "output.errstate == 1",
+                               div(class = "error", uiOutput("errbox")))
+
+)
 
 
 

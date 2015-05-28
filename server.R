@@ -2688,8 +2688,8 @@ observeEvent(nw(), {
   values$err <- c()
 })
 
-output$errstate <- renderText({
-  state$err
+output$errstate <- reactive({
+  1*state$err
 })
 
 output$ninfocent <- renderText({
