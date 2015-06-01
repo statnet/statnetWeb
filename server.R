@@ -2706,7 +2706,8 @@ output$ninfocent <- renderText({
   if("error" %in% class(i)) {
     state$err <- TRUE
     values$err[1] <- i[[1]]
-    i <- paste("Error", length(values$err))
+    #i <- paste("Error", length(values$err))
+    i <- ''
   }
   i
 })
