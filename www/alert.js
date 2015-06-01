@@ -113,6 +113,14 @@ $(document).ready(function(){
     $("#filetypebox8").toggle(500);
   });
 
+  $("#filetypehelper9").click(function(){
+    $("#filetypebox9").toggle(500);
+  });
+
+  $("#filetypehelper10").click(function(){
+    $("#filetypebox10").toggle(500);
+  });
+
   $("#closewarning1").click(function(){
     $("#colorwarning1").hide();
     $("#closewarning1").hide();

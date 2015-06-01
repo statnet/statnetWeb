@@ -327,7 +327,7 @@ newattrnamereac <- reactive({
       newattrs <- read.csv(paste(path), sep=",", header=TRUE,
                            stringsAsFactors=FALSE)
       newname <- names(newattrs)
-      if(input$newattrtype == "edgevalue"){
+      if(input$newattrtype == "edgeattr" & input$edgeform == "matrix"){
         newname <- newname[1]
       }
     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS") ){
@@ -394,7 +394,7 @@ observeEvent(input$newattrButton, {
 
 #add edge attributes to list
 observeEvent(input$newattrButton, {
-    if(input$newattrtype == "edgeattr"){
+    if(input$newattrtype == "edgeattr" & input$edgeform == "vector"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
       fileext <- substr(filename,nchar(filename)-3,nchar(filename))
@@ -420,7 +420,7 @@ observeEvent(input$newattrButton, {
 
 #add edge values to list
 observeEvent(input$newattrButton, {
-    if(input$newattrtype == "edgevalue"){
+    if(input$newattrtype == "edgeattr" & input$edgeform == "matrix"){
       path <- input$newattrvalue[1,4]
       filename <- input$newattrvalue[1,1]
       fileext <- substr(filename,nchar(filename)-3, nchar(filename))
