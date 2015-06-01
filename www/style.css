@@ -307,13 +307,20 @@ div .mcmcopt {
   margin-bottom: 5px;
 }
 
+.inlineselect {
+  width:100px; 
+  line-height:20px; 
+  font-size:12px; 
+  margin:10px 0 10px;
+}
+
 #MCMCburnin, #MCMCinterval,
 #MCMCsamplesize, #simMCMCburnin,
 #simMCMCinterval{
   width: 100px;
 }
-.mcmcopt >
-/*div.form-group.shiny-input-container {
+/*.mcmcopt >
+  div.form-group.shiny-input-container {
   width: 150px;
 }*/
 #chooseterm {
@@ -338,7 +345,7 @@ div.placeholder {
 #termdocbox {
   position:absolute;
   right:0;
-  left:5px;
+  left:15px;
   margin-right:10px;
   max-height:95px;
   border: 1px solid #CECED8;

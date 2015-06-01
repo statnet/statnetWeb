@@ -593,8 +593,8 @@ fluidRow(
                   column(4, p('Degree:', class='stitle')),
                   column(3, p(textOutput('gdeg'), class='snum')),
                   column(4, selectInput('gdegcmode', label=NULL,
-                                        choices=c('indegree', 'outdegree', 'total'),
-                                        style='margin-top:0px;'))),
+                                        choices=c('indegree', 'outdegree', 'total')
+                                        ))),
                  fluidRow(
                   column(4, p('Reciprocity:', class='stitle')),
                   column(3, p(textOutput('grecip'), class='snum')),
@@ -912,20 +912,26 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                ),
                         column(4, uiOutput("listofterms"))
                       ),
-                  div(id="termdocbox",
-                      verbatimTextOutput("termdoc")
-                    ),
-                  div(id = "termexpand",
-                      icon(name = "expand"))
+                      fluidRow(
+                        column(12,
+                               div(id="termdocbox",
+                                    verbatimTextOutput("termdoc")
+                                ),
+                                div(id = "termexpand",
+                                    icon(name = "expand"))
+                               )
+                        
+                      )
+                  
                   )
                  ),
                  tabPanel("Control Options",
                     div(class = "placeholder",
-                    fluidRow(
-                      column(3,
+                    fluidRow(class = "shiftright",
+                      column(3, style = "padding-left: 0;",
                         inlineSelectInput('controltype',label = NULL,
                                           choices = c("MCMC","MCMLE"),
-                                          style = "margin-top:10px;")),
+                                          style="margin:10px 0px;")),
                       column(5,
                         checkboxInput('controldefault', 'Use default options', value = TRUE))
                     ),
@@ -1160,11 +1166,11 @@ tabPanel(title='Simulations', value='tab7',
                 tabsetPanel(
                   tabPanel("Control Options",
                            fluidRow(
-                             column(3,
+                             column(3, class = "shiftright",
                                     inlineSelectInput('simcontroltype',label=NULL,
                                                       choices=c("MCMC","Parallel"),
                                                       style="margin:10px 0px;")),
-                             column(4,
+                             column(7,
                                     checkboxInput('simcontroldefault','Use default options', value=TRUE))
                            ),
                            conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
@@ -1186,8 +1192,9 @@ tabPanel(title='Simulations', value='tab7',
                              ),
                              fluidRow(
                                     div(
-                                        span("Other controls:"),
-                                        customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
+                                        span("Other controls:", class = "shiftright"),
+                                        customTextInput("simcustomMCMCcontrol", label=NULL, value="",
+                                                        class = "input-mini round"),
                                         title=paste("Type in other arguments to be passed to control.simulate,",
                                                     "e.g. MCMC.init.maxedges=200")
                                         )
