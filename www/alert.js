@@ -3,12 +3,18 @@ $(document).ready(function(){
     $(".helper-box").toggle(500);
   });
 
-  $("#swciteButton").click(function(){
-    $("#swcitation").toggle(500);
+  $("#aboutButton").click(function(){
+    $("#aboutbox").show();
+    $("#citebox").hide();
+    $("#aboutButton").toggleClass("active", true);
+    $("#citeButton").toggleClass("active", false);
   });
 
-  $("#sciteButton").click(function(){
-    $("#scitation").toggle(500);
+  $("#citeButton").click(function(){
+    $("#citebox").show();
+    $("#aboutbox").hide();
+    $("#citeButton").toggleClass("active", true);
+    $("#aboutButton").toggleClass("active", false);
   });
 
   $("#linktitle1").click(function(){
@@ -102,9 +108,17 @@ $(document).ready(function(){
   $("#filetypehelper7").click(function(){
     $("#filetypebox7").toggle(500);
   });
-  
+
   $("#filetypehelper8").click(function(){
     $("#filetypebox8").toggle(500);
+  });
+
+  $("#filetypehelper9").click(function(){
+    $("#filetypebox9").toggle(500);
+  });
+
+  $("#filetypehelper10").click(function(){
+    $("#filetypebox10").toggle(500);
   });
 
   $("#closewarning1").click(function(){

@@ -21,11 +21,16 @@ customNumericInput <- function(inputId, label, value = 0,
 # inline lapply allows us to add each element of
 # choices as an option in the select menu
 inlineSelectInput <- function(inputId, label, choices, ...) {
-  tagList(tags$label(label, `for` = inputId, style = "display:inline"),
-          tags$select(id = inputId, choices = choices,
-                      ..., style = "width:100px; line-height:20px; font-size:12px",
-                      class = "shiny-bound-input", lapply(choices,
-                                                          tags$option)))
+  if(is.null(label)){
+    labeldisp <- "display: none;"
+  } else {
+    labeldisp <- "display: inline;"
+  }
+  
+  tagList(tags$label(label, `for` = inputId, style = labeldisp),
+          tags$select(id = inputId, choices = choices, ..., 
+                      class = "shiny-bound-input inlineselect", 
+                      lapply(choices, tags$option)))
 }
 
 # create a list of unique term names
