@@ -87,23 +87,15 @@ div.busy {
   z-index: 50;
 }
 
-#swciteButton,
-#sciteButton {
-  padding: 5px;
-  border-radius: 4px;
-  border:1px solid #CECED8;
-  background: rgb(230, 230, 230);
-  cursor: pointer;
-}
-#swciteButton:hover,
-#sciteButton:hover {
-  background-color:#CECED8;
+#aboutButton,
+#citeButton,
+#startButton {
+  margin-bottom: 5px;
+  width: 137px;
 }
 
-#swcitation,
-#scitation {
-  display:none;
-  position:absolute;
+#citebox {
+  display: none;
 }
 
 #dataleft, #fitleft,
@@ -193,13 +185,16 @@ div.mischelperbox {
   z-index: 10;
 }
 
+
 div.warning {
-    position: absolute;
-    display: block;
-    background: #fff8c4 url('images/warning.png') no-repeat 10px 50%;
-    border: 1px solid #f2c779;
-    font-size: 0.82em;
-    z-index: 10;
+  position: absolute;
+  display: inline;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid;
+  font-size: 0.82em;
+  z-index: 10;
+  background-color: #fff8c4;
+  border-color: #f2c779;
 }
 p.warning {
   position: absolute;
@@ -210,6 +205,20 @@ p.warning {
 p.warning:hover {
   color: #737379;
   cursor: pointer;
+}
+div.error {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  display: block;
+  padding: 15px 15px 5px 15px;
+  max-width: 350px;
+  border: 1px solid;
+  border-radius: 3px;
+  font-size: 0.82em;
+  z-index: 10;
+  border-color: #D8000C;
+  background-color: #FFFFFF;
 }
 
 .irs-bar {
@@ -269,6 +278,13 @@ p.warning:hover {
   font-size:12px;
   line-height:27px;
   margin-top:10px;
+}
+.smallselect > .shiny-input-control > .selectize-input {
+  padding: 5px;
+  font-size: 12pt;
+  width: 100px;
+  height: 27px;
+  line-height: 27px;
 }
 
 #savemodel {

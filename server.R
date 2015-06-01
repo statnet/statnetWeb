@@ -278,11 +278,11 @@ vattrinit <- reactive({
 
 #matrix of vertex attribute values
 vattrinit.vals <- reactive({
-  m <- matrix(nrow=nodes(),ncol=length(vattrinit()))
-  for(j in 1:length(vattrinit())){
-    m[,j]<-get.vertex.attribute(nwinit(),vattrinit()[j])
+  v <- list()
+  for (j in 1:length(vattrinit())) {
+    v[[j]] <- get.vertex.attribute(nwinit(), vattrinit()[j])
   }
-  m
+  v
 })
 
 #set correct number of rows for the attribute value lists,
@@ -461,21 +461,15 @@ nwmid <- reactive({
       #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
         symnw <- symmetrize(nw_var, rule=input$symmetrize)
-        if(state$symmdir){
-          nw_var <- network(symnw, matrix.type="adjacency", directed=TRUE,
-                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
-        } else {
-          nw_var <- network(symnw, matrix.type="adjacency", directed=FALSE,
-                            hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                            multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
-        }
+        nw_var <- network(symnw, matrix.type="adjacency", directed=state$symmdir,
+                          hyper=nwattrinit()[2], loops=nwattrinit()[3],
+                          multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
         #add initial vertex attributes back after symmetrizing
         #can't add edge attributes back because number of edges has changed
         for(k in 1:length(vattrinit())){
           attr_names <- vattrinit()
-          attr_matrix <- vattrinit.vals()
-          set.vertex.attribute(nw_var,attr_names[k],attr_matrix[,k])
+          attr_list <- vattrinit.vals()
+          set.vertex.attribute(nw_var, attr_names[k], attr_list[[k]])
         }
       }
 
@@ -2291,6 +2285,37 @@ output$mixingmatrix <- renderPrint({
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
+# update all the menu selection options when network changes
+observeEvent(nw(), {
+  if(is.directed(nw())){
+    degmenu <- c('indegree', 'outdegree')
+    betwmenu <- c('directed', 'endpoints', 'proximalsrc',
+                  'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
+    closemenu <- c('directed', 'suminvdir')
+    stressmenu <- c('directed')
+    hgmenu <- c('directed')
+  } else {
+    degmenu <- c('total')
+    betwmenu <- c('undirected', 'endpoints', 'proximalsrc',
+                  'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
+    closemenu <- c('undirected', 'suminvundir')
+    stressmenu <- c('undirected')
+    hgmenu <- c('undirected')
+  }
+  updateNumericInput(session, "nodeind", label = NULL, value = 1,
+                     min = 1, max = nodes())
+  updateSelectInput(session, "gdegcmode", choices = degmenu)
+  updateSelectInput(session, "gbetwcmode", choices = betwmenu)
+  updateSelectInput(session, "gclosecmode", choices = closemenu)
+  updateSelectInput(session, "gstresscmode", choices = stressmenu)
+  updateSelectInput(session, "ggraphcentcmode", choices = hgmenu)
+  updateSelectInput(session, "ndegcmode", choices = degmenu)
+  updateSelectInput(session, "nbetwcmode", choices = betwmenu)
+  updateSelectInput(session, "nclosecmode", choices = closemenu)
+  updateSelectInput(session, "nstresscmode", choices = stressmenu)
+  updateSelectInput(session, "ngraphcentcmode", choices = hgmenu)
+})
+
 output$gden <- renderText({
   if(!is.network(nw())) {return()}
   if(is.directed(nw())){
@@ -2412,7 +2437,6 @@ output$gevcent <- renderText({
   try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
   e
 })
-outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
 
 output$ginfocent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2427,7 +2451,6 @@ output$ginfocent <- renderText({
                         cmode=input$ginfocentcmode)})
   i
 })
-outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
 
 output$ndeg <- renderText({
   if(!is.network(nw())) {return()}
@@ -2445,7 +2468,6 @@ output$ndeg <- renderText({
                   cmode=cmode))
   d
 })
-outputOptions(output,'ndeg',suspendWhenHidden=FALSE)
 
 output$ndegmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2458,7 +2480,6 @@ output$ndegmin <- renderText({
               cmode=input$ndegcmode)
   min(d)
 })
-outputOptions(output,'ndegmin',suspendWhenHidden=FALSE)
 
 output$ndegmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2471,7 +2492,6 @@ output$ndegmax <- renderText({
               cmode=input$ndegcmode)
   max(d)
 })
-outputOptions(output,'ndegmax',suspendWhenHidden=FALSE)
 
 output$nbetw <- renderText({
   if(!is.network(nw())) {return()}
@@ -2486,7 +2506,6 @@ output$nbetw <- renderText({
                        cmode=input$nbetwcmode))
   b
 })
-outputOptions(output,'nbetw',suspendWhenHidden=FALSE)
 
 output$nbetwmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2499,7 +2518,6 @@ output$nbetwmin <- renderText({
                    cmode=input$nbetwcmode)
   min(b)
 })
-outputOptions(output,'nbetwmin',suspendWhenHidden=FALSE)
 
 output$nbetwmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2512,7 +2530,6 @@ output$nbetwmax <- renderText({
                    cmode=input$nbetwcmode)
   max(b)
 })
-outputOptions(output,'nbetwmax',suspendWhenHidden=FALSE)
 
 output$nclose <- renderText({
   if(!is.network(nw())) {return()}
@@ -2527,7 +2544,6 @@ output$nclose <- renderText({
                    cmode=input$nclosecmode))
   c
 })
-outputOptions(output,'nclose',suspendWhenHidden=FALSE)
 
 output$nclosemin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2540,7 +2556,6 @@ output$nclosemin <- renderText({
                  cmode=input$nclosecmode)
   min(c)
 })
-outputOptions(output,'nclosemin',suspendWhenHidden=FALSE)
 
 output$nclosemax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2553,7 +2568,6 @@ output$nclosemax <- renderText({
                  cmode=input$nclosecmode)
   max(c)
 })
-outputOptions(output,'nclosemax',suspendWhenHidden=FALSE)
 
 output$nstress <- renderText({
   if(!is.network(nw())){ return()}
@@ -2568,7 +2582,6 @@ output$nstress <- renderText({
                       cmode=input$nstresscmode))
   s
 })
-outputOptions(output,'nstress',suspendWhenHidden=FALSE)
 
 output$nstressmin <- renderText({
   if(!is.network(nw())){ return()}
@@ -2581,7 +2594,6 @@ output$nstressmin <- renderText({
                   cmode=input$nstresscmode)
   min(s)
 })
-outputOptions(output,'nstressmin',suspendWhenHidden=FALSE)
 
 output$nstressmax <- renderText({
   if(!is.network(nw())){ return()}
@@ -2594,7 +2606,6 @@ output$nstressmax <- renderText({
                   cmode=input$nstresscmode)
   max(s)
 })
-outputOptions(output,'nstressmax',suspendWhenHidden=FALSE)
 
 output$ngraphcent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2609,7 +2620,6 @@ output$ngraphcent <- renderText({
                      cmode=input$ngraphcentcmode))
   g
 })
-outputOptions(output,'ngraphcent',suspendWhenHidden=FALSE)
 
 output$ngraphcentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2622,7 +2632,6 @@ output$ngraphcentmin <- renderText({
                  cmode=input$ngraphcentcmode)
   min(g)
 })
-outputOptions(output,'ngraphcentmin',suspendWhenHidden=FALSE)
 
 output$ngraphcentmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2635,7 +2644,6 @@ output$ngraphcentmax <- renderText({
                  cmode=input$ngraphcentcmode)
   max(g)
 })
-outputOptions(output,'ngraphcentmax',suspendWhenHidden=FALSE)
 
 output$nevcent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2648,7 +2656,6 @@ output$nevcent <- renderText({
   try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
   e
 })
-outputOptions(output,'nevcent',suspendWhenHidden=FALSE)
 
 output$nevcentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2662,7 +2669,6 @@ output$nevcentmin <- renderText({
        e <- min(e)})
   e
 })
-outputOptions(output,'nevcentmin',suspendWhenHidden=FALSE)
 
 output$nevcentmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2676,7 +2682,15 @@ output$nevcentmax <- renderText({
        e <- max(e)})
   e
 })
-outputOptions(output,'nevcentmax',suspendWhenHidden=FALSE)
+
+observeEvent(nw(), {
+  state$err <- FALSE
+  values$err <- c()
+})
+
+output$errstate <- renderPrint({
+  print(1)
+})
 
 output$ninfocent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2685,13 +2699,32 @@ output$ninfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i<-''
-  try({
-    i <- infocent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ninfocentcmode)})
+  i <- ''
+  i <- tryCatch({infocent(nw(), nodes=input$nodeind, gmode=gmode,
+                          diag=has.loops(nw()), cmode=input$ninfocentcmode)},
+                error = function(e) {e})
+  if("error" %in% class(i)) {
+    state$err <- TRUE
+    values$err[1] <- i[[1]]
+    #i <- paste("Error", length(values$err))
+    i <- ''
+  }
   i
 })
-outputOptions(output,'ninfocent',suspendWhenHidden=FALSE)
+outputOptions(output, "ninfocent", priority = 50)
+
+
+output$errbox <- renderPrint({
+  err <- FALSE
+  if(!is.null(state$err)){
+    err <- state$err
+    if(err){
+      err <- paste0("Error ", c(1:length(values$err)), ": ", values$err, "\n")
+    }
+  }
+  p(err)
+})
+outputOptions(output, "errbox", priority = 1)
 
 output$ninfocentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2707,7 +2740,6 @@ output$ninfocentmin <- renderText({
     i<-min(i)})
   i
 })
-outputOptions(output,'ninfocentmin',suspendWhenHidden=FALSE)
 
 output$ninfocentmax <- renderText({
   if(!is.network(nw())) {return()}
@@ -2723,7 +2755,6 @@ output$ninfocentmax <- renderText({
     i<-max(i)})
   i
 })
-outputOptions(output,'ninfocentmax',suspendWhenHidden=FALSE)
 
 #' **Fit Model**
 #'
@@ -2760,7 +2791,6 @@ output$listofterms <- renderUI({
   }
   selectizeInput('chooseterm',label = NULL,
               choices = c("Select a term", current.terms))
-
 })
 
 output$termdoc <- renderPrint({
@@ -3353,6 +3383,7 @@ state$sim <- 0
 
 observe({
   nwname()
+  input$choosemodel_sim
   input$fitButton
   state$sim <- 0 #simulations are outdated
   updateNumericInput(session, "nsims", value=1)

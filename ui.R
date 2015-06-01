@@ -80,46 +80,42 @@ shinyUI(
 tabPanel(title=span('statnetWeb', id="sWtitle"),
          value='tab1',
          fluidRow(
-                  column(8,
-                         h5(tags$u("About statnetWeb v0.3.4")),
-                         p("Welcome to our prototype web interactive interface for the", strong("ergm"),
-                           "package.", strong("ergm"), "is part of the statnet network analysis software --",
-                           "a suite of packages written in R -- and this app also includes some of the functionality",
-                           "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web app",
-                           "is written in R-Shiny, and development is via Github.  More information on the statnet software,",
-                           "the ergm package, R-Shiny and our Github repository can be found in the resource links on the right."),
+          column(2,
+                 actionButton("aboutButton", label = "About statnetWeb",
+                              class = "btn active"),
+                 actionButton("citeButton", label = "Citing statnetWeb",
+                              class = "btn"),
+                 actionButton('startButton', label='Get Started',
+                              class="btn btn-primary")
+          ),
+   column(6, style="padding: 0 30px 0 0;",
+          div(id="aboutbox",
+            p("Welcome to our first interactive interface for the", strong("ergm"),
+              "package!", strong("ergm"), "is part of the statnet network analysis software -",
+              "a suite of packages written in R - and this GUI also includes some of the functionality",
+              "from the associated packages", strong("network"), " and ", strong("sna"), ".  This web application",
+              "is written with the Shiny framework from RStudio and development is via GitHub.  More information",
+              "on the statnet software, the ergm package, Shiny and our GitHub repository can be found in the",
+              "resource links on the right."),
 
-                         div(p("This app is intended to serve as an introduction to the ergm package for those who",
-                           "are just getting started using statnet, or for those who are not familiar with programming",
-                           "in R. If you are new to ergm, you may find it helpful to work through the", a("ergm tutorial",
-                          href="http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
-                          target="_blank"), "using this app. Advanced users will still want to interact",
-                          "via the command line in order to access the full functionality of ergm."),
-                         p("A typical network analysis will move sequentially through the tabs at the top of the page.",
-                           "Click on the help icon at the top of any page for guidance."),
-                         p("Do you have comments/suggestions/complaints on this prototype app? Please share them with us.",
-                           "They are best submitted through our", a('Github site,',
-                                                                    href='https://github.com/statnet/statnetWeb',
-                                                                    target='_blank'),
-                           "or by email to the statnet_help listserv (see", actionLink("helpLink", "Help"), "tab).")
-                         ),
-                         actionButton('startButton', label='Get Started', class="btn btn-primary btn-sm"),
-                         br(),
-
-                         h5(tags$u('Citing statnetWeb')),
-                         p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
-
-                         span(id='swciteButton', 'statnetWeb'),
-                         span(id='sciteButton', 'statnet'), br(),br(),
-
-
-tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
-title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
-author = {Emily Beylerian and Martina Morris},
-year = {2014},
-address = {Seattle, WA},
-url = {https://github.com/statnet/statnetWeb}
-}'),
+            p("This interface is useful for teachers and students of introductory network analysis,",
+              "for newcomers to exponential random graphs models, and for experienced network modelers",
+              "who want easier access to analysis results. If you are new to ergm, you may find it helpful",
+              "to work through the", a("ergm tutorial",
+                                       href="http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
+                                       target="_blank"), "using this interface. Advanced users will still want to interact",
+              "via the command line in order to access the full functionality of ergm."),
+            p("A typical network analysis will move sequentially through the tabs at the top of the page.",
+              "Click on the help icon at the top of any page for guidance."),
+            p("Do you have comments/suggestions/complaints on this prototype app? Please share them with us.",
+              "They are best submitted through our", a('GitHub site,',
+                                                       href='https://github.com/statnet/statnetWeb',
+                                                       target='_blank'),
+              "or by email to the statnet_help listserv (see", actionLink("helpLink", "Help"), "tab).")
+          ),
+          div(id="citebox",
+            p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
+            p(strong("statnet")),
 
 tags$pre(id='scitation','@Manual{handcock:statnet,
 title = {statnet: Software tools for the Statistical Modeling of Network Data},
@@ -129,25 +125,39 @@ address = {Seattle, WA},
 url = {http://statnetproject.org}
 }'),
 
-                 p('Additional citation information for statnet',
-                   'and the component packages can be found here:'),
-                 tags$ul(
-                   tags$li(a('Citing statnet',
-                             href='https://statnet.csde.washington.edu/trac/wiki/citation%20information',
-                             target='_blank')),
-                   tags$li(a('License and source code attribution requirements',
-                             href = 'http://statnet.csde.washington.edu/attribution.shtml',
-                             target = '_blank')),
-                   tags$li(a('statnet Development Team',
-                           href = 'http://statnet.csde.washington.edu/about_us.shtml',
-                           target = '_blank'))
-          )),
+p(strong("statnetWeb")),
+tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
+title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
+author = {Emily Beylerian and Martina Morris},
+year = {2014},
+address = {Seattle, WA},
+url = {https://github.com/statnet/statnetWeb}
+}'),
+            p('Additional citation information for statnet',
+              'and the component packages can be found here:'),
+            tags$ul(
+              tags$li(a('Citing statnet',
+                        href='https://statnet.csde.washington.edu/trac/wiki/citation%20information',
+                        target='_blank')),
+              tags$li(a('License and source code attribution requirements',
+                        href = 'http://statnet.csde.washington.edu/attribution.shtml',
+                        target = '_blank')),
+              tags$li(a('statnet Development Team',
+                        href = 'http://statnet.csde.washington.edu/about_us.shtml',
+                        target = '_blank'))
+            )
+            )
+          ),
    column(4,
           wellPanel(
               h5(tags$u('Resources')),
-              div(title=paste("The homepage of the statnet project. Find tutorials,",
-                       "publications and recent news here."),
-                  a("statnet Wiki",
+              div(title = "Wiki page for statnetWeb",
+                a("About statnetWeb",
+                  href = "https://statnet.csde.washington.edu/trac/wiki/statnetWeb",
+                  target = "_blank")),
+              div(title=paste("Homepage of the statnet project with tutorials,",
+                              "publications and recent news."),
+                  a("About statnet",
                     href = "https://statnet.csde.washington.edu/trac", target = "_blank")
               ),
 
@@ -171,10 +181,10 @@ url = {http://statnetproject.org}
                         target = "_blank")),
                     style="margin-bottom:10px;"),
               br(),
-              p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
-                target="_blank")),
-              a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
-                target="_blank")
+              div(a("statnetWeb on GitHub", href="https://github.com/statnet/statnetWeb",
+                    target="_blank")),
+              div(a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
+                    target="_blank"))
    ),
    fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200), style="margin-left:15px;"),
    fluidRow(a(img(src = 'csdelogo_crop.png', height = 40, width = 40),
@@ -582,52 +592,48 @@ fluidRow(
                  fluidRow(
                   column(4, p('Degree:', class='stitle')),
                   column(3, p(textOutput('gdeg'), class='snum')),
-                  column(4, inlineSelectInput('gdegcmode', label=NULL,
-                                              choices=c('indegree', 'outdegree', 'total'),
-                                              style='margin-top:0px;'))),
+                  column(4, selectInput('gdegcmode', label=NULL,
+                                        choices=c('indegree', 'outdegree', 'total'),
+                                        style='margin-top:0px;'))),
                  fluidRow(
                   column(4, p('Reciprocity:', class='stitle')),
                   column(3, p(textOutput('grecip'), class='snum')),
-                  column(4, inlineSelectInput('grecipmeas',label=NULL,
+                  column(4, selectInput('grecipmeas',label=NULL,
                              choices=c('dyadic','dyadic.nonnull','edgewise',
-                                       'edgewise.lrr','correlation'),
-                             style='margin-top:5px;'))),
+                                       'edgewise.lrr','correlation')))),
                  fluidRow(
                   column(4, p('Transitivity:'), class='stitle'),
                   column(3, p(textOutput('gtrans'), class='snum')),
-                  column(4, inlineSelectInput('gtransmeas',label=NULL,
+                  column(4, selectInput('gtransmeas',label=NULL,
                                 choices=c('weak','strong','weakcensus',
-                                          'strongcensus','rank','correlation'),
-                                style='margin-top:0px;'))),
+                                          'strongcensus','rank','correlation'))
+                         )),
                  fluidRow(
                   column(4, p('Betweenness:', class='stitle')),
                   column(3, p(textOutput('gbetw'), class='snum')),
-                  column(4, inlineSelectInput('gbetwcmode', label=NULL,
-                                             choices=c('directed','undirected',
-                                                       'endpoints','proximalsrc',
-                                                       'proximaltar','proximalsum',
-                                                       'lengthscaled', 'linearscaled'),
-                                             style='margin-top:0px;'))),
+                  column(4, selectInput('gbetwcmode', label=NULL,
+                                         choices=c('directed','undirected',
+                                                   'endpoints','proximalsrc',
+                                                   'proximaltar','proximalsum',
+                                                   'lengthscaled', 'linearscaled'))
+                         )),
                  fluidRow(
                   column(4, p('Closeness:', class='stitle')),
                   column(3, p(textOutput('gclose'), class='snum')),
-                  column(4, inlineSelectInput('gclosecmode', label=NULL,
-                                             choices=c('directed','undirected',
-                                                       'suminvdir','suminvundir'),
-                                             style='margin-top:0px;'))),
+                  column(4, selectInput('gclosecmode', label=NULL,
+                                        choices=c('directed','undirected',
+                                                  'suminvdir','suminvundir')))),
                  fluidRow(
                    column(4, p('Stress Centrality:', class='stitle')),
                    column(3, p(textOutput('gstress'), class='snum')),
-                   column(4, inlineSelectInput('gstresscmode', label=NULL,
-                                               choices=c('directed','undirected'),
-                                               style='margin-top:0px;'))
+                   column(4, selectInput('gstresscmode', label=NULL,
+                                         choices=c('directed','undirected')))
                  ),
                  fluidRow(
                    column(4, p('(Harary) Graph Centrality:', class='stitle')),
                    column(3, p(textOutput('ggraphcent'), class='snum')),
-                   column(4, inlineSelectInput('ggraphcentcmode', label=NULL,
-                                               choices=c('directed', 'undirected'),
-                                               style='margin-top:0px;'))
+                   column(4, selectInput('ggraphcentcmode', label=NULL,
+                                         choices=c('directed', 'undirected')))
                  ),
                  fluidRow(
                    column(4, p('Eigenvector Centrality:', class='stitle')),
@@ -637,9 +643,9 @@ fluidRow(
                  fluidRow(
                    column(4, p('Information Centrality:', class='stitle')),
                    column(3, p(textOutput('ginfocent'), class='snum')),
-                   column(4, inlineSelectInput('ginfocentcmode',label=NULL,
-                                               choices=c('weak', 'strong', 'upper',
-                                                         'lower'), style='margin-top:0px;'))
+                   column(4, selectInput('ginfocentcmode',label=NULL,
+                                         choices=c('weak', 'strong', 'upper',
+                                                   'lower')))
                  )
 
 
@@ -662,49 +668,49 @@ fluidRow(
                    fluidRow(
                      column(3, p('Degree:', class='stitle')),
                      column(2, p(textOutput('ndeg'), class='snum')),
-                     column(3, inlineSelectInput('ndegcmode', label=NULL,
-                                                 choices=c('indegree', 'outdegree', 'total'),
-                                                 style='margin-top:5px;')),
+                     column(3, selectInput('ndegcmode', label=NULL,
+                                           choices=c('indegree', 'outdegree', 'total')),
+                            class = "smallselect"),
                      column(2, p(textOutput('ndegmin'), class='snum', align='center')),
                      column(2, p(textOutput('ndegmax'), class='snum', align='center'))
                      ),
                    fluidRow(
                      column(3, p('Betweenness:', class='stitle')),
                      column(2, p(textOutput('nbetw'), class='snum')),
-                     column(3, inlineSelectInput('nbetwcmode', label=NULL,
-                                                 choices=c('directed','undirected',
-                                                           'endpoints','proximalsrc',
-                                                           'proximaltar','proximalsum',
-                                                           'lengthscaled', 'linearscaled'),
-                                                 style='margin-top:0px;')),
+                     column(3, selectInput('nbetwcmode', label=NULL,
+                                           choices=c('directed','undirected',
+                                                     'endpoints','proximalsrc',
+                                                     'proximaltar','proximalsum',
+                                                     'lengthscaled', 'linearscaled')),
+                            class = "smallselect"),
                      column(2, p(textOutput('nbetwmin'), class='snum')),
                      column(2, p(textOutput('nbetwmax'), class='snum'))
                      ),
                    fluidRow(
                      column(3, p('Closeness:', class='stitle')),
                      column(2, p(textOutput('nclose'), class='snum')),
-                     column(3, inlineSelectInput('nclosecmode', label=NULL,
-                                                 choices=c('directed','undirected',
-                                                           'suminvdir','suminvundir'),
-                                                 style='margin-top:0px;')),
+                     column(3, selectInput('nclosecmode', label=NULL,
+                                           choices=c('directed','undirected',
+                                                     'suminvdir','suminvundir')),
+                            class = "smallselect"),
                      column(2, p(textOutput('nclosemin'))),
                      column(2, p(textOutput('nclosemax')))
                      ),
                    fluidRow(
                      column(3, p('Stress Centrality:', class='stitle')),
                      column(2, p(textOutput('nstress'), class='snum')),
-                     column(3, inlineSelectInput('nstresscmode', label=NULL,
-                                                 choices=c('directed','undirected'),
-                                                 style='margin-top:0px;')),
+                     column(3, selectInput('nstresscmode', label=NULL,
+                                           choices=c('directed','undirected')),
+                            class = "smallselect"),
                      column(2, p(textOutput('nstressmin'))),
                      column(2, p(textOutput('nstressmax')))
                      ),
                    fluidRow(
                      column(3, p('(Harary) Graph Centrality:', class='stitle')),
                      column(2, p(textOutput('ngraphcent'), class='snum')),
-                     column(3, inlineSelectInput('ngraphcentcmode', label=NULL,
-                                                 choices=c('directed', 'undirected'),
-                                                 style='margin-top:0px;')),
+                     column(3, selectInput('ngraphcentcmode', label=NULL,
+                                           choices=c('directed', 'undirected')),
+                            class = "smallselect"),
                      column(2, p(textOutput('ngraphcentmin'))),
                      column(2, p(textOutput('ngraphcentmax')))
                      ),
@@ -718,13 +724,18 @@ fluidRow(
                    fluidRow(
                      column(3, p('Information Centrality:', class='stitle')),
                      column(2, p(textOutput('ninfocent'), class='snum')),
-                     column(3, inlineSelectInput('ninfocentcmode',label=NULL,
-                                                 choices=c('weak', 'strong', 'upper',
-                                                           'lower'), style='margin-top:0px;')),
+                     column(3, selectInput('ninfocentcmode',label=NULL,
+                                           choices=c('weak', 'strong', 'upper',
+                                                     'lower')),
+                            class = "smallselect"),
                      column(2, p(textOutput('ninfocentmin'))),
                      column(2, p(textOutput('ninfocentmax')))
                      )
-                 ))
+                 ),
+              conditionalPanel(condition = "output.errstate == '1'",
+                               div(class = "error", uiOutput("errbox")))
+
+)
 
 
 
@@ -750,7 +761,7 @@ fluidRow(
                                    column(10,
                                           p(id = "closewarning1", icon(name = "remove"), class = "warning"),
                                           div(class = "warning", id = "colorwarning1",
-                                              span(tags$u("Note:"), br(),
+                                              span(tags$u("Note:"),
                                                    "Color palette becomes a gradient for attributes with more than nine levels.")
                                           )
                                    )),
@@ -898,7 +909,6 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                             class="btn-sm active"),
                                actionButton("allButton", "All terms",
                                             class="btn-sm")
-
                                ),
                         column(4, uiOutput("listofterms"))
                       ),
@@ -1135,7 +1145,7 @@ tabPanel(title='Simulations', value='tab7',
                 column(4,
                     p('Network:', verbatimTextOutput('currentdataset_sim'))),
                 column(5,
-                       customNumericInput('nsims', class="input-small round",
+                       customNumericInput('nsims', class="input-small",
                                           labelstyle="display:block; padding-bottom:5px;",
                                           label = 'Number of simulations:',
                                           min = 1,
@@ -1175,11 +1185,9 @@ tabPanel(title='Simulations', value='tab7',
 
                              ),
                              fluidRow(
-                                    div(class = "shiftright",
+                                    div(
                                         span("Other controls:"),
-                                        customTextInput("simcustomMCMCcontrol",
-                                                        label=NULL, value="",
-                                                        class="round"),
+                                        customTextInput("simcustomMCMCcontrol",label=NULL,value=""),
                                         title=paste("Type in other arguments to be passed to control.simulate,",
                                                     "e.g. MCMC.init.maxedges=200")
                                         )
@@ -1197,7 +1205,7 @@ tabPanel(title='Simulations', value='tab7',
            column(7,
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
-                 customNumericInput('thissim', class="input-small round",
+                 customNumericInput('thissim', class="input-small",
                                     labelstyle="display:block;",
                                     label = 'Choose a simulation to plot:',
                                     min = 1, value = 1),
@@ -1295,22 +1303,27 @@ tabPanel(title='Help', value='tab8',
          sidebarLayout(position = 'right',
                        sidebarPanel(
                          h5(tags$u('Resources')),
-                         div(title=paste("The homepage of the statnet project. Find tutorials,",
-                                         "publications and recent news here."),
-                             a("statnet Wiki",
+                         div(title = "Wiki page for statnetWeb",
+                             a("About statnetWeb",
+                               href = "https://statnet.csde.washington.edu/trac/wiki/statnetWeb",
+                               target = "_blank")),
+                         div(title=paste("Homepage of the statnet project with tutorials,",
+                                         "publications and recent news."),
+                             a("About statnet",
                                href = "https://statnet.csde.washington.edu/trac", target = "_blank")
                          ),
+
                          column(11, offset = 1,
-                                span(id="linktitle3",'Key background papers',icon('angle-double-left')),br(),
-                                div(id="linkbox3",
+                                span(id="linktitle1",'Key background papers',icon('angle-double-left')),br(),
+                                div(id="linkbox1",
                                     a("ergm: Journal of Statistical Software",
                                       href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
                                     br(),
                                     a("Using ergm: Journal of Statistical Software",
                                       href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
 
-                                span(id="linktitle4",'Tutorials and documentation',icon('angle-double-left')),br(),
-                                div(id="linkbox4",
+                                span(id="linktitle2",'Tutorials and documentation',icon('angle-double-left')),br(),
+                                div(id="linkbox2",
                                     a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
                                       href = "http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
                                       target= "_blank"),
@@ -1320,14 +1333,14 @@ tabPanel(title='Help', value='tab8',
                                       target = "_blank")),
                                 style="margin-bottom:10px;"),
                          br(),
-                         p(a("statnetWeb Github repository", href="https://github.com/statnet/statnetWeb",
-                             target="_blank")),
-                         a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
-                           target="_blank")
+                         div(a("statnetWeb on GitHub", href="https://github.com/statnet/statnetWeb",
+                               target="_blank")),
+                         div(a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
+                               target="_blank"))
                        ),
                        mainPanel(
                          h5(tags$u('Help with statnetWeb')),
-                         p("This app is maintained on Github. To request new features or report a bug,",
+                         p("This app is maintained on GitHub. To request new features or report a bug,",
                            "please interact with the",
                            a("repository", href='https://github.com/statnet/statnetWeb',
                              target="_blank"),
