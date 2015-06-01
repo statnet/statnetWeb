@@ -902,8 +902,13 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                tabsetPanel(
                  tabPanel("Term Documentation",
                   br(),
-                  div(class="placeholder",
+                  div(class="placeholder shiftright",
                       fluidRow(
+                        column(12,
+                               a("Table of commonly used ergm terms", 
+                                 href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
+                                 target="_blank"), br(), br()
+                               ),
                         column(6,
                                actionButton("matchingButton", "Compatible terms",
                                             class="btn-sm active"),
