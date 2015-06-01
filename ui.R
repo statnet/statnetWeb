@@ -902,7 +902,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                tabsetPanel(
                  tabPanel("Term Documentation",
                   br(),
-                  div(class="placeholder shiftright",
+                  div(class="placeholder",
                       fluidRow(
                         column(12,
                                a("Table of commonly used ergm terms", 
