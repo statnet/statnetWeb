@@ -310,8 +310,7 @@ div .mcmcopt {
 .inlineselect {
   width:100px; 
   line-height:20px; 
-  font-size:12px; 
-  margin:10px 0 10px;
+  font-size:12px;
 }
 
 #MCMCburnin, #MCMCinterval,
