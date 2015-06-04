@@ -87,12 +87,13 @@ obsblue <- "#076EC3"
 histblue <- "#83B6E1"
 tgray <- adjustcolor("gray", alpha.f = 0.3)
 
-options(digits=3)
-
 shinyServer(
   function(input, output, session){
 
-
+    oldoptions <- options()
+    on.exit(options(oldoptions))
+    options(digits=3)
+    
 #' Reactive Expressions
 #' ---------------------------------
 #' These expressions contain most of the code from the ergm package that we will
