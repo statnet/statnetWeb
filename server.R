@@ -81,7 +81,7 @@ data(ecoli)
 data(molecule)
 data(kapferer)
 
-BRGcol <- "firebrick"
+BRGcol <- "darkred"
 CUGcol <- "orangered"
 obsblue <- "#076EC3"
 histblue <- "#83B6E1"
@@ -2218,23 +2218,32 @@ output$cugtest <- renderPlot({
       }
       return(breaks)
     }
-
+    
     cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
-    hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL,
-         xlab= NULL, xlim = range(brgvals, cugvals, obsval),
+    hist(brgvals, col = tgray,  
+         border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
+         xlim = range(brgvals, cugvals, obsval),
          ylim = c(0, max(brghist$counts, cughist$counts)),
-         breaks = getbreaks)
-    hist(brgvals, col = "gray60", density = 15,
-         angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
-         ylim = c(0, max(brghist$counts, cughist$counts)),
-         breaks = brghist$breaks, add = TRUE)
-    abline(v = obsval, col = obsblue, lwd = 2)
+         breaks = brghist$breaks)
+    
+    if (input$cugtestterm == "density" | input$cugtestterm == "meandeg"){
+      abline(v = cugvals[1], col = CUGcol)
+    } else {
+      hist(cugvals, col = "gray60", density = 15, angle = -45,
+           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
+           xlim = range(brgvals, cugvals, obsval),
+           ylim = c(0, max(brghist$counts, cughist$counts)),
+           breaks = getbreaks, add = TRUE)
+    }
+
+
+    points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
 
     legend(x = "topright", bty = "n",
-           legend = c("observed value", "CUG distribution", "BRG distribution"),
-           lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, "gray60"),
-           angle = -45, density = c(0, 100, 15),
-           border = c(0, CUGcol, BRGcol), merge = TRUE)
+           legend = c("Observed value", "CUG distribution", "BRG distribution"),
+           pch = c(17, NA, NA), col = obsblue, fill = c(0, "gray60", tgray),
+           angle = -45, density = c(0, 15, 100),
+           border = c(0, CUGcol, BRGcol))
   })
 })
 
