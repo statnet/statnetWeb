@@ -2879,7 +2879,8 @@ observe({
 })
 observe({
   nw()
-  values$modelstate <- 0 #modelfit is outdated when nw changes
+  input$clearmodelButton
+  values$modelstate <- 0 #modelfit is outdated when nw changes or models cleared
 })
 
 output$modelfit <- renderPrint({
