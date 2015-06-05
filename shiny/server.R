@@ -792,7 +792,7 @@ observeEvent(values$modeltotal, {
   # coefficients and stars for a single model
   m <- values$modeltotal
   if(m > 0 & m <= 5){
-    values$modelcoefs[[m]] <- ergminfo(model1reac())
+    values$modelcoefs[[m]] <- ergm.info(model1reac())
     values$modelformulas[[m]] <- ergm.terms()
     values$modelfits[[m]] <- model1reac()
     values$modelsumstats[[m]] <- summary(ergm.formula())
