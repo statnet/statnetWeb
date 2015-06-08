@@ -7,7 +7,7 @@
 \method{coef}{comparison}(coeflist)
 }
 \description{
-Takes in a list of multiple outputs from \code{\link{ergminfo}},
+Takes in a list of multiple outputs from \code{\link{ergm.info}},
 formatting it all into a table comparing up to 5 models.
 }
 
