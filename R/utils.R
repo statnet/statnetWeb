@@ -1,9 +1,7 @@
 
-#' @title ergm object information
-#'
-#' @description Takes an ergm object and gathers some of the information from 
-#' \code{\link{summary.ergm}}, in preparation to be passed to the function 
-#' \code{\link{coef.comparison}}.
+# Takes an ergm object and gathers some of the information from 
+# summary.ergm, in preparation to be passed to the function 
+# coef.comparison.
 
 ergm.info <- function(object) {
   coefs <- object$coef
@@ -27,10 +25,8 @@ ergm.info <- function(object) {
 }
 
 
-#' @title Compare ergm coefficients
-#'
-#' @description Takes in a list of multiple outputs from \code{\link{ergm.info}}, 
-#' formatting it all into a table comparing up to 5 models.
+# Takes in a list of multiple outputs from ergm.info, 
+# formatting it all into a table comparing up to 5 models.
 
 coef.comparison <- function(coeflist) {
   nmod <- length(coeflist)

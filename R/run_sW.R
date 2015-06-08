@@ -12,6 +12,7 @@
 #' run_sW()
 #' }
 #' 
+#' @import ergm
 #' @importFrom RColorBrewer brewer.pal
 #'
 run_sW <- function() {
