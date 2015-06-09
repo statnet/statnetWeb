@@ -9,12 +9,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' run_sW()
+#' run_sw()
 #' }
 #' 
 #' @import ergm
 #' @importFrom RColorBrewer brewer.pal
 #'
-run_sW <- function() {
+run_sw <- function() {
   shiny::runApp(system.file("shiny", package = "statnetWeb"))
 }
