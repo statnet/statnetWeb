@@ -12,12 +12,12 @@ Description: A graphical user interface for network modeling with the statnet
 License: GPL-3
 Depends:
   R (>= 3.1.0),
-  shiny
-Imports:
+  shiny,
   ergm (>= 3.2.4),
+  sna
+Imports:
   lattice,
   latticeExtra,
   network,
-  RColorBrewer,
-  sna
+  RColorBrewer
 LazyData: true
