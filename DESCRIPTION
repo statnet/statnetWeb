@@ -19,5 +19,5 @@ Imports:
   latticeExtra,
   network,
   RColorBrewer,
-  sna,
+  sna
 LazyData: true
