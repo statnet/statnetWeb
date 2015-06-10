@@ -2131,11 +2131,15 @@ output$cugtest <- renderPlot({
       return(breaks)
     }
     
+    xlims <- c(min(brgvals, cugvals, obsval) - diff(brghist$breaks)[1],
+               max(brgvals, cugvals, obsval) + diff(brghist$breaks)[1])
+    
     cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
     par(lwd = 2)
     hist(brgvals, col = tgray3,  
          border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
-         xlim = range(brgvals, cugvals, obsval),
+         xaxt = "n",
+         xlim = xlims,
          ylim = c(0, max(brghist$counts, cughist$counts)),
          breaks = brghist$breaks)
     
@@ -2144,13 +2148,12 @@ output$cugtest <- renderPlot({
     } else {
       hist(cugvals, col = tgray7, density = 15, angle = -45,
            border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
-           xlim = range(brgvals, cugvals, obsval),
-           ylim = c(0, max(brghist$counts, cughist$counts)),
+           axes = FALSE,
            breaks = getbreaks, add = TRUE)
       
     }
     
-
+    axis(side = 1, at = round(c(xlims[1], cughist$breaks, xlims[2]), digits = 3))
     points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
 
     legend(x = "topright", bty = "n",
