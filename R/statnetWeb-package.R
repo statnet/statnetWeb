@@ -6,4 +6,5 @@
 #' @docType package
 #' @name statnetWeb
 #' @import ergm
+#' @importFrom RColorBrewer brewer.pal
 NULL

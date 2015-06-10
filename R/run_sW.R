@@ -12,8 +12,6 @@
 #' run_sw()
 #' }
 #' 
-#' @import ergm
-#' @importFrom RColorBrewer brewer.pal
 #'
 run_sw <- function() {
   shiny::runApp(system.file("shiny", package = "statnetWeb"))

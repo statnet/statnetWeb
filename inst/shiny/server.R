@@ -554,7 +554,7 @@ vcol <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(ncolors>9){
-      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(ncolors)
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
     }
     vcol <- pal[full_list]
   }
@@ -584,7 +584,7 @@ legendfill <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(n>9){
-      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(n)
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
     }
     legendfill <- adjustcolor(pal, alpha.f = input$transp)
   }
@@ -937,7 +937,7 @@ vcol2 <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(ncolors>9){
-      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(ncolors)
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
     }
     vcol <- pal[full_list]
   }
@@ -970,7 +970,7 @@ legendfill2 <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(n > 9){
-      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(n)
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
     }
     legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
@@ -1525,9 +1525,9 @@ output$degreedist <- renderPlot({
       if(ncolors == 2){
         color <- c("#eff3ff", "#377FBC")
       } else if(ncolors < 10){
-        color <- RColorBrewer::brewer.pal(ncolors,"Blues")
+        color <- brewer.pal(ncolors,"Blues")
       } else if(ncolors >= 10){
-        color <- colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(ncolors)
+        color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
       }
       ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
       ltext <- append(ltext, "")
@@ -1655,8 +1655,8 @@ output$degreedistdownload <- downloadHandler(
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
         ncolors <- dim(dd_plotdata())[1]
-        color <- RColorBrewer::brewer.pal(ncolors,"Blues")[1:ncolors]
-        color[is.na(color)] <- RColorBrewer::brewer.pal(9, "Blues")
+        color <- brewer.pal(ncolors,"Blues")[1:ncolors]
+        color[is.na(color)] <- brewer.pal(9, "Blues")
         ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
         ltext <- append(ltext, "")
         lfill <- c(color, 0)
