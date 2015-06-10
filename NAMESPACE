@@ -2,4 +2,5 @@
 
 export(run_sw)
 import(ergm)
+import(sna)
 importFrom(RColorBrewer,brewer.pal)
