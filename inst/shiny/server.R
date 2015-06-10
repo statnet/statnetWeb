@@ -17,10 +17,11 @@ data(molecule)
 data(kapferer)
 
 BRGcol <- "darkred"
-CUGcol <- "orangered"
+CUGcol <- "darkorange"
 obsblue <- "#076EC3"
 histblue <- "#83B6E1"
-tgray <- adjustcolor("gray", alpha.f = 0.3)
+tgray3 <- adjustcolor("gray", alpha.f = 0.3)
+tgray7 <- adjustcolor("gray", alpha.f = 0.7)
 
 shinyServer(
   function(input, output, session){
@@ -2131,7 +2132,8 @@ output$cugtest <- renderPlot({
     }
     
     cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
-    hist(brgvals, col = tgray,  
+    par(lwd = 2)
+    hist(brgvals, col = tgray3,  
          border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
          xlim = range(brgvals, cugvals, obsval),
          ylim = c(0, max(brghist$counts, cughist$counts)),
@@ -2140,21 +2142,23 @@ output$cugtest <- renderPlot({
     if (input$cugtestterm == "density" | input$cugtestterm == "meandeg"){
       abline(v = cugvals[1], col = CUGcol)
     } else {
-      hist(cugvals, col = "gray60", density = 15, angle = -45,
+      hist(cugvals, col = tgray7, density = 15, angle = -45,
            border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
            xlim = range(brgvals, cugvals, obsval),
            ylim = c(0, max(brghist$counts, cughist$counts)),
            breaks = getbreaks, add = TRUE)
+      
     }
-
+    
 
     points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
 
     legend(x = "topright", bty = "n",
            legend = c("Observed value", "CUG distribution", "BRG distribution"),
-           pch = c(17, NA, NA), col = obsblue, fill = c(0, "gray60", tgray),
+           pch = c(17, NA, NA), col = obsblue, fill = c(0, tgray7, tgray3),
            angle = -45, density = c(0, 15, 100),
            border = c(0, CUGcol, BRGcol))
+    par(lwd = 1)
   })
 })
 
@@ -2172,16 +2176,16 @@ output$cugtest <- renderPlot({
 #                      directed = nw()$gal$directed, loops = nw()$gal$loops)
 #
 #     brghist <- hist(brgvals, plot = FALSE)
-#     hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL,
+#     hist(cugvals, col = tgray3, border = CUGcol, ylab = NULL, main = NULL,
 #          xlab= NULL, xlim = range(brgvals, cugvals, obsval),
 #          breaks = brghist$breaks)
-#     hist(brgvals, col = tgray, border = BRGcol, ylab = NULL,
+#     hist(brgvals, col = tgray3, border = BRGcol, ylab = NULL,
 #          main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
 #     abline(v = obsval, col = obsblue, lwd = 2)
 #
 #     legend(x = "topright", bty = "n",
 #            legend = c("observed value", "CUG distribution", "BRG distribution"),
-#            lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray),
+#            lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray3, tgray3),
 #            border = c(0, CUGcol, BRGcol), merge = TRUE)
 #     dev.off()
 #     if (file.exists(paste0(nwname(), "_", input$cugtestterm, ".png")))
