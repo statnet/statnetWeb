@@ -1,61 +1,3 @@
-#' ---
-#' title: "statnetWeb, server.R"
-#' author: "Emily Beylerian"
-#' ---
-#' statnetWeb
-#' ===========
-#' server.R, v0.3.4
-#' ===========
-
-#' **Before reading this document:** The Shiny app "statnetWeb" is not contained
-#' in a single R Script. Within the folder "statnetWeb" the script `ui.R`
-#' controls the layout and appearance of the app, the script `server.R` controls
-#' the content that gets displayed in the app, and the folder "www" contains
-#' auxiliary files. If you are unfamiliar with Shiny apps, it may be more
-#' natural and helpful to start with the documentation for `ui.R` and then move
-#' on to `server.R`.
-#'
-#' **Basics**
-#'
-#' Every `server.R` script contains an unnamed function inside a call to
-#' `shinyServer`. The job of the unnamed function is to take input elements from
-#' the user and define output elements that will be displayed in the app. For
-#' more information on how this works, see
-#' [the Shiny tutorial](http://shiny.rstudio.com/tutorial/lesson4/).
-#' If the function is empty, e.g.
-#' ```
-#' shinyServer(
-#'  function(input,output){})
-#' ```
-#' the UI elements will still be displayed without any dynamic content.
-#'
-#' To create dynamic content, we will mainly rely on three types of expressions:
-#'
-#' *Reactive:* Reactive expressions are expressions that can read reactive
-#' values and call other reactive expressions. Whenever a reactive value
-#' changes, any reactive expressions that depended on it are marked as
-#' "invalidated" and will automatically re-execute if necessary. If a reactive
-#' expression is marked as invalidated, any other reactive expressions that
-#' recently called it are also marked as invalidated. In this way, invalidations
-#' ripple through the expressions that depend on each other. Reactive
-#' expressions use lazy evaluation; when their dependencies change, they don't
-#' re-execute right away but rather wait until they are called by someone else.
-#'
-#' *Observer:* An observer is like a reactive expression in that it can read
-#' reactive values and call reactive expressions, and will automatically
-#' re-execute when those dependencies change. But unlike reactive expressions,
-#' it doesn't yield a result and can't be used as an input to other reactive
-#' expressions. Thus, observers are only useful for their side effects (for
-#' example, performing I/O). Observers use eager evaluation; as soon as their
-#' dependencies change, they schedule themselves to re-execute.
-#'
-#' *Render:* The `render*` functions are responsible for converting content to
-#' the form in which it should be displayed. Before assigning an object to an
-#' element of `output`, it gets passed to the appropriate `render*` function.
-#'
-#' **Code**
-#'
-#+ eval=FALSE
 
 library(shiny)
 library(ergm)
@@ -64,13 +6,6 @@ library(network)
 library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
-source("modelcomp.R")
-
-#' Loading data and assigning variables outside of the call to `shinyServer`
-#' saves time because this code will not get re-run.These don't depend on any
-#' user input and will never change value, so they can be global variables
-#' (common to all shiny sessions).
-#+ eval=FALSE
 
 data(faux.mesa.high)
 data(faux.magnolia.high)
@@ -87,26 +22,23 @@ obsblue <- "#076EC3"
 histblue <- "#83B6E1"
 tgray <- adjustcolor("gray", alpha.f = 0.3)
 
-options(digits=3)
-
 shinyServer(
   function(input, output, session){
 
+    oldoptions <- options()
+    on.exit(options(oldoptions))
+    options(digits=3)
 
-#' Reactive Expressions
-#' ---------------------------------
-#' These expressions contain most of the code from the ergm package that we will
-#' be using. Objects created with a reactive expression can be accessed from any
-#' other reactive expression or render functions and they only get re-run when
-#' their values are outdated. Since many of our render functions will be calling
-#' the same ergm objects, using reactive expressions will help the app run much
-#' faster.
-#'
-#' Notice that already in this chunk of code we call previously declared
-#' reactive objects. For example, to use the reactive list of vertex attributes
-#' in the definition of the numeric vertex attributes, we call `attrib()`.
-#+ eval=FALSE
+    
+# Reactive Expressions ----------------------------------------------------
+# These expressions contain most of the code from the ergm package that we will
+# be using. Objects created with a reactive expression can be accessed from any
+# other reactive expression or render functions and they only get re-run when
+# their values are outdated. Since many of our render functions will be calling
+# the same ergm objects, using reactive expressions will help the app run much
+# faster.
 
+    
 values <- reactiveValues()
 
 # when two options are available to the user, or when we need to know if one
@@ -160,7 +92,7 @@ observe({
 })
 
 
-#this reactive expression is used to get the initial values of the network
+#nwinit is used to get the initial values of the network
 nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
   #datapath is stored in 4th column of dataframe
@@ -622,7 +554,7 @@ vcol <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(ncolors>9){
-      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
+      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(ncolors)
     }
     vcol <- pal[full_list]
   }
@@ -652,7 +584,7 @@ legendfill <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(n>9){
-      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
+      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(n)
     }
     legendfill <- adjustcolor(pal, alpha.f = input$transp)
   }
@@ -677,12 +609,6 @@ observeEvent(c(nw(), input$ncugsims),{
     values$cugsims <- list(brgsims, cugsims)
   }
 })
-
-#' ERGM fitting:
-#' `ergm.terms` is a compilation of all the terms entered,
-#' which we then use to create a complete formula.
-#'
-#+ eval=FALSE
 
 #add terms to list as user enters them
 #function in alert.js will click the addtermButton when user
@@ -734,10 +660,7 @@ current.simformula <- reactive ({
   formula(paste('nw() ~ ', terms, sep=''))
 })
 
-#' Once we have a formula, creating a model object, checking the goodness of fit
-#' and simulating from it is similar to what would be written in the command
-#' line, wrapped in a reactive statement.
-#+ eval=FALSE
+#ergm model object
 model1reac <- reactive({
   if(input$fitButton == 0){
     return()
@@ -791,7 +714,7 @@ observeEvent(values$modeltotal, {
   # coefficients and stars for a single model
   m <- values$modeltotal
   if(m > 0 & m <= 5){
-    values$modelcoefs[[m]] <- ergminfo(model1reac())
+    values$modelcoefs[[m]] <- ergm.info(model1reac())
     values$modelformulas[[m]] <- ergm.terms()
     values$modelfits[[m]] <- model1reac()
     values$modelsumstats[[m]] <- summary(ergm.formula())
@@ -931,12 +854,11 @@ allmodelsimreac <- reactive({
   return(s)
 })
 
-#' Currently, the reactive statements that control the sizing/coloring/legend in
-#' thesimulation plots use the attributes from the original network as a point
-#' of reference. If the method for simulating networks changes from applying the
-#' same distribution of attributes, these `get.vertex.attribute` commands for
-#' `minsize` and `maxsize` would also need to change.
-#+ eval=FALSE
+# Currently, the reactive statements that control the sizing/coloring/legend in
+# thesimulation plots use the attributes from the original network as a point
+# of reference. If the method for simulating networks changes from applying the
+# same distribution of attributes, these `get.vertex.attribute` commands for
+# `minsize` and `maxsize` would also need to change.
 
 #get coordinates to plot simulations with
 sim.coords.1 <- reactive({
@@ -1015,7 +937,7 @@ vcol2 <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(ncolors>9){
-      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
+      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(ncolors)
     }
     vcol <- pal[full_list]
   }
@@ -1048,7 +970,7 @@ legendfill2 <- reactive({
     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
              'yellow', 'orange', 'black', 'grey')
     if(n > 9){
-      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
+      pal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdYlBu"))(n)
     }
     legendfill <- adjustcolor(pal, alpha.f = input$transp2)
   }
@@ -1056,18 +978,17 @@ legendfill2 <- reactive({
   return(legendfill)
 })
 
+# Output Expressions -------------------------------------------------------
 
-#' Output Expressions
-#' ---------------------------
-#' Every piece of content that gets displayed in the app has to be
-#' rendered by the appropriate `render*` function, e.g. `renderPrint` for text
-#' and `renderPlot` for plots. Most of the render functions here call
-#' reactive objects that were created above. I have divided the output objects
-#' into sections depending on what tab of the app they are called from.
-#'
-#' **Data Upload**
-#'
-#+ eval=FALSE
+# Every piece of content that gets displayed in the app has to be
+# rendered by the appropriate `render*` function, e.g. `renderPrint` for text
+# and `renderPlot` for plots. Most of the render functions here call
+# reactive objects that were created above. I have divided the output objects
+# into sections depending on what tab of the app they are called from.
+
+
+# Data Upload -------------------------------------------------------------
+
 
 
 output$datadesc <- renderUI({
@@ -1306,19 +1227,10 @@ output$nwsum <- renderPrint({
 })
 
 
+# Network Descriptives ------------------------------------------------------
 
+#NETWORK PLOT
 
-#' **Network Plots**
-#'
-#' Because the menu options for coloring/sizing the nodes on a network plot
-#' depend on which network has been selected, we have to dynamically render
-#' these input menus, rather than statically defining them in `ui.R`.
-#' *Note*, the dynamic widget object for the color menu has been assigned to
-#' `output$dynamiccolor`, but when the user interacts with this menu, the input
-#' object will still be saved in `input$colorby` because that is the widget
-#' inputId.
-#'
-#+ eval=FALSE
 #summary of network attributes
 output$attr2 <- renderPrint({
   if (!is.network(nw())){
@@ -1356,16 +1268,15 @@ output$dynamicsize <- renderUI({
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 
-#' The network plot takes display options from the sidebar of the ui. Even
-#' though I set the value of the 'None' option in the `sizeby` menu (above) as
-#' `1`, it gets coerced into the string `'1'` by the rest of the strings in the
-#' vector of menu options. The variable `size` takes the value 1 if the user
-#' wants all the nodes to be the same size, and otherwise maps the values of the
-#' numeric attributes into the range between .7 and 3.5 using the formula
-#' $y = (x-a)/(b-a) * (d-c) + c$, where $x$ is the input in some range $[a,b]$
-#' and $y$ is the output in range $[c,d]$.
-#'
-#+ eval=FALSE
+# The network plot takes display options from the sidebar of the ui. Even
+# though I set the value of the 'None' option in the `sizeby` menu (above) as
+# 1, it gets coerced into the string '1' by the rest of the strings in the
+# vector of menu options. The variable `size` takes the value 1 if the user
+# wants all the nodes to be the same size, and otherwise maps the values of the
+# numeric attributes into the range between .7 and 3.5 using the formula
+# y = (x-a)/(b-a) * (d-c) + c, where x is the input in some range [a,b]
+# and y is the output in range [c,d].
+
 output$nwplot <- renderPlot({
   if (!is.network(nw())){
     return()
@@ -1614,9 +1525,9 @@ output$degreedist <- renderPlot({
       if(ncolors == 2){
         color <- c("#eff3ff", "#377FBC")
       } else if(ncolors < 10){
-        color <- brewer.pal(ncolors,"Blues")
+        color <- RColorBrewer::brewer.pal(ncolors,"Blues")
       } else if(ncolors >= 10){
-        color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+        color <- colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(ncolors)
       }
       ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
       ltext <- append(ltext, "")
@@ -1744,8 +1655,8 @@ output$degreedistdownload <- downloadHandler(
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
         ncolors <- dim(dd_plotdata())[1]
-        color <- brewer.pal(ncolors,"Blues")[1:ncolors]
-        color[is.na(color)] <- brewer.pal(9, "Blues")
+        color <- RColorBrewer::brewer.pal(ncolors,"Blues")[1:ncolors]
+        color[is.na(color)] <- RColorBrewer::brewer.pal(9, "Blues")
         ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
         ltext <- append(ltext, "")
         lfill <- c(color, 0)
@@ -2756,14 +2667,8 @@ output$ninfocentmax <- renderText({
   i
 })
 
-#' **Fit Model**
-#'
-#' The user is only allowed to change the dataset on the first tab; on the
-#' following tabs I output the current dataset as a reminder of what network
-#' they are working with.
 
-#+ eval=FALSE
-
+# Fit Model ---------------------------------------------------------------
 
 observeEvent(input$matchingButton, {
   state$allterms <- FALSE
@@ -2826,13 +2731,6 @@ observe({
   updateNumericInput(session, "burnin", value=16*input$MCMCinterval)
 })
 
-
-#' Below we output the current formulation of the ergm
-#' model so the user can clearly see how their menu selections change the model.
-#' Since `ergm.terms()` is a reactive object, it will automatically update when
-#' the user clicks on menu options.
-#'
-#+ fitmodel2, eval=FALSE
 output$currentdataset1 <- renderPrint({
   if(!is.network(nw())){
     return(cat('Upload a network'))
@@ -2923,24 +2821,24 @@ output$modelcompdownload <- downloadHandler(
   }
 )
 
-#make sure that mcmc iterations output on the fitting tab by allowing
-#modelfit to update even when other tab is active
+# make sure that mcmc iterations output on the fitting tab by allowing
+# modelfit to update even when other tab is active
 
-#other potential methods were to use onFlush, or to set the priority of
-#observers, but this is the best and least complicated (and the only
-#one that works)
+# other potential methods were to use onFlush, or to set the priority of
+# observers, but this is the best and least complicated (and the only
+# one that works)
 
 outputOptions(output, "modelfit", priority = 10, suspendWhenHidden = FALSE)
 outputOptions(output, "modelfitsum", priority = -10)
 
-#' **Diagnostics - MCMC Diagnostics**
-#'
-#' When using the `mcmc.diagnostics` function in the command line, the printed
-#' diagnostics and plots all output together. Instead of calling
-#' `mcmc.diagnositcs` in a reactive object, it gets called in both the plot
-#' output element and summary output element.
-#'
-#+ eval=FALSE
+
+# MCMC Diagnostics --------------------------------------------------------
+
+
+# When using the `mcmc.diagnostics` function in the command line, the printed
+# diagnostics and plots all output together. Instead of calling
+# `mcmc.diagnositcs` in a reactive object, it gets called in both the plot
+# output element and summary output element.
 
 
 output$uichoosemodel_mcmc <- renderUI({
@@ -3047,22 +2945,20 @@ output$diagnostics <- renderPrint({
 outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 
 
+# Goodness of Fit ---------------------------------------------------------
 
-#' **Diagnostics - Goodness of Fit**
-#'
-#' Again, we output the current dataset and the ergm formula for the user to
-#' verify. One drawback of the `navbarPage` layout option (we specified this in
-#' the top of `ui.R`) is that you can't specify certain elements or panels to
-#' show up on multiple pages. Furthermore, as far as I can tell, Shiny will not
-#' let you use the same piece of output from `server.R` twice in `ui.R`.
-#' Therefore, `output$currentdataset2` and `output$check2` are the same as
-#' `output$currentdataset` and `output$check1` with different names.
-#'
-#' In the reactive section above the creation of `model1gof` depends on the term
-#' the user inputs. After checking that the user has already clicked the
-#' `actionButton` on the page we can output the text of the gof object and the
-#' plot of the gof object.
-#+ eval=FALSE
+
+# One drawback of the navbarPage layout option is that you can't specify 
+# certain elements or panels to show up on multiple pages. Furthermore, 
+# Shiny will not let you use the same piece of output from server.R twice 
+# in ui.R. Therefore, output$currentdataset2 and output$check2 are the same as
+# output$currentdataset and output$check1 with different names.
+
+# In the reactive section above the creation of model1gof depends on the term
+# the user inputs. After checking that the user has already clicked the
+# actionButton on the page we can output the text of the gof object and the
+# plot of the gof object.
+
 #dataset only updates after goButton on first tab has been clicked
 output$currentdataset_gof <- renderPrint({
   if(!is.network(nw())){
@@ -3099,8 +2995,8 @@ output$checkterms_gof <- renderPrint({
   }
 })
 
-#state$gof will toggle between two states, depending on
-#if gof plots are outdated compared to current ergm formula
+# state$gof will toggle between two states, depending on
+# if gof plots are outdated compared to current ergm formula
 
 observeEvent(input$fitButton, {
   state$gof <- 0 #gof plots are outdated
@@ -3337,17 +3233,18 @@ output$gofplotcompdownload <- downloadHandler(
   }
 )
 
-#' **Simulations**
-#'
-#' On this page the user can choose how many simulations of the model to run.
-#' The reactive object `model1simreac` contains all the simulations, which we
-#' can output a summary of and choose one simulation at a time to plot. *Note:*
-#' when the user chooses to simulate one network, `allmodelsimreac()` is a
-#' reactive object of class network. When the user chooses to simulate multiple
-#' networks, `allmodelsimreac()` contains a list of the generated networks. This
-#' is why we have to split up the plot command in an if-statement. The rest of
-#' the display options should look familiar from the 'Plot Network' tab.
-#+ eval=FALSE
+
+# Simulations -------------------------------------------------------------
+
+# On this page the user can choose how many simulations of the model to run.
+# The reactive object model1simreac contains all the simulations, which we
+# can output a summary of and choose one simulation at a time to plot. *Note:*
+# when the user chooses to simulate one network, allmodelsimreac() is a
+# reactive object of class network. When the user chooses to simulate multiple
+# networks, allmodelsimreac() contains a list of the generated networks. This
+# is why we have to split up the plot command in an if statement. The rest of
+# the display options should look familiar from the 'Plot Network' tab.
+
 output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
   if(n == 0){
@@ -3377,8 +3274,8 @@ output$currentdataset_sim <- renderPrint({
   cat(nwname())
 })
 
-#state$sim will toggle between two states, depending on
-#if simulations are outdated compared to current ergm network/formula
+# state$sim will toggle between two states, depending on
+# if simulations are outdated compared to current ergm network/formula
 state$sim <- 0
 
 observe({
