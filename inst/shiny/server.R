@@ -1,11 +1,5 @@
 
-library(shiny)
-library(ergm)
-library(sna)
-library(network)
-library(RColorBrewer)
-library(lattice)
-library(latticeExtra)
+library(statnetWeb)
 
 data(faux.mesa.high)
 data(faux.magnolia.high)
