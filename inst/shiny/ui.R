@@ -1,82 +1,22 @@
-#' ---
-#' title: "statnetWeb, ui.R"
-#' author: "Emily Beylerian"
-#' ---
-#' statnetWeb
-#' ============
-#' ui.R, v0.3.4
-#' ============
 
-#' **Before reading this document:** The Shiny app "statnetWeb" is not contained in a
-#' single R Script. Within the folder "statnetWeb" the script `ui.R` controls the
-#' layout and appearance of the app, the script `server.R` controls the content that
-#' gets displayed in the app, and the folder "www" contains auxiliary files (javascript,
-#' css, and image files). If you are unfamiliar with Shiny apps, it may be more
-#' natural and helpful to start with the documentation for `ui.R` and then move on to
-#' `server.R`.
-#'
-#' **Basics**
-#'
-#' The R functions inside `ui.R` output HTML code, which Shiny turns into a webapp.
-#' Widgets are specific functions in Shiny that correspond to elements of the UI that the
-#' user can interact with to influence the content that the app produces (see widget
-#' examples in the [gallery](http://shiny.rstudio.com/gallery/) ). Some common HTML tags
-#' (e.g. `h1`,`p` and `a` below) have built-in functions in Shiny, many others are
-#' included in the `tags` object (see all the `tags`
-#' [here](http://shiny.rstudio.com/articles/tag-glossary.html)).
-#' It is also possible to write the entire UI
-#' [directly in HTML](http://shiny.rstudio.com/articles/html-ui.html).
-#'
-#' Since the `server.R` script generates all the dynamic content of the app,
-#' if the script only contains an empty function in the call to the Shiny server,
-#' e.g.
-#' ```
-#' shinyServer(
-#'  function(input,output){})
-#' ```
-#' then all the UI elements will still be displayed statically without any content.
-#'
-#' In a functioning app, `server.R` takes input objects and reactively (because the user
-#' might change an input object) creates output objects. In order to display the output
-#' object in the interface so the user can see it, it must be called with an appropriate
-#' output function (`plotOutput`, `textOuput`, `verbatimTextOutput`, etc.) back in `ui.R`.
-#'
-#' **Code**
-#'
-#' Before the call to `shinyUI`, make sure that necessary packages are loaded
-#' and create any custom widgets that we will use in the app.(Custom widgets are
-#' in global.R now)
-#+ setup, eval=FALSE
-# load necessary packages
 library(shiny)
 
+# Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
+# The first thing to be specified is the type of page to display. The `navbarPage`
+# includes a navigation bar at the top of the page and each tab leads to different
+# pages of content. 
 
-#' Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
-#' The first thing to be specified is the type of page to display. The `navbarPage`
-#' includes a navigation bar at the top of the page and each tab leads to different
-#' pages of content. Find out more about layout options
-#' [here](http://shiny.rstudio.com/articles/layout-guide.html).
-#'
-#+ eval=FALSE
 shinyUI(
   navbarPage(
     #theme="mycosmo.css",
     title=NULL,
     id= 'navbar', windowTitle = 'statnetWeb', collapsible=TRUE,
 
-#' Within each panel of the navbar, the content can be arranged by nesting rows and
-#' columns. The first argument to `column` is the desired width, where the whole
-#' browser window has a width of 12. Within any column, nested columns set their
-#' width relative to the parent column. Rows are specified by enclosing elements
-#' in `fluidRow()`. It is often necessary to specify rows even when elements seem like
-#' they should naturally be aligned horizontally, or when a `wellPanel` that is supposed
-#' to hold some content doesn't quite enclose everything correctly.
-#'
-#' **Front Page (About)**
-#'
-#' This page might move to the last tab to be combined with the Help Page.
-#'
-#+ eval=FALSE
+
+
+# Front Page (About) ------------------------------------------------------
+
+
 tabPanel(title=span('statnetWeb', id="sWtitle"),
          value='tab1',
          fluidRow(
@@ -194,19 +134,20 @@ url = {https://github.com/statnet/statnetWeb}
    )
    )
  ),
-#'
-#' **Data Upload**
-#'
-#' Before the code for what is displayed on the Data Upload page,
-#' various javaScript and CSS files that will be useful later in the
-#' script are linked. For example, since network plotting and model
-#' fitting do not happen instantly (especially for large networks),
-#' a loading icon will help to assure users that the app is still working
-#' on producing output. The file `busy.js` controls the behavior of the
-#' loading message and `style.css` controls the appearance. To display
-#' the loading message on subsequent tabs, we only need to include the
-#' `div` statement within those tabs.
-#+ eval=FALSE
+
+
+# Data Upload -------------------------------------------------------------
+
+
+# Before the code for what is displayed on the Data Upload page,
+# various javaScript and CSS files that will be useful later in the
+# script are linked. For example, since network plotting and model
+# fitting do not happen instantly (especially for large networks),
+# a loading icon will help to assure users that the app is still working
+# on producing output. The file busy.js controls the behavior of the
+# loading message and style.css controls the appearance. To display
+# the loading message on subsequent tabs, we only need to include the
+# div statement within those tabs.
 
 tabPanel(title='Data', value='tab2',
          #busy.js is for calculation in progress boxes
@@ -231,10 +172,11 @@ tabPanel(title='Data', value='tab2',
                               });'))
            )
          ),
-#' Conditional panels are only displayed when a specified condition is true.
-#' The condition is a javascript expression that can refer to the current
-#' values of input or output objects. When the condition is false, the panel
-#' does not take up any space in the UI.
+         
+# Conditional panels are only displayed when a specified condition is true.
+# The condition is a javascript expression that can refer to the current
+# values of input or output objects. When the condition is false, the panel
+# does not take up any space in the UI.
 
 
 fluidRow(
@@ -515,17 +457,15 @@ actionLink('dataleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
 actionLink('dataright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 ),
 
-#' **Network Plots**
-#'
-#' Notice that
-#' there are no calls to `selectInput` for the options to color code or size the nodes,
-#' even though they appear in the app. Most widget functions are called in `ui.R`, but
-#' this means that all the options passed to them must be static. If the options depend
-#' on user input (the coloring and sizing menus depend on which network the user
-#' selects), the widget must be rendered in `server.R` and output in `ui.R` with
-#' `iuOutput`.
-#'
-#+ eval=FALSE
+
+# Network Descriptives ----------------------------------------------------
+
+# There are no calls to selectInput for the options to color code or size the nodes,
+# even though they appear in the app. Most widget functions are called in ui.R, but
+# this means that all the options passed to them must be static. If the options depend
+# on user input (the coloring and sizing menus depend on which network the user
+# selects), the widget must be rendered in server.R and output in ui.R with
+# iuOutput.
 
 tabPanel(title='Network Descriptives', value='tab3',
  #include progress box when this tab is loading
@@ -867,12 +807,12 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 
 
 
-#' **Fit Model**
-#'
-#' The output objects for the current dataset and current formula have default values
-#' specified in server.R to prevent errors from NULL values and so that there are
-#' helpful messages for the user before they begin entering data.
-#+ eval=FALSE
+# Fit Model ---------------------------------------------------------------
+
+# The output objects for the current dataset and current formula have default values
+# specified in server.R to prevent errors from NULL values and so that there are
+# helpful messages for the user before they begin entering data.
+
       tabPanel(title='Fit Model',value='tab4',
 
           #include progress bar when this tab is loading
@@ -1021,9 +961,10 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 actionLink('fitleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
 actionLink('fitright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
           ),
-#' **MCMC Diagnostics**
-#'
-#+ eval=FALSE
+
+# MCMC Diagnostics --------------------------------------------------------
+
+
 tabPanel(title='MCMC Diagnostics', value='tab5',
          #include progress bar when this tab is loading
          div(class = "busy",
@@ -1088,9 +1029,10 @@ tabPanel(title='MCMC Diagnostics', value='tab5',
          actionLink('mcmcright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 
 ),
-#' **Goodness of Fit**
-#'
-#+ eval=FALSE
+
+# Goodness of Fit ---------------------------------------------------------
+
+
 tabPanel(title='Goodness of Fit',value='tab6',
 
          #include progress bar when this tab is loading
@@ -1149,9 +1091,9 @@ tabPanel(title='Goodness of Fit',value='tab6',
    actionLink('gofright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
 ),
 
-#' **Simulations**
-#'
-#+ eval=FALSE
+# Simulations -------------------------------------------------------------
+
+
 tabPanel(title='Simulations', value='tab7',
          fluidRow(
            column(7,
@@ -1311,9 +1253,10 @@ tabPanel(title='Simulations', value='tab7',
          actionLink('simleft', icon=icon('arrow-left', class='fa-2x'), label=NULL),
          actionLink('simright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
          ),
-#' **Help**
-#'
-#+ eval=FALSE
+
+# Help --------------------------------------------------------------------
+
+
 tabPanel(title='Help', value='tab8',
          sidebarLayout(position = 'right',
                        sidebarPanel(
