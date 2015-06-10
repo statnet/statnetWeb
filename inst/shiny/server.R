@@ -1,9 +1,11 @@
 
-
-# Loading data and assigning variables outside of the call to `shinyServer`
-# saves time because this code will not get re-run.These don't depend on any
-# user input and will never change value, so they can be global variables
-# (common to all shiny sessions).
+library(shiny)
+library(ergm)
+library(sna)
+library(network)
+library(RColorBrewer)
+library(lattice)
+library(latticeExtra)
 
 # data(faux.mesa.high)
 # data(faux.magnolia.high)

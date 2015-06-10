@@ -1,5 +1,5 @@
 
-
+library(shiny)
 
 # Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
 # The first thing to be specified is the type of page to display. The `navbarPage`
