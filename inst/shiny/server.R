@@ -7,14 +7,14 @@ library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
 
-# data(faux.mesa.high)
-# data(faux.magnolia.high)
-# data(florentine)
-# data(sampson)
-# data(samplk)
-# data(ecoli)
-# data(molecule)
-# data(kapferer)
+data(faux.mesa.high)
+data(faux.magnolia.high)
+data(florentine)
+data(sampson)
+data(samplk)
+data(ecoli)
+data(molecule)
+data(kapferer)
 
 BRGcol <- "firebrick"
 CUGcol <- "orangered"
