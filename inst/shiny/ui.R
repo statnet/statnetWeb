@@ -511,8 +511,10 @@ fluidRow(
                  column(3, actionButton("cugButton", label = "Run",
                                         style="margin-top: 25px;")),
                  br(),
-                 plotOutput("cugtest")
-#                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
+                 plotOutput("cugtest"),
+                 br(),
+                 downloadButton('cugtestdownload', label = "Download Plot", 
+                                class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'),
                   id="mixmxtitle"),
