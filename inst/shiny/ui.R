@@ -511,8 +511,10 @@ fluidRow(
                  column(3, actionButton("cugButton", label = "Run",
                                         style="margin-top: 25px;")),
                  br(),
-                 plotOutput("cugtest")
-#                  downloadButton('cugtestdownload', label = "Download Plot", class="btn-sm")
+                 plotOutput("cugtest"),
+                 br(),
+                 downloadButton('cugtestdownload', label = "Download Plot", 
+                                class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'),
                   id="mixmxtitle"),
@@ -845,9 +847,12 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(12,
-                               a("Table of commonly used ergm terms", 
+                               a("Commonly used ergm terms", 
                                  href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
-                                 target="_blank"), br(), br()
+                                 target = "_blank"), br(), 
+                               a("Term cross-reference tables",
+                                 href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
+                                 target = "_blank"), br(), br()
                                ),
                         column(6,
                                actionButton("matchingButton", "Compatible terms",

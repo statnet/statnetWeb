@@ -10,11 +10,12 @@ data(ecoli)
 data(molecule)
 data(kapferer)
 
-BRGcol <- "firebrick"
-CUGcol <- "orangered"
+BRGcol <- "darkred"
+CUGcol <- "darkorange"
 obsblue <- "#076EC3"
 histblue <- "#83B6E1"
-tgray <- adjustcolor("gray", alpha.f = 0.3)
+tgray3 <- adjustcolor("gray", alpha.f = 0.3)
+tgray7 <- adjustcolor("gray", alpha.f = 0.7)
 
 shinyServer(
   function(input, output, session){
@@ -602,6 +603,15 @@ observeEvent(c(nw(), input$ncugsims),{
 
     values$cugsims <- list(brgsims, cugsims)
   }
+})
+
+brgvals <- reactive({
+  apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = input$cugtestterm,
+        directed = nw()$gal$directed, loops = nw()$gal$loops)
+})
+cugvals <- reactive({
+  apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = input$cugtestterm,
+        directed = nw()$gal$directed, loops = nw()$gal$loops)
 })
 
 #add terms to list as user enters them
@@ -2100,10 +2110,8 @@ output$cugtest <- renderPlot({
     obsval <- summary.formula(as.formula(paste("nw() ~", term)))
 
     # gets summary statistics of the already run simulations
-    brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term,
-                     directed = nw()$gal$directed, loops = nw()$gal$loops)
-    cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term,
-                     directed = nw()$gal$directed, loops = nw()$gal$loops)
+    brgvals <- brgvals()
+    cugvals <- cugvals()
 
     brghist <- hist(brgvals, plot = FALSE)
 
@@ -2123,57 +2131,109 @@ output$cugtest <- renderPlot({
       }
       return(breaks)
     }
-
+    
+    xlims <- c(min(brgvals, cugvals, obsval) - diff(brghist$breaks)[1],
+               max(brgvals, cugvals, obsval) + diff(brghist$breaks)[1])
+    
     cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
-    hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL,
-         xlab= NULL, xlim = range(brgvals, cugvals, obsval),
+    par(lwd = 2)
+    hist(brgvals, col = tgray3,  
+         border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
+         xaxt = "n",
+         xlim = xlims,
          ylim = c(0, max(brghist$counts, cughist$counts)),
-         breaks = getbreaks)
-    hist(brgvals, col = "gray60", density = 15,
-         angle = -45, border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
-         ylim = c(0, max(brghist$counts, cughist$counts)),
-         breaks = brghist$breaks, add = TRUE)
-    abline(v = obsval, col = obsblue, lwd = 2)
+         breaks = brghist$breaks)
+    
+    if (term == "density" | term == "meandeg"){
+      abline(v = cugvals[1], col = CUGcol)
+    } else {
+      hist(cugvals, col = tgray7, density = 15, angle = -45,
+           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
+           axes = FALSE,
+           breaks = getbreaks, add = TRUE)
+      
+    }
+    
+    axis(side = 1, at = round(c(xlims[1], cughist$breaks, xlims[2]), digits = 3))
+    points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
 
     legend(x = "topright", bty = "n",
-           legend = c("observed value", "CUG distribution", "BRG distribution"),
-           lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, "gray60"),
-           angle = -45, density = c(0, 100, 15),
-           border = c(0, CUGcol, BRGcol), merge = TRUE)
+           legend = c("Observed value", "CUG distribution", "BRG distribution"),
+           pch = c(17, NA, NA), col = obsblue, fill = c(0, tgray7, tgray3),
+           angle = -45, density = c(0, 15, 100),
+           border = c(0, CUGcol, BRGcol))
+    par(lwd = 1)
   })
 })
 
-# output$cugtestdownload <- downloadHandler(
-#   filename = function(){paste0(nwname(), "_", input$cugtestterm, ".png")},
-#   content = function(file){
-#
-#     term <- input$cugtestterm
-#     n <- nodes()
-#     obsval <- summary.formula(as.formula(paste("nw() ~", term)))
-#
-#     brgvals <- apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats, term = term,
-#                      directed = nw()$gal$directed, loops = nw()$gal$loops)
-#     cugvals <- apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats, term = term,
-#                      directed = nw()$gal$directed, loops = nw()$gal$loops)
-#
-#     brghist <- hist(brgvals, plot = FALSE)
-#     hist(cugvals, col = tgray, border = CUGcol, ylab = NULL, main = NULL,
-#          xlab= NULL, xlim = range(brgvals, cugvals, obsval),
-#          breaks = brghist$breaks)
-#     hist(brgvals, col = tgray, border = BRGcol, ylab = NULL,
-#          main = NULL, xlab= NULL, breaks = brghist$breaks, add = TRUE)
-#     abline(v = obsval, col = obsblue, lwd = 2)
-#
-#     legend(x = "topright", bty = "n",
-#            legend = c("observed value", "CUG distribution", "BRG distribution"),
-#            lwd = c(2, NA, NA), col = obsblue, fill = c(0, tgray, tgray),
-#            border = c(0, CUGcol, BRGcol), merge = TRUE)
-#     dev.off()
-#     if (file.exists(paste0(nwname(), "_", input$cugtestterm, ".png")))
-#       file.rename(paste0(nwname(), "_", input$cugtestterm, ".png"), file)
-#   },
-#   contentType = "image/png"
-# )
+output$cugtestdownload <- downloadHandler(
+  filename = function(){paste0(nwname(), "_", input$cugtestterm, ".pdf")},
+  content = function(file){
+
+    term <- input$cugtestterm
+    n <- nodes()
+    obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+    
+    # gets summary statistics of the already run simulations
+    brgvals <- brgvals()
+    cugvals <- cugvals()
+    
+    brghist <- hist(brgvals, plot = FALSE)
+    
+    getbreaks <- function(x){
+      breaks <- brghist$breaks
+      r <- range(brghist$breaks)
+      int <- breaks[2] - breaks[1]
+      if(min(x) < r[1]){
+        toadd <- ceiling((r[1] - min(x))/int)
+        front <- c((r[1]-toadd*int):(r[1]-int))
+        breaks <- c(front, breaks)
+      }
+      if (max(x) > r[2]) {
+        toadd <- ceiling((max(x)-r[2])/int)
+        back <- c((r[2]+int):(r[2]+toadd*int))
+        breaks <- c(breaks, back)
+      }
+      return(breaks)
+    }
+    
+    xlims <- c(min(brgvals, cugvals, obsval) - diff(brghist$breaks)[1],
+               max(brgvals, cugvals, obsval) + diff(brghist$breaks)[1])
+    
+    cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
+    
+    pdf(file = file)
+    
+    par(lwd = 2)
+    hist(brgvals, col = tgray3,  
+         border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
+         xaxt = "n",
+         xlim = xlims,
+         ylim = c(0, max(brghist$counts, cughist$counts)),
+         breaks = brghist$breaks)
+    
+    if (input$cugtestterm == "density" | input$cugtestterm == "meandeg"){
+      abline(v = cugvals[1], col = CUGcol)
+    } else {
+      hist(cugvals, col = tgray7, density = 15, angle = -45,
+           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
+           axes = FALSE,
+           breaks = getbreaks, add = TRUE)
+      
+    }
+    
+    axis(side = 1, at = round(c(xlims[1], cughist$breaks, xlims[2]), digits = 3))
+    points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
+    
+    legend(x = "topright", bty = "n",
+           legend = c("Observed value", "CUG distribution", "BRG distribution"),
+           pch = c(17, NA, NA), col = obsblue, fill = c(0, tgray7, tgray3),
+           angle = -45, density = c(0, 15, 100),
+           border = c(0, CUGcol, BRGcol))
+    par(lwd = 1)
+    dev.off()
+  }
+)
 
 #since the visibility toggles between two states, set the options to
 #not suspend the output when hidden
@@ -2762,7 +2822,8 @@ observe({
 })
 observe({
   nw()
-  values$modelstate <- 0 #modelfit is outdated when nw changes
+  input$clearmodelButton
+  values$modelstate <- 0 #modelfit is outdated when nw changes or models cleared
 })
 
 output$modelfit <- renderPrint({
