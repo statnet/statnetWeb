@@ -2087,7 +2087,7 @@ output$dynamiccugterm <- renderUI({
   } else {
     choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
   }
-  selectInput("cugtestterm", label = "Test statistic",
+  selectInput("cugtestterm", label = "Model term",
               choices = choices)
 })
 outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
@@ -3542,7 +3542,7 @@ output$simstatsplotdownload <- downloadHandler(
 
 output$dynamiccolor2 <- renderUI({
   selectInput('colorby2',
-              label = 'Color nodes according to:',
+              label = 'Color vertices according to:',
               c('None' = 2, attrib()),
               selected = 2)
 })
@@ -3550,7 +3550,7 @@ outputOptions(output,'dynamiccolor2',suspendWhenHidden=FALSE, priority=10)
 
 output$dynamicsize2 <- renderUI({
   selectInput('sizeby2',
-              label = 'Size nodes according to:',
+              label = 'Size vertices according to:',
               c('None' = 1, 'Betweenness',numattr()))
 })
 
