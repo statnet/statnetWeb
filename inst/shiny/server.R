@@ -2402,6 +2402,7 @@ output$gevcent <- renderText({
   try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
   e
 })
+outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
 
 output$ginfocent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2416,6 +2417,7 @@ output$ginfocent <- renderText({
                         cmode=input$ginfocentcmode)})
   i
 })
+outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
 
 output$ndeg <- renderText({
   if(!is.network(nw())) {return()}
