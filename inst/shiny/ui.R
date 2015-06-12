@@ -68,7 +68,7 @@ url = {http://statnetproject.org}
 p(strong("statnetWeb")),
 tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
 title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
-author = {Emily Beylerian and Martina Morris},
+author = {Emily Beylerian and Martina Morris and Samuel Jenness and Kirk Li},
 year = {2014},
 address = {Seattle, WA},
 url = {https://github.com/statnet/statnetWeb}
