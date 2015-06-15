@@ -2947,6 +2947,7 @@ output$diagnosticsplot <- renderPlot({
     mcmc.diagnostics(mod, vars.per.page = vpp),
     error = function(e) cat("MCMC was not run or MCMC sample was not stored."))
 })
+outputOptions(output, "diagnosticsplot", suspendWhenHidden = FALSE)
 
 output$mcmcplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
