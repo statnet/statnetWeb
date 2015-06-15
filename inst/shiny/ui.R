@@ -425,19 +425,19 @@ fluidRow(
 
            )
            )
-         ),
-tabPanel('Modify Attributes', br(),
-         wellPanel(
-           p('In the future we will build in functions that will ',
-             'allow you to modify the attributes of your network.',
-             'This will include options like:'),
-           tags$ul(
-             tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
-             tags$li('Recoding (mapping a set of attributes onto a new set)'),
-             tags$li('Conditional transformations (', code('do...if...'),')'))
-           #uiOutput('modifyattrchooser')
-           )
          )
+# tabPanel('Modify Attributes', br(),
+#          wellPanel(
+#            p('In the future we will build in functions that will ',
+#              'allow you to modify the attributes of your network.',
+#              'This will include options like:'),
+#            tags$ul(
+#              tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
+#              tags$li('Recoding (mapping a set of attributes onto a new set)'),
+#              tags$li('Conditional transformations (', code('do...if...'),')'))
+#            #uiOutput('modifyattrchooser')
+#            )
+#          )
   )
 ),
 
