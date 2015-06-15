@@ -191,7 +191,7 @@ $(document).ready(function(){
       });
     } else {
       $("#termdocbox").css({
-      "max-height":"95px"
+      "max-height":"55px"
       });
     }
 
