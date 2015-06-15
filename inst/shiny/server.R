@@ -256,7 +256,7 @@ newattrnamereac <- reactive({
                            stringsAsFactors=FALSE)
       newname <- names(newattrs)
       if(input$newattrtype == "edgeattr" & input$edgeform == "matrix"){
-        newname <- newname[1]
+        newname <- substr(filename, 1, nchar(filename)-4)
       }
     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS") ){
       newattrs <- readRDS(paste(path))
@@ -354,8 +354,9 @@ observeEvent(input$newattrButton, {
       fileext <- substr(filename,nchar(filename)-3, nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE,
+                             row.names = 1,
                              stringsAsFactors=FALSE)
-        newname <- names(newattrs)[1]
+        newname <- substr(filename, 1, nchar(filename)-4)
         newattrs <- data.matrix(newattrs, rownames.force=FALSE)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newattrs <- readRDS(paste(path))
@@ -2808,7 +2809,7 @@ output$prefitsum <- renderPrint({
     return(cat('NA'))
   }
   if(ergm.terms()=='NA') return(cat('Add terms to the formula'))
-  options(width=150)
+  options(width=140)
   summary(ergm.formula())
 })
 
@@ -2846,6 +2847,7 @@ output$modelfitsum <- renderPrint({
   if (values$modelstate == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
+  options(width=140)
   summary(model1reac())
 })
 
@@ -2858,6 +2860,7 @@ output$modelfitdownload <- downloadHandler(
 )
 
 output$modelcomparison <- renderPrint({
+  options(width=140)
   x <- values$modelcoefs
   y <- values$modelsumstats
   if(length(x) == 0){return(cat(""))}
@@ -2950,6 +2953,7 @@ output$diagnosticsplot <- renderPlot({
     mcmc.diagnostics(mod, vars.per.page = vpp),
     error = function(e) cat("MCMC was not run or MCMC sample was not stored."))
 })
+outputOptions(output, "diagnosticsplot", suspendWhenHidden = FALSE)
 
 output$mcmcplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},

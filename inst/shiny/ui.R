@@ -337,9 +337,9 @@ fluidRow(
                                         span(class="helper", id="filetypehelper6",
                                              icon("question-circle"),
                                              div(id="filetypebox6", class="mischelperbox",
-                                                 strong(".csv files"), "should include a single header in the",
-                                                 "first row, which will become the name of the set of edge attributes.",
-                                                 "The values should be in matrix form.",br(),br(),
+                                                 strong(".csv files"), "should include vertex labels in the first",
+                                                 "row and column of the matrix. The edge attribute name will be taken",
+                                                 "from the filename.",br(),br(),
                                                  "Only one edge value matrix can be uploaded at a time.")))))
                                           ),
                          conditionalPanel(condition="input.edgeform == 'vector'",
@@ -425,19 +425,19 @@ fluidRow(
 
            )
            )
-         ),
-tabPanel('Modify Attributes', br(),
-         wellPanel(
-           p('In the future we will build in functions that will ',
-             'allow you to modify the attributes of your network.',
-             'This will include options like:'),
-           tags$ul(
-             tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
-             tags$li('Recoding (mapping a set of attributes onto a new set)'),
-             tags$li('Conditional transformations (', code('do...if...'),')'))
-           #uiOutput('modifyattrchooser')
-           )
          )
+# tabPanel('Modify Attributes', br(),
+#          wellPanel(
+#            p('In the future we will build in functions that will ',
+#              'allow you to modify the attributes of your network.',
+#              'This will include options like:'),
+#            tags$ul(
+#              tags$li('Applying a function (e.g.', code('sqrt()'), ') to an attribute'),
+#              tags$li('Recoding (mapping a set of attributes onto a new set)'),
+#              tags$li('Conditional transformations (', code('do...if...'),')'))
+#            #uiOutput('modifyattrchooser')
+#            )
+#          )
   )
 ),
 
@@ -1057,13 +1057,15 @@ tabPanel(title='Goodness of Fit',value='tab6',
            directed networks is ', code('~ idegree + odegree + espartners +
                                         distance'), '.'),
          fluidRow(
-           column(3, selectInput('gofterm', 'Goodness of Fit Term:',
-                                 c('Default', 'degree','idegree','odegree',
-                                   'distance', 'espartners','dspartners', 'triadcensus',
-                                   'model'),
-                                 ))),
-         fluidRow(
-            column(3, actionButton('gofButton', 'Run', class="btn-sm"))),
+            column(2, 
+                   p("Goodness of fit term:"),
+                   selectInput('gofterm', label = NULL,
+                               c('Default', 'degree','idegree','odegree',
+                                 'distance', 'espartners','dspartners', 'triadcensus',
+                                 'model')
+                                 )),
+            column(1, actionButton('gofButton', 'Run', class="shiftdown"))
+            ),
          br(),
      tabsetPanel(
        tabPanel("Current Model", br(),
@@ -1102,13 +1104,14 @@ tabPanel(title='Simulations', value='tab7',
               fluidRow(
                 column(4,
                     p('Network:', verbatimTextOutput('currentdataset_sim'))),
-                column(5,
-                       customNumericInput('nsims', class="input-small",
-                                          labelstyle="display:block; padding-bottom:5px;",
-                                          label = 'Number of simulations:',
-                                          min = 1,
-                                          value = 1),
-                       actionButton('simButton', 'Simulate',class="btn-sm"))
+                column(4,
+                       p("Number of simulations:"),
+                       numericInput('nsims', label = NULL,
+                                    min = 1, value = 1)
+                       ),
+                column(1,
+                       actionButton('simButton', 'Simulate', class = "shiftdown")
+                       )
                 ),
               div(p('ergm formula:',style="display:inline;"),
               uiOutput('uichoosemodel_sim'), class="nwlabel"),
