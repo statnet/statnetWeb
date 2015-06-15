@@ -681,7 +681,8 @@ fluidRow(
 
 
 
-      )),
+      ),br(),br()
+),
  column(4,
      tabsetPanel(id='displaytabs',
        tabPanel(title='Display Options', br(),
@@ -1181,7 +1182,7 @@ tabPanel(title='Simulations', value='tab7',
                                           "lines of the corresponding target statistics."))
                        )
                )
-              )
+              ), br(), br()
              ),
 
 
