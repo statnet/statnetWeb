@@ -2805,7 +2805,7 @@ output$prefitsum <- renderPrint({
     return(cat('NA'))
   }
   if(ergm.terms()=='NA') return(cat('Add terms to the formula'))
-  options(width=150)
+  options(width=140)
   summary(ergm.formula())
 })
 
