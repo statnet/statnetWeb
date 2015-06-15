@@ -2855,6 +2855,7 @@ output$modelfitdownload <- downloadHandler(
 )
 
 output$modelcomparison <- renderPrint({
+  options(width=140)
   x <- values$modelcoefs
   y <- values$modelsumstats
   if(length(x) == 0){return(cat(""))}
