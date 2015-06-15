@@ -1057,13 +1057,15 @@ tabPanel(title='Goodness of Fit',value='tab6',
            directed networks is ', code('~ idegree + odegree + espartners +
                                         distance'), '.'),
          fluidRow(
-           column(3, selectInput('gofterm', 'Goodness of Fit Term:',
-                                 c('Default', 'degree','idegree','odegree',
-                                   'distance', 'espartners','dspartners', 'triadcensus',
-                                   'model'),
-                                 ))),
-         fluidRow(
-            column(3, actionButton('gofButton', 'Run', class="btn-sm"))),
+            column(2, 
+                   p("Goodness of fit term:"),
+                   selectInput('gofterm', label = NULL,
+                               c('Default', 'degree','idegree','odegree',
+                                 'distance', 'espartners','dspartners', 'triadcensus',
+                                 'model')
+                                 )),
+            column(1, actionButton('gofButton', 'Run', class="shiftdown"))
+            ),
          br(),
      tabsetPanel(
        tabPanel("Current Model", br(),
@@ -1102,13 +1104,14 @@ tabPanel(title='Simulations', value='tab7',
               fluidRow(
                 column(4,
                     p('Network:', verbatimTextOutput('currentdataset_sim'))),
-                column(5,
-                       customNumericInput('nsims', class="input-small",
-                                          labelstyle="display:block; padding-bottom:5px;",
-                                          label = 'Number of simulations:',
-                                          min = 1,
-                                          value = 1),
-                       actionButton('simButton', 'Simulate',class="btn-sm"))
+                column(4,
+                       p("Number of simulations:"),
+                       numericInput('nsims', label = NULL,
+                                    min = 1, value = 1)
+                       ),
+                column(1,
+                       actionButton('simButton', 'Simulate', class = "shiftdown")
+                       )
                 ),
               div(p('ergm formula:',style="display:inline;"),
               uiOutput('uichoosemodel_sim'), class="nwlabel"),
