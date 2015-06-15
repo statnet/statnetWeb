@@ -337,9 +337,9 @@ fluidRow(
                                         span(class="helper", id="filetypehelper6",
                                              icon("question-circle"),
                                              div(id="filetypebox6", class="mischelperbox",
-                                                 strong(".csv files"), "should include a single header in the",
-                                                 "first row, which will become the name of the set of edge attributes.",
-                                                 "The values should be in matrix form.",br(),br(),
+                                                 strong(".csv files"), "should include vertex labels in the first",
+                                                 "row and column of the matrix. The edge attribute name will be taken",
+                                                 "from the filename.",br(),br(),
                                                  "Only one edge value matrix can be uploaded at a time.")))))
                                           ),
                          conditionalPanel(condition="input.edgeform == 'vector'",

@@ -255,7 +255,7 @@ newattrnamereac <- reactive({
                            stringsAsFactors=FALSE)
       newname <- names(newattrs)
       if(input$newattrtype == "edgeattr" & input$edgeform == "matrix"){
-        newname <- newname[1]
+        newname <- substr(filename, 1, nchar(filename)-4)
       }
     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS") ){
       newattrs <- readRDS(paste(path))
@@ -353,8 +353,9 @@ observeEvent(input$newattrButton, {
       fileext <- substr(filename,nchar(filename)-3, nchar(filename))
       if(fileext %in% c(".csv", ".CSV")){
         newattrs <- read.csv(paste(path), sep=",", header=TRUE,
+                             row.names = 1,
                              stringsAsFactors=FALSE)
-        newname <- names(newattrs)[1]
+        newname <- substr(filename, 1, nchar(filename)-4)
         newattrs <- data.matrix(newattrs, rownames.force=FALSE)
       } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
         newattrs <- readRDS(paste(path))
@@ -2843,6 +2844,7 @@ output$modelfitsum <- renderPrint({
   if (values$modelstate == 0){
     return(cat('After adding terms to the formula, click "Fit Model" above.'))
   }
+  options(width=140)
   summary(model1reac())
 })
 
