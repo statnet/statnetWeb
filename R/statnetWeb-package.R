@@ -19,6 +19,7 @@
 #' @importFrom sna grecip
 #' @importFrom sna gtrans
 #' @importFrom sna infocent
+#' @importFrom sna rgnm
 #' @importFrom sna rgraph
 #' @importFrom sna symmetrize
 #' @importFrom RColorBrewer brewer.pal

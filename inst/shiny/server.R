@@ -389,7 +389,7 @@ nwmid <- reactive({
       #preserve initial network attributes and let user choose if directed
       #after symmetrizing
       if(input$symmetrize != "Do not symmetrize"){
-        symnw <- symmetrize(nw_var, rule=input$symmetrize)
+        symnw <- sna::symmetrize(nw_var, rule=input$symmetrize)
         nw_var <- network(symnw, matrix.type="adjacency", directed=state$symmdir,
                           hyper=nwattrinit()[2], loops=nwattrinit()[3],
                           multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
@@ -510,7 +510,7 @@ nodebetw <- reactive({
     gmode <- 'graph'
     cmode <- 'undirected'
   }
-  betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+  sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
 
               cmode=cmode)
 })
@@ -598,10 +598,10 @@ observeEvent(c(nw(), input$ncugsims),{
       mode <- "graph"
     }
 
-    brgsims <- rgraph(n = nodes(), m = input$ncugsims, tprob = gden(nw()), mode = mode,
-                      diag = nw()$gal$loops)
-    cugsims <- rgnm(n = input$ncugsims, nv = nodes(), m = s, mode = mode,
-                    diag = nw()$gal$loops)
+    brgsims <- sna::rgraph(n = nodes(), m = input$ncugsims, tprob = sna::gden(nw()), mode = mode,
+                          diag = nw()$gal$loops)
+    cugsims <- sna::rgnm(n = input$ncugsims, nv = nodes(), m = s, mode = mode,
+                        diag = nw()$gal$loops)
 
     values$cugsims <- list(brgsims, cugsims)
   }
@@ -882,7 +882,7 @@ nodebetw2 <- reactive({
       gmode <- "graph"
       cmode <- "undirected"
     }
-    b <- betweenness(allmodelsimreac(), gmode=gmode, cmode=cmode)
+    b <- sna::betweenness(allmodelsimreac(), gmode=gmode, cmode=cmode)
   } else {
     if(is.directed(allmodelsimreac()[[input$thissim]])){
       gmode <- "digraph"
@@ -891,7 +891,7 @@ nodebetw2 <- reactive({
       gmode <- "graph"
       cmode <- "undirected"
     }
-    b <- betweenness(allmodelsimreac()[[input$thissim]], gmode=gmode, cmode=cmode)
+    b <- sna::betweenness(allmodelsimreac()[[input$thissim]], gmode=gmode, cmode=cmode)
   }
   return(b)
 })
@@ -1330,11 +1330,11 @@ uniformsamples <- reactive({
   }
   s <- network.edgecount(nw())
   if(is.directed(nw())){
-    samples <- rgnm(n=50, nv=nodes(), m=s, mode='digraph',
-                    diag=has.loops(nw()))
+    samples <- sna::rgnm(n=50, nv=nodes(), m=s, mode='digraph',
+                        diag=has.loops(nw()))
   } else {
-    samples <- rgnm(n=50, nv=nodes(), m=s, mode='graph',
-                    diag=has.loops(nw()))
+    samples <- sna::rgnm(n=50, nv=nodes(), m=s, mode='graph',
+                        diag=has.loops(nw()))
   }
   samples
 })
@@ -1343,12 +1343,12 @@ bernoullisamples <- reactive({
   if(!is.network(nw())){
     return()
   }
-  density <- gden(nw())
+  density <- sna::gden(nw())
   if(is.directed(nw())){
-    samples <- rgraph(n=nodes(), m=50, mode='digraph', tprob=density,
+    samples <- sna::rgraph(n=nodes(), m=50, mode='digraph', tprob=density,
                       diag=has.loops(nw()))
   } else {
-    samples <- rgraph(n=nodes(), m=50, mode='graph', tprob=density,
+    samples <- sna::rgraph(n=nodes(), m=50, mode='graph', tprob=density,
                       diag=has.loops(nw()))
   }
   samples
@@ -1411,7 +1411,7 @@ dd_plotdata <- reactive({
   } else {
     diag <- FALSE
   }
-  deg <- degree(nw(), gmode=gmode, cmode=input$cmode_dd, diag=diag)
+  deg <- sna::degree(nw(), gmode=gmode, cmode=input$cmode_dd, diag=diag)
   data <-tabulate(deg)
   data <- append(data,sum(deg==0),after=0)
   maxdeg <- max(deg)
@@ -1443,9 +1443,9 @@ dd_uniformoverlay <- reactive({
   }
   reps <- 50 #number of draws
   if(is.directed(nw())){
-    deg <- degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode_dd)
+    deg <- sna::degree(uniformsamples(), g=1:reps, gmode='digraph', cmode=input$cmode_dd)
   } else {
-    deg <- degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode_dd)
+    deg <- sna::degree(uniformsamples(), g=1:reps, gmode='graph', cmode=input$cmode_dd)
   }
     #now deg is a matrix where each element is a degree of a node
     #each column is a different draw
@@ -1466,12 +1466,12 @@ dd_bernoullioverlay <- reactive({
     return()
   }
   reps = 50
-  density <- gden(nw())
+  density <- sna::gden(nw())
   if(is.directed(nw())){
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='digraph',
+    deg <- sna::degree(bernoullisamples(), g=1:reps, gmode='digraph',
                   cmode=input$cmode_dd)
   } else {
-    deg <- degree(bernoullisamples(), g=1:reps, gmode='graph',
+    deg <- sna::degree(bernoullisamples(), g=1:reps, gmode='graph',
                   cmode=input$cmode_dd)
   }
   #now deg is a matrix where each element is a degree of a node
@@ -1784,7 +1784,7 @@ observeEvent(input$countButton_gd, {
 })
 
 gdata <- reactive({
-  g <- geodist(nw(), inf.replace=NA, count.paths=FALSE)
+  g <- sna::geodist(nw(), inf.replace=NA, count.paths=FALSE)
   gdata <- tabulate(g$gdist)
   g$gdist[is.na(g$gdist)] <- Inf
   gdata <- append(gdata, sum(g$gdist == Inf))
@@ -1797,7 +1797,7 @@ gd_uniformoverlay <- reactive({
   if(!is.network(nw())){
     return()
   }
-  gd <- geodist(uniformsamples(), count.paths=FALSE, inf.replace=NA)
+  gd <- sna::geodist(uniformsamples(), count.paths=FALSE, inf.replace=NA)
   maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
   gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
@@ -1819,7 +1819,7 @@ gd_bernoullioverlay <- reactive({
   if(!is.network(nw())){
     return()
   }
-  gd <- geodist(bernoullisamples(), count.paths=FALSE, inf.replace=NA)
+  gd <- sna::geodist(bernoullisamples(), count.paths=FALSE, inf.replace=NA)
   maxgeo <- max(unlist(gd), na.rm=TRUE)
   reps <- length(gd)
   gd_data <- lapply(gd,function(x){tabulate(x$gdist, nbins=maxgeo)})
@@ -2290,7 +2290,7 @@ output$gden <- renderText({
   } else {
     gmode <- 'graph'
   }
-  gden(nw(), diag=has.loops(nw()), mode=gmode)
+  sna::gden(nw(), diag=has.loops(nw()), mode=gmode)
 })
 outputOptions(output,'gden',suspendWhenHidden=FALSE)
 
@@ -2299,7 +2299,7 @@ output$grecip <- renderText({
   if(input$grecipmeas == ''){
     return()
   }
-  try(grecip(nw(), measure=input$grecipmeas))
+  try(sna::grecip(nw(), measure=input$grecipmeas))
 })
 outputOptions(output,'grecip',suspendWhenHidden=FALSE)
 
@@ -2313,8 +2313,8 @@ output$gtrans <- renderText({
   } else {
     gmode <- 'graph'
   }
-  try(gtrans(nw(), diag=has.loops(nw()), mode=gmode,
-         measure=input$gtransmeas))
+  try(sna::gtrans(nw(), diag=has.loops(nw()), mode=gmode,
+                  measure=input$gtransmeas))
 })
 outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
 
@@ -2330,7 +2330,7 @@ output$gdeg <- renderText({
   if(cmode == 'total'){
     cmode <- 'freeman'
   }
-  try(d <- centralization(nw(), degree, mode=gmode, diag=has.loops(nw()),
+  try(d <- sna::centralization(nw(), sna::degree, mode=gmode, diag=has.loops(nw()),
               cmode=cmode))
   d
 })
@@ -2344,7 +2344,7 @@ output$gbetw <- renderText({
     gmode <- 'graph'
   }
   b <- ""
-  try(b <- centralization(nw(), betweenness, mode=gmode, diag=has.loops(nw()),
+  try(b <- sna::centralization(nw(), sna::betweenness, mode=gmode, diag=has.loops(nw()),
                    cmode=input$gbetwcmode))
   b
 })
@@ -2359,7 +2359,7 @@ output$gclose <- renderText({
   }
   c <- ""
   try(
-    c <- centralization(nw(), closeness, mode=gmode, diag=has.loops(nw()),
+    c <- sna::centralization(nw(), sna::closeness, mode=gmode, diag=has.loops(nw()),
                         cmode=input$gclosecmode))
   c
 })
@@ -2373,7 +2373,7 @@ output$gstress <- renderText({
     gmode <- 'graph'
   }
   s <- ""
-  try(s <- centralization(nw(), stresscent, mode=gmode, diag=has.loops(nw()),
+  try(s <- sna::centralization(nw(), sna::stresscent, mode=gmode, diag=has.loops(nw()),
                           cmode=input$gstresscmode))
   s
 })
@@ -2387,7 +2387,7 @@ output$ggraphcent <- renderText({
     gmode <- 'graph'
   }
   g <- ""
-  try(g <- centralization(nw(), graphcent, mode=gmode, diag=has.loops(nw()),
+  try(g <- sna::centralization(nw(), sna::graphcent, mode=gmode, diag=has.loops(nw()),
                           cmode=input$ggraphcentcmode))
   g
 })
@@ -2401,7 +2401,7 @@ output$gevcent <- renderText({
     gmode <- 'graph'
   }
   e <- ""
-  try(e <- centralization(nw(), evcent, mode=gmode, diag=has.loops(nw())))
+  try(e <- sna::centralization(nw(), sna::evcent, mode=gmode, diag=has.loops(nw())))
   e
 })
 outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
@@ -2415,7 +2415,7 @@ output$ginfocent <- renderText({
   }
   i<-""
   try({
-    i <- centralization(nw(), infocent, mode=gmode, diag=has.loops(nw()),
+    i <- sna::centralization(nw(), sna::infocent, mode=gmode, diag=has.loops(nw()),
                         cmode=input$ginfocentcmode)})
   i
 })
@@ -2433,7 +2433,7 @@ output$ndeg <- renderText({
     cmode <- 'freeman'
   }
   d <- ""
-  try(d <- degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+  try(d <- sna::degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
                   cmode=cmode))
   d
 })
@@ -2445,7 +2445,7 @@ output$ndegmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- degree(nw(), gmode=gmode, diag=has.loops(nw()),
+  d <- sna::degree(nw(), gmode=gmode, diag=has.loops(nw()),
               cmode=input$ndegcmode)
   min(d)
 })
@@ -2457,7 +2457,7 @@ output$ndegmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- degree(nw(), gmode=gmode, diag=has.loops(nw()),
+  d <- sna::degree(nw(), gmode=gmode, diag=has.loops(nw()),
               cmode=input$ndegcmode)
   max(d)
 })
@@ -2470,7 +2470,7 @@ output$nbetw <- renderText({
     gmode <- 'graph'
   }
   b <- ""
-  try(b <- betweenness(nw(), nodes=input$nodeind, gmode=gmode,
+  try(b <- sna::betweenness(nw(), nodes=input$nodeind, gmode=gmode,
                        diag=has.loops(nw()),
                        cmode=input$nbetwcmode))
   b
@@ -2483,7 +2483,7 @@ output$nbetwmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+  b <- sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nbetwcmode)
   min(b)
 })
@@ -2495,7 +2495,7 @@ output$nbetwmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+  b <- sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nbetwcmode)
   max(b)
 })
@@ -2509,7 +2509,7 @@ output$nclose <- renderText({
   }
   c <- ""
   try(
-    c <- closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+    c <- sna::closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nclosecmode))
   c
 })
@@ -2521,7 +2521,7 @@ output$nclosemin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- closeness(nw(), gmode=gmode, diag=has.loops(nw()),
+  c <- sna::closeness(nw(), gmode=gmode, diag=has.loops(nw()),
                  cmode=input$nclosecmode)
   min(c)
 })
@@ -2533,7 +2533,7 @@ output$nclosemax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- closeness(nw(), gmode=gmode, diag=has.loops(nw()),
+  c <- sna::closeness(nw(), gmode=gmode, diag=has.loops(nw()),
                  cmode=input$nclosecmode)
   max(c)
 })
@@ -2584,9 +2584,9 @@ output$ngraphcent <- renderText({
     gmode <- 'graph'
   }
   g <- ""
-  try(g <- graphcent(nw(), nodes=input$nodeind, gmode=gmode,
-                     diag=has.loops(nw()),
-                     cmode=input$ngraphcentcmode))
+  try(g <- sna::graphcent(nw(), nodes=input$nodeind, gmode=gmode,
+                          diag=has.loops(nw()),
+                          cmode=input$ngraphcentcmode))
   g
 })
 
@@ -2597,8 +2597,8 @@ output$ngraphcentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
-                 cmode=input$ngraphcentcmode)
+  g <- sna::graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
+                      cmode=input$ngraphcentcmode)
   min(g)
 })
 
@@ -2609,8 +2609,8 @@ output$ngraphcentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
-                 cmode=input$ngraphcentcmode)
+  g <- sna::graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
+                      cmode=input$ngraphcentcmode)
   max(g)
 })
 
@@ -2622,7 +2622,7 @@ output$nevcent <- renderText({
     gmode <- 'graph'
   }
   e <- ""
-  try(e <- evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
+  try(e <- sna::evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
   e
 })
 
@@ -2634,7 +2634,7 @@ output$nevcentmin <- renderText({
     gmode <- 'graph'
   }
   e <- ""
-  try({e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  try({e <- sna::evcent(nw(), gmode=gmode, diag=has.loops(nw()))
        e <- min(e)})
   e
 })
@@ -2647,7 +2647,7 @@ output$nevcentmax <- renderText({
     gmode <- 'graph'
   }
   e <- ""
-  try({e <- evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+  try({e <- sna::evcent(nw(), gmode=gmode, diag=has.loops(nw()))
        e <- max(e)})
   e
 })
@@ -2669,8 +2669,8 @@ output$ninfocent <- renderText({
     gmode <- 'graph'
   }
   i <- ''
-  i <- tryCatch({infocent(nw(), nodes=input$nodeind, gmode=gmode,
-                          diag=has.loops(nw()), cmode=input$ninfocentcmode)},
+  i <- tryCatch({sna::infocent(nw(), nodes=input$nodeind, gmode=gmode,
+                              diag=has.loops(nw()), cmode=input$ninfocentcmode)},
                 error = function(e) {e})
   if("error" %in% class(i)) {
     state$err <- TRUE
@@ -2704,8 +2704,8 @@ output$ninfocentmin <- renderText({
   }
   i<-''
   try({
-    i <- infocent(nw(), gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ninfocentcmode)
+    i <- sna::infocent(nw(), gmode=gmode, diag=has.loops(nw()),
+                      cmode=input$ninfocentcmode)
     i<-min(i)})
   i
 })
@@ -2719,8 +2719,8 @@ output$ninfocentmax <- renderText({
   }
   i <- ''
   try({
-    i <- infocent(nw(), gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$ninfocentcmode)
+    i <- sna::infocent(nw(), gmode=gmode, diag=has.loops(nw()),
+                      cmode=input$ninfocentcmode)
     i<-max(i)})
   i
 })
