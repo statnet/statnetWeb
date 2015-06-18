@@ -3342,7 +3342,9 @@ observe({
   input$choosemodel_sim
   input$fitButton
   state$sim <- 0 #simulations are outdated
-  updateNumericInput(session, "nsims", value=1)
+  updateNumericInput(session, "thissim", 
+                     label = "Choose a simulation to plot:", 
+                     value = 1, min = 1, max = input$nsims)
 })
 
 observe({
