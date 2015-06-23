@@ -12,5 +12,5 @@
 # Connection that stores calls to search.ergmTerms
 NUL
 
-shinyapps/
+inst/shiny/rsconnect
 .DS_Store
