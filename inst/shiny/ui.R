@@ -501,7 +501,7 @@ fluidRow(
                plotOutput('geodistplot')
                ),
       tabPanel('More', value='More', br(),
-               h5('Conditional uniform graph tests', icon('angle-double-down'),
+               h5('Conditional uniform graph tests', icon('angle-double-left'),
                   id="cugtitle"),
                wellPanel(id="cugbox",
                  column(4, uiOutput("dynamiccugterm")),
@@ -869,7 +869,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                     verbatimTextOutput("termdoc")
                                 ),
                                 div(id = "termexpand",
-                                    icon(name = "expand"))
+                                    icon(name = "angle-double-up"))
                                )
                         
                       )
