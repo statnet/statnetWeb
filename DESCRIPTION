@@ -1,23 +1,22 @@
 Package: statnetWeb
 Type: Package
-Title: A Graphical User Interface for Network Modeling with statnet
+Title: A Graphical User Interface for Network Modeling with 'Statnet'
 Version: 0.3.4
 Date: 2015-05-21
 Authors@R: c(
   person("Emily", "Beylerian", email = "ebey@uw.edu", role = c("cre", "aut")),
   person("Kirk", "Li", email = "kirkli@uw.edu", role = "ctb"),
-  person("Samuel", "Jenness", email = "sjenness@uw.edu", role = "ctb"))
-Description: A graphical user interface for network modeling with the statnet
+  person("Samuel", "Jenness", email = "sjenness@uw.edu", role = "ctb"),
+  person("Martina", "Morris", email = "morrism@uw.edu", role = "ctb"))
+Description: A graphical user interface for network modeling with the 'statnet'
   software.
 License: GPL-3
 Depends:
   R (>= 3.1.0),
   shiny,
   ergm (>= 3.2.4),
-  sna
+  network
 Imports:
-  lattice,
-  latticeExtra,
-  network,
+  sna,
   RColorBrewer
 LazyData: true

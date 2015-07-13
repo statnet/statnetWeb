@@ -68,7 +68,7 @@ url = {http://statnetproject.org}
 p(strong("statnetWeb")),
 tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
 title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
-author = {Emily Beylerian and Martina Morris},
+author = {Emily Beylerian and Martina Morris and Samuel Jenness and Kirk Li},
 year = {2014},
 address = {Seattle, WA},
 url = {https://github.com/statnet/statnetWeb}
@@ -593,17 +593,17 @@ fluidRow(
 
                )),
 
-               h5('Node-level descriptive indices',
+               h5('Vertex-level descriptive indices',
                   icon('angle-double-left'), id="nodeleveltitle"),
                wellPanel(id="nodelevelbox",
                  fluidRow(
-                     column(2,span("Node index:")),
+                     column(2,span("Vertex index:")),
                      column(5, numericInput('nodeind', label=NULL, value=1,
                                             min=1))
                      ),
                  tags$hr(),
                  fluidRow(
-                   column(2, offset=3, tags$u('Current node')),
+                   column(2, offset=3, tags$u('Current vertex')),
                    column(3, tags$u('Centrality mode')),
                    column(2, tags$u('Min')),
                    column(2, tags$u('Max'))),
@@ -681,7 +681,8 @@ fluidRow(
 
 
 
-      )),
+      ),br(),br()
+),
  column(4,
      tabsetPanel(id='displaytabs',
        tabPanel(title='Display Options', br(),
@@ -717,8 +718,8 @@ fluidRow(
                                  uiOutput("dynamiccmode_dd"),
                                  uiOutput("dynamiccolor_dd"),
                                  tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_dd", label="Count of nodes", class="btn-sm active"),
-                                 actionButton("percButton_dd", label="Percent of nodes", class="btn-sm"),
+                                 actionButton("countButton_dd", label="Count of vertices", class="btn-sm active"),
+                                 actionButton("percButton_dd", label="Percent of vertices", class="btn-sm"),
                                  br(), br(),
                                  tags$label('Expected values of null models:'), br(),
                                  fluidRow(
@@ -1182,7 +1183,7 @@ tabPanel(title='Simulations', value='tab7',
                                           "lines of the corresponding target statistics."))
                        )
                )
-              )
+              ), br(), br()
              ),
 
 
