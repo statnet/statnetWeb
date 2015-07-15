@@ -1335,8 +1335,16 @@ output$attrtable <- renderDataTable({
   }
   df <- cbind(df, get.vertex.attribute(nw(), "na"))
   colnames(df) <- c("Names", attrs, "Missing")
-  data.frame(df)
+  df <- data.frame(df)
+  df[, c("Names", input$attribcols)]
 }, options = list(pageLength = 10))
+
+output$attrcheck <- renderUI({
+  checkboxGroupInput("attribcols", 
+                     label = "Include these attributes in the table",
+                     choices = c(menuattr(), "Missing"),
+                     selected = c(menuattr(), "Missing"))
+})
 
 #Data to use for null hypothesis overlays in network plots
 uniformsamples <- reactive({
