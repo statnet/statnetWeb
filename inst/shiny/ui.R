@@ -479,7 +479,10 @@ fluidRow(
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
                plotOutput('nwplot')
-        ),
+               ),
+      tabPanel('Attributes', br(),
+               dataTableOutput("attrtable")
+               ),
       tabPanel('Degree Distribution',
                p(class='helper', id='ddhelper', icon('question-circle')),
                div(class='mischelperbox', id='ddhelperbox',

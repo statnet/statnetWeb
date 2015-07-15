@@ -1317,11 +1317,26 @@ output$nwplotdownload <- downloadHandler(
                  vertex.col = color,
                  vertex.cex = nodesize())
     if(input$colorby != 2){
-      legend('bottomright', title=input$colorby, legend = legendlabels(), fill = legendfill())
+      legend('bottomright', title=input$colorby, legend = legendlabels(), 
+             fill = legendfill())
     }
     dev.off()
   }
   )
+
+output$attrtable <- renderDataTable({
+  if(!is.network(nw())){
+    return()
+  }
+  attrs <- menuattr()
+  df <- network.vertex.names(nw())
+  for(i in seq(length(attrs))){
+    df <- cbind(df, get.vertex.attribute(nw(), attrs[i]))
+  }
+  df <- cbind(df, get.vertex.attribute(nw(), "na"))
+  colnames(df) <- c("Names", attrs, "Missing")
+  data.frame(df)
+}, options = list(pageLength = 10))
 
 #Data to use for null hypothesis overlays in network plots
 uniformsamples <- reactive({
