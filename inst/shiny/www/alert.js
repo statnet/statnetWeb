@@ -198,7 +198,7 @@ $(document).ready(function(){
   });
   
   $("#termdocbox").click(function(){
-    $("#termexpand").toggleClass("fa-angle-double-down fa-angle-double-up");
+    $("#termexpand i").toggleClass("fa-angle-double-down fa-angle-double-up");
     if($("#termdocbox").height()<100){
       $("#termdocbox").css({
       "max-height":"250px"
