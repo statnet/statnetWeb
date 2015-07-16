@@ -1324,10 +1324,7 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
-output$attrtable <- renderDataTable({
-  if(!is.network(nw())){
-    return()
-  }
+output$attrtable <- DT::renderDataTable({
   attrs <- menuattr()
   df <- network.vertex.names(nw())
   for(i in seq(length(attrs))){
@@ -1335,9 +1332,11 @@ output$attrtable <- renderDataTable({
   }
   df <- cbind(df, get.vertex.attribute(nw(), "na"))
   colnames(df) <- c("Names", attrs, "Missing")
-  df <- data.frame(df)
-  df[, c("Names", input$attribcols)]
-}, options = list(pageLength = 10))
+  dt <- DT::datatable(df[, c("Names", input$attribcols)], 
+                      options = list(pageLength = 10))
+  #dt <- as.data.frame(df)
+  dt
+})
 
 output$attrcheck <- renderUI({
   checkboxGroupInput("attribcols", 

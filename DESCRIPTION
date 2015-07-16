@@ -17,6 +17,7 @@ Depends:
   ergm (>= 3.2.4),
   network
 Imports:
+  DT,
   sna,
   RColorBrewer
 LazyData: true
