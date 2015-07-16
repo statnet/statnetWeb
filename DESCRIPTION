@@ -19,4 +19,6 @@ Depends:
 Imports:
   sna,
   RColorBrewer
+Suggests:
+  latticeExtra
 LazyData: true
