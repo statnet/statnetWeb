@@ -1324,19 +1324,16 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
-output$attrtable <- DT::renderDataTable({
+output$attrtbl <- shiny::renderDataTable({
   attrs <- menuattr()
-  df <- network.vertex.names(nw())
+  df <- data.frame(Names = network.vertex.names(nw()))
   for(i in seq(length(attrs))){
-    df <- cbind(df, get.vertex.attribute(nw(), attrs[i]))
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
   }
-  df <- cbind(df, get.vertex.attribute(nw(), "na"))
-  colnames(df) <- c("Names", attrs, "Missing")
-  dt <- DT::datatable(df[, c("Names", input$attribcols)], 
-                      options = list(pageLength = 10))
-  #dt <- as.data.frame(df)
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  dt <- df[, c("Names", input$attribcols)]
   dt
-})
+}, options = list(pageLength = 10))
 
 output$attrcheck <- renderUI({
   checkboxGroupInput("attribcols", 
