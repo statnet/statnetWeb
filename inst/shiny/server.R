@@ -150,7 +150,7 @@ nwinit <- reactive({
     }
   }
   if(input$filetype == 5){
-    if(input$samplenet == "Choose a network"){
+    if(input$samplenet == ""){
       nw_var <- NULL
     } else {
       nw_var <- eval(parse(text = input$samplenet))
@@ -2755,17 +2755,17 @@ output$listofterms <- renderUI({
     matchterms <- unique(matchterms)
     current.terms <- unlist(matchterms)
   }
-  selectizeInput('chooseterm',label = NULL,
-              choices = c("Select a term", current.terms))
+  selectizeInput('chooseterm', label = NULL,
+                 choices = c("Select a term" = "", current.terms))
 })
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
   if(is.null(myterm)){
-    return(cat("Choose a term from the dropdown menu."))
+    return(cat("Select or search for a term in the menu above."))
   }
-  if(myterm == "Select a term"){
-    return(cat("Choose a term from the dropdown menu."))
+  if(myterm == ""){
+    return(cat("Select or search for a term in the menu above."))
   }
   search.ergmTerms(name=myterm)
 })
