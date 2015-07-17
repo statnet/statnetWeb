@@ -1326,6 +1326,9 @@ output$nwplotdownload <- downloadHandler(
 
 output$attrtbl <- shiny::renderDataTable({
   attrs <- menuattr()
+  #df <- ifelse(is.na(as.numeric(network.vertex.names(nw()))[1]),
+  #             data.frame(Names = network.vertex.names(nw())),
+  #             as.numeric(data.frame(Names = network.vertex.names(nw()))))
   df <- data.frame(Names = network.vertex.names(nw()))
   for(i in seq(length(attrs))){
     df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
