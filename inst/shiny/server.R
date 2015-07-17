@@ -458,7 +458,10 @@ nw <- reactive({
 
 
 #get coordinates to plot network with
-coords <- reactive({plot.network(nw())})
+coords <- reactive({
+  input$refreshplot
+  plot.network(nw())
+  })
 
 #initial network attributes
 #returns vector of true/falses

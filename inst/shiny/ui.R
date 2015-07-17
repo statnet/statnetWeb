@@ -712,7 +712,10 @@ fluidRow(
 #                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                                  uiOutput('dynamicsize'),
                                  br(),
-                                 downloadButton('nwplotdownload', label = "Download Plot", class="btn-sm")),
+                                 actionButton("refreshplot", icon = icon("refresh"),
+                                              label = "Refresh Plot", class = "btn-sm"),
+                                 downloadButton('nwplotdownload', 
+                                                label = "Download Plot", class = "btn-sm")),
 
                 conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                                  uiOutput("dynamiccmode_dd"),
