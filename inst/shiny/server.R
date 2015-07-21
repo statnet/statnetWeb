@@ -1320,11 +1320,34 @@ output$nwplotdownload <- downloadHandler(
                  vertex.col = color,
                  vertex.cex = nodesize())
     if(input$colorby != 2){
-      legend('bottomright', title=input$colorby, legend = legendlabels(), fill = legendfill())
+      legend('bottomright', title=input$colorby, legend = legendlabels(), 
+             fill = legendfill())
     }
     dev.off()
   }
   )
+
+output$attrtbl <- shiny::renderDataTable({
+  attrs <- menuattr()
+  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+    df <- data.frame(Names = network.vertex.names(nw()))
+  } else {
+    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+  }
+  for(i in seq(length(attrs))){
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+  }
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  dt <- df[, c("Names", input$attribcols)]
+  dt
+}, options = list(pageLength = 10))
+
+output$attrcheck <- renderUI({
+  checkboxGroupInput("attribcols", 
+                     label = "Include these attributes in the table",
+                     choices = c(menuattr(), "Missing"),
+                     selected = c(menuattr(), "Missing"))
+})
 
 #Data to use for null hypothesis overlays in network plots
 uniformsamples <- reactive({
