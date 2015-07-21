@@ -20,4 +20,6 @@ Imports:
   DT,
   sna,
   RColorBrewer
+Suggests:
+  latticeExtra
 LazyData: true
