@@ -2546,7 +2546,7 @@ output$nstress <- renderText({
     gmode <- 'graph'
   }
   s <- ""
-  try(s <- stresscent(nw(), nodes=input$nodeind, gmode=gmode,
+  try(s <- sna::stresscent(nw(), nodes=input$nodeind, gmode=gmode,
                       diag=has.loops(nw()),
                       cmode=input$nstresscmode))
   s
@@ -2559,7 +2559,7 @@ output$nstressmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
+  s <- sna::stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
                   cmode=input$nstresscmode)
   min(s)
 })
@@ -2571,7 +2571,7 @@ output$nstressmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
+  s <- sna::stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
                   cmode=input$nstresscmode)
   max(s)
 })
