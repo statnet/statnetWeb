@@ -522,8 +522,14 @@ fluidRow(
                h5('Mixing matrix', icon('angle-double-left'),
                   id="mixmxtitle"),
                wellPanel(id="mixmxbox",
-                 uiOutput('mixmxchooser'),
-                 verbatimTextOutput('mixingmatrix')
+                 fluidRow(
+                   column(6, uiOutput('mixmxchooser')),
+                   column(6, downloadButton("mixmxButton", 
+                                            class = "shiftdown25"))
+                 ),
+                 fluidRow(
+                   verbatimTextOutput('mixingmatrix')
+                 )
                ),
                h5('Graph-level descriptive indices',
                   icon('angle-double-left'), id="graphleveltitle"),
