@@ -524,7 +524,7 @@ fluidRow(
                wellPanel(id="mixmxbox",
                  fluidRow(
                    column(6, uiOutput('mixmxchooser')),
-                   column(6, downloadButton("mixmxButton", 
+                   column(6, downloadButton("mixmxdownload", 
                                             class = "shiftdown25"))
                  ),
                  fluidRow(

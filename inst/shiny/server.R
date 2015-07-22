@@ -2278,7 +2278,16 @@ output$mixingmatrix <- renderPrint({
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
-# update all the menu selection options when network changes
+output$mixmxdownload <- downloadHandler(
+  filename = function() {paste0(nwname(), "_mixingmatrix.csv")},
+  contentType = "text/csv",
+  content = function(file) {
+    mx <- mixingmatrix(nw(), input$mixmx)[["matrix"]]
+    write.csv(mx, file = file)
+  }
+)
+
+# update all the menu selection options for descriptive indices when network changes
 observeEvent(nw(), {
   if(is.directed(nw())){
     degmenu <- c('indegree', 'outdegree')
