@@ -2117,7 +2117,9 @@ output$dynamiccugterm <- renderUI({
   } else {
     choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
   }
-  selectInput("cugtestterm", label = "Model term",
+  #matchingterms <- splitargs(nw = nw())
+  #choices <- matchingterms$names[matchingterms$args == "()"]
+  selectizeInput("cugtestterm", label = "Model term",
               choices = choices)
 })
 outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
@@ -2777,10 +2779,10 @@ output$listofterms <- renderUI({
     return()
   }
   if(state$allterms){
-    current.terms <- allterms[[1]]
+    current.terms <- allterms$names
   } else {
     matchterms <- splitargs(nw = nw())
-    current.terms <- matchterms[[1]]
+    current.terms <- matchterms$names
   }
   selectizeInput('chooseterm', label = NULL,
                  choices = c("Select a term" = "", current.terms))

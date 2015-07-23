@@ -46,7 +46,7 @@ splitargs <- function(searchterm, nw){
   dups <- duplicated(termnames)
   termargs <- termargs[-which(dups)]
   termnames <- unique(termnames)
-  list(termnames, termargs)
+  list(names = termnames, args = termargs)
 }
 
 
