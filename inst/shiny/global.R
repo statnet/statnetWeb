@@ -35,9 +35,9 @@ inlineSelectInput <- function(inputId, label, choices, ...) {
 }
 
 # create a list of unique term names
-splitargs <- function(searchterm){
+splitargs <- function(searchterm, nw){
   sink("NUL")
-  allterms <- search.ergmTerms(searchterm)
+  allterms <- search.ergmTerms(keyword = searchterm, net = nw)
   sink()
   ind1 <- regexpr(pattern = "\\(", allterms)
   ind2 <- regexpr(pattern = "\\)", allterms)

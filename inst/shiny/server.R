@@ -18,7 +18,7 @@ histblue <- "#83B6E1"
 tgray3 <- adjustcolor("gray", alpha.f = 0.3)
 tgray7 <- adjustcolor("gray", alpha.f = 0.7)
 
-allterms <- splitargs("")
+allterms <- splitargs(searchterm = "")
 
 shinyServer(
   function(input, output, session){
@@ -2779,15 +2779,8 @@ output$listofterms <- renderUI({
   if(state$allterms){
     current.terms <- allterms[[1]]
   } else {
-    sink("NUL") # prevents terms from printing to console
-    matchterms <- search.ergmTerms(net=nw())
-    sink()
-    ind <- regexpr(pattern='\\(', matchterms)
-    for(i in 1:length(matchterms)){
-      matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[i]-1)
-    }
-    matchterms <- unique(matchterms)
-    current.terms <- unlist(matchterms)
+    matchterms <- splitargs(nw = nw())
+    current.terms <- matchterms[[1]]
   }
   selectizeInput('chooseterm', label = NULL,
                  choices = c("Select a term" = "", current.terms))
