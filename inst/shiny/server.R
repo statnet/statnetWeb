@@ -3,7 +3,7 @@ library(statnetWeb)
 library(RColorBrewer)
 
 data(faux.mesa.high)
-data(faux.magnolia.high)
+#data(faux.magnolia.high)
 data(florentine)
 data(sampson)
 data(samplk)
@@ -17,6 +17,8 @@ obsblue <- "#076EC3"
 histblue <- "#83B6E1"
 tgray3 <- adjustcolor("gray", alpha.f = 0.3)
 tgray7 <- adjustcolor("gray", alpha.f = 0.7)
+
+allterms <- splitargs("")
 
 shinyServer(
   function(input, output, session){
@@ -2775,7 +2777,7 @@ output$listofterms <- renderUI({
     return()
   }
   if(state$allterms){
-    current.terms <- unlist(allterms)
+    current.terms <- allterms[[1]]
   } else {
     sink("NUL") # prevents terms from printing to console
     matchterms <- search.ergmTerms(net=nw())
