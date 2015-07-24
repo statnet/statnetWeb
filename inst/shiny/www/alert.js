@@ -184,7 +184,21 @@ $(document).ready(function(){
   });
 
   $("#termexpand").click(function(){
-    $("i",this).toggleClass("fa-expand fa-compress");
+    $("i",this).toggleClass("fa-angle-double-down fa-angle-double-up");
+    if($("#termdocbox").height()<100){
+      $("#termdocbox").css({
+      "max-height":"250px"
+      });
+    } else {
+      $("#termdocbox").css({
+      "max-height":"55px"
+      });
+    }
+
+  });
+  
+  $("#termdocbox").click(function(){
+    $("#termexpand i").toggleClass("fa-angle-double-down fa-angle-double-up");
     if($("#termdocbox").height()<100){
       $("#termdocbox").css({
       "max-height":"250px"

@@ -202,8 +202,8 @@ fluidRow(
              conditionalPanel(condition = 'input.filetype == 5',
                 column(6,
                     br(style="line-height:26px;"),
-                    selectInput('samplenet', label=NULL,
-                                choices=c('Choose a network', 'ecoli1', 'ecoli2',
+                    selectizeInput('samplenet', label=NULL,
+                                choices=c("Choose a network" = '', 'ecoli1', 'ecoli2',
                                           'faux.mesa.high','flobusiness',
                                           'flomarriage', 'kapferer', 'kapferer2',
                                           'molecule', 'samplike', 'samplk1',
@@ -274,7 +274,7 @@ fluidRow(
                               )
            )),
          conditionalPanel(
-           condition="input.filetype == 5 & input.samplenet != 'Choose a network'",
+           condition="input.filetype == 5 & input.samplenet != ''",
            wellPanel(uiOutput("datadesc"))
            )
          ),
@@ -479,7 +479,10 @@ fluidRow(
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
                plotOutput('nwplot')
-        ),
+               ),
+      tabPanel('Attributes', br(),
+               shiny::dataTableOutput("attrtbl")
+               ),
       tabPanel('Degree Distribution',
                p(class='helper', id='ddhelper', icon('question-circle')),
                div(class='mischelperbox', id='ddhelperbox',
@@ -501,7 +504,7 @@ fluidRow(
                plotOutput('geodistplot')
                ),
       tabPanel('More', value='More', br(),
-               h5('Conditional uniform graph tests', icon('angle-double-down'),
+               h5('Conditional uniform graph tests', icon('angle-double-left'),
                   id="cugtitle"),
                wellPanel(id="cugbox",
                  column(4, uiOutput("dynamiccugterm")),
@@ -519,8 +522,14 @@ fluidRow(
                h5('Mixing matrix', icon('angle-double-left'),
                   id="mixmxtitle"),
                wellPanel(id="mixmxbox",
-                 uiOutput('mixmxchooser'),
-                 verbatimTextOutput('mixingmatrix')
+                 fluidRow(
+                   column(6, uiOutput('mixmxchooser')),
+                   column(6, downloadButton("mixmxdownload", 
+                                            class = "shiftdown25"))
+                 ),
+                 fluidRow(
+                   verbatimTextOutput('mixingmatrix')
+                 )
                ),
                h5('Graph-level descriptive indices',
                   icon('angle-double-left'), id="graphleveltitle"),
@@ -688,65 +697,71 @@ fluidRow(
        tabPanel(title='Display Options', br(),
           wellPanel(
                 conditionalPanel(condition='input.plottabs == "Network Plot"',
-                                 checkboxInput('iso',
-                                               label = 'Display isolates',
-                                               value = TRUE),
-                                 checkboxInput('vnames',
-                                               label = 'Display vertex names',
-                                               value = FALSE),
-                                 br(),
-                                 sliderInput('transp',
-                                             label = 'Vertex opacity',
-                                             min = 0, max = 1, value = 1),
-                                 br(),
-                                 uiOutput("dynamiccolor"),
-                                 conditionalPanel(condition="Number(output.attrlevels) > 9",
-                                   column(10,
-                                          p(id = "closewarning1", icon(name = "remove"), class = "warning"),
-                                          div(class = "warning", id = "colorwarning1",
-                                              span(tags$u("Note:"),
-                                                   "Color palette becomes a gradient for attributes with more than nine levels.")
-                                          )
-                                   )),
+                   checkboxInput('iso',
+                                 label = 'Display isolates',
+                                 value = TRUE),
+                   checkboxInput('vnames',
+                                 label = 'Display vertex names',
+                                 value = FALSE),
+                   br(),
+                   sliderInput('transp',
+                               label = 'Vertex opacity',
+                               min = 0, max = 1, value = 1),
+                   br(),
+                   uiOutput("dynamiccolor"),
+                   conditionalPanel(condition="Number(output.attrlevels) > 9",
+                     column(10,
+                            p(id = "closewarning1", icon(name = "remove"), class = "warning"),
+                            div(class = "warning", id = "colorwarning1",
+                                span(tags$u("Note:"),
+                                     "Color palette becomes a gradient for attributes with more than nine levels.")
+                            )
+                     )),
 
-#                                      span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
-                                 uiOutput('dynamicsize'),
-                                 br(),
-                                 downloadButton('nwplotdownload', label = "Download Plot", class="btn-sm")),
+                   #span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
+                   uiOutput('dynamicsize'),
+                   br(),
+                   actionButton("refreshplot", icon = icon("refresh"),
+                                label = "Refresh Plot", class = "btn-sm"),
+                   downloadButton('nwplotdownload', 
+                                  label = "Download Plot", class = "btn-sm")),
 
+                conditionalPanel(condition='input.plottabs == "Attributes"',
+                  uiOutput("attrcheck")
+                ),
                 conditionalPanel(condition='input.plottabs == "Degree Distribution"',
-                                 uiOutput("dynamiccmode_dd"),
-                                 uiOutput("dynamiccolor_dd"),
-                                 tags$label("Y-axis units:"), br(),
-                                 actionButton("countButton_dd", label="Count of vertices", class="btn-sm active"),
-                                 actionButton("percButton_dd", label="Percent of vertices", class="btn-sm"),
-                                 br(), br(),
-                                 tags$label('Expected values of null models:'), br(),
-                                 fluidRow(
-                                   column(10,
-                                          checkboxInput('uniformoverlay_dd',
-                                                 label='Conditional uniform graphs (CUG)',
-                                                 value=FALSE)
-                                          ),
+                   uiOutput("dynamiccmode_dd"),
+                   uiOutput("dynamiccolor_dd"),
+                   tags$label("Y-axis units:"), br(),
+                   actionButton("countButton_dd", label="Count of vertices", class="btn-sm active"),
+                   actionButton("percButton_dd", label="Percent of vertices", class="btn-sm"),
+                   br(), br(),
+                   tags$label('Expected values of null models:'), br(),
+                   fluidRow(
+                     column(10,
+                            checkboxInput('uniformoverlay_dd',
+                                   label='Conditional uniform graphs (CUG)',
+                                   value=FALSE)
+                            ),
 
-                                    span(icon('question-circle'), id="cughelper_dd", class="helper",
-                                         div(id="cughelperbox_dd", class="mischelperbox",
-                                             "Draws from the distribution of simple random graphs with the same",
-                                             "fixed density as the observed network. The mean and 95% confidence",
-                                             "intervals for each degree are plotted."))),
-                                 fluidRow(
-                                   column(10,
-                                          checkboxInput('bernoullioverlay_dd',
-                                                 label='Bernoulli random graphs (BRG)',
-                                                 value=FALSE)
-                                          ),
-                                   span(icon('question-circle'), id="brghelper_dd", class="helper",
-                                        div(id="brghelperbox_dd", class="mischelperbox",
-                                            "Draws from the distribution of simple random graphs with the same",
-                                            "stochastic tie probability as the observed network.",
-                                            "The mean and 95% confidence intervals for each degree are plotted."))),
-                                 br(),
-                                 downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
+                      span(icon('question-circle'), id="cughelper_dd", class="helper",
+                           div(id="cughelperbox_dd", class="mischelperbox",
+                               "Draws from the distribution of simple random graphs with the same",
+                               "fixed density as the observed network. The mean and 95% confidence",
+                               "intervals for each degree are plotted."))),
+                   fluidRow(
+                     column(10,
+                            checkboxInput('bernoullioverlay_dd',
+                                   label='Bernoulli random graphs (BRG)',
+                                   value=FALSE)
+                            ),
+                     span(icon('question-circle'), id="brghelper_dd", class="helper",
+                          div(id="brghelperbox_dd", class="mischelperbox",
+                              "Draws from the distribution of simple random graphs with the same",
+                              "stochastic tie probability as the observed network.",
+                              "The mean and 95% confidence intervals for each degree are plotted."))),
+                   br(),
+                   downloadButton('degreedistdownload', label = "Download Plot", class="btn-sm")
                   ),
                 conditionalPanel(condition='input.plottabs == "Geodesic Distribution"',
                                  tags$label("Y-axis units:"), br(),
@@ -869,7 +884,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                     verbatimTextOutput("termdoc")
                                 ),
                                 div(id = "termexpand",
-                                    icon(name = "expand"))
+                                    icon(name = "angle-double-up"))
                                )
                         
                       )
@@ -1168,10 +1183,11 @@ tabPanel(title='Simulations', value='tab7',
            column(7,
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
-                 customNumericInput('thissim', class="input-small",
-                                    labelstyle="display:block;",
-                                    label = 'Choose a simulation to plot:',
-                                    min = 1, value = 1),
+                 column(5,
+                        numericInput('thissim', 
+                                     label = 'Choose a simulation to plot:',
+                                     min = 1, value = 1)
+                        ),
                  plotOutput('simplot')
                       ),
              tabPanel("Simulation Statistics",

@@ -3,7 +3,7 @@ library(statnetWeb)
 library(RColorBrewer)
 
 data(faux.mesa.high)
-data(faux.magnolia.high)
+#data(faux.magnolia.high)
 data(florentine)
 data(sampson)
 data(samplk)
@@ -17,6 +17,8 @@ obsblue <- "#076EC3"
 histblue <- "#83B6E1"
 tgray3 <- adjustcolor("gray", alpha.f = 0.3)
 tgray7 <- adjustcolor("gray", alpha.f = 0.7)
+
+allterms <- splitargs(searchterm = "")
 
 shinyServer(
   function(input, output, session){
@@ -150,7 +152,7 @@ nwinit <- reactive({
     }
   }
   if(input$filetype == 5){
-    if(input$samplenet == "Choose a network"){
+    if(input$samplenet == ""){
       nw_var <- NULL
     } else {
       nw_var <- eval(parse(text = input$samplenet))
@@ -458,7 +460,10 @@ nw <- reactive({
 
 
 #get coordinates to plot network with
-coords <- reactive({plot.network(nw())})
+coords <- reactive({
+  input$refreshplot
+  plot.network(nw())
+  })
 
 #initial network attributes
 #returns vector of true/falses
@@ -1317,11 +1322,34 @@ output$nwplotdownload <- downloadHandler(
                  vertex.col = color,
                  vertex.cex = nodesize())
     if(input$colorby != 2){
-      legend('bottomright', title=input$colorby, legend = legendlabels(), fill = legendfill())
+      legend('bottomright', title=input$colorby, legend = legendlabels(), 
+             fill = legendfill())
     }
     dev.off()
   }
   )
+
+output$attrtbl <- shiny::renderDataTable({
+  attrs <- menuattr()
+  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+    df <- data.frame(Names = network.vertex.names(nw()))
+  } else {
+    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+  }
+  for(i in seq(length(attrs))){
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+  }
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  dt <- df[, c("Names", input$attribcols)]
+  dt
+}, options = list(pageLength = 10))
+
+output$attrcheck <- renderUI({
+  checkboxGroupInput("attribcols", 
+                     label = "Include these attributes in the table",
+                     choices = c(menuattr(), "Missing"),
+                     selected = c(menuattr(), "Missing"))
+})
 
 #Data to use for null hypothesis overlays in network plots
 uniformsamples <- reactive({
@@ -2089,7 +2117,9 @@ output$dynamiccugterm <- renderUI({
   } else {
     choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
   }
-  selectInput("cugtestterm", label = "Model term",
+  #matchingterms <- splitargs(nw = nw())
+  #choices <- matchingterms$names[matchingterms$args == "()"]
+  selectizeInput("cugtestterm", label = "Model term",
               choices = choices)
 })
 outputOptions(output, 'dynamiccugterm', suspendWhenHidden = FALSE)
@@ -2252,7 +2282,16 @@ output$mixingmatrix <- renderPrint({
 })
 outputOptions(output,'mixingmatrix',suspendWhenHidden=FALSE)
 
-# update all the menu selection options when network changes
+output$mixmxdownload <- downloadHandler(
+  filename = function() {paste0(nwname(), "_mixingmatrix.csv")},
+  contentType = "text/csv",
+  content = function(file) {
+    mx <- mixingmatrix(nw(), input$mixmx)[["matrix"]]
+    write.csv(mx, file = file)
+  }
+)
+
+# update all the menu selection options for descriptive indices when network changes
 observeEvent(nw(), {
   if(is.directed(nw())){
     degmenu <- c('indegree', 'outdegree')
@@ -2740,29 +2779,22 @@ output$listofterms <- renderUI({
     return()
   }
   if(state$allterms){
-    current.terms <- unlist(allterms)
+    current.terms <- allterms$names
   } else {
-    sink("NUL") # prevents terms from printing to console
-    matchterms <- search.ergmTerms(net=nw())
-    sink()
-    ind <- regexpr(pattern='\\(', matchterms)
-    for(i in 1:length(matchterms)){
-      matchterms[i] <- substr(matchterms[[i]], start=1, stop=ind[i]-1)
-    }
-    matchterms <- unique(matchterms)
-    current.terms <- unlist(matchterms)
+    matchterms <- splitargs(nw = nw())
+    current.terms <- matchterms$names
   }
-  selectizeInput('chooseterm',label = NULL,
-              choices = c("Select a term", current.terms))
+  selectizeInput('chooseterm', label = NULL,
+                 choices = c("Select a term" = "", current.terms))
 })
 
 output$termdoc <- renderPrint({
   myterm <- input$chooseterm
   if(is.null(myterm)){
-    return(cat("Choose a term from the dropdown menu."))
+    return(cat("Select or search for a term in the menu above."))
   }
-  if(myterm == "Select a term"){
-    return(cat("Choose a term from the dropdown menu."))
+  if(myterm == ""){
+    return(cat("Select or search for a term in the menu above."))
   }
   search.ergmTerms(name=myterm)
 })
@@ -3345,7 +3377,9 @@ observe({
   input$choosemodel_sim
   input$fitButton
   state$sim <- 0 #simulations are outdated
-  updateNumericInput(session, "nsims", value=1)
+  updateNumericInput(session, "thissim", 
+                     label = "Choose a simulation to plot:", 
+                     value = 1, min = 1, max = input$nsims)
 })
 
 observe({

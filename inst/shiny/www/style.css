@@ -252,6 +252,7 @@ div.error {
 #linkbox3,
 #linkbox4,
 #mixmxbox,
+#cugbox,
 #graphlevelbox,
 #nodelevelbox {
   display: none;
@@ -357,6 +358,7 @@ div.placeholder {
   right:20px;
   width:30px;
   height:20px;
+  margin-top:10px;
   color: #A5A5AD;
   z-index:10;
 }
@@ -390,6 +392,9 @@ div.placeholder {
 }
 .shiftdown {
   margin-top:30px;
+}
+.shiftdown25 {
+  margin-top:25px;
 }
 .nwlabel {
   margin:0px 0px 10px;

@@ -35,15 +35,21 @@ inlineSelectInput <- function(inputId, label, choices, ...) {
 }
 
 # create a list of unique term names
-sink("NUL")  # prevents terms from printing to console
-allterms <- search.ergmTerms()
-sink()
-inds <- regexpr(pattern = "\\(", allterms)
-for (i in 1:length(allterms)) {
-  allterms[i] <- substr(allterms[[i]], start = 1,
-                        stop = inds[i] - 1)
+splitargs <- function(searchterm, nw){
+  sink("NUL")
+  allterms <- search.ergmTerms(keyword = searchterm, net = nw)
+  sink()
+  ind1 <- regexpr(pattern = "\\(", allterms)
+  ind2 <- regexpr(pattern = "\\)", allterms)
+  termnames <- substr(allterms, start = rep(1, length(allterms)), stop = ind1 - 1)
+  termargs <- substr(allterms, start = ind1, stop = ind2)
+  dups <- duplicated(termnames)
+  termargs <- termargs[-which(dups)]
+  termnames <- unique(termnames)
+  list(names = termnames, args = termargs)
 }
-allterms <- unique(allterms)
+
+
 
 # disable widgets when they should not be usable
 disableWidget <- function(id, session, disabled = TRUE) {
@@ -98,18 +104,18 @@ coef.comparison <- function(coeflist) {
     stop("No model summaries were passed to model.comparison")
   if (nmod > 5)
     stop("List of length greater than 5 passed to model.comparison")
-  allterms <- c()
+  terms <- c()
   for (j in 1:nmod) {
-    allterms <- append(allterms, names(coeflist[[j]]))
+    terms <- append(terms, names(coeflist[[j]]))
   }
-  allterms <- unique(allterms)
-  allterms <- c(allterms[-which(allterms == "AIC")], "AIC")
-  allterms <- c(allterms[-which(allterms == "BIC")], "BIC")
-  mat <- matrix(nrow = length(allterms), ncol = nmod)
+  terms <- unique(terms)
+  terms <- c(terms[-which(terms == "AIC")], "AIC")
+  terms <- c(terms[-which(terms == "BIC")], "BIC")
+  mat <- matrix(nrow = length(terms), ncol = nmod)
   
   for (k in 1:nmod) {
     row <- 1
-    for (l in allterms) {
+    for (l in terms) {
       if (is.null(coeflist[[k]][[l]])) {
         mat[row, k] <- "NA"
       } else {
@@ -119,7 +125,7 @@ coef.comparison <- function(coeflist) {
     }
   }
   
-  rownames(mat) <- allterms
+  rownames(mat) <- terms
   colnames(mat) <- paste0("Model", 1:nmod)
   return(print(mat, quote = FALSE))
 }

@@ -8,6 +8,9 @@
 #' @import shiny
 #' @import ergm
 #' @import network
+#' @importFrom DT datatable
+#' @importFrom DT renderDataTable
+#' @importFrom DT dataTableOutput
 #' @importFrom sna betweenness
 #' @importFrom sna centralization
 #' @importFrom sna closeness
