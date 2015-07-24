@@ -478,7 +478,10 @@ fluidRow(
  column(7,
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
-               plotOutput('nwplot')
+               # determine if showing the static or interactive plot
+               conditionalPanel("input.activePlot=='Image'", plotOutput('nwplot')),
+               conditionalPanel("input.activePlot=='Interactive'", htmlOutput("d3NetPlot"))
+               
         ),
       tabPanel('Degree Distribution',
                p(class='helper', id='ddhelper', icon('question-circle')),
@@ -688,6 +691,9 @@ fluidRow(
        tabPanel(title='Display Options', br(),
           wellPanel(
                 conditionalPanel(condition='input.plottabs == "Network Plot"',
+                                 selectInput('activePlot',
+                                               label = 'Plot mode',
+                                               c(Interactive='Interactive',Image='Image')),
                                  checkboxInput('iso',
                                                label = 'Display isolates',
                                                value = TRUE),
