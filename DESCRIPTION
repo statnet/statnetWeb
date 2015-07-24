@@ -18,5 +18,6 @@ Depends:
   network
 Imports:
   sna,
-  RColorBrewer
+  RColorBrewer,
+  ndtv
 LazyData: true
