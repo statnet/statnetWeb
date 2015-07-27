@@ -478,11 +478,15 @@ fluidRow(
  column(7,
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
-               plotOutput('nwplot')
-               ),
+               # determine if showing the static or interactive plot
+               conditionalPanel("input.activePlot=='Static'", 
+                                plotOutput('nwplot')),
+               conditionalPanel("input.activePlot=='Interactive'", 
+                                htmlOutput("d3NetPlot"))
+        ),
       tabPanel('Attributes', br(),
                shiny::dataTableOutput("attrtbl")
-               ),
+      ),
       tabPanel('Degree Distribution',
                p(class='helper', id='ddhelper', icon('question-circle')),
                div(class='mischelperbox', id='ddhelperbox',
@@ -697,6 +701,9 @@ fluidRow(
        tabPanel(title='Display Options', br(),
           wellPanel(
                 conditionalPanel(condition='input.plottabs == "Network Plot"',
+                   selectInput('activePlot',
+                                 label = 'Plot mode',
+                                 c(Interactive='Interactive',Image='Image')),
                    checkboxInput('iso',
                                  label = 'Display isolates',
                                  value = TRUE),
@@ -717,18 +724,17 @@ fluidRow(
                                      "Color palette becomes a gradient for attributes with more than nine levels.")
                             )
                      )),
-
                    #span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                    uiOutput('dynamicsize'),
                    br(),
-                   actionButton("refreshplot", icon = icon("refresh"),
-                                label = "Refresh Plot", class = "btn-sm"),
                    downloadButton('nwplotdownload', 
-                                  label = "Download Plot", class = "btn-sm")),
+                                  label = "Download Static Plot", class="btn-sm")
+               ),
+               
+               conditionalPanel(condition='input.plottabs == "Attributes"',
+                   uiOutput("attrcheck")
+               ),
 
-                conditionalPanel(condition='input.plottabs == "Attributes"',
-                  uiOutput("attrcheck")
-                ),
                 conditionalPanel(condition='input.plottabs == "Degree Distribution"',
                    uiOutput("dynamiccmode_dd"),
                    uiOutput("dynamiccolor_dd"),

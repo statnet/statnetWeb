@@ -1,6 +1,7 @@
 
 library(statnetWeb)
 library(RColorBrewer)
+library(ndtv)
 
 data(faux.mesa.high)
 #data(faux.magnolia.high)
@@ -1309,6 +1310,86 @@ output$nwplot <- renderPlot({
            bty='n')
   }
 })
+
+# uses same options as network plot, but renders as interactive svg using NDTV d3
+output$d3NetPlot <- renderUI({
+  if (!is.network(nw())){
+    return()
+  }
+  input$plottabs
+  input$rawdatafile
+  input$samplenet
+  
+  nw_var <- nw()
+  color <- adjustcolor(vcol(), alpha.f = input$transp)
+  par(mar = c(0, 0, 0, 0))
+  
+  # call the d3Movie render on a static network
+  # capturing its output and passing it to the shiny app as HTML
+  # needs hack to pass in the the coordinates to prevent re-rendering
+  coord<-coords()
+  activate.vertex.attribute(nw_var,'animation.x',coord[,1,drop=FALSE],at=0)
+  activate.vertex.attribute(nw_var,'animation.y',coord[,2,drop=FALSE],at=0)
+  nw_var<-as.network(nw_var)  #make sure it is not an nd, so don't have to set presents to avoid movide
+  
+  outHTML<-capture.output(render.d3movie(nw_var, 
+                                         displayisolates = input$iso,
+                                         displaylabels = input$vnames,
+                                         vertex.col = color,
+                                         vertex.cex = nodesize(),  
+                                         vertex.tooltip=vertexAttributeTooltip(nw_var),
+                                         edge.tooltip=edgeAttributeTooltip(nw_var),
+                                         #format HTML text for edge tool tips                           
+                                         output.mode = 'inline',  # output directly instead of to file
+                                         script.type='remoteSrc', # link to .js files instead of including them directly
+                                         launchBrowser = FALSE  # don't load in a web browser
+  ))
+  
+  return(HTML(outHTML))
+})
+
+# helper function to return html formatted table displaying vertex attribute info for lables
+vertexAttributeTooltip<-function(net){
+  attrs<-list.vertex.attributes(net)
+  # remove a few we don't want to show
+  attrs<-attrs[attrs!='animation.x.active']
+  attrs<-attrs[attrs!='animation.y.active']
+  values<-lapply(attrs,function(attr){get.vertex.attribute(net,attrname=attr)}) 
+  tips<-lapply(seq_len(network.size(net)),function(v){
+    out<-paste("<table><tr><td>vertex ID</td><td>",v,"</td></tr>",sep='')
+    for(a in seq_len(length(attrs))){
+      value<-values[[a]][v]
+      # if it is a list, it will get mangled, so don't show
+      if(is.list(value)){
+        value<-'<list>'
+      }
+      out<-paste(out,'<tr><td>',attrs[a],'</td><td>',value,'</td></tr>\n',sep="")
+    }
+    out<-paste(out,'</table>',sep="")
+    return(out)
+  })
+  return(tips)
+}
+
+# helper function to return html formatted table displaying vertex attribute info for lables
+edgeAttributeTooltip<-function(net){
+  attrs<-list.edge.attributes(net)
+  values<-lapply(attrs,function(attr){get.edge.attribute(net,attrname=attr)}) 
+  tips<-lapply(seq_along(net$mel),function(e){
+    out<-paste("<table><tr><td>edge ID</td><td>",e,"</td></tr>",sep='')
+    for(a in seq_len(length(attrs))){
+      value<-values[[a]][e]
+      # if it is a list, it will get mangled, so don't show
+      if(is.list(value)){
+        value<-'<list>'
+      }
+      out<-paste(out,'<tr><td>',attrs[a],'</td><td>',value,'</td></tr>\n',sep="")
+    }
+    out<-paste(out,'</table>',sep="")
+    return(out)
+  })
+  return(tips)
+}
 
 output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
