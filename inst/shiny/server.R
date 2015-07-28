@@ -1212,6 +1212,7 @@ output$pajchooser <- renderUI({
               label = 'Upload a Pajek project file and choose a network from it',
               choices = pajlist)
 })
+outputOptions(output, "pajchooser", suspendWhenHidden = FALSE)
 
 
 output$newattrname <- renderPrint({
