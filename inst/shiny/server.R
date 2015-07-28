@@ -162,9 +162,6 @@ nwinit <- reactive({
       }
     }
   }
-  validate(
-    need(!is.null(nw_var), "Upload a network")
-  )
   return(nw_var)
 })
 
