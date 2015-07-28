@@ -104,28 +104,28 @@ nwinit <- reactive({
     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
 
     if(input$filetype == 1){
-      if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
-        nw_var <- readRDS(paste(filepath))
-      } else {
-        return("Upload a .rds file")
-      }
-
+      validate(
+        need(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
+             "Upload an .rds file"))
+      nw_var <- readRDS(paste(filepath))
     } else if(input$filetype == 2){
-      nw_var <- "Upload a .net file"
-      if(fileext %in% c(".net", ".NET")){
-        nw_var <- read.paj(paste(filepath))
-      }
+      validate(
+        need(fileext %in% c(".net", ".NET"),
+             "Upload a .net file"))
+      nw_var <- read.paj(paste(filepath))
     } else if(input$filetype == 3){
-      nw_var <- "Upload a .paj file"
-      if(fileext %in% c(".paj",".PAJ")){
-        nws <- read.paj(paste(filepath))
-        if(!is.null(pajnws())){
-          nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
-        }
+      validate(
+        need(fileext %in% c(".paj",".PAJ"),
+             "Upload a .paj file"))
+      nws <- read.paj(paste(filepath))
+      if(!is.null(pajnws())){
+        nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
       }
-
     } else if(input$filetype == 4){
-      nw_var <- "Input the specified type of matrix"
+      validate(
+        need(fileext %in% c(".csv",".CSV") | 
+               fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
+             "Upload the specified type of matrix"))
       if(fileext %in% c(".csv",".CSV")){
         header <- TRUE
         row_names<-1
@@ -162,7 +162,9 @@ nwinit <- reactive({
       }
     }
   }
-
+  validate(
+    need(!is.null(nw_var), "Upload a network")
+  )
   return(nw_var)
 })
 
