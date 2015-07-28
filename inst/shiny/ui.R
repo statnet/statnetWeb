@@ -479,9 +479,9 @@ fluidRow(
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
                # determine if showing the static or interactive plot
-               conditionalPanel("input.activePlot=='Static'", 
+               conditionalPanel("input.activePlot == 'Static'", 
                                 plotOutput('nwplot')),
-               conditionalPanel("input.activePlot=='Interactive'", 
+               conditionalPanel("input.activePlot == 'Interactive'", 
                                 htmlOutput("d3NetPlot"))
         ),
       tabPanel('Attributes', br(),
@@ -701,9 +701,10 @@ fluidRow(
        tabPanel(title='Display Options', br(),
           wellPanel(
                 conditionalPanel(condition='input.plottabs == "Network Plot"',
-                   selectInput('activePlot',
-                                 label = 'Plot mode',
-                                 c(Interactive='Interactive',Image='Image')),
+                   selectInput("activePlot", label = "Type of plot:",
+                               choices = c("Static", "Interactive")),
+                   #actionButton("staticPlot", label="Static", class="btn-sm active"),
+                   #actionButton("activePlot", label="Interactive", class="btn-sm"),
                    checkboxInput('iso',
                                  label = 'Display isolates',
                                  value = TRUE),

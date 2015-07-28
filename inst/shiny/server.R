@@ -1348,7 +1348,7 @@ output$d3NetPlot <- renderUI({
   return(HTML(outHTML))
 })
 
-# helper function to return html formatted table displaying vertex attribute info for lables
+# helper function to return html formatted table displaying vertex attribute info for labels
 vertexAttributeTooltip<-function(net){
   attrs<-list.vertex.attributes(net)
   # remove a few we don't want to show
@@ -1371,7 +1371,7 @@ vertexAttributeTooltip<-function(net){
   return(tips)
 }
 
-# helper function to return html formatted table displaying vertex attribute info for lables
+# helper function to return html formatted table displaying vertex attribute info for labels
 edgeAttributeTooltip<-function(net){
   attrs<-list.edge.attributes(net)
   values<-lapply(attrs,function(attr){get.edge.attribute(net,attrname=attr)}) 
