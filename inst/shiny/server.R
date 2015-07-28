@@ -1203,13 +1203,13 @@ output$rawdatafile <- renderPrint({
   write.table(raw, quote=FALSE, col.names=FALSE)})
 
 output$pajchooser <- renderUI({
-  pajlist <- 'None'
+  pajlist <- c(None = '')
   if(!is.null(pajnws())){
     pajlist <- 1:length(pajnws()$networks)
   names(pajlist) <- names(pajnws()$networks)
   }
   selectInput('choosepajnw',
-              label = 'Upload a Pajek project file and choose a network from it',
+              label = 'Choose a network from the Pajek project',
               choices = pajlist)
 })
 outputOptions(output, "pajchooser", suspendWhenHidden = FALSE)
