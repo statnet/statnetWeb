@@ -687,8 +687,7 @@ fluidRow(
                      column(2, p(textOutput('ninfocentmax')))
                      )
                  ),
-              conditionalPanel(condition = "output.errstate == '1'",
-                               div(class = "error", uiOutput("errbox")))
+              div(class = "error", uiOutput("errbox"))
 
 )
 

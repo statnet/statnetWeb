@@ -13,3 +13,15 @@ setInterval(function(){
 
 //setInterval will check if shiny is busy every 100ms
 //if shiny is busy, setTimeout will display div.busy after 1 second (1000ms)
+
+setInterval(function(){
+  if (output.errstate=='1') {
+    setTimeout(function() {
+      if (output.errstate=='1') {
+        $('div.error').show()
+      }
+    }, 1000)
+  } else {
+    $('div.error').hide()
+  }
+}, 100)
