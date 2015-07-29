@@ -2552,11 +2552,18 @@ output$ndeg <- renderText({
   if(cmode == 'total'){
     cmode <- 'freeman'
   }
-  d <- ""
-  try(d <- sna::degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                  cmode=cmode))
-  d
+  x <- ""
+  x <- tryCatch(sna::degree(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                            cmode=cmode),
+                error = function(e) {e})
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$deg <- x[[1]]
+    x <- "Error"
+  }
+  x
 })
+outputOptions(output, "ndeg", priority = 50)
 
 output$ndegmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2565,9 +2572,11 @@ output$ndegmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- sna::degree(nw(), gmode=gmode, diag=has.loops(nw()),
-              cmode=input$ndegcmode)
-  min(d)
+  x <- ""
+  try({x <- sna::degree(nw(), gmode=gmode, diag=has.loops(nw()),
+                       cmode=input$ndegcmode)
+       x <- min(x)})
+  x
 })
 
 output$ndegmax <- renderText({
@@ -2577,9 +2586,11 @@ output$ndegmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  d <- sna::degree(nw(), gmode=gmode, diag=has.loops(nw()),
+  x <- ""
+  try({x <- sna::degree(nw(), gmode=gmode, diag=has.loops(nw()),
               cmode=input$ndegcmode)
-  max(d)
+       x <- max(x)})
+  x
 })
 
 output$nbetw <- renderText({
@@ -2589,12 +2600,19 @@ output$nbetw <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- ""
-  try(b <- sna::betweenness(nw(), nodes=input$nodeind, gmode=gmode,
+  x <- ""
+  x <- tryCatch({sna::betweenness(nw(), nodes=input$nodeind, gmode=gmode,
                        diag=has.loops(nw()),
-                       cmode=input$nbetwcmode))
-  b
+                       cmode=input$nbetwcmode)},
+                error = function(e) {e})
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$bet <- x[[1]]
+    x <- "Error"
+  }
+  x
 })
+outputOptions(output, "nbetw", priority = 49)
 
 output$nbetwmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2603,9 +2621,11 @@ output$nbetwmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+  x <- ""
+  try({x <- sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nbetwcmode)
-  min(b)
+       x <- min(x)})
+  x
 })
 
 output$nbetwmax <- renderText({
@@ -2615,9 +2635,11 @@ output$nbetwmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  b <- sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
+  x <- ""
+  try({x <- sna::betweenness(nw(), gmode=gmode, diag=has.loops(nw()),
                    cmode=input$nbetwcmode)
-  max(b)
+       x <- max(x)})
+  x
 })
 
 output$nclose <- renderText({
@@ -2627,12 +2649,19 @@ output$nclose <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- ""
-  try(
-    c <- sna::closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
-                   cmode=input$nclosecmode))
-  c
+  x <- ""
+  x <- tryCatch({
+    sna::closeness(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw()),
+                   cmode=input$nclosecmode)},
+    error = function(e) {e})
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$close <- x[[1]]
+    x <- "Error"
+  }
+  x
 })
+outputOptions(output, "nclose", priority = 48)
 
 output$nclosemin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2641,9 +2670,11 @@ output$nclosemin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- sna::closeness(nw(), gmode=gmode, diag=has.loops(nw()),
+  x <- ""
+  try({x <- sna::closeness(nw(), gmode=gmode, diag=has.loops(nw()),
                  cmode=input$nclosecmode)
-  min(c)
+       x <- min(x)})
+  x
 })
 
 output$nclosemax <- renderText({
@@ -2653,9 +2684,11 @@ output$nclosemax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  c <- sna::closeness(nw(), gmode=gmode, diag=has.loops(nw()),
+  x <- ""
+  try({x <- sna::closeness(nw(), gmode=gmode, diag=has.loops(nw()),
                  cmode=input$nclosecmode)
-  max(c)
+       x <- max(x)})
+  x
 })
 
 output$nstress <- renderText({
@@ -2665,12 +2698,19 @@ output$nstress <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- ""
-  try(s <- sna::stresscent(nw(), nodes=input$nodeind, gmode=gmode,
-                      diag=has.loops(nw()),
-                      cmode=input$nstresscmode))
-  s
+  x <- ""
+  x <- tryCatch({sna::stresscent(nw(), nodes=input$nodeind, gmode=gmode,
+                                 diag=has.loops(nw()),
+                                 cmode=input$nstresscmode)},
+                error = function(e) {e})
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$stress <- x[[1]]
+    x <- "Error"
+  }
+  x
 })
+outputOptions(output, "nstress", priority = 47)
 
 output$nstressmin <- renderText({
   if(!is.network(nw())){ return()}
@@ -2679,9 +2719,11 @@ output$nstressmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- sna::stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$nstresscmode)
-  min(s)
+  x <- ""
+  try({x <- sna::stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
+                           cmode=input$nstresscmode)
+       x <- min(x)})
+  x
 })
 
 output$nstressmax <- renderText({
@@ -2691,9 +2733,11 @@ output$nstressmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  s <- sna::stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
-                  cmode=input$nstresscmode)
-  max(s)
+  x <- ""
+  try({x <- sna::stresscent(nw(), gmode=gmode, diag=has.loops(nw()),
+                           cmode=input$nstresscmode)
+       x <- max(x)})
+  x
 })
 
 output$ngraphcent <- renderText({
@@ -2703,12 +2747,19 @@ output$ngraphcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- ""
-  try(g <- sna::graphcent(nw(), nodes=input$nodeind, gmode=gmode,
-                          diag=has.loops(nw()),
-                          cmode=input$ngraphcentcmode))
-  g
+  x <- ""
+  x <- tryCatch({sna::graphcent(nw(), nodes=input$nodeind, gmode=gmode,
+                                diag=has.loops(nw()),
+                                cmode=input$ngraphcentcmode)},
+           error = function(e) {e})
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$gr <- x[[1]]
+    x <- "Error"
+  }
+  x
 })
+outputOptions(output, "ngraphcent", priority = 46)
 
 output$ngraphcentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2717,9 +2768,11 @@ output$ngraphcentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- sna::graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
-                      cmode=input$ngraphcentcmode)
-  min(g)
+  x <- ""
+  try({x <- sna::graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
+                          cmode=input$ngraphcentcmode)
+       x <- min(x)})
+  x
 })
 
 output$ngraphcentmax <- renderText({
@@ -2729,9 +2782,11 @@ output$ngraphcentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  g <- sna::graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
-                      cmode=input$ngraphcentcmode)
-  max(g)
+  x <- ""
+  try({x <- sna::graphcent(nw(), gmode=gmode, diag=has.loops(nw()),
+                          cmode=input$ngraphcentcmode)
+       x <- max(x)})
+  x
 })
 
 output$nevcent <- renderText({
@@ -2741,10 +2796,19 @@ output$nevcent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- ""
-  try(e <- sna::evcent(nw(), nodes=input$nodeind, gmode=gmode, diag=has.loops(nw())))
-  e
+  x <- ""
+  x <- tryCatch({x <- sna::evcent(nw(), nodes=input$nodeind, 
+                             gmode=gmode, diag=has.loops(nw()))
+                if(is.nan(x)) {stop("NaN")}; x},
+                error = function(e) {e})
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$f <- x[[1]]
+    x <- "Error"
+  }
+  x
 })
+outputOptions(output, "nevcent", priority = 45)
 
 output$nevcentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2753,10 +2817,10 @@ output$nevcentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- ""
-  try({e <- sna::evcent(nw(), gmode=gmode, diag=has.loops(nw()))
-       e <- min(e)})
-  e
+  x <- ""
+  try({x <- sna::evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+       x <- min(x)})
+  x
 })
 
 output$nevcentmax <- renderText({
@@ -2766,20 +2830,12 @@ output$nevcentmax <- renderText({
   } else {
     gmode <- 'graph'
   }
-  e <- ""
-  try({e <- sna::evcent(nw(), gmode=gmode, diag=has.loops(nw()))
-       e <- max(e)})
-  e
+  x <- ""
+  try({x <- sna::evcent(nw(), gmode=gmode, diag=has.loops(nw()))
+       x <- max(x)})
+  x
 })
 
-observeEvent(nw(), {
-  state$err <- FALSE
-  values$err <- c()
-})
-
-output$errstate <- renderPrint({
-  print(1)
-})
 
 output$ninfocent <- renderText({
   if(!is.network(nw())) {return()}
@@ -2788,32 +2844,18 @@ output$ninfocent <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i <- ''
-  i <- tryCatch({sna::infocent(nw(), nodes=input$nodeind, gmode=gmode,
+  x <- ''
+  x <- tryCatch({sna::infocent(nw(), nodes=input$nodeind, gmode=gmode,
                               diag=has.loops(nw()), cmode=input$ninfocentcmode)},
                 error = function(e) {e})
-  if("error" %in% class(i)) {
-    state$err <- TRUE
-    values$err[1] <- i[[1]]
-    #i <- paste("Error", length(values$err))
-    i <- ''
+  if("error" %in% class(x)) {
+    state$err <- 1
+    values$err$g <- x[[1]]
+    x <- "Error"
   }
-  i
+  x
 })
-outputOptions(output, "ninfocent", priority = 50)
-
-
-output$errbox <- renderPrint({
-  err <- FALSE
-  if(!is.null(state$err)){
-    err <- state$err
-    if(err){
-      err <- paste0("Error ", c(1:length(values$err)), ": ", values$err, "\n")
-    }
-  }
-  p(err)
-})
-outputOptions(output, "errbox", priority = 1)
+outputOptions(output, "ninfocent", priority = 44)
 
 output$ninfocentmin <- renderText({
   if(!is.network(nw())) {return()}
@@ -2822,12 +2864,12 @@ output$ninfocentmin <- renderText({
   } else {
     gmode <- 'graph'
   }
-  i<-''
+  x<-''
   try({
-    i <- sna::infocent(nw(), gmode=gmode, diag=has.loops(nw()),
+    x <- sna::infocent(nw(), gmode=gmode, diag=has.loops(nw()),
                       cmode=input$ninfocentcmode)
-    i<-min(i)})
-  i
+    x<-min(x)})
+  x
 })
 
 output$ninfocentmax <- renderText({
@@ -2845,6 +2887,28 @@ output$ninfocentmax <- renderText({
   i
 })
 
+# Error gathering
+
+observeEvent(nw(), {
+  state$err <- 0
+  values$err <- list()
+})
+
+output$errstate <- renderText({
+  return("1")
+})
+
+output$errbox <- renderPrint({
+  err <- 0
+  if(!is.null(state$err)){
+    err <- state$err
+    if(err > 0){
+      err <- paste0("Error ", c(1:length(values$err)), ": ", values$err, "\n")
+    }
+  }
+  p(err)
+})
+outputOptions(output, "errbox", priority = 1)
 
 # Fit Model ---------------------------------------------------------------
 
