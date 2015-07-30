@@ -209,7 +209,7 @@ vattrinit <- reactive({
 #matrix of vertex attribute values
 vattrinit.vals <- reactive({
   v <- list()
-  for (j in 1:length(vattrinit())) {
+  for (j in seq(length(list.vertex.attributes(nwinit())))) {
     v[[j]] <- get.vertex.attribute(nwinit(), vattrinit()[j])
   }
   v
@@ -402,6 +402,11 @@ nwmid <- reactive({
           attr_list <- vattrinit.vals()
           set.vertex.attribute(nw_var, attr_names[k], attr_list[[k]])
         }
+      }
+
+      if (is.bipartite(nw_var)){
+        set.vertex.attribute(nw_var, "mode", c(rep(1, nw_var$gal$bipartite),
+                                               rep(2, nw_var$gal$n - nw_var$gal$bipartite)))
       }
 
       v_attrNamesToAdd <- values$v_attrNamesToAdd
