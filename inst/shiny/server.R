@@ -28,7 +28,7 @@ shinyServer(
     on.exit(options(oldoptions))
     options(digits=3)
 
-    
+
 # Reactive Expressions ----------------------------------------------------
 # These expressions contain most of the code from the ergm package that we will
 # be using. Objects created with a reactive expression can be accessed from any
@@ -37,7 +37,7 @@ shinyServer(
 # the same ergm objects, using reactive expressions will help the app run much
 # faster.
 
-    
+
 values <- reactiveValues()
 
 # when two options are available to the user, or when we need to know if one
@@ -123,7 +123,7 @@ nwinit <- reactive({
       }
     } else if(input$filetype == 4){
       validate(
-        need(fileext %in% c(".csv",".CSV") | 
+        need(fileext %in% c(".csv",".CSV") |
                fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
              "Upload the specified type of matrix"))
       if(fileext %in% c(".csv",".CSV")){
@@ -1319,11 +1319,11 @@ output$d3NetPlot <- renderUI({
   input$plottabs
   input$rawdatafile
   input$samplenet
-  
+
   nw_var <- nw()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
   par(mar = c(0, 0, 0, 0))
-  
+
   # call the d3Movie render on a static network
   # capturing its output and passing it to the shiny app as HTML
   # needs hack to pass in the the coordinates to prevent re-rendering
@@ -1331,20 +1331,20 @@ output$d3NetPlot <- renderUI({
   activate.vertex.attribute(nw_var,'animation.x',coord[,1,drop=FALSE],at=0)
   activate.vertex.attribute(nw_var,'animation.y',coord[,2,drop=FALSE],at=0)
   nw_var<-as.network(nw_var)  #make sure it is not an nd, so don't have to set presents to avoid movide
-  
-  outHTML<-capture.output(render.d3movie(nw_var, 
+
+  outHTML<-capture.output(render.d3movie(nw_var,
                                          displayisolates = input$iso,
                                          displaylabels = input$vnames,
                                          vertex.col = color,
-                                         vertex.cex = nodesize(),  
+                                         vertex.cex = nodesize(),
                                          vertex.tooltip=vertexAttributeTooltip(nw_var),
                                          edge.tooltip=edgeAttributeTooltip(nw_var),
-                                         #format HTML text for edge tool tips                           
+                                         #format HTML text for edge tool tips
                                          output.mode = 'inline',  # output directly instead of to file
                                          script.type='remoteSrc', # link to .js files instead of including them directly
                                          launchBrowser = FALSE  # don't load in a web browser
   ))
-  
+
   return(HTML(outHTML))
 })
 
@@ -1354,7 +1354,7 @@ vertexAttributeTooltip<-function(net){
   # remove a few we don't want to show
   attrs<-attrs[attrs!='animation.x.active']
   attrs<-attrs[attrs!='animation.y.active']
-  values<-lapply(attrs,function(attr){get.vertex.attribute(net,attrname=attr)}) 
+  values<-lapply(attrs,function(attr){get.vertex.attribute(net,attrname=attr)})
   tips<-lapply(seq_len(network.size(net)),function(v){
     out<-paste("<table><tr><td>vertex ID</td><td>",v,"</td></tr>",sep='')
     for(a in seq_len(length(attrs))){
@@ -1374,7 +1374,7 @@ vertexAttributeTooltip<-function(net){
 # helper function to return html formatted table displaying vertex attribute info for labels
 edgeAttributeTooltip<-function(net){
   attrs<-list.edge.attributes(net)
-  values<-lapply(attrs,function(attr){get.edge.attribute(net,attrname=attr)}) 
+  values<-lapply(attrs,function(attr){get.edge.attribute(net,attrname=attr)})
   tips<-lapply(seq_along(net$mel),function(e){
     out<-paste("<table><tr><td>edge ID</td><td>",e,"</td></tr>",sep='')
     for(a in seq_len(length(attrs))){
@@ -1403,7 +1403,7 @@ output$nwplotdownload <- downloadHandler(
                  vertex.col = color,
                  vertex.cex = nodesize())
     if(input$colorby != 2){
-      legend('bottomright', title=input$colorby, legend = legendlabels(), 
+      legend('bottomright', title=input$colorby, legend = legendlabels(),
              fill = legendfill())
     }
     dev.off()
@@ -1426,7 +1426,7 @@ output$attrtbl <- shiny::renderDataTable({
 }, options = list(pageLength = 10))
 
 output$attrcheck <- renderUI({
-  checkboxGroupInput("attribcols", 
+  checkboxGroupInput("attribcols",
                      label = "Include these attributes in the table",
                      choices = c(menuattr(), "Missing"),
                      selected = c(menuattr(), "Missing"))
@@ -2244,29 +2244,29 @@ output$cugtest <- renderPlot({
       }
       return(breaks)
     }
-    
+
     xlims <- c(min(brgvals, cugvals, obsval) - diff(brghist$breaks)[1],
                max(brgvals, cugvals, obsval) + diff(brghist$breaks)[1])
-    
+
     cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
     par(lwd = 2)
-    hist(brgvals, col = tgray3,  
+    hist(brgvals, col = tgray3,
          border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
          xaxt = "n",
          xlim = xlims,
          ylim = c(0, max(brghist$counts, cughist$counts)),
          breaks = brghist$breaks)
-    
+
     if (term == "density" | term == "meandeg"){
       abline(v = cugvals[1], col = CUGcol)
     } else {
       hist(cugvals, col = tgray7, density = 15, angle = -45,
-           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
+           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL,
            axes = FALSE,
            breaks = getbreaks, add = TRUE)
-      
+
     }
-    
+
     axis(side = 1, at = round(c(xlims[1], cughist$breaks, xlims[2]), digits = 3))
     points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
 
@@ -2286,13 +2286,13 @@ output$cugtestdownload <- downloadHandler(
     term <- input$cugtestterm
     n <- nodes()
     obsval <- summary.formula(as.formula(paste("nw() ~", term)))
-    
+
     # gets summary statistics of the already run simulations
     brgvals <- brgvals()
     cugvals <- cugvals()
-    
+
     brghist <- hist(brgvals, plot = FALSE)
-    
+
     getbreaks <- function(x){
       breaks <- brghist$breaks
       r <- range(brghist$breaks)
@@ -2309,35 +2309,35 @@ output$cugtestdownload <- downloadHandler(
       }
       return(breaks)
     }
-    
+
     xlims <- c(min(brgvals, cugvals, obsval) - diff(brghist$breaks)[1],
                max(brgvals, cugvals, obsval) + diff(brghist$breaks)[1])
-    
+
     cughist <- hist(cugvals, breaks = getbreaks, plot = FALSE)
-    
+
     pdf(file = file)
-    
+
     par(lwd = 2)
-    hist(brgvals, col = tgray3,  
+    hist(brgvals, col = tgray3,
          border = BRGcol, ylab = NULL, main = NULL, xlab= NULL,
          xaxt = "n",
          xlim = xlims,
          ylim = c(0, max(brghist$counts, cughist$counts)),
          breaks = brghist$breaks)
-    
+
     if (input$cugtestterm == "density" | input$cugtestterm == "meandeg"){
       abline(v = cugvals[1], col = CUGcol)
     } else {
       hist(cugvals, col = tgray7, density = 15, angle = -45,
-           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL, 
+           border = CUGcol, ylab = NULL, main = NULL, xlab= NULL,
            axes = FALSE,
            breaks = getbreaks, add = TRUE)
-      
+
     }
-    
+
     axis(side = 1, at = round(c(xlims[1], cughist$breaks, xlims[2]), digits = 3))
     points(x = obsval, y = 0, col = obsblue, pch = 17, cex = 2)
-    
+
     legend(x = "topright", bty = "n",
            legend = c("Observed value", "CUG distribution", "BRG distribution"),
            pch = c(17, NA, NA), col = obsblue, fill = c(0, tgray7, tgray3),
@@ -2557,7 +2557,7 @@ output$ndeg <- renderText({
                             cmode=cmode),
                 error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$deg <- x[[1]]
     x <- "Error"
   }
@@ -2606,7 +2606,7 @@ output$nbetw <- renderText({
                        cmode=input$nbetwcmode)},
                 error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$bet <- x[[1]]
     x <- "Error"
   }
@@ -2655,7 +2655,7 @@ output$nclose <- renderText({
                    cmode=input$nclosecmode)},
     error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$close <- x[[1]]
     x <- "Error"
   }
@@ -2704,7 +2704,7 @@ output$nstress <- renderText({
                                  cmode=input$nstresscmode)},
                 error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$stress <- x[[1]]
     x <- "Error"
   }
@@ -2753,7 +2753,7 @@ output$ngraphcent <- renderText({
                                 cmode=input$ngraphcentcmode)},
            error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$gr <- x[[1]]
     x <- "Error"
   }
@@ -2797,12 +2797,12 @@ output$nevcent <- renderText({
     gmode <- 'graph'
   }
   x <- ""
-  x <- tryCatch({x <- sna::evcent(nw(), nodes=input$nodeind, 
+  x <- tryCatch({x <- sna::evcent(nw(), nodes=input$nodeind,
                              gmode=gmode, diag=has.loops(nw()))
                 if(is.nan(x)) {stop("NaN")}; x},
                 error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$f <- x[[1]]
     x <- "Error"
   }
@@ -2849,7 +2849,7 @@ output$ninfocent <- renderText({
                               diag=has.loops(nw()), cmode=input$ninfocentcmode)},
                 error = function(e) {e})
   if("error" %in% class(x)) {
-    state$err <- 1
+    state$err <- 0
     values$err$g <- x[[1]]
     x <- "Error"
   }
@@ -2890,19 +2890,19 @@ output$ninfocentmax <- renderText({
 # Error gathering
 
 observeEvent(nw(), {
-  state$err <- 0
+  state$err <- 1
   values$err <- list()
 })
 
-output$errstate <- renderText({
-  return("1")
+observeEvent(state$err, {
+  session$sendCustomMessage(type = "errstate", message = state$err)
 })
 
 output$errbox <- renderPrint({
-  err <- 0
+  err <- 1
   if(!is.null(state$err)){
     err <- state$err
-    if(err > 0){
+    if(err < 1){
       err <- paste0("Error ", c(1:length(values$err)), ": ", values$err, "\n")
     }
   }
@@ -3187,9 +3187,9 @@ outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 # Goodness of Fit ---------------------------------------------------------
 
 
-# One drawback of the navbarPage layout option is that you can't specify 
-# certain elements or panels to show up on multiple pages. Furthermore, 
-# Shiny will not let you use the same piece of output from server.R twice 
+# One drawback of the navbarPage layout option is that you can't specify
+# certain elements or panels to show up on multiple pages. Furthermore,
+# Shiny will not let you use the same piece of output from server.R twice
 # in ui.R. Therefore, output$currentdataset2 and output$check2 are the same as
 # output$currentdataset and output$check1 with different names.
 
@@ -3522,8 +3522,8 @@ observe({
   input$choosemodel_sim
   input$fitButton
   state$sim <- 0 #simulations are outdated
-  updateNumericInput(session, "thissim", 
-                     label = "Choose a simulation to plot:", 
+  updateNumericInput(session, "thissim",
+                     label = "Choose a simulation to plot:",
                      value = 1, min = 1, max = input$nsims)
 })
 
