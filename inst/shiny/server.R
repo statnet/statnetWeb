@@ -161,6 +161,14 @@ nwinit <- reactive({
       }
     }
   }
+  if(input$filetype == 6){
+    observeEvent(input$dbloadButton, {
+      drop_get(paste0("statnetWeb/", input$dbloadName, ".rds"),
+               overwrite = TRUE)
+      nw_var <- readRDS(paste0(input$dbloadName, ".rds"))
+      nw_var <- nw_var$nw
+    })
+  }
 
   return(nw_var)
 })
@@ -3666,5 +3674,10 @@ output$simplotdownload <- downloadHandler(
   }
 )
 
+
+observeEvent(input$dbButton, {
+  data <- list(nw = nw(), mod = values$modelfits)
+  saveData(data, input$savename)
+})
 
 })

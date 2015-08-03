@@ -27,10 +27,10 @@ inlineSelectInput <- function(inputId, label, choices, ...) {
   } else {
     labeldisp <- "display: inline;"
   }
-  
+
   tagList(tags$label(label, `for` = inputId, style = labeldisp),
-          tags$select(id = inputId, choices = choices, ..., 
-                      class = "shiny-bound-input inlineselect", 
+          tags$select(id = inputId, choices = choices, ...,
+                      class = "shiny-bound-input inlineselect",
                       lapply(choices, tags$option)))
 }
 
@@ -71,8 +71,8 @@ cugstats <- function(x, term, directed, loops) {
 }
 
 
-# Takes an ergm object and gathers some of the information from 
-# summary.ergm, in preparation to be passed to the function 
+# Takes an ergm object and gathers some of the information from
+# summary.ergm, in preparation to be passed to the function
 # coef.comparison.
 ergm.info <- function(object) {
   coefs <- object$coef
@@ -83,7 +83,7 @@ ergm.info <- function(object) {
                          cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                          symbols = c("***", "**", "*", ".", " "), legend = F)
   starredcoef <- paste0(format(coefs, digits = 3), signif.stars)
-  
+
   ans <- list()
   count <- 1
   for (i in terms) {
@@ -96,7 +96,7 @@ ergm.info <- function(object) {
 }
 
 
-# Takes in a list of multiple outputs from ergm.info, 
+# Takes in a list of multiple outputs from ergm.info,
 # formatting it all into a table comparing up to 5 models.
 coef.comparison <- function(coeflist) {
   nmod <- length(coeflist)
@@ -112,7 +112,7 @@ coef.comparison <- function(coeflist) {
   terms <- c(terms[-which(terms == "AIC")], "AIC")
   terms <- c(terms[-which(terms == "BIC")], "BIC")
   mat <- matrix(nrow = length(terms), ncol = nmod)
-  
+
   for (k in 1:nmod) {
     row <- 1
     for (l in terms) {
@@ -124,7 +124,7 @@ coef.comparison <- function(coeflist) {
       row <- row + 1
     }
   }
-  
+
   rownames(mat) <- terms
   colnames(mat) <- paste0("Model", 1:nmod)
   return(print(mat, quote = FALSE))
@@ -136,7 +136,7 @@ stat.comparison <- function(statlist) {
     stop("No model summaries were passed to stat.comparison")
   if (nmod > 5)
     stop("List of length greater than 5 passed to stat.comparison")
-  
+
   statvec <- c()
   for (j in 1:nmod) {
     for (k in 1:length(statlist[[j]])) {
@@ -145,6 +145,16 @@ stat.comparison <- function(statlist) {
       }
     }
   }
-  
+
   return(statvec)
+}
+
+# Add file to dropbox
+saveData <- function(data, name) {
+  fileName <- paste0(name, ".rds")
+  # Write the data to a temporary file locally
+  filePath <- file.path(tempdir(), fileName)
+  saveRDS(data, file = filePath)
+  # Upload the file to Dropbox
+  drop_upload(filePath, dest = "statnetWeb")
 }

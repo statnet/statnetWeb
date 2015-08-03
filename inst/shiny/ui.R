@@ -4,7 +4,7 @@ library(statnetWeb)
 # Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
 # The first thing to be specified is the type of page to display. The `navbarPage`
 # includes a navigation bar at the top of the page and each tab leads to different
-# pages of content. 
+# pages of content.
 
 shinyUI(
   navbarPage(
@@ -172,7 +172,7 @@ tabPanel(title='Data', value='tab2',
                               });'))
            )
          ),
-         
+
 # Conditional panels are only displayed when a specified condition is true.
 # The condition is a javascript expression that can refer to the current
 # values of input or output objects. When the condition is false, the panel
@@ -191,7 +191,8 @@ fluidRow(
                                            'statnet network object (*.rds)' = 1,
                                            'matrix of relational data (*.csv or *.rds)' = 4,
                                            'Pajek network (*.net)' = 2,
-                                           'Pajek project (*.paj)' = 3))
+                                           'Pajek project (*.paj)' = 3,
+                                           'network from Dropbox' = 6))
                     ),
              conditionalPanel(condition = 'input.filetype < 5',
                column(6,
@@ -271,6 +272,10 @@ fluidRow(
                                   'into the current working directory. The full path to a new location can be',
                                   'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
                                   'to use a save dialog box.')
+                              ),
+             conditionalPanel(condition='input.filetype == 6',
+                              textInput("dbloadName", label = "Name of file"),
+                              actionButton("dbloadButton", label = "Load network")
                               )
            )),
          conditionalPanel(
@@ -516,7 +521,7 @@ fluidRow(
                  br(),
                  plotOutput("cugtest"),
                  br(),
-                 downloadButton('cugtestdownload', label = "Download Plot", 
+                 downloadButton('cugtestdownload', label = "Download Plot",
                                 class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'),
@@ -524,7 +529,7 @@ fluidRow(
                wellPanel(id="mixmxbox",
                  fluidRow(
                    column(6, uiOutput('mixmxchooser')),
-                   column(6, downloadButton("mixmxdownload", 
+                   column(6, downloadButton("mixmxdownload",
                                             class = "shiftdown25"))
                  ),
                  fluidRow(
@@ -723,7 +728,7 @@ fluidRow(
                    br(),
                    actionButton("refreshplot", icon = icon("refresh"),
                                 label = "Refresh Plot", class = "btn-sm"),
-                   downloadButton('nwplotdownload', 
+                   downloadButton('nwplotdownload',
                                   label = "Download Plot", class = "btn-sm")),
 
                 conditionalPanel(condition='input.plottabs == "Attributes"',
@@ -863,9 +868,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(12,
-                               a("Commonly used ergm terms", 
+                               a("Commonly used ergm terms",
                                  href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
-                                 target = "_blank"), br(), 
+                                 target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
                                  target = "_blank"), br(), br()
@@ -886,9 +891,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                 div(id = "termexpand",
                                     icon(name = "angle-double-up"))
                                )
-                        
+
                       )
-                  
+
                   )
                  ),
                  tabPanel("Control Options",
@@ -1073,7 +1078,7 @@ tabPanel(title='Goodness of Fit',value='tab6',
            directed networks is ', code('~ idegree + odegree + espartners +
                                         distance'), '.'),
          fluidRow(
-            column(2, 
+            column(2,
                    p("Goodness of fit term:"),
                    selectInput('gofterm', label = NULL,
                                c('Default', 'degree','idegree','odegree',
@@ -1184,7 +1189,7 @@ tabPanel(title='Simulations', value='tab7',
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
                  column(5,
-                        numericInput('thissim', 
+                        numericInput('thissim',
                                      label = 'Choose a simulation to plot:',
                                      min = 1, value = 1)
                         ),
@@ -1265,6 +1270,12 @@ tabPanel(title='Simulations', value='tab7',
                         )
                     )
            )),
+
+         fluidRow(
+           textInput("savename", label = "Name of file"),
+           actionButton("dbButton", label = "Save to Dropbox")
+         ),
+
          div(id='simtabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
          div(class="helper-box", style="display:none",
              p('Choose how many simulations to run and click "Simulate".',
