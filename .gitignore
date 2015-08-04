@@ -1,4 +1,4 @@
-# History files 
+# History files
 .Rhistory
 
 # Example code in package build process
@@ -18,3 +18,6 @@ shinyapps/
 inst/shiny/rsconnect
 
 .DS_Store
+
+#authorization for dropbox
+inst/shiny/.httr-oauth
