@@ -3680,7 +3680,7 @@ output$simplotdownload <- downloadHandler(
 )
 
 
-observeEvent(input$dbButton, {
+observeEvent(input$dbsaveButton, {
   data <- list(nw = nw(), mod = values$modelfits)
   saveData(data, input$savename)
 })

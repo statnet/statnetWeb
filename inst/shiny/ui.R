@@ -1225,7 +1225,7 @@ tabPanel(title='Simulations', value='tab7',
                                            min = 0, max = 1, value = 1),
                                br(),
                                uiOutput('dynamiccolor2'),
-#                                          span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
+                               #span(bsAlert(inputId = 'colorwarning2'), style='font-size: 0.82em;'),
                                uiOutput('dynamicsize2'),
                                downloadButton('simplotdownload',
                                               label = 'Download Plot', class="btn-sm"))
@@ -1270,12 +1270,19 @@ tabPanel(title='Simulations', value='tab7',
                            )
                         )
                     )
-           )),
+           )
+          ),
 
-         fluidRow(
-           textInput("savename", label = "Name of file"),
-           actionButton("dbButton", label = "Save to Dropbox")
-         ),
+         column(4, offset = 7,
+                wellPanel(
+                  tags$label("Save project to Dropbox"),
+                  p("Name of file:"),
+                  textInput("savename", label = NULL),
+                  actionButton("dbsaveButton", label = "Save",
+                               icon = icon("dropbox"), class = "btn-sm")
+                )
+                ),
+
 
          div(id='simtabhelp', class='helper-btn', icon('question-circle', 'fa-2x')),
          div(class="helper-box", style="display:none",
