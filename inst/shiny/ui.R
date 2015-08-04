@@ -210,7 +210,12 @@ fluidRow(
                                           'molecule', 'samplike', 'samplk1',
                                           'samplk2', 'samplk3'))
                 )
-               )
+               ),
+             conditionalPanel(condition='input.filetype == 6',
+                column(6,
+                       textInput("dbloadName", label = "Name of file"),
+                       actionButton("dbloadButton", label = "Load network"))
+                )
              ),
            fluidRow(
              conditionalPanel(condition='input.filetype == 4',
@@ -272,10 +277,6 @@ fluidRow(
                                   'into the current working directory. The full path to a new location can be',
                                   'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
                                   'to use a save dialog box.')
-                              ),
-             conditionalPanel(condition='input.filetype == 6',
-                              textInput("dbloadName", label = "Name of file"),
-                              actionButton("dbloadButton", label = "Load network")
                               )
            )),
          conditionalPanel(

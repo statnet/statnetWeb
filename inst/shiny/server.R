@@ -165,9 +165,11 @@ nwinit <- reactive({
     observeEvent(input$dbloadButton, {
       drop_get(paste0("statnetWeb/", input$dbloadName, ".rds"),
                overwrite = TRUE)
+    })
+    if(input$dbloadButton > 0){
       nw_var <- readRDS(paste0(input$dbloadName, ".rds"))
       nw_var <- nw_var$nw
-    })
+    }
   }
 
   return(nw_var)
@@ -189,6 +191,9 @@ nwname <- reactive({
   name <- input$rawdatafile[1,1]
   if(input$filetype == 5){
     name <- input$samplenet
+  }
+  if(input$filetype == 6){
+    name <- input$dbloadName
   }
   name
 })
