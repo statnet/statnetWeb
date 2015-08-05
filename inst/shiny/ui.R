@@ -4,7 +4,7 @@ library(statnetWeb)
 # Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
 # The first thing to be specified is the type of page to display. The `navbarPage`
 # includes a navigation bar at the top of the page and each tab leads to different
-# pages of content. 
+# pages of content.
 
 shinyUI(
   navbarPage(
@@ -54,26 +54,41 @@ tabPanel(title=span('statnetWeb', id="sWtitle"),
               "or by email to the statnet_help mailing list (see", actionLink("helpLink", "Help"), "tab).")
           ),
           div(id="citebox",
-            p('If you use statnet or statnetWeb, please cite them. BibTeX entries are below.'),
-            p(strong("statnet")),
-
+            tabsetPanel(
+              tabPanel("BibTeX",
+p(strong("statnet")),
 tags$pre(id='scitation','@Manual{handcock:statnet,
-title = {statnet: Software tools for the Statistical Modeling of Network Data},
-author = {Mark S. Handcock and David R. Hunter and Carter T. Butts and Steven M. Goodreau and Martina Morris},
-year = {2003},
-address = {Seattle, WA},
-url = {http://statnetproject.org}
+  title = {statnet: Software tools for the Statistical Modeling of Network Data},
+  author = {Mark S. Handcock and David R. Hunter and Carter T. Butts and Steven M. Goodreau and Martina Morris},
+  year = {2003},
+  address = {Seattle, WA},
+  url = {http://statnetproject.org}
 }'),
 
 p(strong("statnetWeb")),
-tags$pre(id='swcitation','@Unpublished{beylerian:statnetWeb,
-title = {statnetWeb: An R-Shiny interface for statnet network analysis software},
-author = {Emily Beylerian and Martina Morris and Samuel Jenness and Kirk Li},
-year = {2014},
-address = {Seattle, WA},
-url = {https://github.com/statnet/statnetWeb}
-}'),
-            p('Additional citation information for statnet',
+tags$pre(id='swcitation',"@Manual{beylerian:statnetWeb,
+  title = {\\pkg{statnetWeb}: A Graphical User Interface for Network Modeling with 'Statnet'},
+  author = {Emily N. Beylerian and Samuel Jenness and Kirk Li and Martina Morris},
+  year = {2015},
+  note = {\\proglang{R}~package version~0.3.4},
+  address = {Seattle, WA},
+  url = {https://cran.r-project.org/web/packages/statnetWeb/}
+}")
+                       ),
+              tabPanel("Other",
+p(strong("statnet")),
+tags$pre("Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, and
+Martina Morris (2003). statnet: Software tools for the Statistical Modeling
+of Network Data. URL http://statnetproject.org"),
+
+p(strong("statnetWeb")),
+tags$pre("Emily N. Beylerian, Samuel Jenness, Kirk Li, and Martina Morris (2014).
+statnetWeb: A Graphical User Interface for Network Modeling with 'Statnet'.")
+                       )
+            ),
+
+            p('If you use statnet or statnetWeb, please cite them.',
+              'Additional citation information for statnet',
               'and the component packages can be found here:'),
             tags$ul(
               tags$li(a('Citing statnet',
@@ -172,7 +187,7 @@ tabPanel(title='Data', value='tab2',
                               });'))
            )
          ),
-         
+
 # Conditional panels are only displayed when a specified condition is true.
 # The condition is a javascript expression that can refer to the current
 # values of input or output objects. When the condition is false, the panel
@@ -516,7 +531,7 @@ fluidRow(
                  br(),
                  plotOutput("cugtest"),
                  br(),
-                 downloadButton('cugtestdownload', label = "Download Plot", 
+                 downloadButton('cugtestdownload', label = "Download Plot",
                                 class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'),
@@ -524,7 +539,7 @@ fluidRow(
                wellPanel(id="mixmxbox",
                  fluidRow(
                    column(6, uiOutput('mixmxchooser')),
-                   column(6, downloadButton("mixmxdownload", 
+                   column(6, downloadButton("mixmxdownload",
                                             class = "shiftdown25"))
                  ),
                  fluidRow(
@@ -723,7 +738,7 @@ fluidRow(
                    br(),
                    actionButton("refreshplot", icon = icon("refresh"),
                                 label = "Refresh Plot", class = "btn-sm"),
-                   downloadButton('nwplotdownload', 
+                   downloadButton('nwplotdownload',
                                   label = "Download Plot", class = "btn-sm")),
 
                 conditionalPanel(condition='input.plottabs == "Attributes"',
@@ -863,9 +878,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(12,
-                               a("Commonly used ergm terms", 
+                               a("Commonly used ergm terms",
                                  href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
-                                 target = "_blank"), br(), 
+                                 target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
                                  target = "_blank"), br(), br()
@@ -886,9 +901,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                 div(id = "termexpand",
                                     icon(name = "angle-double-up"))
                                )
-                        
+
                       )
-                  
+
                   )
                  ),
                  tabPanel("Control Options",
@@ -1073,7 +1088,7 @@ tabPanel(title='Goodness of Fit',value='tab6',
            directed networks is ', code('~ idegree + odegree + espartners +
                                         distance'), '.'),
          fluidRow(
-            column(2, 
+            column(2,
                    p("Goodness of fit term:"),
                    selectInput('gofterm', label = NULL,
                                c('Default', 'degree','idegree','odegree',
@@ -1184,7 +1199,7 @@ tabPanel(title='Simulations', value='tab7',
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
                  column(5,
-                        numericInput('thissim', 
+                        numericInput('thissim',
                                      label = 'Choose a simulation to plot:',
                                      min = 1, value = 1)
                         ),
