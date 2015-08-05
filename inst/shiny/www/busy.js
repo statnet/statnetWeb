@@ -15,15 +15,3 @@ setInterval(function(){
 }, 100);
 
 
-
-
-
-Shiny.addCustomMessageHandler("errstate",
-  function(message){
-    if (message===0) {
-      $('div.error').show();
-    } else {
-      $('div.error').hide();
-    }
-  }
-);

@@ -210,7 +210,12 @@ div.error {
   position: fixed;
   bottom: 10px;
   right: 10px;
-  display: block;
+}
+#errButton{
+  float:right;
+}
+#errbox {
+  display: none;
   padding: 15px 15px 5px 15px;
   max-width: 350px;
   border: 1px solid;
@@ -309,8 +314,8 @@ div .mcmcopt {
 }
 
 .inlineselect {
-  width:100px; 
-  line-height:20px; 
+  width:100px;
+  line-height:20px;
   font-size:12px;
 }
 

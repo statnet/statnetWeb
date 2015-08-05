@@ -206,7 +206,7 @@ $(document).ready(function(){
     }
 
   });
-  
+
   $("#termdocbox").click(function(){
     $("#termexpand i").toggleClass("fa-angle-double-down fa-angle-double-up");
     if($("#termdocbox").height()<100){
@@ -229,6 +229,10 @@ $(document).ready(function(){
 
   $("#mcmchelper").click(function(){
     $("#mcmchelpbox").toggle(500);
+  });
+
+  $("#errButton").click(function(){
+    $("#errbox").toggle();
   });
 
 });

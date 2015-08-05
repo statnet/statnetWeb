@@ -4,7 +4,7 @@ library(statnetWeb)
 # Everything that gets displayed inside the app is enclosed in a call to `shinyUI`.
 # The first thing to be specified is the type of page to display. The `navbarPage`
 # includes a navigation bar at the top of the page and each tab leads to different
-# pages of content. 
+# pages of content.
 
 shinyUI(
   navbarPage(
@@ -172,7 +172,7 @@ tabPanel(title='Data', value='tab2',
                               });'))
            )
          ),
-         
+
 # Conditional panels are only displayed when a specified condition is true.
 # The condition is a javascript expression that can refer to the current
 # values of input or output objects. When the condition is false, the panel
@@ -479,9 +479,9 @@ fluidRow(
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
                # determine if showing the static or interactive plot
-               conditionalPanel("input.activePlot == 'Static'", 
+               conditionalPanel("input.activePlot == 'Static'",
                                 plotOutput('nwplot')),
-               conditionalPanel("input.activePlot == 'Interactive'", 
+               conditionalPanel("input.activePlot == 'Interactive'",
                                 htmlOutput("d3NetPlot"))
         ),
       tabPanel('Attributes', br(),
@@ -520,7 +520,7 @@ fluidRow(
                  br(),
                  plotOutput("cugtest"),
                  br(),
-                 downloadButton('cugtestdownload', label = "Download Plot", 
+                 downloadButton('cugtestdownload', label = "Download Plot",
                                 class="btn-sm")
                ),
                h5('Mixing matrix', icon('angle-double-left'),
@@ -528,7 +528,7 @@ fluidRow(
                wellPanel(id="mixmxbox",
                  fluidRow(
                    column(6, uiOutput('mixmxchooser')),
-                   column(6, downloadButton("mixmxdownload", 
+                   column(6, downloadButton("mixmxdownload",
                                             class = "shiftdown25"))
                  ),
                  fluidRow(
@@ -687,7 +687,8 @@ fluidRow(
                      column(2, p(textOutput('ninfocentmax')))
                      )
                  ),
-              div(class = "error", uiOutput("errbox"))
+              div(class = "error", uiOutput("errbox"), br(),
+                  actionButton("errButton", label = "Show Errors", class = "btn-sm"))
 
 )
 
@@ -727,10 +728,10 @@ fluidRow(
                    #span(bsAlert(inputId = 'colorwarning'), style='font-size: 0.82em;'),
                    uiOutput('dynamicsize'),
                    br(),
-                   downloadButton('nwplotdownload', 
+                   downloadButton('nwplotdownload',
                                   label = "Download Static Plot", class="btn-sm")
                ),
-               
+
                conditionalPanel(condition='input.plottabs == "Attributes"',
                    uiOutput("attrcheck")
                ),
@@ -869,9 +870,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                   div(class="placeholder",
                       fluidRow(
                         column(12,
-                               a("Commonly used ergm terms", 
+                               a("Commonly used ergm terms",
                                  href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
-                                 target = "_blank"), br(), 
+                                 target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
                                  target = "_blank"), br(), br()
@@ -892,9 +893,9 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                                 div(id = "termexpand",
                                     icon(name = "angle-double-up"))
                                )
-                        
+
                       )
-                  
+
                   )
                  ),
                  tabPanel("Control Options",
@@ -1079,7 +1080,7 @@ tabPanel(title='Goodness of Fit',value='tab6',
            directed networks is ', code('~ idegree + odegree + espartners +
                                         distance'), '.'),
          fluidRow(
-            column(2, 
+            column(2,
                    p("Goodness of fit term:"),
                    selectInput('gofterm', label = NULL,
                                c('Default', 'degree','idegree','odegree',
@@ -1190,7 +1191,7 @@ tabPanel(title='Simulations', value='tab7',
              tabsetPanel(id="simplotpanel",
              tabPanel("Network Plots", br(),
                  column(5,
-                        numericInput('thissim', 
+                        numericInput('thissim',
                                      label = 'Choose a simulation to plot:',
                                      min = 1, value = 1)
                         ),
