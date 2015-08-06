@@ -164,8 +164,8 @@ nwinit <- reactive({
   }
   if(input$filetype == 6){
     observeEvent(input$dbloadButton, {
-      drop_get(paste0("statnetWeb/", input$dbloadName, ".rds"),
-               overwrite = TRUE)
+      rdrop2::drop_get(paste0("statnetWeb/", input$dbloadName, ".rds"),
+               overwrite = TRUE, dtoken = input$dbauthFile)
     })
     if(input$dbloadButton > 0){
       nw_var <- readRDS(paste0(input$dbloadName, ".rds"))
