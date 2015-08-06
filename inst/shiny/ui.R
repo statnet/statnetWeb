@@ -213,7 +213,8 @@ fluidRow(
                ),
              conditionalPanel(condition='input.filetype == 6',
                 column(6,
-                       textInput("dbloadName", label = "Name of file"),
+                       fileInput("dbauthFile", label= "Dropbox auth file"),
+                       textInput("dbloadName", label = "Name of network file"),
                        actionButton("dbloadButton", label = "Load network"))
                 )
              ),
@@ -277,7 +278,25 @@ fluidRow(
                                   'into the current working directory. The full path to a new location can be',
                                   'specified in the ', code('file='), 'argument, or set', code('file=file.choose(new=TRUE)'),
                                   'to use a save dialog box.')
-                              )
+                              ),
+             conditionalPanel(condition='input.filetype == 6',
+                              strong("Before loading a file from Dropbox"),
+                                tags$ul(
+                                  tags$li("Upload the authorization file to access your Dropbox"),
+                                  tags$ul(
+                                    tags$li("Install the", tags$code("rdrop2"), "package in R"),
+                                    tags$li("Run the function", tags$code("drop_auth()"), "to create an authorization file")
+                                  ),
+                                  tags$li("If you did not save the network file directly from statnetWeb,", 
+                                          "make sure it is in the right format"),
+                                  tags$ul(
+                                    tags$li("With a statnet network object inside R:"),
+                                    tags$li(tags$code("proj <- list(nw = nwobject, ...)")),
+                                    tags$li(tags$code("saveRDS(object = proj, file = 'filename.rds')")),
+                                    tags$li("Add the file to your Dropbox")
+                                  ),
+                                  tags$li("Type in the name of the file (without extension) and click the load button")
+                                ))
            )),
          conditionalPanel(
            condition="input.filetype == 5 & input.samplenet != ''",
