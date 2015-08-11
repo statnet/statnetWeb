@@ -2118,9 +2118,10 @@ output$dynamiccugterm <- renderUI({
   if(!is.network(nw())){return()}
   if(is.directed(nw())){
     choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
-                 "transitive triads" = "transitive", "twopath")
+                 "transitive triads" = "transitive", "triangle", "twopath")
   } else {
-    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg")
+    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg",
+                 "triangle")
   }
   #matchingterms <- splitargs(nw = nw())
   #choices <- matchingterms$names[matchingterms$args == "()"]
