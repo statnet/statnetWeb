@@ -1303,11 +1303,19 @@ output$nwplot <- renderPlot({
 
   nw_var <- nw()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
+  if(is.bipartite(nw())){
+    sides <- c(rep(50, nw()$gal$bipartite), 
+               rep(3, nodes() - nw()$gal$bipartite))
+  } else{
+    sides <- 50
+  }
+
   par(mar = c(0, 0, 0, 0))
   plot.network(nw_var, coord = coords(),
                displayisolates = input$iso,
                displaylabels = input$vnames,
                vertex.col = color,
+               vertex.sides = sides,
                vertex.cex = nodesize())
   if(input$colorby != 2){
     legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill(),
