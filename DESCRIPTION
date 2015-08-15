@@ -1,7 +1,7 @@
 Package: statnetWeb
 Type: Package
 Title: A Graphical User Interface for Network Modeling with 'Statnet'
-Version: 0.3.4
+Version: 0.3.5
 Date: 2015-05-21
 Authors@R: c(
   person("Emily", "Beylerian", email = "ebey@uw.edu", role = c("cre", "aut")),
@@ -17,7 +17,6 @@ Depends:
   ergm (>= 3.2.4),
   network
 Imports:
-  DT,
   sna,
   RColorBrewer
 Suggests:

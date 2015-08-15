@@ -496,7 +496,7 @@ fluidRow(
                plotOutput('nwplot')
                ),
       tabPanel('Attributes', br(),
-               shiny::dataTableOutput("attrtbl")
+              dataTableOutput("attrtbl")
                ),
       tabPanel('Degree Distribution',
                p(class='helper', id='ddhelper', icon('question-circle')),

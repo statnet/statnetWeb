@@ -1304,7 +1304,7 @@ output$nwplot <- renderPlot({
   nw_var <- nw()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
   if(is.bipartite(nw())){
-    sides <- c(rep(50, nw()$gal$bipartite), 
+    sides <- c(rep(50, nw()$gal$bipartite),
                rep(3, nodes() - nw()$gal$bipartite))
   } else{
     sides <- 50
@@ -1342,7 +1342,7 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
-output$attrtbl <- shiny::renderDataTable({
+output$attrtbl <- renderDataTable({
   attrs <- menuattr()
   if(is.na(as.numeric(network.vertex.names(nw()))[1])){
     df <- data.frame(Names = network.vertex.names(nw()))
