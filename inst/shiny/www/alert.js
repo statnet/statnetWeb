@@ -47,16 +47,6 @@ $(document).ready(function(){
     $("#symmundir").toggleClass("active", true);
   });
 
-  /*$("#staticPlot").click(function(){
-    $("#staticPlot").toggleClass("active", true);
-    $("#activePlot").toggleClass("active", false);
-  });
-
-  $("#activePlot").click(function(){
-    $("#activePlot").toggleClass("active", true);
-    $("#staticPlot").toggleClass("active", false);
-  });*/
-
   $("#countButton_dd").click(function(){
     $("#countButton_dd").toggleClass("active", true);
     $("#percButton_dd").toggleClass("active", false);
