@@ -2,7 +2,7 @@ Package: statnetWeb
 Type: Package
 Title: A Graphical User Interface for Network Modeling with 'Statnet'
 Version: 0.3.5
-Date: 2015-05-21
+Date: 2015-08-20
 Authors@R: c(
   person("Emily", "Beylerian", email = "ebey@uw.edu", role = c("cre", "aut")),
   person("Kirk", "Li", email = "kirkli@uw.edu", role = "ctb"),
@@ -18,8 +18,7 @@ Depends:
   network
 Imports:
   sna,
-  RColorBrewer,
-  ndtv
+  RColorBrewer
 Suggests:
   latticeExtra
 LazyData: true
