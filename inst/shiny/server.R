@@ -643,7 +643,6 @@ observe({
   if(input$resetformulaButton==0) {return()}
   isolate({
     values$input_termslist <- list()
-    updateTextInput(session, inputId='terms', value='')
   })
 })
 
