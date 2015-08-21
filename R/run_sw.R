@@ -11,9 +11,8 @@
 #' \dontrun{
 #' run_sw()
 #' }
-#' 
+#'
 #'
 run_sw <- function() {
-  shiny::runApp(system.file("shiny", package = "statnetWeb"),
-                launch.browswer = TRUE)
+  shiny::runApp(system.file("shiny", package = "statnetWeb"))
 }
