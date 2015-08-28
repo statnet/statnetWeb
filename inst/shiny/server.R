@@ -1293,6 +1293,11 @@ outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 # y = (x-a)/(b-a) * (d-c) + c, where x is the input in some range [a,b]
 # and y is the output in range [c,d].
 
+clickedpoints <- reactive({
+  p <- nearPoints(nwdf(), input$plot_click, xvar = "cx", yvar = "cy",
+                  threshold = 10, maxpoints = 3)
+})
+
 output$nwplot <- renderPlot({
   if (!is.network(nw())){
     return()
@@ -1321,7 +1326,30 @@ output$nwplot <- renderPlot({
     legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill(),
            bty='n')
   }
+
+  if(!is.null(values$clickedpoints)){
+    if(nrow(values$clickedpoints) > 0){
+      #isolate(legend("topleft",
+      #               legend = values$clickedpoints[, c("Names", menuattr())]))
+      cx <- values$clickedpoints[, "cx"]
+      cy <- values$clickedpoints[, "cy"]
+      name <- values$clickedpoints[, "Names"]
+      attrlabel <- paste("\n", menuattr())
+      text(x = cx, y = cy,
+           labels = paste0(name,
+                           paste(attrlabel, values$clickedpoints[,menuattr()],
+                                 collapse = "")),
+           pos = 4, offset = 1)
+    }
+  }
+
 })
+
+observeEvent(input$plot_click, {
+  values$clickedpoints <- nearPoints(nwdf(), input$plot_click, xvar = "cx", yvar = "cy",
+                                     threshold = 10, maxpoints = 3)
+})
+
 
 
 output$nwplotdownload <- downloadHandler(
@@ -1343,7 +1371,8 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
-output$attrtbl <- renderDataTable({
+#dataframe of nodes, their attributes, and their coordinates in nwplot
+nwdf <- reactive({
   attrs <- menuattr()
   if(is.na(as.numeric(network.vertex.names(nw()))[1])){
     df <- data.frame(Names = network.vertex.names(nw()))
@@ -1354,6 +1383,13 @@ output$attrtbl <- renderDataTable({
     df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
   }
   df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  df[["cx"]] <- coords()[,1]
+  df[["cy"]] <- coords()[,2]
+  df
+})
+
+output$attrtbl <- renderDataTable({
+  df <- nwdf()
   dt <- df[, c("Names", input$attribcols)]
   dt
 }, options = list(pageLength = 10))

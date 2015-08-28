@@ -493,7 +493,11 @@ fluidRow(
  column(7,
     tabsetPanel(id='plottabs',
       tabPanel('Network Plot', br(),
-                plotOutput('nwplot')
+                plotOutput('nwplot', click = "plot_click",
+                           dblclick = dblclickOpts(id = "plot_dblclick"),
+                           hover = hoverOpts(id = "plot_hover"),
+                           brush = brushOpts(id = "plot_brush")
+                           )
         ),
       tabPanel('Attributes', br(),
               dataTableOutput("attrtbl")
