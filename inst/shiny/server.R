@@ -547,7 +547,7 @@ vcol <- reactive({
   if(!is.network(nw())){return()}
   nw_var <- nw()
   if(input$colorby == 2){
-    vcol <- 2
+    vcol <- rep(2, nodes())
   } else {
     full_list <- get.vertex.attribute(nw_var,input$colorby)
     short_list <- sort(unique(full_list))
@@ -1293,11 +1293,6 @@ outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
 # y = (x-a)/(b-a) * (d-c) + c, where x is the input in some range [a,b]
 # and y is the output in range [c,d].
 
-clickedpoints <- reactive({
-  p <- nearPoints(nwdf(), input$plot_click, xvar = "cx", yvar = "cy",
-                  threshold = 10, maxpoints = 3)
-})
-
 output$nwplot <- renderPlot({
   if (!is.network(nw())){
     return()
@@ -1308,6 +1303,9 @@ output$nwplot <- renderPlot({
 
   nw_var <- nw()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
+  ecolor <- 1
+  vborder <- 1
+  vcex <- nodesize()
   if(is.bipartite(nw())){
     sides <- c(rep(50, nw()$gal$bipartite),
                rep(3, nodes() - nw()$gal$bipartite))
@@ -1315,16 +1313,36 @@ output$nwplot <- renderPlot({
     sides <- 50
   }
 
+  if(!is.null(values$hoverpoints)){
+    if(nrow(values$hoverpoints) > 0){
+      nhov <- as.numeric(rownames(values$hoverpoints))
+      vcex <- rep(1, nodes())
+      vcex[nhov] <- 2
+    }
+  }
+  if(!is.null(values$clickedpoints)){
+    if(nrow(values$clickedpoints) > 0){
+      nclick <- as.numeric(rownames(values$clickedpoints))
+      color <- adjustcolor(vcol(), alpha.f = 0.4)
+      color[nclick] <- vcol()[nclick]
+      ecolor <- "lightgrey"
+      vborder <- rep("lightgrey", nodes())
+      vborder[nclick] <- 1
+    }
+  }
+
   par(mar = c(0, 0, 0, 0))
   plot.network(nw_var, coord = coords(),
                displayisolates = input$iso,
                displaylabels = input$vnames,
                vertex.col = color,
+               vertex.border = vborder,
                vertex.sides = sides,
-               vertex.cex = nodesize())
+               vertex.cex = vcex,
+               edge.col = ecolor)
   if(input$colorby != 2){
-    legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill(),
-           bty='n')
+    legend('bottomright', title = input$colorby, legend = legendlabels(),
+           fill = legendfill(), bty='n')
   }
 
   if(!is.null(values$clickedpoints)){
@@ -1337,7 +1355,7 @@ output$nwplot <- renderPlot({
       attrlabel <- paste("\n", menuattr())
       text(x = cx, y = cy,
            labels = paste0(name,
-                           paste(attrlabel, values$clickedpoints[,menuattr()],
+                           paste(attrlabel, values$clickedpoints[, menuattr()],
                                  collapse = "")),
            pos = 4, offset = 1)
     }
@@ -1346,11 +1364,26 @@ output$nwplot <- renderPlot({
 })
 
 observeEvent(input$plot_click, {
-  values$clickedpoints <- nearPoints(nwdf(), input$plot_click, xvar = "cx", yvar = "cy",
-                                     threshold = 10, maxpoints = 3)
+  values$clickedpoints <- nearPoints(nwdf(), input$plot_click,
+                                     xvar = "cx", yvar = "cy",
+                                     threshold = 10, maxpoints = 1)
+})
+observeEvent(input$plot_hover, {
+  values$hoverpoints <- nearPoints(nwdf(), input$plot_hover,
+                                   xvar = "cx", yvar = "cy",
+                                   threshold = 10, maxpoints = 1)
+})
+observe({
+  input$plot_dblclick
+  input$plot_click
+  values$dblclickpoints <- nearPoints(nwdf(), input$plot_dblclick,
+                                      xvar = "cx", yvar = "cy",
+                                      threshold = 10, maxpoints = 1)
 })
 
-
+output$hover <- renderPrint(
+  rownames(values$dblclickpoints)
+)
 
 output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
