@@ -463,6 +463,10 @@ nw <- reactive({
   nw_var
 })
 
+elist <- reactive({
+  if(!is.network(nwinit())) return()
+  as.edgelist(nw())
+})
 
 #get coordinates to plot network with
 coords <- reactive({
@@ -1330,6 +1334,19 @@ output$nwplot <- renderPlot({
       vborder[nclick] <- 1
     }
   }
+  if(!is.null(values$dblclickpoints)){
+    if(nrow(values$dblclickpoints) > 0){
+      ndbl <- as.numeric(rownames(values$dblclickpoints))
+      neighb <- nw()[ndbl,] == 1
+      color <- adjustcolor(vcol(), alpha.f = 0.4)
+      color[ndbl] <- vcol()[ndbl]
+      ecolor <- rep("lightgrey", nedgesinit())
+      ecolor[apply(elist(), MARGIN = 1, FUN = function(x){any(x == ndbl)})] <- "black"
+      vborder <- rep("lightgrey", nodes())
+      vborder[neighb] <- "black"
+      vborder[ndbl] <- "black"
+    }
+  }
 
   par(mar = c(0, 0, 0, 0))
   plot.network(nw_var, coord = coords(),
@@ -1363,7 +1380,7 @@ output$nwplot <- renderPlot({
 
 })
 
-observeEvent(input$plot_click, {
+observeEvent({c(input$plot_click, input$plot_dblclick)}, {
   values$clickedpoints <- nearPoints(nwdf(), input$plot_click,
                                      xvar = "cx", yvar = "cy",
                                      threshold = 10, maxpoints = 1)
@@ -1373,17 +1390,12 @@ observeEvent(input$plot_hover, {
                                    xvar = "cx", yvar = "cy",
                                    threshold = 10, maxpoints = 1)
 })
-observe({
-  input$plot_dblclick
-  input$plot_click
+observeEvent({c(input$plot_dblclick, input$plot_click)}, {
   values$dblclickpoints <- nearPoints(nwdf(), input$plot_dblclick,
                                       xvar = "cx", yvar = "cy",
                                       threshold = 10, maxpoints = 1)
 })
 
-output$hover <- renderPrint(
-  rownames(values$dblclickpoints)
-)
 
 output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},

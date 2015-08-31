@@ -497,8 +497,7 @@ fluidRow(
                            dblclick = dblclickOpts(id = "plot_dblclick"),
                            hover = hoverOpts(id = "plot_hover"),
                            brush = brushOpts(id = "plot_brush")
-                           ),
-               verbatimTextOutput("hover")
+                           )
         ),
       tabPanel('Attributes', br(),
               dataTableOutput("attrtbl")
