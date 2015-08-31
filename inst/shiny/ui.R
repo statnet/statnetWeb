@@ -495,7 +495,8 @@ fluidRow(
       tabPanel('Network Plot', br(),
                 plotOutput('nwplot', click = "plot_click",
                            dblclick = dblclickOpts(id = "plot_dblclick"),
-                           hover = hoverOpts(id = "plot_hover"),
+                           hover = hoverOpts(id = "plot_hover", delay = 100,
+                                             delayType = "throttle"),
                            brush = brushOpts(id = "plot_brush")
                            )
         ),
