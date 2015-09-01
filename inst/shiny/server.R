@@ -508,7 +508,25 @@ numattr <- reactive({
           numattr <- append(numattr,attrib()[i])
         }
       }}
-    numattr})
+    numattr
+})
+
+#dataframe of nodes, their attributes, and their coordinates in nwplot
+nwdf <- reactive({
+  attrs <- menuattr()
+  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+    df <- data.frame(Names = network.vertex.names(nw()))
+  } else {
+    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+  }
+  for(i in seq(length(attrs))){
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+  }
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  df[["cx"]] <- coords()[,1]
+  df[["cy"]] <- coords()[,2]
+  df
+})
 
 # betweenness centrality of all nodes (for sizing menu)
 nodebetw <- reactive({
@@ -1351,17 +1369,7 @@ output$attrcheck <- renderUI({
 })
 
 output$attrtbl <- renderDataTable({
-  attrs <- menuattr()
-  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
-    df <- data.frame(Names = network.vertex.names(nw()))
-  } else {
-    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
-  }
-  for(i in seq(length(attrs))){
-    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
-  }
-  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
-  dt <- df[, c("Names", input$attribcols)]
+  dt <- nwdf()[, c("Names", input$attribcols)]
   dt
 }, options = list(pageLength = 10))
 
