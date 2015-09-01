@@ -1343,6 +1343,13 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
+output$attrcheck <- renderUI({
+  checkboxGroupInput("attribcols",
+                     label = "Include these attributes",
+                     choices = c(menuattr(), "Missing"),
+                     selected = c(menuattr(), "Missing"))
+})
+
 output$attrtbl <- renderDataTable({
   attrs <- menuattr()
   if(is.na(as.numeric(network.vertex.names(nw()))[1])){
@@ -1358,11 +1365,17 @@ output$attrtbl <- renderDataTable({
   dt
 }, options = list(pageLength = 10))
 
-output$attrcheck <- renderUI({
-  checkboxGroupInput("attribcols",
-                     label = "Include these attributes",
-                     choices = c(menuattr(), "Missing"),
-                     selected = c(menuattr(), "Missing"))
+output$attrhist <- renderPlot({
+  nplots <- length(input$attrcheck)
+  if(nplots == 1){
+
+  } else if(nplots %% 3 == 0) {
+
+  } else if(nplots %% 2 == 0) {
+
+  } else {
+
+  }
 })
 
 #Data to use for null hypothesis overlays in network plots
