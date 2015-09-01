@@ -1362,27 +1362,51 @@ output$nwplotdownload <- downloadHandler(
   )
 
 output$attrcheck <- renderUI({
-  checkboxGroupInput("attribcols",
+  checkboxGroupInput("attrcols",
                      label = "Include these attributes",
                      choices = c(menuattr(), "Missing"),
                      selected = c(menuattr(), "Missing"))
 })
 
 output$attrtbl <- renderDataTable({
-  dt <- nwdf()[, c("Names", input$attribcols)]
+  dt <- nwdf()[, c("Names", input$attrcols)]
   dt
 }, options = list(pageLength = 10))
 
 output$attrhist <- renderPlot({
-  nplots <- length(input$attrcheck)
+
+  nplots <- length(input$attrcols)
+  attrname <- input$attrcols
   if(nplots == 1){
-
-  } else if(nplots %% 3 == 0) {
-
-  } else if(nplots %% 2 == 0) {
-
+    par(mfrow = c(1, 1))
+    if(attrname %in% numattr()){
+      tab <- hist.info(nwdf()[[attrname]], breaks = 10)
+    } else {
+      tab <- table(nwdf()[[attrname]])
+    }
+    barplot(tab, xlab = attrname)
+  } else if(nplots == 2 | nplots == 4) {
+    r <- nplots/2
+    par(mfrow = c(r, 2))
+    for(a in attrname){
+      if(a %in% numattr()){
+        tab <- hist.info(nwdf()[[a]], breaks = 10)
+      } else {
+        tab <- table(nwdf()[[a]])
+      }
+      barplot(tab, xlab = a)
+    }
   } else {
-
+    r <- ceiling(nplots/3)
+    par(mfrow = c(r, 3))
+    for(a in attrname){
+      if(a %in% numattr()){
+        tab <- hist.info(nwdf()[[a]], breaks = 10)
+      } else {
+        tab <- table(nwdf()[[a]])
+      }
+      barplot(tab, xlab = a)
+    }
   }
 })
 
