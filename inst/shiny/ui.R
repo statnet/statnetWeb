@@ -496,7 +496,12 @@ fluidRow(
                 plotOutput('nwplot')
         ),
       tabPanel('Attributes', br(),
-              dataTableOutput("attrtbl")
+               conditionalPanel('input.attrview == "table"',
+                                dataTableOutput("attrtbl")
+                                ),
+               conditionalPanel('input.attrview == "histogram"',
+                                plotOutput("attrhist"))
+
                ),
       tabPanel('Degree Distribution',
                p(class='helper', id='ddhelper', icon('question-circle')),
@@ -740,6 +745,9 @@ fluidRow(
                    downloadButton('nwplotdownload',
                                   label = "Download Plot", class = "btn-sm")),
                 conditionalPanel(condition='input.plottabs == "Attributes"',
+                                 selectInput("attrview", label = "View attributes in:",
+                                             choices = c("table", "histogram")),
+                                 br(),
                                  uiOutput("attrcheck")
                 ),
                 conditionalPanel(condition='input.plottabs == "Degree Distribution"',

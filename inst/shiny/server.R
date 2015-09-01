@@ -1360,7 +1360,7 @@ output$attrtbl <- renderDataTable({
 
 output$attrcheck <- renderUI({
   checkboxGroupInput("attribcols",
-                     label = "Include these attributes in the table",
+                     label = "Include these attributes",
                      choices = c(menuattr(), "Missing"),
                      selected = c(menuattr(), "Missing"))
 })
