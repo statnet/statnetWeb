@@ -500,7 +500,7 @@ fluidRow(
                                 dataTableOutput("attrtbl")
                                 ),
                conditionalPanel('input.attrview == "histogram"',
-                                plotOutput("attrhist"))
+                                uiOutput("attrhistplotspace"))
 
                ),
       tabPanel('Degree Distribution',

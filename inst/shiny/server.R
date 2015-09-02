@@ -1367,6 +1367,7 @@ output$attrcheck <- renderUI({
                      choices = c(menuattr(), "Missing"),
                      selected = c(menuattr(), "Missing"))
 })
+outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
 output$attrtbl <- renderDataTable({
   dt <- nwdf()[, c("Names", input$attrcols)]
@@ -1375,6 +1376,7 @@ output$attrtbl <- renderDataTable({
 
 output$attrhist <- renderPlot({
   nplots <- length(input$attrcols)
+  if(nplots == 0){return()}
   attrname <- input$attrcols
   if(nplots == 1){
     par(mfrow = c(1, 1))
@@ -1384,7 +1386,7 @@ output$attrhist <- renderPlot({
     } else {
       tab <- table(nwdf()[[attrname]])
     }
-    barplot(tab, xlab = attrname)
+    barplot(tab, xlab = attrname, col = histblue)
   } else {
     r <- ceiling(nplots/2)
     par(mfrow = c(r, 2))
@@ -1395,9 +1397,16 @@ output$attrhist <- renderPlot({
       } else {
         tab <- table(nwdf()[[a]])
       }
-      barplot(tab, xlab = a)
+      barplot(tab, xlab = a, col = histblue)
     }
   }
+})
+
+output$attrhistplotspace <- renderUI({
+  nplots <- length(input$attrcols)
+  r <- ceiling(nplots/2)
+  h <- ifelse(r == 1, 400, r * 300)
+  plotOutput("attrhist", height = h)
 })
 
 #Data to use for null hypothesis overlays in network plots
