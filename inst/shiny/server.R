@@ -512,7 +512,25 @@ numattr <- reactive({
           numattr <- append(numattr,attrib()[i])
         }
       }}
-    numattr})
+    numattr
+})
+
+#dataframe of nodes, their attributes, and their coordinates in nwplot
+nwdf <- reactive({
+  attrs <- menuattr()
+  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+    df <- data.frame(Names = network.vertex.names(nw()))
+  } else {
+    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+  }
+  for(i in seq(length(attrs))){
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+  }
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  df[["cx"]] <- coords()[,1]
+  df[["cy"]] <- coords()[,2]
+  df
+})
 
 # betweenness centrality of all nodes (for sizing menu)
 nodebetw <- reactive({
@@ -1416,34 +1434,52 @@ output$nwplotdownload <- downloadHandler(
   }
   )
 
-#dataframe of nodes, their attributes, and their coordinates in nwplot
-nwdf <- reactive({
-  attrs <- menuattr()
-  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
-    df <- data.frame(Names = network.vertex.names(nw()))
-  } else {
-    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
-  }
-  for(i in seq(length(attrs))){
-    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
-  }
-  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
-  df[["cx"]] <- coords()[,1]
-  df[["cy"]] <- coords()[,2]
-  df
+output$attrcheck <- renderUI({
+  checkboxGroupInput("attrcols",
+                     label = "Include these attributes",
+                     choices = c(menuattr(), "Missing"),
+                     selected = c(menuattr(), "Missing"))
 })
+outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
 output$attrtbl <- renderDataTable({
-  df <- nwdf()
-  dt <- df[, c("Names", input$attribcols)]
+  dt <- nwdf()[, c("Names", input$attrcols)]
   dt
 }, options = list(pageLength = 10))
 
-output$attrcheck <- renderUI({
-  checkboxGroupInput("attribcols",
-                     label = "Include these attributes in the table",
-                     choices = c(menuattr(), "Missing"),
-                     selected = c(menuattr(), "Missing"))
+output$attrhist <- renderPlot({
+  nplots <- length(input$attrcols)
+  if(nplots == 0){return()}
+  attrname <- input$attrcols
+  if(nplots == 1){
+    par(mfrow = c(1, 1))
+    lvls <- length(unique(nwdf()[[attrname]]))
+    if(attrname %in% numattr() & lvls > 9){
+      tab <- hist.info(nwdf()[[attrname]], breaks = 10)
+    } else {
+      tab <- table(nwdf()[[attrname]])
+    }
+    barplot(tab, xlab = attrname, col = histblue)
+  } else {
+    r <- ceiling(nplots/2)
+    par(mfrow = c(r, 2))
+    for(a in attrname){
+      lvls <- length(unique(nwdf()[[a]]))
+      if(a %in% numattr() & lvls > 9){
+        tab <- hist.info(nwdf()[[a]], breaks = 10)
+      } else {
+        tab <- table(nwdf()[[a]])
+      }
+      barplot(tab, xlab = a, col = histblue)
+    }
+  }
+})
+
+output$attrhistplotspace <- renderUI({
+  nplots <- length(input$attrcols)
+  r <- ceiling(nplots/2)
+  h <- ifelse(r == 1, 400, r * 300)
+  plotOutput("attrhist", height = h)
 })
 
 #Data to use for null hypothesis overlays in network plots
