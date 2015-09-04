@@ -463,6 +463,10 @@ nw <- reactive({
   nw_var
 })
 
+elist <- reactive({
+  if(!is.network(nwinit())) return()
+  as.edgelist(nw())
+})
 
 #get coordinates to plot network with
 coords <- reactive({
@@ -565,7 +569,7 @@ vcol <- reactive({
   if(!is.network(nw())){return()}
   nw_var <- nw()
   if(input$colorby == 2){
-    vcol <- 2
+    vcol <- rep(2, nodes())
   } else {
     full_list <- get.vertex.attribute(nw_var,input$colorby)
     short_list <- sort(unique(full_list))
@@ -1321,6 +1325,9 @@ output$nwplot <- renderPlot({
 
   nw_var <- nw()
   color <- adjustcolor(vcol(), alpha.f = input$transp)
+  ecolor <- 1
+  vborder <- 1
+  vcex <- nodesize()
   if(is.bipartite(nw())){
     sides <- c(rep(50, nw()$gal$bipartite),
                rep(3, nodes() - nw()$gal$bipartite))
@@ -1328,17 +1335,83 @@ output$nwplot <- renderPlot({
     sides <- 50
   }
 
+  if(!is.null(values$hoverpoints)){
+    if(nrow(values$hoverpoints) > 0){
+      nhov <- as.numeric(rownames(values$hoverpoints))
+      vcex <- rep(1, nodes())
+      vcex[nhov] <- 2
+    }
+  }
+  if(!is.null(values$clickedpoints)){
+    if(nrow(values$clickedpoints) > 0){
+      nclick <- as.numeric(rownames(values$clickedpoints))
+      color <- adjustcolor(vcol(), alpha.f = 0.4)
+      color[nclick] <- vcol()[nclick]
+      ecolor <- "lightgrey"
+      vborder <- rep("lightgrey", nodes())
+      vborder[nclick] <- 1
+    }
+  }
+  if(!is.null(values$dblclickpoints)){
+    if(nrow(values$dblclickpoints) > 0){
+      ndbl <- as.numeric(rownames(values$dblclickpoints))
+      neighb <- nw()[ndbl,] == 1
+      color <- adjustcolor(vcol(), alpha.f = 0.4)
+      color[ndbl] <- vcol()[ndbl]
+      ecolor <- rep("lightgrey", nedgesinit())
+      ecolor[apply(elist(), MARGIN = 1, FUN = function(x){any(x == ndbl)})] <- "black"
+      vborder <- rep("lightgrey", nodes())
+      vborder[neighb] <- "black"
+      vborder[ndbl] <- "black"
+    }
+  }
+
   par(mar = c(0, 0, 0, 0))
   plot.network(nw_var, coord = coords(),
                displayisolates = input$iso,
                displaylabels = input$vnames,
                vertex.col = color,
+               vertex.border = vborder,
                vertex.sides = sides,
-               vertex.cex = nodesize())
+               vertex.cex = vcex,
+               edge.col = ecolor)
   if(input$colorby != 2){
-    legend('bottomright', title = input$colorby, legend = legendlabels(), fill = legendfill(),
-           bty='n')
+    legend('bottomright', title = input$colorby, legend = legendlabels(),
+           fill = legendfill(), bty='n')
   }
+
+  if(!is.null(values$clickedpoints)){
+    if(nrow(values$clickedpoints) > 0){
+      #isolate(legend("topleft",
+      #               legend = values$clickedpoints[, c("Names", menuattr())]))
+      cx <- values$clickedpoints[, "cx"]
+      cy <- values$clickedpoints[, "cy"]
+      name <- values$clickedpoints[, "Names"]
+      attrlabel <- paste("\n", menuattr())
+      text(x = cx, y = cy,
+           labels = paste0(name,
+                           paste(attrlabel, values$clickedpoints[, menuattr()],
+                                 collapse = "")),
+           pos = 4, offset = 1)
+    }
+  }
+
+})
+
+observeEvent({c(input$plot_click, input$plot_dblclick)}, {
+  values$clickedpoints <- nearPoints(nwdf(), input$plot_click,
+                                     xvar = "cx", yvar = "cy",
+                                     threshold = 10, maxpoints = 1)
+})
+observeEvent(input$plot_hover, {
+  values$hoverpoints <- nearPoints(nwdf(), input$plot_hover,
+                                   xvar = "cx", yvar = "cy",
+                                   threshold = 10, maxpoints = 1)
+})
+observeEvent({c(input$plot_dblclick, input$plot_click)}, {
+  values$dblclickpoints <- nearPoints(nwdf(), input$plot_dblclick,
+                                      xvar = "cx", yvar = "cy",
+                                      threshold = 10, maxpoints = 1)
 })
 
 
