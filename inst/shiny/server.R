@@ -1,7 +1,6 @@
 
 library(statnetWeb)
 library(RColorBrewer)
-library(ndtv)
 
 data(faux.mesa.high)
 #data(faux.magnolia.high)
