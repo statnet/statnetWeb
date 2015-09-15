@@ -1453,23 +1453,38 @@ output$attrhist <- renderPlot({
   if(nplots == 1){
     par(mfrow = c(1, 1))
     lvls <- length(unique(nwdf()[[attrname]]))
-    if(attrname %in% numattr() & lvls > 9){
-      tab <- hist.info(nwdf()[[attrname]], breaks = 10)
+    if(input$attrhistaxis == "density" & attrname %in% numattr() & lvls > 9){
+      plot(density(nwdf()[[attrname]]), main = attrname,
+           col = "#076EC3", lwd = 2)
     } else {
-      tab <- table(nwdf()[[attrname]])
+      if(attrname %in% numattr() & lvls > 9){
+        tab <- hist.info(nwdf()[[attrname]], breaks = 10)
+      } else {
+        tab <- table(nwdf()[[attrname]])
+      }
+      if(input$attrhistaxis == "percent"){
+        tab <- tab/sum(tab)
+      }
+      barplot(tab, xlab = attrname, col = histblue)
     }
-    barplot(tab, xlab = attrname, col = histblue)
   } else {
     r <- ceiling(nplots/2)
     par(mfrow = c(r, 2))
     for(a in attrname){
       lvls <- length(unique(nwdf()[[a]]))
-      if(a %in% numattr() & lvls > 9){
+      if(input$attrhistaxis == "density" & a %in% numattr() & lvls > 9){
+        plot(density(nwdf()[[a]]), main = a, col = "#076EC3", lwd = 2)
+      } else {
+        if(a %in% numattr() & lvls > 9){
         tab <- hist.info(nwdf()[[a]], breaks = 10)
       } else {
         tab <- table(nwdf()[[a]])
       }
+      if(input$attrhistaxis == "percent"){
+        tab <- tab/sum(tab)
+      }
       barplot(tab, xlab = a, col = histblue)
+      }
     }
   }
 })
