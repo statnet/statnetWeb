@@ -505,9 +505,15 @@ fluidRow(
                                 dataTableOutput("attrtbl")
                                 ),
                conditionalPanel('input.attrview == "histogram"',
+                                tags$label("Type of plots"),
+                                helpText("Density plots will only be created for",
+                                         "numeric attributes with more than nine",
+                                         "levels."),
                                 selectInput("attrhistaxis",
-                                            label = "Y-axis units",
-                                            choices = c("Counts", "Percents")),
+                                            label = NULL,
+                                            choices = c("Barplot: counts" = "count",
+                                                        "Barplot: percents" = "percent",
+                                                        "Density plot" = "density")),
                                 uiOutput("attrhistplotspace"))
 
                ),
