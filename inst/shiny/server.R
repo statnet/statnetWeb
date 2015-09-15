@@ -1459,6 +1459,9 @@ output$attrhist <- renderPlot({
     } else {
       tab <- table(nwdf()[[attrname]])
     }
+    if(input$attrhistaxis == "Percents"){
+      tab <- tab/sum(tab)
+    }
     barplot(tab, xlab = attrname, col = histblue)
   } else {
     r <- ceiling(nplots/2)
@@ -1469,6 +1472,9 @@ output$attrhist <- renderPlot({
         tab <- hist.info(nwdf()[[a]], breaks = 10)
       } else {
         tab <- table(nwdf()[[a]])
+      }
+      if(input$attrhistaxis == "Percents"){
+        tab <- tab/sum(tab)
       }
       barplot(tab, xlab = a, col = histblue)
     }

@@ -505,6 +505,9 @@ fluidRow(
                                 dataTableOutput("attrtbl")
                                 ),
                conditionalPanel('input.attrview == "histogram"',
+                                selectInput("attrhistaxis",
+                                            label = "Y-axis units",
+                                            choices = c("Counts", "Percents")),
                                 uiOutput("attrhistplotspace"))
 
                ),
