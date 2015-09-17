@@ -2934,15 +2934,19 @@ output$listofterms <- renderUI({
                  choices = c("Select a term" = "", current.terms))
 })
 
-output$termdoc <- renderPrint({
+output$termdoc <- renderUI({
   myterm <- input$chooseterm
   if(is.null(myterm)){
-    return(cat("Select or search for a term in the menu above."))
+    return(p("Select or search for a term in the menu above."))
+  } else if(myterm == ""){
+    return(p("Select or search for a term in the menu above."))
   }
-  if(myterm == ""){
-    return(cat("Select or search for a term in the menu above."))
-  }
-  search.ergmTerms(name=myterm)
+  chrvec <- capture.output(search.ergmTerms(name = myterm))
+  desc <- strsplit(chrvec[3], split = "_")
+  p(chrvec[1], br(),br(),
+    strong(chrvec[2]), br(),br(),
+    em(desc[[1]][2]), desc[[1]][3], br(),
+    chrvec[4])
 })
 
 observe({

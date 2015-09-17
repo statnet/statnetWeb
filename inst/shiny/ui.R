@@ -916,7 +916,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       fluidRow(
                         column(12,
                                div(id="termdocbox",
-                                    verbatimTextOutput("termdoc")
+                                    uiOutput("termdoc")
                                 ),
                                 div(id = "termexpand",
                                     icon(name = "angle-double-up"))
