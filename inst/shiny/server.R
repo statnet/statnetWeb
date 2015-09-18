@@ -1465,7 +1465,7 @@ output$attrhist <- renderPlot({
       if(input$attrhistaxis == "percent"){
         tab <- tab/sum(tab)
       }
-      barplot(tab, xlab = attrname, col = histblue)
+      barplot(tab, main = attrname, col = histblue)
     }
   } else {
     r <- ceiling(nplots/2)
@@ -1483,7 +1483,7 @@ output$attrhist <- renderPlot({
       if(input$attrhistaxis == "percent"){
         tab <- tab/sum(tab)
       }
-      barplot(tab, xlab = a, col = histblue)
+      barplot(tab, main = a, col = histblue)
       }
     }
   }
