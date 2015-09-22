@@ -1441,10 +1441,49 @@ output$attrcheck <- renderUI({
 })
 outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
-output$attrtbl <- renderDataTable({
+output$attrtbl_lg <- renderDataTable({
   dt <- nwdf()[, c("Names", input$attrcols)]
   dt
 }, options = list(pageLength = 10))
+
+output$attrtbl_sm <- renderPrint({
+  ntbl <- length(input$attrcols)
+  if(ntbl == 0){return()}
+  attrname <- input$attrcols
+  tbl_list <- list()
+  if(ntbl == 1){
+    lvls <- length(unique(nwdf()[[attrname]]))
+    if(attrname %in% numattr() & lvls > 9){
+      tab <- hist(nwdf()[[attrname]], breaks = 10, plot = FALSE)
+      barname <- paste(tab$breaks[1:2], collapse = "-")
+      for(i in seq(length(tab$breaks) - 2)){
+        barname <- append(barname, paste(tab$breaks[i+1]+1, tab$breaks[i+2], sep = "-"))
+      }
+      tab <- tab$counts
+      names(tab) <- barname
+    } else {
+      tab <- table(nwdf()[[attrname]])
+    }
+    tbl_list[[attrname]] <- tab
+  } else {
+    for(a in attrname){
+      lvls <- length(unique(nwdf()[[a]]))
+      if(a %in% numattr() & lvls > 9){
+        tab <- hist(nwdf()[[a]], breaks = 10, plot = FALSE)
+        barname <- paste(tab$breaks[1:2], collapse = "-")
+        for(i in seq(length(tab$breaks) - 2)){
+          barname <- append(barname, paste(tab$breaks[i+1]+1, tab$breaks[i+2], sep = "-"))
+        }
+        tab <- tab$counts
+        names(tab) <- barname
+      } else {
+        tab <- table(nwdf()[[a]])
+      }
+      tbl_list[[a]] <- tab
+    }
+  }
+  tbl_list
+})
 
 output$attrhist <- renderPlot({
   nplots <- length(input$attrcols)
@@ -1458,7 +1497,8 @@ output$attrhist <- renderPlot({
            col = "#076EC3", lwd = 2)
     } else {
       if(attrname %in% numattr() & lvls > 9){
-        tab <- hist.info(nwdf()[[attrname]], breaks = 10)
+        out <- hist.info(nwdf()[[attrname]], breaks = 10)
+        tab <- out$counts
       } else {
         tab <- table(nwdf()[[attrname]])
       }

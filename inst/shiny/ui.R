@@ -501,10 +501,13 @@ fluidRow(
                            )
         ),
       tabPanel('Attributes', br(),
-               conditionalPanel('input.attrview == "table"',
-                                dataTableOutput("attrtbl")
+               conditionalPanel('input.attrview == "Large table"',
+                                dataTableOutput("attrtbl_lg")
                                 ),
-               conditionalPanel('input.attrview == "histogram"',
+               conditionalPanel('input.attrview == "Small tables"',
+                                verbatimTextOutput("attrtbl_sm")
+                                ),
+               conditionalPanel('input.attrview == "Plot summaries"',
                                 tags$label("Type of plots"),
                                 helpText("Density plots will only be created for",
                                          "numeric attributes with more than nine",
@@ -760,7 +763,9 @@ fluidRow(
                                   label = "Download Plot", class = "btn-sm")),
                 conditionalPanel(condition='input.plottabs == "Attributes"',
                                  selectInput("attrview", label = "View attributes in:",
-                                             choices = c("table", "histogram")),
+                                             choices = c("Large table",
+                                                         "Small tables",
+                                                         "Plot summaries")),
                                  br(),
                                  uiOutput("attrcheck")
                 ),

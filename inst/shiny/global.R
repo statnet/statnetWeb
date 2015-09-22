@@ -155,7 +155,15 @@ hist.info <- function(x, breaks) {
   for(i in seq(length(out$breaks) - 2)){
     barname <- append(barname, paste(out$breaks[i+1]+1, out$breaks[i+2], sep = "-"))
   }
-  out <- out$counts
-  names(out) <- barname
+
+  out$percent <- out$counts/sum(out$counts)
+  names(out$counts) <- barname
+  names(out$percent) <- barname
   return(out)
+}
+
+attrtab <- function(obj, breaks) {
+  tab <- hist.info(obj, breaks = breaks)
+  tab < - rbind(tab, tab/sum(tab))
+  rownames(tab) <- c("count", "percent")
 }
