@@ -155,7 +155,8 @@ attr.info <- function(df, colname, numattrs, breaks) {
     tab <- hist(df[[colname]], breaks = breaks, plot = FALSE)
     barname <- paste(tab$breaks[1:2], collapse = "-")
     for(i in seq(length(tab$breaks) - 2)){
-      barname <- append(barname, paste(tab$breaks[i+1]+1, tab$breaks[i+2], sep = "-"))
+      barname <- append(barname, paste(tab$breaks[i+1]+1,
+                                       tab$breaks[i+2], sep = "-"))
     }
     tab <- tab$counts
     names(tab) <- barname

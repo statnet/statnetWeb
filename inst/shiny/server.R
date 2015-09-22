@@ -1462,7 +1462,10 @@ output$attrtbl_sm <- renderPrint({
       tbl_list[[a]] <- tab
     }
   }
-  tbl_list
+  for(a in attrname){
+    print(a, quote = FALSE)
+    print(tbl_list[[a]])
+  }
 })
 
 output$attrhist <- renderPlot({
