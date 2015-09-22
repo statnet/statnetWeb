@@ -149,21 +149,19 @@ stat.comparison <- function(statlist) {
   return(statvec)
 }
 
-hist.info <- function(x, breaks) {
-  out <- hist(x, breaks = breaks, plot = FALSE)
-  barname <- paste(out$breaks[1:2], collapse = "-")
-  for(i in seq(length(out$breaks) - 2)){
-    barname <- append(barname, paste(out$breaks[i+1]+1, out$breaks[i+2], sep = "-"))
+attr.info <- function(df, colname, numattrs, breaks) {
+  lvls <- length(unique(df[[colname]]))
+  if(colname %in% numattrs & lvls > 9){
+    tab <- hist(df[[colname]], breaks = breaks, plot = FALSE)
+    barname <- paste(tab$breaks[1:2], collapse = "-")
+    for(i in seq(length(tab$breaks) - 2)){
+      barname <- append(barname, paste(tab$breaks[i+1]+1, tab$breaks[i+2], sep = "-"))
+    }
+    tab <- tab$counts
+    names(tab) <- barname
+  } else {
+    tab <- table(df[[colname]])
   }
-
-  out$percent <- out$counts/sum(out$counts)
-  names(out$counts) <- barname
-  names(out$percent) <- barname
-  return(out)
+  return(tab)
 }
 
-attrtab <- function(obj, breaks) {
-  tab <- hist.info(obj, breaks = breaks)
-  tab < - rbind(tab, tab/sum(tab))
-  rownames(tab) <- c("count", "percent")
-}
