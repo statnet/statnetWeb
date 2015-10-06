@@ -1,0 +1,8 @@
+name: statnetWeb
+account: ebey
+server: shinyapps.io
+bundleId: 257136
+url: https://ebey.shinyapps.io/statnetWeb
+when: 1441231480.90159
+asMultiple: FALSE
+asStatic: FALSE

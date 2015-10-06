@@ -1,0 +1,8 @@
+name: statnetWeb
+account: statnet
+server: shinyapps.io
+bundleId: 257057
+url: https://statnet.shinyapps.io/statnetWeb
+when: 1441224707.95626
+asMultiple: FALSE
+asStatic: FALSE
