@@ -3,16 +3,24 @@
 .navbar-nav > li > a {padding-top: 0; padding-bottom: 0; line-height: 40px; height: 40px;}
 .navbar {min-height:40px; height:40px;}
 
-
+#sttitle {
+  font-family:Courier;
+  font-size:13pt;
+}
 .codetxt {
   color: #333333;
   background-color: inherit;
 }
-
-#sWtitle {
-  font-family:Courier;
-  font-size:13pt;
+#linkbox1,
+#linkbox2 {
+  display: none;
 }
+
+#linktitle1,
+#linktitle2 {
+  cursor: pointer;
+}
+
 pre {
   font-size:12px;
 }
