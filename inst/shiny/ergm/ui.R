@@ -17,8 +17,8 @@ shinyUI(
 # Front Page (About) ------------------------------------------------------
 
 
-tabPanel(title=span('statnetWeb', id="sWtitle"),
-         value='tab1',
+tabPanel(title = span('statnetWeb', id = "sWtitle"),
+         value = 'tab1',
          fluidRow(
           column(2,
                  actionButton("aboutButton", label = "About statnetWeb",
@@ -113,39 +113,48 @@ statnetWeb: A Graphical User Interface for Network Modeling with 'Statnet'.")
               div(title=paste("Homepage of the statnet project with tutorials,",
                               "publications and recent news."),
                   a("About statnet",
-                    href = "https://statnet.csde.washington.edu/trac", target = "_blank")
+                    href = "https://statnet.csde.washington.edu/trac",
+                    target = "_blank")
               ),
 
               column(11, offset = 1,
-                    span(id="linktitle1",'Key background papers',icon('angle-double-left')),br(),
-                    div(id="linkbox1",
+                    span(id = "linktitle1", "Key background papers",
+                         icon('angle-double-left')), br(),
+                    div(id = "linkbox1",
                       a("ergm: Journal of Statistical Software",
-                        href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
+                        href = "http://www.jstatsoft.org/v24/i03/",
+                        target = "_blank"),
                       br(),
                       a("Using ergm: Journal of Statistical Software",
-                        href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
+                        href = "http://www.jstatsoft.org/v24/i04/",
+                        target = "_blank")),
 
-                    span(id="linktitle2",'Tutorials and documentation',icon('angle-double-left')),br(),
-                    div(id="linkbox2",
+                    span(id = "linktitle2",'Tutorials and documentation',
+                         icon('angle-double-left')), br(),
+                    div(id = "linkbox2",
                         a("ergm tutorial from Sunbelt EUSN 2014 Workshop",
                         href = "http://statnet.csde.washington.edu/workshops/SUNBELT/EUSN/ergm/ergm_tutorial.html",
-                        target= "_blank"),
+                        target = "_blank"),
                       br(),
                       a("ergm documentation on CRAN",
                         href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
                         target = "_blank")),
-                    style="margin-bottom:10px;"),
+                    style = "margin-bottom:10px;"),
               br(),
-              div(a("statnetWeb on GitHub", href="https://github.com/statnet/statnetWeb",
-                    target="_blank")),
-              div(a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
-                    target="_blank"))
+              div(a("statnetWeb on GitHub",
+                    href = "https://github.com/statnet/statnetWeb",
+                    target = "_blank")),
+              div(a("Shiny: a web application framework for R",
+                    href = "http://shiny.rstudio.com/",
+                    target = "_blank"))
    ),
-   fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200), style="margin-left:15px;"),
+   fluidRow(img(src = 'UW.Wordmark_ctr_K.jpg', width = 200),
+            style = "margin-left:15px;"),
    fluidRow(a(img(src = 'csdelogo_crop.png', height = 40, width = 40),
              href = 'https://csde.washington.edu/', target = '_blank'),
-            a(img(src = 'csde_goudy.fw.png', width=150), href = 'https://csde.washington.edu/',
-             target = '_blank'), style="margin-left:15px;")
+            a(img(src = 'csde_goudy.fw.png', width = 150),
+              href = 'https://csde.washington.edu/',
+             target = '_blank'), style = "margin-left:15px;")
    )
    )
  ),
@@ -171,15 +180,15 @@ tabPanel(title='Data', value='tab2',
          #this tagList command has to go inside a tabPanel
          tagList(
            tags$head(
-             tags$link(rel="stylesheet", type="text/css",href="style.css"),
-             #tags$link(rel="stylesheet", type="text/css",href="autocomplete.css"),
-             tags$link(rel="stylesheet", type="text/css",
-                       href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css"),
-             tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"),
-             #tags$script(type="text/javascript", src="autocomplete.js"),
-             tags$script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"),
-             tags$script(type="text/javascript", src="busy.js"),
-             tags$script(type="text/javascript", src="alert.js"),
+             tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
+             tags$link(rel = "stylesheet", type = "text/css",
+                       href = "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css"),
+             tags$script(type = "text/javascript",
+                         src = "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"),
+             tags$script(type = "text/javascript",
+                         src = "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"),
+             tags$script(type = "text/javascript", src = "busy.js"),
+             tags$script(type = "text/javascript", src = "alert.js"),
              tags$script(HTML('Shiny.addCustomMessageHandler("jsCode",
                               function(message) {
                               console.log(message)
