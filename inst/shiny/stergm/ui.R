@@ -152,43 +152,124 @@ CRAN.R-project.org/package=tergm.")
 
 
 tabPanel("Data", value = "tab2",
-     column(8,
-        wellPanel(
-          fluidRow(
-            column(6,
-               selectInput("filetype", label = "File type",
-                           choices=c("built-in network" = 1,
-                                     "statnet network object (*.rds)" = 2,
-                                     "matrix of relational data (*.csv or *.rds)" = 3,
-                                     "Pajek network (*.net)" = 4,
-                                     "Pajek project (*.paj)" = 5))
-                   ),
-            conditionalPanel(condition = "input.filetype == 1",
-               column(6,
-                  br(style="line-height:26px;"),
-                  selectizeInput('samplenet', label=NULL,
-                                 choices=c("Choose a network" = "",
-                                           "ecoli1", "ecoli2",
-                                           "faux.mesa.high", "flobusiness",
-                                           "flomarriage", "kapferer",
-                                           "kapferer2", "molecule",
-                                           "samplike", "samplk1",
-                                           "samplk2", "samplk3"))
-                             )
-            )
-          )
-        )
-      ),
-     column(2),
-     icon("question-circle", class = "fa-2x helper-btn"),
-     div(class = "helper-box", style = "display: none;",
-         p("Upload a file of observed network data (must be of a supported type).",
-           'Add custom attributes or symmetrize on the "Edit Network" tab.')),
-     actionLink("dataleft", icon = icon("arrow-left", class = "fa-2x"),
-                label = NULL),
-     actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
-                label = NULL)
-     ),
+column(7,
+tabsetPanel(
+  tabPanel("Upload Network",
+     br(),
+     wellPanel(
+       fluidRow(
+         column(6,
+          selectInput("filetype", label = "File type",
+              choices=c("built-in network" = 1,
+                        "statnet network object (*.rds)" = 2,
+                        "matrix of relational data (*.csv or *.rds)" = 3,
+                        "Pajek network (*.net)" = 4,
+                        "Pajek project (*.paj)" = 5))
+         ),
+         conditionalPanel(condition = "input.filetype == 1",
+          column(6,
+                 br(style="line-height:26px;"),
+                 selectizeInput('samplenet', label=NULL,
+                                choices=c("Choose a network" = "",
+                                          "ecoli1", "ecoli2",
+                                          "faux.mesa.high", "flobusiness",
+                                          "flomarriage", "kapferer",
+                                          "kapferer2", "molecule",
+                                          "samplike", "samplk1",
+                                          "samplk2", "samplk3"))
+                          )
+         )
+       ),
+       conditionalPanel(condition='input.filetype == 2 | input.filetype == 3',
+                        p(class="helper", id="Robjhelp", icon("question-circle"),
+                          span("What is an .rds file?", style="font-size:0.85em;")),
+                        div(class="mischelperbox", id="Robjbox",
+                            'When working in R, an object in your environment',
+                            'can be saved to a .rds file from the command line',
+                            'in the following way:',
+                            code('saveRDS(objectname, file="newfilename.rds")'),
+                            br(), 'By default the file will be saved',
+                            'into the current working directory. The full path',
+                            'to a new location can be specified in the ',
+                            code('file ='), 'argument, or set',
+                            code('file = file.choose(new = TRUE)'),
+                            'to use a save dialog box.')
+       ),
+       fluidRow(
+         conditionalPanel(condition='input.filetype == 3',
+                          column(1, align="right",
+                                 style="margin-top:5px; margin-left:0px;",
+                                 br(),br(),
+                                 span(style="line-height:25px;", class="helper",
+                                      span(id="filetypehelper1",
+                                           icon('question-circle'),
+                                           div(id="filetypebox1", class="smallhelperbox",
+                                               "For adjacency matrices,",
+                                               "the first row and column of .csv files",
+                                               "should hold vertex labels.")),
+                                      br(),
+                                      span(id="filetypehelper2",
+                                           icon('question-circle'),
+                                           div(id="filetypebox2", class="smallhelperbox",
+                                               "For adjacency matrices,",
+                                               "the first row and column of .csv files",
+                                               "should hold vertex labels.")),
+                                      br(),
+                                      span(id="filetypehelper3",
+                                           icon('question-circle'),
+                                           div(id="filetypebox3", class="smallhelperbox",
+                                               "For incidence matrices,",
+                                               "the first row of .csv files should hold",
+                                               "edge labels, the first column should hold vertex labels")),
+                                      br(),
+                                      span(id="filetypehelper4",
+                                           icon('question-circle'),
+                                           div(id="filetypebox4", class="smallhelperbox",
+                                               "For edge lists, .csv files should not have row or column labels.")),
+
+                                      br())),
+                          column(4,
+                                 br(),
+                                 radioButtons('matrixtype', label='Matrix Type',
+                                              choices=c('Adjacency matrix'='adjacency',
+                                                        'Bipartite adjacency matrix'='bipartite',
+                                                        'Incidence matrix' = 'incidence',
+                                                        'Edge list' = 'edgelist'))),
+
+                          column(5,
+                                 br(),
+                                 span(strong('Network Attributes')),
+                                 checkboxInput('dir', 'directed?', value=TRUE),
+                                 checkboxInput('loops', 'loops?', value=FALSE),
+                                 checkboxInput('multiple', 'multiple?', value=FALSE),
+                                 checkboxInput('bipartite', 'bipartite?', value=FALSE))
+         ),
+         conditionalPanel(condition='input.filetype == 5',
+                          column(6,
+                                 uiOutput('pajchooser')))
+       )
+     )
+
+  ),
+  tabPanel("Edit Network")
+)
+
+),
+column(4,
+       tabsetPanel(
+         tabPanel('Network Summary', br(),
+                  verbatimTextOutput('nwsum')
+        ))
+),
+icon("question-circle", class = "fa-2x helper-btn"),
+div(class = "helper-box", style = "display: none;",
+    p("Upload a file of observed network data (must be of a supported type).",
+      'Add custom attributes or symmetrize on the "Edit Network" tab.')),
+actionLink("dataleft", icon = icon("arrow-left", class = "fa-2x"),
+           label = NULL),
+actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
+           label = NULL)
+),
 
 # Network Plot ------------------------------------------------------------
 
