@@ -13,12 +13,12 @@ library(tergm)
 shinyUI(
   navbarPage(
     title=NULL,
-    id= 'navbar', windowTitle = 'stergm', collapsible=TRUE,
+    id= "navbar", windowTitle = "STERGM", collapsible = TRUE,
 
     # Front Page (About) ------------------------------------------------------
 
-    tabPanel(title=span('statnetWeb: stergm', id = "sttitle"),
-             value='tab1',
+    tabPanel(title = span(span("statnetWeb:", id = "sttitle"), "STERGM"),
+             value = "tab1",
 
              tags$head(
                tags$link(rel = "stylesheet", type = "text/css",
@@ -31,7 +31,7 @@ shinyUI(
                                    class = "btn active"),
                       actionButton("citeButton", label = "Citing stergm",
                                    class = "btn"),
-                      actionButton('startButton', label='Get Started',
+                      actionButton("startButton", label = "Get Started",
                                    class="btn btn-primary")
                ),
                column(6, style="padding: 0 30px 0 0;",
@@ -42,23 +42,23 @@ shinyUI(
                           tabsetPanel(
                             tabPanel("BibTeX",
 p(strong("statnet")),
-tags$pre(id='scitation','@Manual{handcock:statnet,
+tags$pre(id = "scitation", "@Manual{handcock:statnet,
 title = {statnet: Software tools for the Statistical Modeling of Network Data},
 author = {Mark S. Handcock and David R. Hunter and Carter T. Butts and Steven M. Goodreau and Martina Morris},
 year = {2003},
 address = {Seattle, WA},
 url = {http://statnetproject.org}
-}'),
+}"),
 
 p(strong("tergm package")),
-tags$pre(id='swcitation',"@Manual{krivitsky:tergm,
+tags$pre(id = "swcitation", "@Manual{krivitsky:tergm,
 author = {Pavel N. Krivitsky and Mark S. Handcock},
 title = {tergm: Fit, Simulate and Diagnose Models for Network Evolution based on
 Exponential-Family Random Graph Models},
 organization = {The Statnet Project (http://www.statnet.org)},
 year = {2014},
 note = {R package version 3.2.4},
-url = {CRAN.R-project.org/package=tergm},
+url = {CRAN.R-project.org/package=tergm}
 }")
                        ),
               tabPanel("Other",
@@ -109,7 +109,7 @@ CRAN.R-project.org/package=tergm.")
                                     icon('angle-double-left')),
                                br(),
                                div(id="linkbox1",
-                                   a("Krivitsky, Handcock",
+                                   a("Krivitsky, Handcock 2013.",
                                      href = "http://onlinelibrary.wiley.com/doi/10.1111/rssb.12014/abstract",
                                      target = "_blank")
                                     ),
@@ -151,16 +151,71 @@ CRAN.R-project.org/package=tergm.")
 # Data --------------------------------------------------------------------
 
 
-    tabPanel("Data"),
+tabPanel("Data", value = "tab2",
+     column(8,
+        wellPanel(
+          fluidRow(
+            column(6,
+               selectInput("filetype", label = "File type",
+                           choices=c("built-in network" = 1,
+                                     "statnet network object (*.rds)" = 2,
+                                     "matrix of relational data (*.csv or *.rds)" = 3,
+                                     "Pajek network (*.net)" = 4,
+                                     "Pajek project (*.paj)" = 5))
+                   ),
+            conditionalPanel(condition = "input.filetype == 1",
+               column(6,
+                  br(style="line-height:26px;"),
+                  selectizeInput('samplenet', label=NULL,
+                                 choices=c("Choose a network" = "",
+                                           "ecoli1", "ecoli2",
+                                           "faux.mesa.high", "flobusiness",
+                                           "flomarriage", "kapferer",
+                                           "kapferer2", "molecule",
+                                           "samplike", "samplk1",
+                                           "samplk2", "samplk3"))
+                             )
+            )
+          )
+        )
+      ),
+     column(2),
+     icon("question-circle", class = "fa-2x helper-btn"),
+     div(class = "helper-box", style = "display: none;",
+         p("Upload a file of observed network data (must be of a supported type).",
+           'Add custom attributes or symmetrize on the "Edit Network" tab.')),
+     actionLink("dataleft", icon = icon("arrow-left", class = "fa-2x"),
+                label = NULL),
+     actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
+                label = NULL)
+     ),
 
 # Network Plot ------------------------------------------------------------
 
 
-    tabPanel("Network Plot"),
+    tabPanel("Network Plot", value = "tab3",
+
+             icon("question-circle", class = "fa-2x helper-btn"),
+             div(class = "helper-box", style = "display: none;",
+                 p("help help help")),
+             actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
+                        label = NULL),
+             actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
+                        label = NULL)
+             ),
 
 # Fit Model ---------------------------------------------------------------
 
 
-    tabPanel("Fit Model")
+    tabPanel("Fit Model", value = "tab4",
+
+             icon("question-circle", class = "fa-2x helper-btn"),
+             div(class = "helper-box", style = "display: none;",
+                 p("help help help")),
+             actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
+                        label = NULL),
+             actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
+                        label = NULL)
+             )
   )
 )

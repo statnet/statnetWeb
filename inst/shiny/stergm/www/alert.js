@@ -24,4 +24,9 @@ $(document).ready(function(){
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
 
+  $(".helper-btn").click(function(){
+    $(".helper-box").toggle(500);
+  });
+
+
 });

@@ -5,7 +5,7 @@
 
 #sttitle {
   font-family:Courier;
-  font-size:13pt;
+  font-size:12pt;
 }
 .codetxt {
   color: #333333;
@@ -19,6 +19,52 @@
 #linktitle1,
 #linktitle2 {
   cursor: pointer;
+}
+#dataleft, #fitleft,
+#plotleft {
+  position: absolute;
+  top: 50px;
+  right: 65px;
+  color: #B4B4B4;
+  cursor: pointer;
+}
+#dataright, #fitright,
+#plotright {
+  position: absolute;
+  top: 50px;
+  right: 38px;
+  color: #B4B4B4;
+  cursor: pointer;
+}
+
+#dataleft:hover, #fitleft:hover,
+#plotleft:hover, #dataright:hover,
+#fitright:hover, #plotright:hover,
+.helper-btn:hover {
+  color: #3A3A3A;
+}
+.helper-btn {
+    position:fixed;
+    top: 50px;
+    right: 10px;
+    color: #B4B4B4;
+    cursor: pointer;
+}
+
+div.helper-box {
+  position:fixed;
+  top: 90px;
+  right: 20px;
+  max-width: 150px;
+  max-height: 300px;
+  display:none;
+  background: #FFFFFF;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px;
+  border:1px solid #CECED8;
+  border-radius: 5px;
+  z-index: 10;
 }
 
 pre {
@@ -56,22 +102,11 @@ div.tool:hover .tip{
   background:#FFFFFF;
   box-shadow: 3px 2px 5px 0 #CCCCCC;
   }
-/*div.tool span.tip::before{
-  z-index:20;
-  content: "";
-  width: 0px;
-	height: 0px;
-	border: 0.8em solid transparent;
-	position: absolute;
-  left: 5%;
-	top: -19px;
-	border-bottom: 10px solid #CCCCCC;
-} */
 div.tool .callout {
   display:none;
 }
 div.tool:hover .callout {
-  display:inline;
+  display: inline;
   z-index: 20;
   position: absolute;
   left: 5%;
@@ -79,12 +114,12 @@ div.tool:hover .callout {
 }
 
 div.busy {
-  position:fixed;
+  position: fixed;
   top: 40%;
   left: 50%;
   margin-top: -100px;
   margin-left: -50px;
-  display:none;
+  display: none;
   background: rgba(230, 230, 230, .8);
   text-align: center;
   padding-top: 20px;
