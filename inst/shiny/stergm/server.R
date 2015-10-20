@@ -167,7 +167,7 @@ pajnws <- reactive({
 
 nwname <- reactive({
   name <- input$rawdatafile[1,1]
-  if(input$filetype == 5){
+  if(input$filetype == 1){
     name <- input$samplenet
   }
   name
@@ -638,6 +638,63 @@ cugvals <- reactive({
         loops = nw()$gal$loops)
 })
 
+## FIT MODEL ##
+
+formation <- reactive({
+  input$updateformulaButton
+  isolate({paste("~", input$formation)})
+})
+
+dissolution <- reactive({
+  input$updateformulaButton
+  isolate({paste("~", input$dissolution)})
+})
+
+observeEvent(input$resetformulaButton, {
+  updateTextInput(session, "formation",
+                  label = NULL, value = "edges")
+  updateTextInput(session, "dissolution",
+                  label = NULL, value = "offset(edges)")
+})
+observeEvent(nw(), {
+  updateTextInput(session, "formation",
+                  label = NULL, value = "edges")
+  updateTextInput(session, "dissolution",
+                  label = NULL, value = "offset(edges)")
+})
+
+
+#stergm model object
+model1reac <- reactive({
+  if(input$fitButton == 0){
+    return()
+  }
+  usingdefault <- isolate(input$controldefault)
+  if(usingdefault){
+
+  } else {
+    customcontrols <- isolate(paste(input$customMCMCcontrol, sep = ","))
+    if(customcontrols == ""){
+      mod <- isolate(ergm(ergm.formula(),
+                          control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
+                                         MCMC.burnin = isolate(input$MCMCburnin),
+                                         MCMC.samplesize = isolate(input$MCMCsamplesize))))
+    } else {
+      mod <- isolate(ergm(ergm.formula(),
+                          control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
+                                         MCMC.burnin = isolate(input$MCMCburnin),
+                                         MCMC.samplesize = isolate(input$MCMCsamplesize),
+                                         eval(parse(text = customcontrols)))))
+    }
+
+  }
+  return(mod)
+})
+
+
+
+
+
 
 # Output Objects ----------------------------------------------------------
 
@@ -678,6 +735,61 @@ output$nwsum <- renderPrint({
     return(cat(nw_var))
   }
   return(nw_var)
+})
+
+
+
+## FIT MODEL ##
+
+observeEvent(input$matchingButton, {
+  state$allterms <- FALSE
+})
+observeEvent(input$allButton, {
+  state$allterms <- TRUE
+})
+
+output$listofterms <- renderUI({
+  if(!is.network(nw())){
+    return()
+  }
+  if(state$allterms){
+    current.terms <- allterms$names
+  } else {
+    matchterms <- splitargs(nw = nw())
+    current.terms <- matchterms$names
+  }
+  selectizeInput('chooseterm', label = NULL,
+                 choices = c("Select a term" = "", current.terms))
+})
+
+output$termdoc <- renderUI({
+  myterm <- input$chooseterm
+  if(is.null(myterm)){
+    return(p("Select or search for a term in the menu above."))
+  } else if(myterm == ""){
+    return(p("Select or search for a term in the menu above."))
+  }
+  chrvec <- capture.output(search.ergmTerms(name = myterm))
+  desc <- strsplit(chrvec[3], split = "_")
+  p(chrvec[1], br(),br(),
+    strong(chrvec[2]), br(),br(),
+    em(desc[[1]][2]), desc[[1]][3], br(),
+    chrvec[4])
+})
+
+output$currentnw1 <- renderPrint({
+  if(!is.network(nw())){
+    return(cat('Upload a network'))
+  }
+  cat(isolate(nwname()))
+})
+
+output$prefitsum <- renderPrint({
+  if(!is.network(nw()) | length(input$formation) == 0){
+    return(cat('NA'))
+  }
+  options(width = 140)
+  summary(as.formula(paste("nw()", formation())))
 })
 
 })

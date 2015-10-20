@@ -848,15 +848,162 @@ tabPanel("Network Descriptives", value = "tab3",
 # Fit Model ---------------------------------------------------------------
 
 
-    tabPanel("Fit Model", value = "tab4",
+tabPanel("Fit Model", value = "tab4",
 
-             icon("question-circle", class = "fa-2x helper-btn"),
-             div(class = "helper-box", style = "display: none;",
-                 p("help help help")),
-             actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
-                        label = NULL),
-             actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
-                        label = NULL)
-             )
+   fluidRow(
+     column(2,
+            p('Network:', class = "nwlabel"),
+            verbatimTextOutput('currentnw1')
+     ),
+
+     column(4,
+            p("Formation formula:"),
+            div(textInput(inputId = "formation", label = NULL,
+                          value = "edges"),
+                title = paste("Type in term(s) and their arguments.",
+                            "For multiple terms, separate with '+'. ")
+            ),
+            p("Dissolution formula:"),
+            div(textInput(inputId = "dissolution", label = NULL,
+                          value = "offset(edges)"),
+                title = paste("Type in term(s) and their arguments.",
+                              "For multiple terms, separate with '+'. ")
+            ),
+            actionButton('updateformulaButton', 'Update Formulas',
+                         class = "btn-primary btn-sm"),
+            actionButton('resetformulaButton', 'Reset Formulas',
+                         class = "btn-sm")
+
+
+     ),
+     column(5,
+            tabsetPanel(
+              tabPanel("Term Documentation",
+                 br(),
+                 div(class = "placeholder",
+                     fluidRow(
+                       column(12,
+                          a("Commonly used ergm terms",
+                            href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
+                            target = "_blank"), br(),
+                          a("Term cross-reference tables",
+                            href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
+                            target = "_blank"), br(), br()
+                       ),
+                       column(6,
+                          actionButton("matchingButton", "Compatible terms",
+                                       class = "btn-sm active"),
+                          actionButton("allButton", "All terms",
+                                       class = "btn-sm")
+                       ),
+                       column(4, uiOutput("listofterms"))
+                     ),
+                     fluidRow(
+                       column(12,
+                          div(id="termdocbox",
+                              uiOutput("termdoc")
+                          ),
+                          div(id = "termexpand",
+                              icon(name = "angle-double-up"))
+                       )
+
+                     )
+
+                 )
+              ),
+              tabPanel("Control Options",
+                 div(class = "placeholder",
+                     fluidRow(class = "shiftright",
+                        column(3, style = "padding-left: 0;",
+                               inlineSelectInput('controltype',label = NULL,
+                                                 choices = c("MCMC","MCMLE"),
+                                                 style="margin:10px 0px;")),
+                        column(5,
+                               checkboxInput('controldefault',
+                                             'Use default options',
+                                             value = TRUE))
+                     ),
+                     conditionalPanel("input.controltype == 'MCMC'",
+                                      class = "shiftright",
+                        fluidRow(
+                          column(4,
+                                 span("Interval:"),
+                                 customNumericInput('MCMCinterval',
+                                                    label = NULL,
+                                                    value = 1024,
+                                                    class = "mcmcopt input-mini round"),
+                                 title = paste("Number of proposals between sampled statistics.")
+                          ),
+
+                          column(4,
+                                 span("Burn-in:"),
+                                 customNumericInput('MCMCburnin',
+                                                    label = NULL,
+                                                    value = 16384,
+                                                    class = "mcmcopt input-mini round"),
+                                 title = paste("Number of proposals before any MCMC sampling is done.",
+                                               "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
+                          ),
+
+                          column(4,
+                                 span("Sample size:"),
+                                 customNumericInput('MCMCsamplesize',
+                                                    label = NULL,
+                                                    value = 1024,
+                                                    class = "mcmcopt input-mini round"),
+                                 title = paste("Number of network statistics, randomly drawn from a given distribution",
+                                               "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
+                          )
+                        ),
+
+                        fluidRow(
+                          div(span("Other controls:", class = "shiftright"),
+                              customTextInput("customMCMCcontrol",
+                                              label = NULL,
+                                              value = "",
+                                              class = "input-small round"),
+                              title = paste("Other arguments to be passed to",
+                                            "control.ergm, e.g. MCMC.burnin.retries = 1")
+                          )
+                        )),
+                     conditionalPanel("input.controltype == 'MCMLE'",
+                                      p("Coming soon"))
+                       ))) #end tabsetPanel
+     )
+   ),
+   br(),
+   fluidRow(
+     column(2,
+            p('Summary statistics:')),
+     column(10,
+            verbatimTextOutput('prefitsum'))),
+   fluidRow(column(12,
+                   actionButton("fitButton", "Fit Model",
+                                class = "btn-primary btn-sm")
+   )),
+   br(),
+   tabsetPanel(id = 'fittingTabs',
+               tabPanel('Current Model Summary', br(),
+                        verbatimTextOutput('modelfitsum'),
+                        downloadButton("modelfitdownload",
+                                       "Download Summary (.txt)",
+                                       class="btn-sm")),
+               tabPanel('Current Model Fit Report', br(),
+                        verbatimTextOutput('modelfit')),
+               tabPanel('Model Comparison', br(),
+                        verbatimTextOutput('modelcomparison'),
+                        downloadButton("modelcompdownload",
+                                       "Download Comparison (.txt)",
+                                       class="btn-sm"))
+   ), br(), br(),
+
+   icon("question-circle", class = "fa-2x helper-btn"),
+   div(class = "helper-box", style = "display: none;",
+       p("help help help")),
+   actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
+              label = NULL),
+   actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
+              label = NULL)
+   )
   )
 )
