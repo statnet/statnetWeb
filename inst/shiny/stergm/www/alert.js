@@ -82,4 +82,36 @@ $(document).ready(function(){
     $("#filetypebox10").toggle(500);
   });
 
+    $("#termdocButton").click(function(){
+    $(".docpopup").toggle(500);
+  });
+
+  $("#termexpand").click(function(){
+    $("i",this).toggleClass("fa-angle-double-down fa-angle-double-up");
+    if($("#termdocbox").height()<100){
+      $("#termdocbox").css({
+      "max-height":"250px"
+      });
+    } else {
+      $("#termdocbox").css({
+      "max-height":"55px"
+      });
+    }
+
+  });
+
+  $("#termdocbox").click(function(){
+    $("#termexpand i").toggleClass("fa-angle-double-down fa-angle-double-up");
+    if($("#termdocbox").height()<100){
+      $("#termdocbox").css({
+      "max-height":"250px"
+      });
+    } else {
+      $("#termdocbox").css({
+      "max-height":"55px"
+      });
+    }
+
+  });
+
 });
