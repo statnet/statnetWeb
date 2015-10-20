@@ -443,10 +443,8 @@ nwmid <- reactive({
 nw <- reactive({
   nw_var <- nwmid()
 
-  #deleting attributes is no longer available
-
   values$input_termslist <- list()
-  updateTextInput(session, inputId='terms', value='edges')
+  updateTextInput(session, inputId = 'terms', value = 'edges')
 
   nw_var
 })
@@ -456,8 +454,58 @@ elist <- reactive({
   as.edgelist(nw())
 })
 
+#get coordinates to plot network with
+coords <- reactive({
+  input$refreshplot
+  plot.network(nw())
+})
+
+#initial network attributes
+#returns vector of true/falses
+nwattrinit <- reactive({
+  if(!is.network(nwinit())){return()}
+  nwattributes <- c('directed', 'hyper', 'loops', 'multiple', 'bipartite')
+  unlist(lapply(nwattributes, get.network.attribute, x = nwinit()))
+})
+
+#list of all vertex attributes in nw (after adding new)
+attrib <- reactive({
+  attr <- c()
+  if(is.network(nw())){
+    attr <- list.vertex.attributes(nw())
+  }
+  attr
+})
+
 
 # Output Objects ----------------------------------------------------------
+
+output$rawdatafile <- renderPrint({
+  raw <- matrix(nrow = 2, ncol = 1)
+  rownames(raw)<-c("name:", "size:")
+  if(!is.null(input$rawdatafile)){
+    raw[1, 1] <- input$rawdatafile[1, 1]
+    raw[2, 1] <- paste(input$rawdatafile[1, ], " bytes")
+  }
+  write.table(raw, quote = FALSE, col.names = FALSE)})
+
+output$pajchooser <- renderUI({
+  pajlist <- c(None = '')
+  if(!is.null(pajnws())){
+    pajlist <- 1:length(pajnws()$networks)
+    names(pajlist) <- names(pajnws()$networks)
+  }
+  selectInput('choosepajnw',
+              label = 'Choose a network from the Pajek project',
+              choices = pajlist)
+})
+outputOptions(output, "pajchooser", suspendWhenHidden = FALSE)
+
+
+output$newattrname <- renderPrint({
+  if(!is.null(input$newattrvalue)){
+    cat(newattrnamereac())}
+})
 
 #summary of network attributes
 output$nwsum <- renderPrint({
@@ -465,7 +513,7 @@ output$nwsum <- renderPrint({
     return(cat('NA'))
   }
   nw_var <- nw()
-  if (class(nw_var)!="network"){
+  if (class(nw_var) != "network"){
     return(cat(nw_var))
   }
   return(nw_var)
