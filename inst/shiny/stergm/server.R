@@ -477,6 +477,167 @@ attrib <- reactive({
   attr
 })
 
+#don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
+menuattr <- reactive({
+  menuattr <- attrib()
+  if(is.element("na", menuattr)){
+    menuattr <- menuattr[-which("na" == menuattr)]
+  }
+  if(is.element("vertex.names", menuattr)){
+    menuattr <- menuattr[-which("vertex.names" == menuattr)]
+  }
+  menuattr
+})
+
+#numeric attributes only (for size menu, etc.)
+numattr <- reactive({
+  numattr <- c()
+  if(is.network(nw())){
+    for(i in 1:length(attrib())){
+      if(is.numeric(get.vertex.attribute(nw(),attrib()[i]))){
+        numattr <- append(numattr,attrib()[i])
+      }
+    }}
+  numattr
+})
+
+#dataframe of nodes, their attributes, and their coordinates in nwplot
+nwdf <- reactive({
+  attrs <- menuattr()
+  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+    df <- data.frame(Names = network.vertex.names(nw()))
+  } else {
+    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+  }
+  for(i in seq(length(attrs))){
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+  }
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  df[["cx"]] <- coords()[,1]
+  df[["cy"]] <- coords()[,2]
+  df
+})
+
+# betweenness centrality of all nodes (for sizing menu)
+nodebetw <- reactive({
+  if(!is.network(nw())){return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+    cmode <- 'directed'
+  } else {
+    gmode <- 'graph'
+    cmode <- 'undirected'
+  }
+  sna::betweenness(nw(), gmode = gmode, diag = has.loops(nw()),
+                   cmode = cmode)
+})
+
+nodesize <- reactive({
+  if(!is.network(nw())){return()}
+  nw_var <- nw()
+  #scale size of nodes onto range between .7 and 3.5
+  if (input$sizeby == '1'){
+    size = 1
+  } else if (input$sizeby == 'Betweenness'){
+    minsize <- min(nodebetw())
+    maxsize <- max(nodebetw())
+    size = (nodebetw()-minsize)/(maxsize-minsize)*(3.5-.7)+.7
+  } else {
+    minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
+    maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
+    size <- (get.vertex.attribute(nw_var,input$sizeby)-minsize) /
+      (maxsize-minsize) * (3.5 - .7) + .7
+  }
+  size})
+
+#vertex color
+vcol <- reactive({
+  if(!is.network(nw())){return()}
+  nw_var <- nw()
+  if(input$colorby == 2){
+    vcol <- rep(2, nodes())
+  } else {
+    full_list <- get.vertex.attribute(nw_var,input$colorby)
+    short_list <- sort(unique(full_list))
+    ncolors <- length(short_list)
+    if(is.element("Other", short_list)){ #to be consistent with order of legend
+      short_list <- short_list[-which(short_list == "Other")]
+      short_list <- c(short_list, "Other")
+    }
+    full_list <- match(full_list, short_list)
+    #each elt corresponds to integer position in short_list
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    if(ncolors>9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
+    }
+    vcol <- pal[full_list]
+  }
+  vcol
+})
+
+legendlabels <- reactive({
+  if(!is.network(nw())){return()}
+  nw_var <- nw()
+  if(input$colorby == 2){
+    legendlabels <- NULL
+  }else{
+    legendlabels <- sort(unique(get.vertex.attribute(nw_var, input$colorby)))
+    if(is.element("Other", legendlabels)){
+      legendlabels <- legendlabels[-which(legendlabels == "Other")]
+      legendlabels <- c(legendlabels, "Other")
+    }
+  }
+  legendlabels
+})
+
+legendfill <- reactive({
+  if(input$colorby == 2){
+    legendfill <- NULL
+  } else {
+    n <- length(legendlabels())
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    if(n>9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
+    }
+    legendfill <- adjustcolor(pal, alpha.f = input$transp)
+  }
+  legendfill
+})
+
+#simulated graphs for cug tests
+observeEvent(c(nw(), input$ncugsims),{
+  if(!is.null(nw())){
+    s <- network.edgecount(nw())
+    if (is.directed(nw())){
+      mode <- "digraph"
+    } else {
+      mode <- "graph"
+    }
+
+    brgsims <- sna::rgraph(n = nodes(), m = input$ncugsims,
+                           tprob = sna::gden(nw()), mode = mode,
+                           diag = nw()$gal$loops)
+    cugsims <- sna::rgnm(n = input$ncugsims, nv = nodes(),
+                         m = s, mode = mode,
+                         diag = nw()$gal$loops)
+
+    values$cugsims <- list(brgsims, cugsims)
+  }
+})
+
+brgvals <- reactive({
+  apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats,
+        term = input$cugtestterm, directed = nw()$gal$directed,
+        loops = nw()$gal$loops)
+})
+cugvals <- reactive({
+  apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats,
+        term = input$cugtestterm, directed = nw()$gal$directed,
+        loops = nw()$gal$loops)
+})
+
 
 # Output Objects ----------------------------------------------------------
 

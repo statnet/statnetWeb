@@ -456,19 +456,394 @@ actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
            label = NULL)
 ),
 
-# Network Plot ------------------------------------------------------------
+# Network Descriptives ---------------------------------------------------
 
 
-    tabPanel("Network Plot", value = "tab3",
+tabPanel("Network Descriptives", value = "tab3",
+   fluidRow(
+   column(7,
+    tabsetPanel(id = 'plottabs',
+        tabPanel('Network Plot', br(),
+           plotOutput('nwplot', click = "plot_click",
+                      dblclick = dblclickOpts(id = "plot_dblclick"),
+                      hover = hoverOpts(id = "plot_hover", delay = 100,
+                                        delayType = "throttle"),
+                      brush = brushOpts(id = "plot_brush")
+           )
+        ),
+        tabPanel('Attributes', br(),
+           conditionalPanel('input.attrview == "Large table"',
+                            dataTableOutput("attrtbl_lg")
+           ),
+           conditionalPanel('input.attrview == "Small tables"',
+                            verbatimTextOutput("attrtbl_sm")
+           ),
+           conditionalPanel('input.attrview == "Plot summaries"',
+                            tags$label("Type of plots"),
+                            helpText("Density plots will only be created for",
+                                     "numeric attributes with more than nine",
+                                     "levels."),
+                            selectInput("attrhistaxis",
+                                        label = NULL,
+                                        choices = c("Barplot: counts" = "count",
+                                                    "Barplot: percents" = "percent",
+                                                    "Density plot" = "density")),
+                            uiOutput("attrhistplotspace"))
 
-             icon("question-circle", class = "fa-2x helper-btn"),
-             div(class = "helper-box", style = "display: none;",
-                 p("help help help")),
-             actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
-                        label = NULL),
-             actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
-                        label = NULL)
-             ),
+        ),
+        tabPanel('Degree Distribution',
+           p(class = 'helper', id = 'ddhelper', icon('question-circle')),
+           div(class = 'mischelperbox', id = 'ddhelperbox',
+               "Degrees are a node level measure for the number of edges incident on each node.",
+               "The degree distribution shows how the edges in a network are distributed among the",
+               "nodes. The amount (or proportion) of nodes with low, medium",
+               "or high degrees contribute to the overall structure of the",
+               "network. The degree distributions of directed graphs can",
+               "be subset by in-degree or out-degree."),
+           plotOutput('degreedist')
+        ),
+        tabPanel('Geodesic Distribution',
+           p(class = 'helper', id = 'gdhelper', icon('question-circle')),
+           div(class = 'mischelperbox', id = 'gdhelperbox',
+               "Geodesics are a dyad level measure for the shortest possible path between a pair of nodes.",
+               'If there is no path between a pair of nodes, the geodesic distance is "inf".',
+               "The geodesic distribution among all possible dyads contributes to the",
+               "structure of network connectivity."),
+           plotOutput('geodistplot')
+        ),
+        tabPanel('More', value = 'More', br(),
+           h5('Conditional uniform graph tests', icon('angle-double-left'),
+              id = "cugtitle"),
+           wellPanel(id = "cugbox",
+                   column(4, uiOutput("dynamiccugterm")),
+                   column(4, selectInput("ncugsims",
+                                         label = "Number of simulations",
+                                         choices = c(100, 200, 500))),
+                   column(3, actionButton("cugButton", label = "Run",
+                                          style = "margin-top: 25px;")),
+                   br(),
+                   plotOutput("cugtest"),
+                   br(),
+                   downloadButton('cugtestdownload', label = "Download Plot",
+                                  class = "btn-sm")
+          ),
+           h5('Mixing matrix', icon('angle-double-left'),
+              id = "mixmxtitle"),
+           wellPanel(id = "mixmxbox",
+                   fluidRow(
+                     column(6, uiOutput('mixmxchooser')),
+                     column(6, downloadButton("mixmxdownload",
+                                              class = "shiftdown25"))
+                   ),
+                   fluidRow(
+                     verbatimTextOutput('mixingmatrix')
+                   )
+           ),
+           h5('Graph-level descriptive indices',
+              icon('angle-double-left'), id="graphleveltitle"),
+           wellPanel(id="graphlevelbox",
+                   fluidRow(
+                     column(4, offset=7,tags$u('Measure')),
+                     fluidRow(
+                       column(4, p('Density:', class = 'stitle')),
+                       column(3, p(textOutput('gden'), class = 'snum'))),
+
+                     fluidRow(
+                       column(4, p('Degree:', class = 'stitle')),
+                       column(3, p(textOutput('gdeg'), class = 'snum')),
+                       column(4, selectInput('gdegcmode', label = NULL,
+                                             choices = c('indegree', 'outdegree', 'total')
+                       ))),
+                     fluidRow(
+                       column(4, p('Reciprocity:', class = 'stitle')),
+                       column(3, p(textOutput('grecip'), class = 'snum')),
+                       column(4, selectInput('grecipmeas',label = NULL,
+                                             choices = c('dyadic','dyadic.nonnull','edgewise',
+                                                         'edgewise.lrr','correlation')))),
+                     fluidRow(
+                       column(4, p('Transitivity:'), class = 'stitle'),
+                       column(3, p(textOutput('gtrans'), class = 'snum')),
+                       column(4, selectInput('gtransmeas',label = NULL,
+                                             choices = c('weak','strong','weakcensus',
+                                                         'strongcensus','rank','correlation'))
+                       )),
+                     fluidRow(
+                       column(4, p('Betweenness:', class = 'stitle')),
+                       column(3, p(textOutput('gbetw'), class = 'snum')),
+                       column(4, selectInput('gbetwcmode', label = NULL,
+                                             choices = c('directed','undirected',
+                                                         'endpoints','proximalsrc',
+                                                         'proximaltar','proximalsum',
+                                                         'lengthscaled', 'linearscaled'))
+                       )),
+                     fluidRow(
+                       column(4, p('Closeness:', class = 'stitle')),
+                       column(3, p(textOutput('gclose'), class = 'snum')),
+                       column(4, selectInput('gclosecmode', label = NULL,
+                                             choices = c('directed','undirected',
+                                                         'suminvdir','suminvundir')))),
+                     fluidRow(
+                       column(4, p('Stress Centrality:', class = 'stitle')),
+                       column(3, p(textOutput('gstress'), class = 'snum')),
+                       column(4, selectInput('gstresscmode', label = NULL,
+                                             choices = c('directed','undirected')))
+                     ),
+                     fluidRow(
+                       column(4, p('(Harary) Graph Centrality:', class = 'stitle')),
+                       column(3, p(textOutput('ggraphcent'), class = 'snum')),
+                       column(4, selectInput('ggraphcentcmode', label = NULL,
+                                             choices = c('directed', 'undirected')))
+                     ),
+                     fluidRow(
+                       column(4, p('Eigenvector Centrality:', class = 'stitle')),
+                       column(3, p(textOutput('gevcent'), class = 'snum')),
+                       column(4, br())
+                     ),
+                     fluidRow(
+                       column(4, p('Information Centrality:', class = 'stitle')),
+                       column(3, p(textOutput('ginfocent'), class = 'snum')),
+                       column(4, selectInput('ginfocentcmode',label = NULL,
+                                             choices = c('weak', 'strong', 'upper',
+                                                         'lower')))
+                     )
+                     )),
+
+           h5('Vertex-level descriptive indices',
+              icon('angle-double-left'), id = "nodeleveltitle"),
+           wellPanel(id = "nodelevelbox",
+                   fluidRow(
+                     column(2, span("Vertex index:")),
+                     column(5, numericInput('nodeind',
+                                            label = NULL,
+                                            value = 1,
+                                            min = 1))
+                   ),
+                   tags$hr(),
+                   fluidRow(
+                     column(2, offset = 3, tags$u('Current vertex')),
+                     column(3, tags$u('Centrality mode')),
+                     column(2, tags$u('Min')),
+                     column(2, tags$u('Max'))),
+                   fluidRow(
+                     column(3, p('Degree:', class = 'stitle')),
+                     column(2, p(textOutput('ndeg'), class = 'snum')),
+                     column(3, selectInput('ndegcmode',
+                                           label = NULL,
+                                           choices = c('indegree', 'outdegree', 'total')),
+                            class = "smallselect"),
+                     column(2, p(textOutput('ndegmin'), class = 'snum', align = 'center')),
+                     column(2, p(textOutput('ndegmax'), class = 'snum', align = 'center'))
+                   ),
+                   fluidRow(
+                     column(3, p('Betweenness:', class = 'stitle')),
+                     column(2, p(textOutput('nbetw'), class = 'snum')),
+                     column(3, selectInput('nbetwcmode', label = NULL,
+                                           choices=c('directed','undirected',
+                                                     'endpoints','proximalsrc',
+                                                     'proximaltar','proximalsum',
+                                                     'lengthscaled', 'linearscaled')),
+                            class = "smallselect"),
+                     column(2, p(textOutput('nbetwmin'), class = 'snum')),
+                     column(2, p(textOutput('nbetwmax'), class = 'snum'))
+                   ),
+                   fluidRow(
+                     column(3, p('Closeness:', class = 'stitle')),
+                     column(2, p(textOutput('nclose'), class = 'snum')),
+                     column(3, selectInput('nclosecmode', label = NULL,
+                                           choices=c('directed','undirected',
+                                                     'suminvdir','suminvundir')),
+                            class = "smallselect"),
+                     column(2, p(textOutput('nclosemin'))),
+                     column(2, p(textOutput('nclosemax')))
+                   ),
+                   fluidRow(
+                     column(3, p('Stress Centrality:', class = 'stitle')),
+                     column(2, p(textOutput('nstress'), class = 'snum')),
+                     column(3, selectInput('nstresscmode', label = NULL,
+                                           choices = c('directed','undirected')),
+                            class = "smallselect"),
+                     column(2, p(textOutput('nstressmin'))),
+                     column(2, p(textOutput('nstressmax')))
+                   ),
+                   fluidRow(
+                     column(3, p('(Harary) Graph Centrality:', class = 'stitle')),
+                     column(2, p(textOutput('ngraphcent'), class = 'snum')),
+                     column(3, selectInput('ngraphcentcmode', label = NULL,
+                                           choices = c('directed', 'undirected')),
+                            class = "smallselect"),
+                     column(2, p(textOutput('ngraphcentmin'))),
+                     column(2, p(textOutput('ngraphcentmax')))
+                   ),
+                   fluidRow(
+                     column(3, p('Eigenvector Centrality:', class = 'stitle')),
+                     column(2, p(textOutput('nevcent'), class = 'snum')),
+                     column(3, br()),
+                     column(2, p(textOutput('nevcentmin'))),
+                     column(2, p(textOutput('nevcentmax')))
+                   ),
+                   fluidRow(
+                     column(3, p('Information Centrality:', class = 'stitle')),
+                     column(2, p(textOutput('ninfocent'), class = 'snum')),
+                     column(3, selectInput('ninfocentcmode',label = NULL,
+                                           choices = c('weak', 'strong', 'upper',
+                                                     'lower')),
+                            class = "smallselect"),
+                     column(2, p(textOutput('ninfocentmin'))),
+                     column(2, p(textOutput('ninfocentmax')))
+                   )
+           )
+
+        )
+      ), #end tabsetPanel
+     br(),
+     br()
+     ), #end 7 column
+     column(4,
+            tabsetPanel(id = 'displaytabs',
+              tabPanel(title = 'Display Options', br(),
+                 wellPanel(
+                   conditionalPanel('input.plottabs == "Network Plot"',
+                      checkboxInput('iso',
+                                    label = 'Display isolates',
+                                    value = TRUE),
+                      checkboxInput('vnames',
+                                    label = 'Display vertex names',
+                                    value = FALSE),
+                      br(),
+                      sliderInput('transp',
+                                  label = 'Vertex opacity',
+                                  min = 0, max = 1, value = 1),
+                      br(),
+                      uiOutput("dynamiccolor"),
+                      conditionalPanel("Number(output.attrlevels) > 9",
+                         column(10,
+                                p(id = "closewarning1", icon(name = "remove"),
+                                  class = "warning"),
+                                div(class = "warning", id = "colorwarning1",
+                                    span(tags$u("Note:"),
+                                         "Color palette becomes a gradient for
+                                         attributes with more than nine levels.")
+                                )
+                         )),
+                      uiOutput('dynamicsize'),
+                      br(),
+                      actionButton("refreshplot", icon = icon("refresh"),
+                                   label = "Refresh Plot", class = "btn-sm"),
+                      downloadButton('nwplotdownload',
+                                     label = "Download Plot", class = "btn-sm")),
+                   conditionalPanel(condition='input.plottabs == "Attributes"',
+                      selectInput("attrview", label = "View attributes in:",
+                                  choices = c("Large table",
+                                              "Small tables",
+                                              "Plot summaries")),
+                      br(),
+                      uiOutput("attrcheck")
+                   ),
+                   conditionalPanel('input.plottabs == "Degree Distribution"',
+                      uiOutput("dynamiccmode_dd"),
+                      uiOutput("dynamiccolor_dd"),
+                      tags$label("Y-axis units:"), br(),
+                      actionButton("countButton_dd", label = "Count of vertices",
+                                   class = "btn-sm active"),
+                      actionButton("percButton_dd", label = "Percent of vertices",
+                                   class = "btn-sm"),
+                      br(), br(),
+                      tags$label('Expected values of null models:'), br(),
+                      fluidRow(
+                        column(10,
+                               checkboxInput('uniformoverlay_dd',
+                                             label = 'Conditional uniform graphs (CUG)',
+                                             value = FALSE)
+                        ),
+
+                        span(icon('question-circle'), id = "cughelper_dd",
+                             class = "helper",
+                             div(id = "cughelperbox_dd", class = "mischelperbox",
+                                 "Draws from the distribution of simple random graphs with the same",
+                                 "fixed density as the observed network. The mean and 95% confidence",
+                                 "intervals for each degree are plotted."))),
+                      fluidRow(
+                        column(10,
+                               checkboxInput('bernoullioverlay_dd',
+                                             label = 'Bernoulli random graphs (BRG)',
+                                             value = FALSE)
+                        ),
+                        span(icon('question-circle'), id = "brghelper_dd",
+                             class = "helper",
+                             div(id = "brghelperbox_dd", class = "mischelperbox",
+                                 "Draws from the distribution of simple random graphs with the same",
+                                 "stochastic tie probability as the observed network.",
+                                 "The mean and 95% confidence intervals for each degree are plotted."))),
+                      br(),
+                      downloadButton('degreedistdownload',
+                                     label = "Download Plot",
+                                     class = "btn-sm")
+                   ),
+                   conditionalPanel('input.plottabs == "Geodesic Distribution"',
+                      tags$label("Y-axis units:"), br(),
+                      actionButton("countButton_gd", "Count of vertex pairs",
+                                   class = "btn-sm active"),
+                      actionButton("percButton_gd", "Percent of vertex pairs",
+                                   class = "btn-sm"),
+                      br(), br(),
+                      tags$label('Expected values of null models:'), br(),
+                      fluidRow(
+                        column(10,
+                               checkboxInput('uniformoverlay_gd',
+                                             label = 'Conditional uniform graphs (CUG)',
+                                             value = FALSE)
+                        ),
+                        span(icon('question-circle'), id = "cughelper_gd", class = "helper",
+                             div(id = "cughelperbox_gd", class = "mischelperbox",
+                                 "Draws from the distribution of simple random graphs with the same",
+                                 "fixed density as the observed network. The mean and 95% confidence",
+                                 "intervals for each degree are plotted."))),
+                      fluidRow(
+                        column(10,
+                               checkboxInput('bernoullioverlay_gd',
+                                             label = 'Bernoulli random graphs (BRG)',
+                                             value = FALSE)
+                        ),
+                        span(icon('question-circle'), id = "brghelper_gd",
+                             class = "helper",
+                             div(id = "brghelperbox_gd", class = "mischelperbox",
+                                 "Draws from the distribution of simple random graphs with the same",
+                                 "stochastic tie probability as the observed network.",
+                                 "The mean and 95% confidence intervals for each degree are plotted."))),
+                      br(),
+                      verbatimTextOutput('infsummary'),
+                      fluidRow(
+                        column(10,
+                               checkboxInput('excludeInfs',
+                                             label = span('Exclude "inf"s from plot'),
+                                             value = FALSE)),
+                        span(icon('question-circle'), id = "infhelper_gd",
+                             class = "helper",
+                             div(id="infhelperbox_gd", class = "mischelperbox",
+                                 "A pair of nodes without any path connecting",
+                                 'it has a geodesic distance of "inf".'))),
+                      br(),
+                      downloadButton('geodistdownload', label = 'Download Plot',
+                                     class = "btn-sm")
+                   ),
+                   conditionalPanel(condition = 'input.plottabs == "More"',
+                      p("No display options at this time,",
+                        "stay tuned for updates!")
+                   )
+                 )),
+              tabPanel(title = 'Network Summary', br(),
+                       verbatimTextOutput('attr2'))
+            )
+     )
+   ),
+   icon("question-circle", class = "fa-2x helper-btn"),
+   div(class = "helper-box", style = "display: none;",
+       p("help help help")),
+   actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
+              label = NULL),
+   actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
+              label = NULL)
+   ),
 
 # Fit Model ---------------------------------------------------------------
 
