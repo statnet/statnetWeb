@@ -878,38 +878,18 @@ tabPanel("Fit Model", value = "tab4",
      ),
      column(5,
             tabsetPanel(
-              tabPanel("Term Documentation",
-                 br(),
-                 div(class = "placeholder",
-                     fluidRow(
-                       column(12,
-                          a("Commonly used ergm terms",
-                            href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
-                            target = "_blank"), br(),
-                          a("Term cross-reference tables",
-                            href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
-                            target = "_blank"), br(), br()
-                       ),
+              tabPanel("STERGM Arguments",
                        column(6,
-                          actionButton("matchingButton", "Compatible terms",
-                                       class = "btn-sm active"),
-                          actionButton("allButton", "All terms",
-                                       class = "btn-sm")
-                       ),
-                       column(4, uiOutput("listofterms"))
-                     ),
-                     fluidRow(
-                       column(12,
-                          div(id="termdocbox",
-                              uiOutput("termdoc")
-                          ),
-                          div(id = "termexpand",
-                              icon(name = "angle-double-up"))
-                       )
+                              p("Targets:"),
+                  radioButtons("targets", label = NULL,
+                               choices = c("formation", "dissolution")),
+                  textInput("target.stats", label = NULL, value = "")
+                              ),
+                  column(6,
+                         p("Estimate:"),
+                         radioButtons("estimate", label = NULL,
+                                      choices = c("CMLE", "EGMME")))
 
-                     )
-
-                 )
               ),
               tabPanel("Control Options",
                  div(class = "placeholder",
@@ -968,7 +948,41 @@ tabPanel("Fit Model", value = "tab4",
                         )),
                      conditionalPanel("input.controltype == 'MCMLE'",
                                       p("Coming soon"))
-                       ))) #end tabsetPanel
+                       )),
+              tabPanel("Term Documentation",
+                       br(),
+                       div(class = "placeholder",
+                           fluidRow(
+                             column(12,
+                                    a("Commonly used ergm terms",
+                                      href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
+                                      target = "_blank"), br(),
+                                    a("Term cross-reference tables",
+                                      href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
+                                      target = "_blank"), br(), br()
+                             ),
+                             column(6,
+                                    actionButton("matchingButton", "Compatible terms",
+                                                 class = "btn-sm active"),
+                                    actionButton("allButton", "All terms",
+                                                 class = "btn-sm")
+                             ),
+                             column(4, uiOutput("listofterms"))
+                           ),
+                           fluidRow(
+                             column(12,
+                                    div(id="termdocbox",
+                                        uiOutput("termdoc")
+                                    ),
+                                    div(id = "termexpand",
+                                        icon(name = "angle-double-up"))
+                             )
+
+                           )
+
+                       )
+              )
+              ) #end tabsetPanel
      )
    ),
    br(),

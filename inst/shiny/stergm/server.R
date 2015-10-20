@@ -665,30 +665,36 @@ observeEvent(nw(), {
 
 
 #stergm model object
-model1reac <- reactive({
+stergm.fit <- reactive({
   if(input$fitButton == 0){
     return()
   }
-  usingdefault <- isolate(input$controldefault)
-  if(usingdefault){
-
-  } else {
-    customcontrols <- isolate(paste(input$customMCMCcontrol, sep = ","))
-    if(customcontrols == ""){
-      mod <- isolate(ergm(ergm.formula(),
-                          control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
-                                         MCMC.burnin = isolate(input$MCMCburnin),
-                                         MCMC.samplesize = isolate(input$MCMCsamplesize))))
-    } else {
-      mod <- isolate(ergm(ergm.formula(),
-                          control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
-                                         MCMC.burnin = isolate(input$MCMCburnin),
-                                         MCMC.samplesize = isolate(input$MCMCsamplesize),
-                                         eval(parse(text = customcontrols)))))
-    }
-
-  }
-  return(mod)
+#   usingdefault <- isolate(input$controldefault)
+#   if(usingdefault){
+#
+#   } else {
+#     customcontrols <- isolate(paste(input$customMCMCcontrol, sep = ","))
+#     if(customcontrols == ""){
+#       mod <- isolate(ergm(ergm.formula(),
+#                           control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
+#                                          MCMC.burnin = isolate(input$MCMCburnin),
+#                                          MCMC.samplesize = isolate(input$MCMCsamplesize))))
+#     } else {
+#       mod <- isolate(ergm(ergm.formula(),
+#                           control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
+#                                          MCMC.burnin = isolate(input$MCMCburnin),
+#                                          MCMC.samplesize = isolate(input$MCMCsamplesize),
+#                                          eval(parse(text = customcontrols)))))
+#     }
+#
+#   }
+  fit <- stergm(nw(),
+                formation = formation(),
+                dissolution = dissolution(),
+                targets = input$targets,
+                offset.coef.diss = log(9),
+                estimate = input$estimate)
+  return(fit)
 })
 
 
@@ -790,6 +796,14 @@ output$prefitsum <- renderPrint({
   }
   options(width = 140)
   summary(as.formula(paste("nw()", formation())))
+})
+
+output$modelfitsum <- renderPrint({
+  if (input$fitButton == 0){
+    return(cat('After adding terms to the formula, click "Fit Model" above.'))
+  }
+  options(width = 140)
+  summary(stergm.fit())
 })
 
 })
