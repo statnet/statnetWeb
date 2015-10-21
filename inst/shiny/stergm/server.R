@@ -689,8 +689,8 @@ stergm.fit <- reactive({
 #
 #   }
   fit <- stergm(nw(),
-                formation = formation(),
-                dissolution = dissolution(),
+                formation = as.formula(formation()),
+                dissolution = as.formula(dissolution()),
                 targets = input$targets,
                 offset.coef.diss = log(9),
                 estimate = input$estimate)
