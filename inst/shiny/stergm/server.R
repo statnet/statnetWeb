@@ -688,12 +688,15 @@ stergm.fit <- reactive({
 #     }
 #
 #   }
-  fit <- stergm(nw(),
+  isolate({
+    fit <- stergm(nw(),
                 formation = as.formula(formation()),
                 dissolution = as.formula(dissolution()),
                 targets = input$targets,
-                offset.coef.diss = log(9),
+                offset.coef.diss = as.numeric(input$offset),
                 estimate = input$estimate)
+  })
+
   return(fit)
 })
 
@@ -798,9 +801,18 @@ output$prefitsum <- renderPrint({
   summary(as.formula(paste("nw()", formation())))
 })
 
+output$modelfit <- renderPrint({
+  if (input$fitButton == 0){
+    return(cat('After specifiying stergm model, click "Fit Model" above.'))
+  }
+  options(width = 140)
+  stergm.fit()
+})
+outputOptions(output, "modelfit", priority = 10)
+
 output$modelfitsum <- renderPrint({
   if (input$fitButton == 0){
-    return(cat('After adding terms to the formula, click "Fit Model" above.'))
+    return(cat('After specifiying stergm model, click "Fit Model" above.'))
   }
   options(width = 140)
   summary(stergm.fit())
