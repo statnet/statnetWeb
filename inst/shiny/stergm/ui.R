@@ -889,19 +889,11 @@ tabPanel("Fit Model", value = "tab4",
 
                  helpText("The dissolution formula may only include offsets
                           of the terms in the formation."),
-                 column(5,
+                 column(7,
                     strong("Terms:"),
-                    uiOutput("dissterm1"),
-                    actionButton("addDissButton", label = NULL, icon = "plus"),
-                    conditionalPanel("input.addDissButton > 0",
-                                     uiOutput("dissterm2"))
-                        ),
-                 column(3,
-                    strong("Coefficients:"),
-                    numericInput("disscoef1", label = NULL, value = 1),
-                    conditionalPanel("input.addDissButton > 0",
-                                     numericInput("disscoef2", label = NULL,
-                                                  value = 1))
+                    uiOutput("dissterms"),
+                    uiOutput("disscoefs")
+
                         )
               ),
               tabPanel("Control Options",

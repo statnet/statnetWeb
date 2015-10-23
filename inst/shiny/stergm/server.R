@@ -642,12 +642,11 @@ cugvals <- reactive({
 
 formation <- reactive({
   input$updateformulaButton
-  isolate({paste("~", input$formation)})
+  isolate({input$formation})
 })
 
 dissolution <- reactive({
-  input$updateformulaButton
-  isolate({paste("~", input$dissolution)})
+  paste(input$dissolution, collapse = " + ")
 })
 
 observeEvent(input$resetformulaButton, {
@@ -659,8 +658,6 @@ observeEvent(input$resetformulaButton, {
 observeEvent(nw(), {
   updateTextInput(session, "formation",
                   label = NULL, value = "edges")
-  updateTextInput(session, "dissolution",
-                  label = NULL, value = "offset(edges)")
 })
 
 
@@ -690,8 +687,8 @@ stergm.fit <- reactive({
 #   }
   isolate({
     fit <- stergm(nw(),
-                formation = as.formula(formation()),
-                dissolution = as.formula(dissolution()),
+                formation = as.formula(paste("~", formation())),
+                dissolution = as.formula(paste("~", dissolution())),
                 targets = input$targets,
                 offset.coef.diss = as.numeric(input$offset),
                 estimate = input$estimate)
@@ -794,19 +791,34 @@ output$currentnw1 <- renderPrint({
 })
 
 output$form <- renderPrint({
-  cat(formation())
+  cat(paste("~", formation()))
 })
 
-# output$dissterm1 <- renderUI({
-#
-# })
+output$diss <- renderPrint({
+  cat(paste("~", dissolution()))
+})
+
+output$dissterms <- renderUI({
+  terms <- trimws(strsplit(formation(), "+", fixed = TRUE)[[1]])
+  offterms <- paste0("offset(", terms, ")")
+  div(
+    selectInput("dissolution", label = NULL,
+                choices = offterms, multiple = TRUE)
+  )
+})
+
+output$disscoefs <- renderUI({
+  ncoefs <- length(input$dissolution)
+  ids <- paste0("coef", seq(ncoefs))
+  sapply(ids, FUN = numericInput, value = 1, label = NULL)
+})
 
 output$prefitsum <- renderPrint({
   if(!is.network(nw()) | length(input$formation) == 0){
     return(cat('NA'))
   }
   options(width = 140)
-  summary(as.formula(paste("nw()", formation())))
+  summary(as.formula(paste("nw() ~", formation())))
 })
 
 output$modelfit <- renderPrint({
