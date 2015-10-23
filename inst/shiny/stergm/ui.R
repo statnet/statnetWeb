@@ -855,51 +855,50 @@ tabPanel("Fit Model", value = "tab4",
             strong('Network:', class = "nwlabel"),
             verbatimTextOutput('currentnw1')
      ),
-
-     column(3,
-            strong("Formation formula:"),
-            div(textInput(inputId = "formation", label = NULL,
-                          value = "edges"),
-                title = paste("Type in term(s) and their arguments.",
-                            "For multiple terms, separate with '+'. ")
-            ),
-            strong("Dissolution formula:"),
-            div(textInput(inputId = "dissolution", label = NULL,
-                          value = "offset(edges)"),
-                title = paste("Type in term(s) and their arguments.",
-                              "For multiple terms, separate with '+'. ")
-            ),
-            actionButton('updateformulaButton', 'Update Formulas',
-                         class = "btn-primary btn-sm"),
-            actionButton('resetformulaButton', 'Reset Formulas',
-                         class = "btn-sm")
-
-
-     ),
      column(6,
             tabsetPanel(
-              tabPanel("STERGM Arguments",
-                column(7,
-                    strong("Targets:"),
-                    helpText("If one is specifying",
-                             code("targets = formation"),
-                             ", dissolution should be an offset,
-                             and vice-versa."),
-                    radioButtons("targets", label = NULL,
-                                 choices = c("formation", "dissolution")),
-                    strong("Target stats:"),
-                    helpText("If values to be targeted are not sufficient statistics
-                             from cross-sectional network."),
-                    textInput("target.stats", label = NULL, value = "")
+              tabPanel("Formation",
+                column(6,
+                   strong("Formula:"),
+                   helpText("Type in term(s) and their arguments. For
+                            multiple terms, separate with '+'."),
+                   div(textInput(inputId = "formation", label = NULL,
+                                 value = "edges"),
+                       title = paste("Type in term(s) and their arguments.",
+                                     "For multiple terms, separate with '+'.")
+                   ),
+                  actionButton('updateformulaButton', 'Update Formula',
+                               class = "btn-primary btn-sm"),
+                  actionButton('resetformulaButton', 'Reset Formula',
+                               class = "btn-sm")
                       ),
-                column(5,
-                   strong("Offset coefficients:"),
-                   textInput("offset", label = NULL, value = ""),
-                   strong("Estimate:"),
-                   radioButtons("estimate", label = NULL,
-                                choices = c("EGMME (for cross-section plus duration data)" = "EGMME",
-                                            "CMLE (for multiple networks)" = "CMLE")))
+                column(6,
+                   strong("Target stats:"),
+                   helpText("If values to be targeted are not sufficient statistics
+                            from cross-sectional network."),
+                   textInput("target.stats", label = NULL, value = "")
+                       )
+              ),
+              tabPanel("Dissolution",
 
+                 helpText("The dissolution formula may only include offsets
+                          of the terms in the formation."),
+                 column(5,
+                    strong("Terms:"),
+                    uiOutput("dissterm1"),
+                    actionButton("addDissButton", label = NULL, icon = "plus"),
+                    conditionalPanel("input.addDissButton > 0",
+                                     uiOutput("dissterm2"))
+                        ),
+                 column(3,
+                    strong("Coefficients:"),
+                    numericInput("disscoef1", label = NULL, value = 1),
+                    conditionalPanel("input.addDissButton > 0",
+                                     numericInput("disscoef2", label = NULL,
+                                                  value = 1))
+                        )
+
+                 )
               ),
               tabPanel("Control Options",
                  div(class = "placeholder",
@@ -992,8 +991,9 @@ tabPanel("Fit Model", value = "tab4",
 
                        )
               )
-              ) #end tabsetPanel
-     )
+            ) #end tabsetPanel
+
+        )
    ),
    br(),
    fluidRow(
