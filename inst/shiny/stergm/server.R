@@ -793,6 +793,14 @@ output$currentnw1 <- renderPrint({
   cat(isolate(nwname()))
 })
 
+output$form <- renderPrint({
+  cat(formation())
+})
+
+# output$dissterm1 <- renderUI({
+#
+# })
+
 output$prefitsum <- renderPrint({
   if(!is.network(nw()) | length(input$formation) == 0){
     return(cat('NA'))

@@ -218,6 +218,11 @@ div.placeholder {
   color: #737379;
 }
 
+.xscroll pre {
+  overflow-x: scroll;
+  word-wrap: normal;
+}
+
 .round {
   border-radius: 4px;
   border: 1px solid #cccccc;

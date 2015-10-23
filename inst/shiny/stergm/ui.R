@@ -852,12 +852,18 @@ tabPanel("Fit Model", value = "tab4",
 
    fluidRow(
      column(2,
-            strong('Network:', class = "nwlabel"),
-            verbatimTextOutput('currentnw1')
+        div(class = "xscroll",
+            strong("Network:"),
+            verbatimTextOutput("currentnw1"),
+            strong("Formation:"),
+            verbatimTextOutput("form"),
+            strong("Dissolution:"),
+            verbatimTextOutput("diss")
+        )
      ),
      column(6,
             tabsetPanel(
-              tabPanel("Formation",
+              tabPanel("Edit Formation",
                 column(6,
                    strong("Formula:"),
                    helpText("Type in term(s) and their arguments. For
@@ -879,7 +885,7 @@ tabPanel("Fit Model", value = "tab4",
                    textInput("target.stats", label = NULL, value = "")
                        )
               ),
-              tabPanel("Dissolution",
+              tabPanel("Edit Dissolution",
 
                  helpText("The dissolution formula may only include offsets
                           of the terms in the formation."),
@@ -897,8 +903,6 @@ tabPanel("Fit Model", value = "tab4",
                                      numericInput("disscoef2", label = NULL,
                                                   value = 1))
                         )
-
-                 )
               ),
               tabPanel("Control Options",
                  div(class = "placeholder",
