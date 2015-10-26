@@ -809,8 +809,9 @@ output$dissterms <- renderUI({
 
 output$disscoefs <- renderUI({
   ncoefs <- length(input$dissolution)
+  if(ncoefs == 0) {return()}
   ids <- paste0("coef", seq(ncoefs))
-  sapply(ids, FUN = numericInput, value = 1, label = NULL)
+  lapply(ids, FUN = numericInput, value = 1, label = NULL)
 })
 
 output$prefitsum <- renderPrint({

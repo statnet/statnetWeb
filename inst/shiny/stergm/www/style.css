@@ -126,25 +126,6 @@ div.tool .tip {
 #statstip {
   margin-top:60px;
 }
-div.tool:hover .tip{
-  display:inline;
-  position:absolute;
-  color:#333333;
-  border:1px solid #CCCCCC;
-  border-radius:3px;
-  background:#FFFFFF;
-  box-shadow: 3px 2px 5px 0 #CCCCCC;
-  }
-div.tool .callout {
-  display:none;
-}
-div.tool:hover .callout {
-  display: inline;
-  z-index: 20;
-  position: absolute;
-  left: 5%;
-  top: -13px;
-}
 
 div.busy {
   position: fixed;
@@ -221,6 +202,10 @@ div.placeholder {
 .xscroll pre {
   overflow-x: scroll;
   word-wrap: normal;
+}
+
+.skinny {
+  width: 75px;
 }
 
 .round {

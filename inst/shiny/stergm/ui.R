@@ -851,7 +851,7 @@ tabPanel("Network Descriptives", value = "tab3",
 tabPanel("Fit Model", value = "tab4",
 
    fluidRow(
-     column(2,
+     column(3,
         div(class = "xscroll",
             strong("Network:"),
             verbatimTextOutput("currentnw1"),
@@ -861,7 +861,7 @@ tabPanel("Fit Model", value = "tab4",
             verbatimTextOutput("diss")
         )
      ),
-     column(6,
+     column(7,
             tabsetPanel(
               tabPanel("Edit Formation",
                 column(6,
@@ -888,21 +888,25 @@ tabPanel("Fit Model", value = "tab4",
               tabPanel("Edit Dissolution",
 
                  helpText("The dissolution formula may only include offsets
-                          of the terms in the formation."),
+                          of the terms in the formation. The order of the
+                          coefficients must correspond to the order of the terms."),
                  column(7,
                     strong("Terms:"),
-                    uiOutput("dissterms"),
-                    uiOutput("disscoefs")
-
+                    uiOutput("dissterms")
+                 ),
+                 column(3,
+                        strong("Coefficients:"),
+                        div(class = "skinny",
+                          uiOutput("disscoefs")
+                        )
                         )
               ),
               tabPanel("Control Options",
                  div(class = "placeholder",
                      fluidRow(class = "shiftright",
                         column(3, style = "padding-left: 0;",
-                               inlineSelectInput('controltype',label = NULL,
-                                                 choices = c("MCMC","MCMLE"),
-                                                 style="margin:10px 0px;")),
+                               selectInput('controltype',label = NULL,
+                                           choices = c("MCMC","MCMLE"))),
                         column(5,
                                checkboxInput('controldefault',
                                              'Use default options',
@@ -913,29 +917,26 @@ tabPanel("Fit Model", value = "tab4",
                         fluidRow(
                           column(4,
                                  span("Interval:"),
-                                 customNumericInput('MCMCinterval',
-                                                    label = NULL,
-                                                    value = 1024,
-                                                    class = "mcmcopt input-mini round"),
+                                 numericInput('MCMCinterval',
+                                              label = NULL,
+                                              value = 1024),
                                  title = paste("Number of proposals between sampled statistics.")
                           ),
 
                           column(4,
                                  span("Burn-in:"),
-                                 customNumericInput('MCMCburnin',
-                                                    label = NULL,
-                                                    value = 16384,
-                                                    class = "mcmcopt input-mini round"),
+                                 numericInput('MCMCburnin',
+                                              label = NULL,
+                                              value = 16384),
                                  title = paste("Number of proposals before any MCMC sampling is done.",
                                                "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
                           ),
 
                           column(4,
                                  span("Sample size:"),
-                                 customNumericInput('MCMCsamplesize',
-                                                    label = NULL,
-                                                    value = 1024,
-                                                    class = "mcmcopt input-mini round"),
+                                 numericInput('MCMCsamplesize',
+                                              label = NULL,
+                                              value = 1024),
                                  title = paste("Number of network statistics, randomly drawn from a given distribution",
                                                "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
                           )
@@ -943,10 +944,9 @@ tabPanel("Fit Model", value = "tab4",
 
                         fluidRow(
                           div(span("Other controls:", class = "shiftright"),
-                              customTextInput("customMCMCcontrol",
-                                              label = NULL,
-                                              value = "",
-                                              class = "input-small round"),
+                              textInput("customMCMCcontrol",
+                                        label = NULL,
+                                        value = ""),
                               title = paste("Other arguments to be passed to",
                                             "control.ergm, e.g. MCMC.burnin.retries = 1")
                           )
