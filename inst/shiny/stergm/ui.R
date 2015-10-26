@@ -543,7 +543,7 @@ tabPanel("Network Descriptives", value = "tab3",
               icon('angle-double-left'), id="graphleveltitle"),
            wellPanel(id="graphlevelbox",
                    fluidRow(
-                     column(4, offset=7,tags$u('Measure')),
+                     column(4, offset = 7, tags$u('Measure')),
                      fluidRow(
                        column(4, p('Density:', class = 'stitle')),
                        column(3, p(textOutput('gden'), class = 'snum'))),

@@ -652,12 +652,16 @@ dissolution <- reactive({
 observeEvent(input$resetformulaButton, {
   updateTextInput(session, "formation",
                   label = NULL, value = "edges")
-  updateTextInput(session, "dissolution",
-                  label = NULL, value = "offset(edges)")
 })
 observeEvent(nw(), {
   updateTextInput(session, "formation",
                   label = NULL, value = "edges")
+})
+
+dissoffsets <- reactive({
+  ncoefs <- length(input$dissolution)
+  ids <- paste0("coef", ncoefs)
+  unlist(input[ids])
 })
 
 
@@ -689,9 +693,9 @@ stergm.fit <- reactive({
     fit <- stergm(nw(),
                 formation = as.formula(paste("~", formation())),
                 dissolution = as.formula(paste("~", dissolution())),
-                targets = input$targets,
-                offset.coef.diss = as.numeric(input$offset),
-                estimate = input$estimate)
+                targets = "formation",
+                offset.coef.diss = dissoffsets(),
+                estimate = "EGMME")
   })
 
   return(fit)
