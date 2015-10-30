@@ -664,39 +664,58 @@ dissoffsets <- reactive({
   unlist(input[ids])
 })
 
+estimate <- reactive({
+  if(class(nw()) == "network"){
+    "EGMME"
+  } else {
+    "CMLE"
+  }
+})
+
+stergmcontrols <- reactive({
+  customcontrols <- isolate(paste(input$customMCMCcontrol, sep = ","))
+  if(customcontrols == ""){
+    if(estimate() == "EGMME"){
+      control.stergm(EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
+                     EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
+                     EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
+                     EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval)
+    }
+  } else {
+    if(estimate() == "EGMME"){
+      control.stergm(EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
+                     EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
+                     EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
+                     EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval,
+                     eval(parse(text = customcontrols)))
+    }
+  }
+})
 
 #stergm model object
 stergm.fit <- reactive({
   if(input$fitButton == 0){
     return()
   }
-#   usingdefault <- isolate(input$controldefault)
-#   if(usingdefault){
-#
-#   } else {
-#     customcontrols <- isolate(paste(input$customMCMCcontrol, sep = ","))
-#     if(customcontrols == ""){
-#       mod <- isolate(ergm(ergm.formula(),
-#                           control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
-#                                          MCMC.burnin = isolate(input$MCMCburnin),
-#                                          MCMC.samplesize = isolate(input$MCMCsamplesize))))
-#     } else {
-#       mod <- isolate(ergm(ergm.formula(),
-#                           control = control.ergm(MCMC.interval = isolate(input$MCMCinterval),
-#                                          MCMC.burnin = isolate(input$MCMCburnin),
-#                                          MCMC.samplesize = isolate(input$MCMCsamplesize),
-#                                          eval(parse(text = customcontrols)))))
-#     }
-#
-#   }
-  isolate({
-    fit <- stergm(nw(),
-                formation = as.formula(paste("~", formation())),
-                dissolution = as.formula(paste("~", dissolution())),
-                targets = "formation",
-                offset.coef.diss = dissoffsets(),
-                estimate = "EGMME")
-  })
+  usingdefault <- isolate(input$controldefault)
+  if(usingdefault){
+    isolate({
+      fit <- stergm(nw(),
+                    formation = as.formula(paste("~", formation())),
+                    dissolution = as.formula(paste("~", dissolution())),
+                    targets = "formation",
+                    offset.coef.diss = dissoffsets(),
+                    estimate = estimate())
+    })
+  } else {
+      fit <- stergm(nw(),
+                    formation = as.formula(paste("~", formation())),
+                    dissolution = as.formula(paste("~", dissolution())),
+                    targets = "formation",
+                    offset.coef.diss = dissoffsets(),
+                    estimate = estimate(),
+                    control = stergmcontrols())
+  }
 
   return(fit)
 })

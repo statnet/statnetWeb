@@ -20,10 +20,6 @@ code {
 #linktitle2 {
   cursor: pointer;
 }
-#fitButton {
-  position: relative;
-  top: 20px;
-}
 #dataleft, #fitleft,
 #plotleft {
   position: absolute;
@@ -209,9 +205,15 @@ div.placeholder {
   overflow-x: scroll;
   word-wrap: normal;
 }
-
-.skinny {
-  width: 75px;
+#dissterms .shiny-input-container {
+  width: 100%;
+}
+.skinny .form-control,
+.skinny .shiny-input-container{
+  display: inline;
+}
+.skinny input {
+  max-width: 75px;
 }
 
 .round {

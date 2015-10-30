@@ -859,7 +859,9 @@ tabPanel("Fit Model", value = "tab4",
             verbatimTextOutput("form"),
             strong("Dissolution:"),
             verbatimTextOutput("diss")
-        )
+        ),
+        actionButton("fitButton", "Fit Model",
+                     class = "btn-primary")
      ),
      column(7,
             tabsetPanel(
@@ -897,16 +899,17 @@ tabPanel("Fit Model", value = "tab4",
                  helpText("The dissolution formula may only include offsets
                           of the terms in the formation. The order of the
                           coefficients must correspond to the order of the terms."),
-                 column(7,
+
+                 fluidRow(column(12,
                     strong("Terms:"),
                     uiOutput("dissterms")
-                 ),
-                 column(3,
+                 )),
+                 fluidRow(column(12,
                         strong("Coefficient value(s):"),
                         div(class = "skinny",
                           uiOutput("disscoefs")
                         )
-                        )
+                        ))
               ),
               tabPanel("Control Options",
                      fluidRow(
@@ -915,32 +918,52 @@ tabPanel("Fit Model", value = "tab4",
                                              'Use default options',
                                              value = TRUE))
                      ),
+                     div(id = "controls",
                       fluidRow(
-                        column(4,
-                               numericInput('MCMCinterval',
-                                            label = "Interval:",
-                                            value = 1024),
-                               title = paste("Number of proposals between sampled statistics.")
+                        conditionalPanel("0",
+                          column(4,
+                                 numericInput('MCMCinterval',
+                                              label = "Interval:",
+                                              value = 1024),
+                                 title = paste("Number of proposals between sampled statistics.")
+                            ),
+
+                          column(4,
+                                 numericInput('MCMCburnin',
+                                              label = "Burn-in:",
+                                              value = 16384),
+                                 title = paste("Number of proposals before any MCMC sampling is done.",
+                                               "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
+                            )
                           ),
-
+                        conditionalPanel("1",
+                          column(4,
+                                 numericInput("EGMME.burnin.min",
+                                              label = "Burn-in min:",
+                                              value = 1000),
+                                 numericInput("EGMME.burnin.max",
+                                              label = "Burn-in max:",
+                                              value = 100000)
+                          ),
+                          column(4,
+                                 numericInput("EGMME.burnin.pval",
+                                              label = "Burn-in p-value:",
+                                              value = 0.5,
+                                              step = 0.05),
+                                 numericInput("EGMME.burnin.add",
+                                              label = "Burn-in add:",
+                                              value = 1)
+                                 )
+                          ),
                         column(4,
-                               numericInput('MCMCburnin',
-                                            label = "Burn-in:",
-                                            value = 16384),
-                               title = paste("Number of proposals before any MCMC sampling is done.",
-                                             "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
-                          )
-                        ),
-
-                        fluidRow(
-                          column(9,
-                              textInput("customMCMCcontrol",
-                                        label = "Other controls:",
-                                        value = ""),
-                              title = paste("Other arguments to be passed to",
-                                            "control.stergm")
-                          )
-                       )
+                               textInput("customMCMCcontrol",
+                                         label = "Other controls:",
+                                         value = ""),
+                               title = paste("Other arguments to be passed to",
+                                             "control.stergm")
+                        )
+                      )
+                      )
                      ),
               tabPanel("Term Documentation",
                        br(),
@@ -977,11 +1000,6 @@ tabPanel("Fit Model", value = "tab4",
               )
             ) #end tabsetPanel
         )
-   ),
-   br(),
-   column(1, style = "margin-right: 10px;",
-         actionButton("fitButton", "Fit Model",
-                      class = "btn-primary")
    ),
    br(),
    tabsetPanel(id = 'fittingTabs',
