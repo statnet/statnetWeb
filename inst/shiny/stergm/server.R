@@ -11,6 +11,11 @@ data(samplk)
 data(ecoli)
 data(molecule)
 data(kapferer)
+samp <- list()
+samp[[1]] <- samplk1
+samp[[2]] <- samplk2
+samp[[3]] <- samplk3
+
 
 shinyServer(
   function(input, output, session){
@@ -145,8 +150,10 @@ nwinit <- reactive({
       nw_var <- NULL
     } else {
       nw_var <- eval(parse(text = input$samplenet))
-      if(!is.element('bipartite', names(nw_var$gal))){
-         set.network.attribute(nw_var, 'bipartite', FALSE)
+      if(class(nw_var) == "network"){
+        if(!is.element('bipartite', names(nw_var$gal))){
+           set.network.attribute(nw_var, 'bipartite', FALSE)
+        }
       }
     }
   }
@@ -181,8 +188,11 @@ nodes <- reactive({
 
 #number of edges in initial nw
 nedgesinit <- reactive({
-  if(!is.network(nwinit())) return()
-  network.edgecount(nwinit())
+  if (is.network(nwinit())){
+    network.edgecount(nwinit())
+  } else if (class(nwinit()) == "list"){
+    network.edgecount(nwinit()[[1]])
+  }
 })
 
 #initial vertex attributes
@@ -735,6 +745,23 @@ output$rawdatafile <- renderPrint({
     raw[2, 1] <- paste(input$rawdatafile[1, ], " bytes")
   }
   write.table(raw, quote = FALSE, col.names = FALSE)})
+
+# output$samplenetUI <- renderUI({
+#   if(input$nwnum == "one"){
+#     nws <- c("Choose a network" = "",
+#              "ecoli1", "ecoli2",
+#              "faux.mesa.high", "flobusiness",
+#              "flomarriage", "kapferer",
+#              "kapferer2", "molecule",
+#              "samplike", "samplk1",
+#              "samplk2", "samplk3")
+#   } else {
+#     nws <- c("Choose a network" = "",
+#              "samp")
+#   }
+#   selectizeInput('samplenet', label=NULL,
+#                  choices = nws)
+# })
 
 output$pajchooser <- renderUI({
   pajlist <- c(None = '')

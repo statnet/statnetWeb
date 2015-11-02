@@ -158,6 +158,16 @@ tabsetPanel(
      br(),
      wellPanel(
        fluidRow(
+         column(3,
+           actionButton("nwnum1", label = "Single network panel",
+                        class = "active")
+         ),
+         column(3,
+           actionButton("nwnum2", label = "Multiple network panels")
+         )
+       ),
+       br(),
+       fluidRow(
          column(6,
           selectInput("filetype", label = "File type",
               choices=c("built-in network" = 1,
@@ -169,14 +179,15 @@ tabsetPanel(
          conditionalPanel(condition = "input.filetype == 1",
           column(6,
                  br(style="line-height:26px;"),
-                 selectizeInput('samplenet', label=NULL,
-                                choices=c("Choose a network" = "",
-                                          "ecoli1", "ecoli2",
-                                          "faux.mesa.high", "flobusiness",
-                                          "flomarriage", "kapferer",
-                                          "kapferer2", "molecule",
-                                          "samplike", "samplk1",
-                                          "samplk2", "samplk3"))
+                 # uiOutput("samplenetUI")
+                 selectizeInput('samplenet', label = NULL,
+                                 choices = c("Choose a network" = "",
+                                             "ecoli1", "ecoli2",
+                                             "faux.mesa.high", "flobusiness",
+                                             "flomarriage", "kapferer",
+                                             "kapferer2", "molecule",
+                                             "samplike", "samplk1",
+                                             "samplk2", "samplk3"))
                           )
          ),
          conditionalPanel(condition = 'input.filetype > 1',
