@@ -936,12 +936,13 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     fluidRow(class = "shiftright",
                       column(3, style = "padding-left: 0;",
                         inlineSelectInput('controltype',label = NULL,
-                                          choices = c("MCMC","MCMLE"),
+                                          choices = c("MCMC"),
                                           style="margin:10px 0px;")),
                       column(5,
                         checkboxInput('controldefault', 'Use default options', value = TRUE))
                     ),
-                        conditionalPanel(condition = "input.controltype == 'MCMC'", class = "shiftright",
+                        conditionalPanel(condition = "input.controltype == 'MCMC'",
+                                         class = "shiftright gray", id = "mcmcopt1",
                           fluidRow(
                             column(4,
                                    span("Interval:"),
@@ -1184,7 +1185,8 @@ tabPanel(title='Simulations', value='tab7',
                              column(7,
                                     checkboxInput('simcontroldefault','Use default options', value=TRUE))
                            ),
-                           conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
+                           conditionalPanel(condition="input.simcontroltype == 'MCMC'",
+                                            class="shiftright gray", id = "mcmcopt2",
                              fluidRow(
                                     column(5,
                                         span("Interval:"),

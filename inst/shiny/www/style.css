@@ -441,13 +441,16 @@ div.placeholder {
   background-color: #054D88;
   border-color: #02213A;
 }
+.gray {
+  opacity: .5;
+}
 .form-control[disabled],
 .form-control[readonly],
 fieldset[disabled] .form-control,
 input[disabled] {
   cursor: not-allowed;
   background-color: #e6e6e6;
-  opacity: 1;
+  opacity: .5;
 }
 .navbar-default {
   background-color: #3A3A3A;
