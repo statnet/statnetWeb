@@ -221,6 +221,13 @@ $(document).ready(function(){
     $("#mcmchelpbox").toggle(500);
   });
 
+  $("#controldefault").click(function(){
+    $("#mcmcopt1").toggleClass("gray");
+  })
+    $("#simcontroldefault").click(function(){
+    $("#mcmcopt2").toggleClass("gray");
+  })
+
 });
 
 

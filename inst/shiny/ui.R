@@ -501,10 +501,13 @@ fluidRow(
                            )
         ),
       tabPanel('Attributes', br(),
-               conditionalPanel('input.attrview == "table"',
-                                dataTableOutput("attrtbl")
+               conditionalPanel('input.attrview == "Large table"',
+                                dataTableOutput("attrtbl_lg")
                                 ),
-               conditionalPanel('input.attrview == "histogram"',
+               conditionalPanel('input.attrview == "Small tables"',
+                                verbatimTextOutput("attrtbl_sm")
+                                ),
+               conditionalPanel('input.attrview == "Plot summaries"',
                                 tags$label("Type of plots"),
                                 helpText("Density plots will only be created for",
                                          "numeric attributes with more than nine",
@@ -760,7 +763,9 @@ fluidRow(
                                   label = "Download Plot", class = "btn-sm")),
                 conditionalPanel(condition='input.plottabs == "Attributes"',
                                  selectInput("attrview", label = "View attributes in:",
-                                             choices = c("table", "histogram")),
+                                             choices = c("Large table",
+                                                         "Small tables",
+                                                         "Plot summaries")),
                                  br(),
                                  uiOutput("attrcheck")
                 ),
@@ -899,7 +904,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       fluidRow(
                         column(12,
                                a("Commonly used ergm terms",
-                                 href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
+                                 href = "http://statnet.github.io/nme/ergmterms.html",
                                  target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
@@ -916,7 +921,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       fluidRow(
                         column(12,
                                div(id="termdocbox",
-                                    verbatimTextOutput("termdoc")
+                                    uiOutput("termdoc")
                                 ),
                                 div(id = "termexpand",
                                     icon(name = "angle-double-up"))
@@ -931,12 +936,13 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     fluidRow(class = "shiftright",
                       column(3, style = "padding-left: 0;",
                         inlineSelectInput('controltype',label = NULL,
-                                          choices = c("MCMC","MCMLE"),
+                                          choices = c("MCMC"),
                                           style="margin:10px 0px;")),
                       column(5,
                         checkboxInput('controldefault', 'Use default options', value = TRUE))
                     ),
-                        conditionalPanel(condition = "input.controltype == 'MCMC'", class = "shiftright",
+                        conditionalPanel(condition = "input.controltype == 'MCMC'",
+                                         class = "shiftright gray", id = "mcmcopt1",
                           fluidRow(
                             column(4,
                                    span("Interval:"),
@@ -1179,7 +1185,8 @@ tabPanel(title='Simulations', value='tab7',
                              column(7,
                                     checkboxInput('simcontroldefault','Use default options', value=TRUE))
                            ),
-                           conditionalPanel(condition="input.simcontroltype == 'MCMC'", class="shiftright",
+                           conditionalPanel(condition="input.simcontroltype == 'MCMC'",
+                                            class="shiftright gray", id = "mcmcopt2",
                              fluidRow(
                                     column(5,
                                         span("Interval:"),

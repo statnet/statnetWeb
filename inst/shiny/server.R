@@ -1441,10 +1441,32 @@ output$attrcheck <- renderUI({
 })
 outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
-output$attrtbl <- renderDataTable({
+output$attrtbl_lg <- renderDataTable({
   dt <- nwdf()[, c("Names", input$attrcols)]
   dt
 }, options = list(pageLength = 10))
+
+output$attrtbl_sm <- renderPrint({
+  ntbl <- length(input$attrcols)
+  if(ntbl == 0){return()}
+  attrname <- input$attrcols
+  tbl_list <- list()
+  if(ntbl == 1){
+    tab <- attr.info(df = nwdf(), colname = attrname,
+                     numattrs = numattr(), breaks = 10)
+    tbl_list[[attrname]] <- tab
+  } else {
+    for(a in attrname){
+      tab <- attr.info(df = nwdf(), colname = a,
+                       numattrs = numattr(), breaks = 10)
+      tbl_list[[a]] <- tab
+    }
+  }
+  for(a in attrname){
+    print(a, quote = FALSE)
+    print(tbl_list[[a]])
+  }
+})
 
 output$attrhist <- renderPlot({
   nplots <- length(input$attrcols)
@@ -1457,15 +1479,12 @@ output$attrhist <- renderPlot({
       plot(density(nwdf()[[attrname]]), main = attrname,
            col = "#076EC3", lwd = 2)
     } else {
-      if(attrname %in% numattr() & lvls > 9){
-        tab <- hist.info(nwdf()[[attrname]], breaks = 10)
-      } else {
-        tab <- table(nwdf()[[attrname]])
-      }
+      tab <- attr.info(df = nwdf(), colname = attrname,
+                       numattrs = numattr(), breaks = 10)
       if(input$attrhistaxis == "percent"){
         tab <- tab/sum(tab)
       }
-      barplot(tab, xlab = attrname, col = histblue)
+      barplot(tab, main = attrname, col = histblue)
     }
   } else {
     r <- ceiling(nplots/2)
@@ -1475,15 +1494,12 @@ output$attrhist <- renderPlot({
       if(input$attrhistaxis == "density" & a %in% numattr() & lvls > 9){
         plot(density(nwdf()[[a]]), main = a, col = "#076EC3", lwd = 2)
       } else {
-        if(a %in% numattr() & lvls > 9){
-        tab <- hist.info(nwdf()[[a]], breaks = 10)
-      } else {
-        tab <- table(nwdf()[[a]])
-      }
-      if(input$attrhistaxis == "percent"){
-        tab <- tab/sum(tab)
-      }
-      barplot(tab, xlab = a, col = histblue)
+        tab <- attr.info(df = nwdf(), colname = a,
+                         numattrs = numattr(), breaks = 10)
+        if(input$attrhistaxis == "percent"){
+          tab <- tab/sum(tab)
+        }
+        barplot(tab, main = a, col = histblue)
       }
     }
   }
@@ -2934,15 +2950,19 @@ output$listofterms <- renderUI({
                  choices = c("Select a term" = "", current.terms))
 })
 
-output$termdoc <- renderPrint({
+output$termdoc <- renderUI({
   myterm <- input$chooseterm
   if(is.null(myterm)){
-    return(cat("Select or search for a term in the menu above."))
+    return(p("Select or search for a term in the menu above."))
+  } else if(myterm == ""){
+    return(p("Select or search for a term in the menu above."))
   }
-  if(myterm == ""){
-    return(cat("Select or search for a term in the menu above."))
-  }
-  search.ergmTerms(name=myterm)
+  chrvec <- capture.output(search.ergmTerms(name = myterm))
+  desc <- strsplit(chrvec[3], split = "_")
+  p(chrvec[1], br(),br(),
+    strong(chrvec[2]), br(),br(),
+    em(desc[[1]][2]), desc[[1]][3], br(),
+    chrvec[4])
 })
 
 observe({
