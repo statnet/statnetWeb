@@ -1,6 +1,8 @@
 
 library(statnetWeb)
 library(RColorBrewer)
+library(lattice)
+library(latticeExtra)
 
 data(faux.mesa.high)
 #data(faux.magnolia.high)
