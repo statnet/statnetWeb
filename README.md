@@ -22,11 +22,9 @@ http://cran.r-project.org/web/packages/ergm/
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
 
-#### New in v0.3.6
+#### New in v0.4.0
+##### On CRAN as of 11/4/2015
 
-* New sortable table of attributes
-* New citations in addition to BibTeX
-* Refresh positions of nodes in network plot
-* run_sw() now uses system's default web browser to launch application
-* Can color code nodes by mode for bipartite network
-* Change shape of node depending on mode for bipartite network
+* Interactive network plot: click on nodes to see vertex names and attributes, double click to highlight neighbors.
+* More tables and plots to visualize attribute distributions.
+* Better formatting for term documentation.
