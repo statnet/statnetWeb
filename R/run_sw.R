@@ -6,7 +6,6 @@
 #'
 #' @keywords GUI, shiny
 #' @export
-#'
 #' @examples
 #' \dontrun{
 #' run_sw()

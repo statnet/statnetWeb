@@ -8,6 +8,8 @@
 #' @import shiny
 #' @import ergm
 #' @import network
+#' @import lattice
+#' @import latticeExtra
 #' @importFrom sna betweenness
 #' @importFrom sna centralization
 #' @importFrom sna closeness
