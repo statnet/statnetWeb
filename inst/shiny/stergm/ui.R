@@ -158,6 +158,16 @@ tabsetPanel(
      br(),
      wellPanel(
        fluidRow(
+         column(3,
+           actionButton("nwnum1", label = "Single network panel",
+                        class = "active")
+         ),
+         column(3,
+           actionButton("nwnum2", label = "Multiple network panels")
+         )
+       ),
+       br(),
+       fluidRow(
          column(6,
           selectInput("filetype", label = "File type",
               choices=c("built-in network" = 1,
@@ -169,14 +179,15 @@ tabsetPanel(
          conditionalPanel(condition = "input.filetype == 1",
           column(6,
                  br(style="line-height:26px;"),
-                 selectizeInput('samplenet', label=NULL,
-                                choices=c("Choose a network" = "",
-                                          "ecoli1", "ecoli2",
-                                          "faux.mesa.high", "flobusiness",
-                                          "flomarriage", "kapferer",
-                                          "kapferer2", "molecule",
-                                          "samplike", "samplk1",
-                                          "samplk2", "samplk3"))
+                 # uiOutput("samplenetUI")
+                 selectizeInput('samplenet', label = NULL,
+                                 choices = c("Choose a network" = "",
+                                             "ecoli1", "ecoli2",
+                                             "faux.mesa.high", "flobusiness",
+                                             "flomarriage", "kapferer",
+                                             "kapferer2", "molecule",
+                                             "samplike", "samplk1",
+                                             "samplk2", "samplk3"))
                           )
          ),
          conditionalPanel(condition = 'input.filetype > 1',
@@ -859,11 +870,14 @@ tabPanel("Fit Model", value = "tab4",
             verbatimTextOutput("form"),
             strong("Dissolution:"),
             verbatimTextOutput("diss")
-        )
+        ),
+        actionButton("fitButton", "Fit Model",
+                     class = "btn-primary")
      ),
      column(7,
             tabsetPanel(
               tabPanel("Edit Formation",
+              fluidRow(
                 column(6,
                    strong("Formula:"),
                    helpText("Type in term(s) and their arguments. For
@@ -884,76 +898,84 @@ tabPanel("Fit Model", value = "tab4",
                             from cross-sectional network."),
                    textInput("target.stats", label = NULL, value = "")
                        )
+                ),
+              fluidRow(style = "margin-top: 5px;",
+                column(2,
+                       strong('Summary statistics:')),
+                column(10,
+                       verbatimTextOutput('prefitsum')))
               ),
               tabPanel("Edit Dissolution",
 
                  helpText("The dissolution formula may only include offsets
                           of the terms in the formation. The order of the
                           coefficients must correspond to the order of the terms."),
-                 column(7,
+
+                 fluidRow(column(12,
                     strong("Terms:"),
                     uiOutput("dissterms")
-                 ),
-                 column(3,
-                        strong("Coefficients:"),
+                 )),
+                 fluidRow(column(12,
+                        strong("Coefficient value(s):"),
                         div(class = "skinny",
                           uiOutput("disscoefs")
                         )
-                        )
+                        ))
               ),
               tabPanel("Control Options",
-                 div(class = "placeholder",
-                     fluidRow(class = "shiftright",
-                        column(3, style = "padding-left: 0;",
-                               selectInput('controltype',label = NULL,
-                                           choices = c("MCMC","MCMLE"))),
+                     fluidRow(
                         column(5,
                                checkboxInput('controldefault',
                                              'Use default options',
                                              value = TRUE))
                      ),
-                     conditionalPanel("input.controltype == 'MCMC'",
-                                      class = "shiftright",
-                        fluidRow(
+                     div(id = "controls",
+                      fluidRow(
+                        conditionalPanel("0",
                           column(4,
-                                 span("Interval:"),
                                  numericInput('MCMCinterval',
-                                              label = NULL,
+                                              label = "Interval:",
                                               value = 1024),
                                  title = paste("Number of proposals between sampled statistics.")
-                          ),
+                            ),
 
                           column(4,
-                                 span("Burn-in:"),
                                  numericInput('MCMCburnin',
-                                              label = NULL,
+                                              label = "Burn-in:",
                                               value = 16384),
                                  title = paste("Number of proposals before any MCMC sampling is done.",
                                                "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
+                            )
                           ),
-
+                        conditionalPanel("1",
                           column(4,
-                                 span("Sample size:"),
-                                 numericInput('MCMCsamplesize',
-                                              label = NULL,
-                                              value = 1024),
-                                 title = paste("Number of network statistics, randomly drawn from a given distribution",
-                                               "on the set of all networks, returned by the Metropolis-Hastings algorithm.")
-                          )
-                        ),
-
-                        fluidRow(
-                          div(span("Other controls:", class = "shiftright"),
-                              textInput("customMCMCcontrol",
-                                        label = NULL,
-                                        value = ""),
-                              title = paste("Other arguments to be passed to",
-                                            "control.ergm, e.g. MCMC.burnin.retries = 1")
-                          )
-                        )),
-                     conditionalPanel("input.controltype == 'MCMLE'",
-                                      p("Coming soon"))
-                       )),
+                                 numericInput("EGMME.burnin.min",
+                                              label = "Burn-in min:",
+                                              value = 1000),
+                                 numericInput("EGMME.burnin.max",
+                                              label = "Burn-in max:",
+                                              value = 100000)
+                          ),
+                          column(4,
+                                 numericInput("EGMME.burnin.pval",
+                                              label = "Burn-in p-value:",
+                                              value = 0.5,
+                                              step = 0.05),
+                                 numericInput("EGMME.burnin.add",
+                                              label = "Burn-in add:",
+                                              value = 1)
+                                 )
+                          ),
+                        column(4,
+                               textInput("customMCMCcontrol",
+                                         label = "Other controls:",
+                                         value = ""),
+                               title = paste("Other arguments to be passed to",
+                                             "control.stergm")
+                        )
+                      )
+                      )
+                     ),
               tabPanel("Term Documentation",
                        br(),
                        div(class = "placeholder",
@@ -988,19 +1010,8 @@ tabPanel("Fit Model", value = "tab4",
                        )
               )
             ) #end tabsetPanel
-
         )
    ),
-   br(),
-   fluidRow(
-     column(2,
-            strong('Summary statistics:')),
-     column(10,
-            verbatimTextOutput('prefitsum'))),
-   fluidRow(column(12,
-                   actionButton("fitButton", "Fit Model",
-                                class = "btn-primary btn-sm")
-   )),
    br(),
    tabsetPanel(id = 'fittingTabs',
                tabPanel('Model Summary', br(),
