@@ -43,6 +43,9 @@ code {
 .helper-btn:hover {
   color: #3A3A3A;
 }
+.helper-btn:hover + .helper-box {
+  display: block;
+}
 .helper-btn {
     position:fixed;
     top: 50px;
@@ -50,7 +53,6 @@ code {
     color: #B4B4B4;
     cursor: pointer;
 }
-
 div.helper-box {
   position:fixed;
   top: 90px;
