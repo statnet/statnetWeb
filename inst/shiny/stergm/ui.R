@@ -172,9 +172,10 @@ tabsetPanel(
           selectInput("filetype", label = "File type",
               choices=c("built-in network" = 1,
                         "statnet network object (*.rds)" = 2,
-                        "matrix of relational data (*.csv or *.rds)" = 3,
+                        "matrix of relational data (*.xlsx or *.rds)" = 3,
                         "Pajek network (*.net)" = 4,
-                        "Pajek project (*.paj)" = 5))
+                        "Pajek project (*.paj)" = 5)),
+          uiOutput("npanelsui")
          ),
          conditionalPanel(condition = "input.filetype == 1",
           column(6,

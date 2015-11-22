@@ -96,7 +96,10 @@ nwinit <- reactive({
   } else {
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
-    fileext <- substr(filename, nchar(filename)-3, nchar(filename))
+    fileext <- substr(filename,
+                      max(gregexpr(pattern = ".",
+                                   text = filename, fixed = TRUE)[[1]]),
+                      nchar(filename))
 
     if(input$filetype == 2){
       validate(
@@ -118,27 +121,47 @@ nwinit <- reactive({
       }
     } else if(input$filetype == 3){
       validate(
-        need(fileext %in% c(".csv",".CSV") |
+        need(fileext %in% c(".xlsx") |
                fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
              "Upload the specified type of matrix"))
-      if(fileext %in% c(".csv",".CSV")){
+      if(fileext == ".xlsx"){
         header <- TRUE
         row_names <- 1
         if(input$matrixtype == "edgelist"){
           header <- FALSE
           row_names<-NULL
         }
-        try({nw_var <- network(read.csv(paste(filepath), sep = ",",
-                                        header = header,
-                                        row.names = row_names),
-                               directed = input$dir,
-                               loops = input$loops,
-                               multiple = input$multiple,
-                               bipartite = input$bipartite,
-                               matrix.type = input$matrixtype,
-                               ignore.eval = FALSE,
-                               names.eval = 'edgevalue')
-        })
+        if(values$nwnum == "single"){
+          try({nw_var <- network(read.xlsx(paste(filepath),
+                                           sheetIndex = 1,
+                                           as.data.frame = TRUE,
+                                           header = header,
+                                           row.names = row_names),
+                                 directed = input$dir,
+                                 loops = input$loops,
+                                 multiple = input$multiple,
+                                 bipartite = input$bipartite,
+                                 matrix.type = input$matrixtype,
+                                 ignore.eval = FALSE,
+                                 names.eval = 'edgevalue')
+          })
+        } else if(values$nwnum == "multiple"){
+          nw_var <- lapply(1:input$npanels, FUN = function(x){
+                        network(
+                          read.xlsx(paste(filepath),
+                                   sheetIndex = x,
+                                   as.data.frame = TRUE,
+                                   header = header,
+                                   row.names = row_names),
+                          directed = input$dir,
+                          loops = input$loops,
+                          multiple = input$multiple,
+                          bipartite = input$bipartite,
+                          matrix.type = input$matrixtype,
+                          ignore.eval = FALSE,
+                          names.eval = 'edgevalue')})
+        }
+
 
       } else if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
         newmx <- readRDS(paste(filepath))
@@ -159,14 +182,6 @@ nwinit <- reactive({
       nw_var <- ""
     } else {
       nw_var <- eval(parse(text = input$samplenet))
-      if(class(nw_var) == "list"){
-        nw_var <- networkDynamic(base.net = nw_var[[1]],
-                                 network.list = nw_var,
-                                 onsets = seq(from=0,length=length(nw_var)),
-                                 termini = seq(from=1,length=length(nw_var)),
-                                 verbose = FALSE,
-                                 create.TEAs = FALSE) # change to TRUE if attributes change through time
-      }
       if("network" %in% class(nw_var)){
         if(!is.element('bipartite', names(nw_var$gal))){
            set.network.attribute(nw_var, 'bipartite', FALSE)
@@ -471,6 +486,14 @@ nw <- reactive({
   nw_var <- nwinit()
 
   values$input_termslist <- list()
+  if(class(nw_var) == "list"){
+    nw_var <- networkDynamic(base.net = nw_var[[1]],
+                             network.list = nw_var,
+                             onsets = seq(from=0,length=length(nw_var)),
+                             termini = seq(from=1,length=length(nw_var)),
+                             verbose = FALSE,
+                             create.TEAs = FALSE) # change to TRUE if attributes change through time
+  }
 
   nw_var
 })
@@ -758,9 +781,10 @@ output$rawdatafile <- renderPrint({
   rownames(raw)<-c("name:", "size:")
   if(!is.null(input$rawdatafile)){
     raw[1, 1] <- input$rawdatafile[1, 1]
-    raw[2, 1] <- paste(input$rawdatafile[1, ], " bytes")
+    raw[2, 1] <- paste(input$rawdatafile[1, 2], " bytes")
   }
-  write.table(raw, quote = FALSE, col.names = FALSE)})
+  write.table(raw, quote = FALSE, col.names = FALSE)
+})
 
 output$samplenetUI <- renderUI({
   if(values$nwnum == "single"){
@@ -779,6 +803,13 @@ output$samplenetUI <- renderUI({
                  choices = nws)
 })
 outputOptions(output, "samplenetUI", suspendWhenHidden = FALSE)
+
+output$npanelsui <- renderUI({
+  if(values$nwnum == "multiple" & input$filetype != 1){
+    numericInput("npanels", label = "Number of network panels",
+                 value = 2, min = 2, step = 1)
+  }
+})
 
 output$pajchooser <- renderUI({
   pajlist <- c(None = '')
