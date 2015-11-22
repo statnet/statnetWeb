@@ -11,10 +11,10 @@ data(samplk)
 data(ecoli)
 data(molecule)
 data(kapferer)
-samp <- list()
-samp[[1]] <- samplk1
-samp[[2]] <- samplk2
-samp[[3]] <- samplk3
+sampson <- list()
+sampson[[1]] <- samplk1
+sampson[[2]] <- samplk2
+sampson[[3]] <- samplk3
 
 
 shinyServer(
@@ -40,6 +40,8 @@ values$ev_attrNamesToAdd <- list(1)
 values$ev_attrValsToAdd <- list()
 values$input_termslist <- list()
 
+values$nwnum <- "single"
+
 
 #     #move to Help page when user clicks Help link button
 #     observe({
@@ -58,23 +60,30 @@ observe({
 })
 
 #update active tab in navbar when arrows are clicked
-leftarrowclicks <- reactive({
-  input$dataleft+input$plotleft+input$fitleft
+# leftarrowclicks <- reactive({
+#   input$dataleft+input$plotleft+input$fitleft
+# })
+# rightarrowclicks <- reactive({
+#   input$dataright+input$plotright+input$fitright
+# })
+# observe({
+#   if(leftarrowclicks() == 0) {return()}
+#   tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4')
+#   current <- isolate(which(input$navbar == tabOptions))
+#   updateTabsetPanel(session, 'navbar', selected = tabOptions[current-1])
+# })
+# observe({
+#   if(rightarrowclicks() == 0) {return()}
+#   tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4')
+#   current <- isolate(which(input$navbar == tabOptions))
+#   updateTabsetPanel(session, 'navbar', selected = tabOptions[current+1])
+# })
+
+observeEvent(input$nwnum1,{
+  values$nwnum <- "single"
 })
-rightarrowclicks <- reactive({
-  input$dataright+input$plotright+input$fitright
-})
-observe({
-  if(leftarrowclicks() == 0) {return()}
-  tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4')
-  current <- isolate(which(input$navbar == tabOptions))
-  updateTabsetPanel(session, 'navbar', selected = tabOptions[current-1])
-})
-observe({
-  if(rightarrowclicks() == 0) {return()}
-  tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4')
-  current <- isolate(which(input$navbar == tabOptions))
-  updateTabsetPanel(session, 'navbar', selected = tabOptions[current+1])
+observeEvent(input$nwnum2,{
+  values$nwnum <- "multiple"
 })
 
 #nwinit is used to get the initial values of the network
@@ -83,7 +92,7 @@ nwinit <- reactive({
   #datapath is stored in 4th column of dataframe
   #network creates a network object from the input file
   if(is.null(input$rawdatafile)){
-    nw_var <- NULL
+    nw_var <- ""
   } else {
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
@@ -147,10 +156,17 @@ nwinit <- reactive({
   }
   if(input$filetype == 1){
     if(input$samplenet == ""){
-      nw_var <- NULL
+      nw_var <- ""
     } else {
       nw_var <- eval(parse(text = input$samplenet))
-      if(class(nw_var) == "network"){
+      if(class(nw_var) == "list"){
+        nw_var <- networkDynamic(base.net = nw_var[[1]],
+                                 network.list = nw_var,
+                                 onsets = seq(from=0,length=length(nw_var)),
+                                 termini = seq(from=1,length=length(nw_var)),
+                                 verbose = FALSE)
+      }
+      if("network" %in% class(nw_var)){
         if(!is.element('bipartite', names(nw_var$gal))){
            set.network.attribute(nw_var, 'bipartite', FALSE)
         }
@@ -215,32 +231,32 @@ vattrinit.vals <- reactive({
 
 #set correct number of rows for the attribute value lists,
 #so that we can add columns later
-observe({
-  nwinit()
-  #reset lists when uploaded network changes
-  vdf <- list()
-  edf <- list()
-  evdf <- list()
-  if (is.network(nwinit())){
-    n <- nodes()
-    e <- nedgesinit()
-    for (i in 1:n){
-      vdf <- rbind(vdf,i)
-    }
-    for (i in 1:e){
-      edf <- rbind(edf,i)
-      evdf <- rbind(evdf,i)
-    }
-    values$v_attrValsToAdd <- vdf
-    values$e_attrValsToAdd <- edf
-    values$ev_attrValsToAdd <- evdf
-    values$v_attrNamesToAdd <- list(1)
-    values$e_attrNamesToAdd <- list(1)
-    values$ev_attrNamesToAdd <- list(1)
-
-    values$vertexnames <- network.vertex.names(nwinit())
-  }
-})
+# observe({
+#   nwinit()
+#   #reset lists when uploaded network changes
+#   vdf <- list()
+#   edf <- list()
+#   evdf <- list()
+#   if (is.network(nwinit())){
+#     n <- nodes()
+#     e <- nedgesinit()
+#     for (i in 1:n){
+#       vdf <- rbind(vdf,i)
+#     }
+#     for (i in 1:e){
+#       edf <- rbind(edf,i)
+#       evdf <- rbind(evdf,i)
+#     }
+#     values$v_attrValsToAdd <- vdf
+#     values$e_attrValsToAdd <- edf
+#     values$ev_attrValsToAdd <- evdf
+#     values$v_attrNamesToAdd <- list(1)
+#     values$e_attrNamesToAdd <- list(1)
+#     values$ev_attrNamesToAdd <- list(1)
+#
+#     values$vertexnames <- network.vertex.names(nwinit())
+#   }
+# })
 
 #names of uploaded attributes
 #or helpful message that upload is incorrect
@@ -275,186 +291,185 @@ newattrnamereac <- reactive({
   newname
 })
 
-#save new vertex names
-observeEvent(input$newattrButton, {
-  if(input$newattrtype == "vertexnames"){
-    path <- input$newattrvalue[1,4]
-    filename <- input$newattrvalue[1,1]
-    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
-    if(fileext %in% c(".csv", ".CSV")){
-      newnames <- read.csv(paste(path), sep=",", header=TRUE,
-                           stringsAsFactors=FALSE)
-      newnames <- newnames[[1]]
-    } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
-      newnames <- readRDS(paste(path))
-    }
-
-    values$vertexnames <- newnames
-  }
-})
-
-#add vertex attributes to list
-observeEvent(input$newattrButton, {
-  if(input$newattrtype == "vertexattr"){
-    path <- input$newattrvalue[1,4]
-    filename <- input$newattrvalue[1,1]
-    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
-    if(fileext %in% c(".csv", ".CSV")){
-      newattrs <- read.csv(paste(path), sep=",", header=TRUE,
-                           stringsAsFactors=FALSE)
-      newname <- names(newattrs)
-    } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
-      newattrs <- readRDS(paste(path))
-      newname <- names(newattrs)
-    }
-
-    namesofar <- values$v_attrNamesToAdd
-    valsofar <- values$v_attrValsToAdd
-    for(k in 1:length(newname)){
-      namesofar <- cbind(namesofar, newname[[k]])
-      valsofar <- cbind(valsofar, newattrs[[k]])
-    }
-
-    values$v_attrNamesToAdd <- namesofar
-    values$v_attrValsToAdd <- valsofar
-  }
-})
-
-#add edge attributes to list
-observeEvent(input$newattrButton, {
-  if(input$newattrtype == "edgeattr" & input$edgeform == "vector"){
-    path <- input$newattrvalue[1,4]
-    filename <- input$newattrvalue[1,1]
-    fileext <- substr(filename,nchar(filename)-3,nchar(filename))
-    if(fileext %in% c(".csv", ".CSV")){
-      newattrs <- read.csv(paste(path), sep=",", header=TRUE,
-                           stringsAsFactors=FALSE)
-      newname <- names(newattrs)
-    } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
-      newattrs <- readRDS(paste(path))
-      newname <- names(newattrs)
-    }
-
-    namesofar <- values$e_attrNamesToAdd
-    valsofar <- values$e_attrValsToAdd
-    for(k in 1:length(newname)){
-      namesofar <- cbind(namesofar, newname[[k]])
-      valsofar <- cbind(valsofar, newattrs[[k]])
-    }
-    values$e_attrNamesToAdd <- namesofar
-    values$e_attrValsToAdd <- valsofar
-  }
-})
-
-#add edge values to list
-observeEvent(input$newattrButton, {
-  if(input$newattrtype == "edgeattr" & input$edgeform == "matrix"){
-    path <- input$newattrvalue[1,4]
-    filename <- input$newattrvalue[1,1]
-    fileext <- substr(filename,nchar(filename)-3, nchar(filename))
-    if(fileext %in% c(".csv", ".CSV")){
-      newattrs <- read.csv(paste(path), sep=",", header=TRUE,
-                           row.names = 1,
-                           stringsAsFactors=FALSE)
-      newname <- substr(filename, 1, nchar(filename)-4)
-      newattrs <- data.matrix(newattrs, rownames.force=FALSE)
-    } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
-      newattrs <- readRDS(paste(path))
-      newname <- names(newattrs)
-    }
-    namesofar <- values$ev_attrNamesToAdd
-    valsofar <- values$ev_attrValsToAdd
-    j <- length(valsofar)
-    for(k in 1:length(newname)){
-      namesofar <- cbind(namesofar, newname[[k]])
-      valsofar[[j+k]] <- newattrs[[k]]
-    }
-    values$ev_attrNamesToAdd <- namesofar
-    values$ev_attrValsToAdd <- valsofar
-  }
-})
-
-observeEvent(input$symmdir,{
-  state$symmdir <- TRUE
-})
-observeEvent(input$symmundir,{
-  state$symmdir <- FALSE
-})
+# #save new vertex names
+# observeEvent(input$newattrButton, {
+#   if(input$newattrtype == "vertexnames"){
+#     path <- input$newattrvalue[1,4]
+#     filename <- input$newattrvalue[1,1]
+#     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+#     if(fileext %in% c(".csv", ".CSV")){
+#       newnames <- read.csv(paste(path), sep=",", header=TRUE,
+#                            stringsAsFactors=FALSE)
+#       newnames <- newnames[[1]]
+#     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+#       newnames <- readRDS(paste(path))
+#     }
+#
+#     values$vertexnames <- newnames
+#   }
+# })
+#
+# #add vertex attributes to list
+# observeEvent(input$newattrButton, {
+#   if(input$newattrtype == "vertexattr"){
+#     path <- input$newattrvalue[1,4]
+#     filename <- input$newattrvalue[1,1]
+#     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+#     if(fileext %in% c(".csv", ".CSV")){
+#       newattrs <- read.csv(paste(path), sep=",", header=TRUE,
+#                            stringsAsFactors=FALSE)
+#       newname <- names(newattrs)
+#     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+#       newattrs <- readRDS(paste(path))
+#       newname <- names(newattrs)
+#     }
+#
+#     namesofar <- values$v_attrNamesToAdd
+#     valsofar <- values$v_attrValsToAdd
+#     for(k in 1:length(newname)){
+#       namesofar <- cbind(namesofar, newname[[k]])
+#       valsofar <- cbind(valsofar, newattrs[[k]])
+#     }
+#
+#     values$v_attrNamesToAdd <- namesofar
+#     values$v_attrValsToAdd <- valsofar
+#   }
+# })
+#
+# #add edge attributes to list
+# observeEvent(input$newattrButton, {
+#   if(input$newattrtype == "edgeattr" & input$edgeform == "vector"){
+#     path <- input$newattrvalue[1,4]
+#     filename <- input$newattrvalue[1,1]
+#     fileext <- substr(filename,nchar(filename)-3,nchar(filename))
+#     if(fileext %in% c(".csv", ".CSV")){
+#       newattrs <- read.csv(paste(path), sep=",", header=TRUE,
+#                            stringsAsFactors=FALSE)
+#       newname <- names(newattrs)
+#     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+#       newattrs <- readRDS(paste(path))
+#       newname <- names(newattrs)
+#     }
+#
+#     namesofar <- values$e_attrNamesToAdd
+#     valsofar <- values$e_attrValsToAdd
+#     for(k in 1:length(newname)){
+#       namesofar <- cbind(namesofar, newname[[k]])
+#       valsofar <- cbind(valsofar, newattrs[[k]])
+#     }
+#     values$e_attrNamesToAdd <- namesofar
+#     values$e_attrValsToAdd <- valsofar
+#   }
+# })
+#
+# #add edge values to list
+# observeEvent(input$newattrButton, {
+#   if(input$newattrtype == "edgeattr" & input$edgeform == "matrix"){
+#     path <- input$newattrvalue[1,4]
+#     filename <- input$newattrvalue[1,1]
+#     fileext <- substr(filename,nchar(filename)-3, nchar(filename))
+#     if(fileext %in% c(".csv", ".CSV")){
+#       newattrs <- read.csv(paste(path), sep=",", header=TRUE,
+#                            row.names = 1,
+#                            stringsAsFactors=FALSE)
+#       newname <- substr(filename, 1, nchar(filename)-4)
+#       newattrs <- data.matrix(newattrs, rownames.force=FALSE)
+#     } else if(fileext %in% c(".rds",".Rds",".RDs",".RDS")){
+#       newattrs <- readRDS(paste(path))
+#       newname <- names(newattrs)
+#     }
+#     namesofar <- values$ev_attrNamesToAdd
+#     valsofar <- values$ev_attrValsToAdd
+#     j <- length(valsofar)
+#     for(k in 1:length(newname)){
+#       namesofar <- cbind(namesofar, newname[[k]])
+#       valsofar[[j+k]] <- newattrs[[k]]
+#     }
+#     values$ev_attrNamesToAdd <- namesofar
+#     values$ev_attrValsToAdd <- valsofar
+#   }
+# })
+#
+# observeEvent(input$symmdir,{
+#   state$symmdir <- TRUE
+# })
+# observeEvent(input$symmundir,{
+#   state$symmdir <- FALSE
+# })
 
 #attributes will be added to this network
-nwmid <- reactive({
-  nw_var <- nwinit()
-
-  if (class(nw_var)=="network"){
-    #preserve initial network attributes and let user choose if directed
-    #after symmetrizing
-    if(input$symmetrize != "Do not symmetrize"){
-      symnw <- sna::symmetrize(nw_var, rule=input$symmetrize)
-      nw_var <- network(symnw, matrix.type="adjacency", directed=state$symmdir,
-                        hyper=nwattrinit()[2], loops=nwattrinit()[3],
-                        multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
-      #add initial vertex attributes back after symmetrizing
-      #can't add edge attributes back because number of edges has changed
-      for(k in 1:length(vattrinit())){
-        attr_names <- vattrinit()
-        attr_list <- vattrinit.vals()
-        set.vertex.attribute(nw_var, attr_names[k], attr_list[[k]])
-      }
-    }
-
-    if (is.bipartite(nw_var)){
-      set.vertex.attribute(nw_var, "mode", c(rep(1, nw_var$gal$bipartite),
-                                             rep(2, nw_var$gal$n - nw_var$gal$bipartite)))
-    }
-
-    v_attrNamesToAdd <- values$v_attrNamesToAdd
-    v_attrValsToAdd <- values$v_attrValsToAdd
-    e_attrNamesToAdd <- values$e_attrNamesToAdd
-    e_attrValsToAdd <- values$e_attrValsToAdd
-    ev_attrNamesToAdd <- values$ev_attrNamesToAdd
-    ev_attrValsToAdd <- values$ev_attrValsToAdd
-
-
-    if(input$newattrButton > 0){
-      try({network.vertex.names(nw_var) <- values$vertexnames})
-    }
-    v_numnew <- length(v_attrNamesToAdd)
-    if(v_numnew > 1){
-      for (j in 2:v_numnew){
-        try({v_newname <- as.character(v_attrNamesToAdd[1,j])
-        v_newval <- v_attrValsToAdd[,j]
-        set.vertex.attribute(nw_var,v_newname,v_newval)})
-      }
-    }
-
-    e_numnew <- length(e_attrNamesToAdd)
-    if(e_numnew > 1){
-      for (k in 2:e_numnew){
-        try({e_newname <- as.character(e_attrNamesToAdd[1,k])
-        e_newval <- e_attrValsToAdd[,k]
-        set.edge.attribute(nw_var,e_newname,e_newval)})
-      }
-    }
-
-    ev_numnew <- length(ev_attrNamesToAdd)
-    if(ev_numnew > 1){
-      for (l in 2:ev_numnew){
-        try({ev_newname <- as.character(ev_attrNamesToAdd[1,l])
-        ev_newval <- ev_attrValsToAdd[[l]]
-        set.edge.value(nw_var,ev_newname,ev_newval)})
-      }
-    }
-  }
-
-  nw_var
-})
+# nwmid <- reactive({
+#   nw_var <- nwinit()
+#
+#   if (class(nw_var)=="network"){
+#     #preserve initial network attributes and let user choose if directed
+#     #after symmetrizing
+#     if(input$symmetrize != "Do not symmetrize"){
+#       symnw <- sna::symmetrize(nw_var, rule=input$symmetrize)
+#       nw_var <- network(symnw, matrix.type="adjacency", directed=state$symmdir,
+#                         hyper=nwattrinit()[2], loops=nwattrinit()[3],
+#                         multiple=nwattrinit()[4], bipartite=nwattrinit()[5])
+#       #add initial vertex attributes back after symmetrizing
+#       #can't add edge attributes back because number of edges has changed
+#       for(k in 1:length(vattrinit())){
+#         attr_names <- vattrinit()
+#         attr_list <- vattrinit.vals()
+#         set.vertex.attribute(nw_var, attr_names[k], attr_list[[k]])
+#       }
+#     }
+#
+#     if (is.bipartite(nw_var)){
+#       set.vertex.attribute(nw_var, "mode", c(rep(1, nw_var$gal$bipartite),
+#                                              rep(2, nw_var$gal$n - nw_var$gal$bipartite)))
+#     }
+#
+#     v_attrNamesToAdd <- values$v_attrNamesToAdd
+#     v_attrValsToAdd <- values$v_attrValsToAdd
+#     e_attrNamesToAdd <- values$e_attrNamesToAdd
+#     e_attrValsToAdd <- values$e_attrValsToAdd
+#     ev_attrNamesToAdd <- values$ev_attrNamesToAdd
+#     ev_attrValsToAdd <- values$ev_attrValsToAdd
+#
+#
+#     if(input$newattrButton > 0){
+#       try({network.vertex.names(nw_var) <- values$vertexnames})
+#     }
+#     v_numnew <- length(v_attrNamesToAdd)
+#     if(v_numnew > 1){
+#       for (j in 2:v_numnew){
+#         try({v_newname <- as.character(v_attrNamesToAdd[1,j])
+#         v_newval <- v_attrValsToAdd[,j]
+#         set.vertex.attribute(nw_var,v_newname,v_newval)})
+#       }
+#     }
+#
+#     e_numnew <- length(e_attrNamesToAdd)
+#     if(e_numnew > 1){
+#       for (k in 2:e_numnew){
+#         try({e_newname <- as.character(e_attrNamesToAdd[1,k])
+#         e_newval <- e_attrValsToAdd[,k]
+#         set.edge.attribute(nw_var,e_newname,e_newval)})
+#       }
+#     }
+#
+#     ev_numnew <- length(ev_attrNamesToAdd)
+#     if(ev_numnew > 1){
+#       for (l in 2:ev_numnew){
+#         try({ev_newname <- as.character(ev_attrNamesToAdd[1,l])
+#         ev_newval <- ev_attrValsToAdd[[l]]
+#         set.edge.value(nw_var,ev_newname,ev_newval)})
+#       }
+#     }
+#   }
+#
+#   nw_var
+# })
 
 #use this network for future calculations
 nw <- reactive({
-  nw_var <- nwmid()
+  nw_var <- nwinit()
 
   values$input_termslist <- list()
-  updateTextInput(session, inputId = 'terms', value = 'edges')
 
   nw_var
 })
@@ -617,25 +632,25 @@ legendfill <- reactive({
 })
 
 #simulated graphs for cug tests
-observeEvent(c(nw(), input$ncugsims),{
-  if(!is.null(nw())){
-    s <- network.edgecount(nw())
-    if (is.directed(nw())){
-      mode <- "digraph"
-    } else {
-      mode <- "graph"
-    }
-
-    brgsims <- sna::rgraph(n = nodes(), m = input$ncugsims,
-                           tprob = sna::gden(nw()), mode = mode,
-                           diag = nw()$gal$loops)
-    cugsims <- sna::rgnm(n = input$ncugsims, nv = nodes(),
-                         m = s, mode = mode,
-                         diag = nw()$gal$loops)
-
-    values$cugsims <- list(brgsims, cugsims)
-  }
-})
+# observeEvent(c(nw(), input$ncugsims),{
+#   if(!is.null(nw())){
+#     s <- network.edgecount(nw())
+#     if (is.directed(nw())){
+#       mode <- "digraph"
+#     } else {
+#       mode <- "graph"
+#     }
+#
+#     brgsims <- sna::rgraph(n = nodes(), m = input$ncugsims,
+#                            tprob = sna::gden(nw()), mode = mode,
+#                            diag = nw()$gal$loops)
+#     cugsims <- sna::rgnm(n = input$ncugsims, nv = nodes(),
+#                          m = s, mode = mode,
+#                          diag = nw()$gal$loops)
+#
+#     values$cugsims <- list(brgsims, cugsims)
+#   }
+# })
 
 brgvals <- reactive({
   apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats,
@@ -663,10 +678,10 @@ observeEvent(input$resetformulaButton, {
   updateTextInput(session, "formation",
                   label = NULL, value = "edges")
 })
-observeEvent(nw(), {
-  updateTextInput(session, "formation",
-                  label = NULL, value = "edges")
-})
+# observeEvent(nw(), {
+#   updateTextInput(session, "formation",
+#                   label = NULL, value = "edges")
+# })
 
 dissoffsets <- reactive({
   ncoefs <- length(input$dissolution)
@@ -675,10 +690,10 @@ dissoffsets <- reactive({
 })
 
 estimate <- reactive({
-  if(class(nw()) == "network"){
-    "EGMME"
-  } else {
+  if("networkDynamic" %in% class(nw())){
     "CMLE"
+  } else {
+    "EGMME"
   }
 })
 
@@ -746,22 +761,23 @@ output$rawdatafile <- renderPrint({
   }
   write.table(raw, quote = FALSE, col.names = FALSE)})
 
-# output$samplenetUI <- renderUI({
-#   if(input$nwnum == "one"){
-#     nws <- c("Choose a network" = "",
-#              "ecoli1", "ecoli2",
-#              "faux.mesa.high", "flobusiness",
-#              "flomarriage", "kapferer",
-#              "kapferer2", "molecule",
-#              "samplike", "samplk1",
-#              "samplk2", "samplk3")
-#   } else {
-#     nws <- c("Choose a network" = "",
-#              "samp")
-#   }
-#   selectizeInput('samplenet', label=NULL,
-#                  choices = nws)
-# })
+output$samplenetUI <- renderUI({
+  if(values$nwnum == "single"){
+    nws <- c("Choose a network" = "",
+             "ecoli1", "ecoli2",
+             "faux.mesa.high", "flobusiness",
+             "flomarriage", "kapferer",
+             "kapferer2", "molecule",
+             "samplike", "samplk1",
+             "samplk2", "samplk3")
+  } else if(values$nwnum == "multiple"){
+    nws <- c("Choose a network" = "",
+             "sampson")
+  }
+  selectizeInput('samplenet', label = NULL,
+                 choices = nws)
+})
+outputOptions(output, "samplenetUI", suspendWhenHidden = FALSE)
 
 output$pajchooser <- renderUI({
   pajlist <- c(None = '')
@@ -783,13 +799,10 @@ output$newattrname <- renderPrint({
 
 #summary of network attributes
 output$nwsum <- renderPrint({
-  if (is.null(nw())){
+  if (nw() == ""){
     return(cat('NA'))
   }
   nw_var <- nw()
-  if (class(nw_var) != "network"){
-    return(cat(nw_var))
-  }
   return(nw_var)
 })
 

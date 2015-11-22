@@ -24,6 +24,15 @@ $(document).ready(function(){
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
 
+  $("#nwnum1").click(function(){
+      $("#nwnum1").toggleClass("active", true);
+      $("#nwnum2").toggleClass("active", false);
+  });
+  $("#nwnum2").click(function(){
+      $("#nwnum2").toggleClass("active", true);
+      $("#nwnum1").toggleClass("active", false);
+  });
+
   $("#symmdir").click(function(){
     $("#symmdir").toggleClass("active", true);
     $("#symmundir").toggleClass("active", false);
