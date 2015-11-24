@@ -46,6 +46,9 @@ $(document).ready(function(){
   $("#Robjhelp").click(function(){
     $("#Robjbox").toggle(500);
   });
+  $("#Robjhelp2").click(function(){
+    $("#Robjbox2").toggle(500);
+  });
 
   $("#filetypehelper1").click(function(){
     $("#filetypebox1").toggle(500);

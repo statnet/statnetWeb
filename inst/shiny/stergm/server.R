@@ -3,6 +3,7 @@
 
 library(statnet)
 library(tergm)
+library(xlsx)
 
 data(faux.mesa.high)
 data(florentine)
@@ -90,10 +91,10 @@ observeEvent(input$nwnum2,{
 nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
   #datapath is stored in 4th column of dataframe
-  #network creates a network object from the input file
-  if(is.null(input$rawdatafile)){
-    nw_var <- ""
-  } else {
+  input$uploadnet
+  nw_var <- ""
+isolate({
+  if(!is.null(input$rawdatafile)){
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
     fileext <- substr(filename,
@@ -101,70 +102,28 @@ nwinit <- reactive({
                                    text = filename, fixed = TRUE)[[1]]),
                       nchar(filename))
 
-    if(input$filetype == 2){
+    if(input$filetype == "statnet"){
       validate(
         need(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
              "Upload an .rds file"))
       nw_var <- readRDS(paste(filepath))
-    } else if(input$filetype == 4){
+    } else if(input$filetype == "rmat"){
       validate(
-        need(fileext %in% c(".net", ".NET"),
-             "Upload a .net file"))
-      nw_var <- read.paj(paste(filepath))
-    } else if(input$filetype == 5){
-      validate(
-        need(fileext %in% c(".paj",".PAJ"),
-             "Upload a .paj file"))
-      nws <- read.paj(paste(filepath))
-      if(!is.null(pajnws())){
-        nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
-      }
-    } else if(input$filetype == 3){
-      validate(
-        need(fileext %in% c(".xlsx") |
-               fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
+        need(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
              "Upload the specified type of matrix"))
-      if(fileext == ".xlsx"){
-        header <- TRUE
-        row_names <- 1
-        if(input$matrixtype == "edgelist"){
-          header <- FALSE
-          row_names<-NULL
-        }
-        if(values$nwnum == "single"){
-          try({nw_var <- network(read.xlsx(paste(filepath),
-                                           sheetIndex = 1,
-                                           as.data.frame = TRUE,
-                                           header = header,
-                                           row.names = row_names),
-                                 directed = input$dir,
-                                 loops = input$loops,
-                                 multiple = input$multiple,
-                                 bipartite = input$bipartite,
-                                 matrix.type = input$matrixtype,
-                                 ignore.eval = FALSE,
-                                 names.eval = 'edgevalue')
-          })
-        } else if(values$nwnum == "multiple"){
-          nw_var <- lapply(1:input$npanels, FUN = function(x){
-                        network(
-                          read.xlsx(paste(filepath),
-                                   sheetIndex = x,
-                                   as.data.frame = TRUE,
-                                   header = header,
-                                   row.names = row_names),
-                          directed = input$dir,
-                          loops = input$loops,
-                          multiple = input$multiple,
-                          bipartite = input$bipartite,
-                          matrix.type = input$matrixtype,
-                          ignore.eval = FALSE,
-                          names.eval = 'edgevalue')})
-        }
-
-
-      } else if(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS")){
-        newmx <- readRDS(paste(filepath))
+      newmx <- readRDS(paste(filepath))
+      if(values$nwnum == "multiple"){
+        nw_var <- lapply(newmx, FUN = function(x){
+          network(x,
+                  directed = input$dir,
+                  loops = input$loops,
+                  multiple = input$multiple,
+                  bipartite = input$bipartite,
+                  matrix.type = input$matrixtype,
+                  ignore.eval = FALSE,
+                  names.eval = 'edgevalue')
+        })
+      } else {
         nw_var <- network(newmx,
                           directed = input$dir,
                           loops = input$loops,
@@ -173,29 +132,101 @@ nwinit <- reactive({
                           matrix.type = input$matrixtype,
                           ignore.eval = FALSE,
                           names.eval = 'edgevalue')
-
+      }
+    } else if(input$filetype == "excel"){
+      validate(
+        need(fileext %in% c(".xlsx"),
+             "Upload the specified type of matrix"))
+      header <- TRUE
+      row_names <- 1
+      if(input$matrixtype == "edgelist"){
+        header <- FALSE
+        row_names<-NULL
+      }
+      if(values$nwnum == "single"){
+        try({nw_var <- network(read.xlsx(paste(filepath),
+                                         sheetIndex = 1,
+                                         as.data.frame = TRUE,
+                                         header = header,
+                                         row.names = row_names),
+                               directed = input$dir,
+                               loops = input$loops,
+                               multiple = input$multiple,
+                               bipartite = input$bipartite,
+                               matrix.type = input$matrixtype,
+                               ignore.eval = FALSE,
+                               names.eval = 'edgevalue')
+        })
+      } else if(values$nwnum == "multiple"){
+        nw_var <- lapply(1:input$npanels, FUN = function(x){
+          network(
+            read.xlsx(paste(filepath),
+                      sheetIndex = x,
+                      as.data.frame = TRUE,
+                      header = header,
+                      row.names = row_names),
+            directed = input$dir,
+            loops = input$loops,
+            multiple = input$multiple,
+            bipartite = input$bipartite,
+            matrix.type = input$matrixtype,
+            ignore.eval = FALSE,
+            names.eval = 'edgevalue')
+        })
+      }
+    } else if(input$filetype == "pajeknet"){
+      validate(
+        need(fileext %in% c(".net", ".NET"),
+             "Upload a .net file"))
+      nw_var <- read.paj(paste(filepath))
+    } else if(input$filetype == "pajekpaj"){
+      validate(
+        need(fileext %in% c(".paj",".PAJ"),
+             "Upload a .paj file"))
+      nws <- read.paj(paste(filepath))
+      if(!is.null(pajnws())){
+        nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
       }
     }
+    if(values$nwnum == "multiple" & nw_var != ""){
+      nw_var <- networkDynamic(base.net = nw_var[[1]],
+                               network.list = nw_var,
+                               onsets = seq(from = 0, length = length(nw_var)),
+                               termini = seq(from = 1, length = length(nw_var)),
+                               verbose = FALSE,
+                               create.TEAs = FALSE) # change to TRUE if attributes change through time
+    }
   }
-  if(input$filetype == 1){
+
+  })
+  if(input$filetype == "builtin"){
     if(input$samplenet == ""){
       nw_var <- ""
     } else {
       nw_var <- eval(parse(text = input$samplenet))
       if("network" %in% class(nw_var)){
         if(!is.element('bipartite', names(nw_var$gal))){
-           set.network.attribute(nw_var, 'bipartite', FALSE)
+          set.network.attribute(nw_var, 'bipartite', FALSE)
         }
       }
     }
+    if(values$nwnum == "multiple" & nw_var != ""){
+      nw_var <- networkDynamic(base.net = nw_var[[1]],
+                               network.list = nw_var,
+                               onsets = seq(from = 0, length = length(nw_var)),
+                               termini = seq(from = 1, length = length(nw_var)),
+                               verbose = FALSE,
+                               create.TEAs = FALSE) # change to TRUE if attributes change through time
+    }
   }
+
   return(nw_var)
 })
 
 #list of everything in an uploaded Pajek project
 pajnws <- reactive({
   nws <- NULL
-  if((input$filetype == 3) & (!is.null(input$rawdatafile))){
+  if((input$filetype == "pajekpaj") & (!is.null(input$rawdatafile))){
     filename <- input$rawdatafile[1,1]
     if(substr(filename,nchar(filename)-3,nchar(filename))==".paj"){
       nws <- read.paj(paste(input$rawdatafile[1,4]))
@@ -206,7 +237,7 @@ pajnws <- reactive({
 
 nwname <- reactive({
   name <- input$rawdatafile[1,1]
-  if(input$filetype == 1){
+  if(input$filetype == "builtin"){
     name <- input$samplenet
   }
   name
@@ -486,14 +517,6 @@ nw <- reactive({
   nw_var <- nwinit()
 
   values$input_termslist <- list()
-  if(class(nw_var) == "list"){
-    nw_var <- networkDynamic(base.net = nw_var[[1]],
-                             network.list = nw_var,
-                             onsets = seq(from=0,length=length(nw_var)),
-                             termini = seq(from=1,length=length(nw_var)),
-                             verbose = FALSE,
-                             create.TEAs = FALSE) # change to TRUE if attributes change through time
-  }
 
   nw_var
 })
@@ -805,7 +828,7 @@ output$samplenetUI <- renderUI({
 outputOptions(output, "samplenetUI", suspendWhenHidden = FALSE)
 
 output$npanelsui <- renderUI({
-  if(values$nwnum == "multiple" & input$filetype != 1){
+  if(values$nwnum == "multiple" & input$filetype == "excel"){
     numericInput("npanels", label = "Number of network panels",
                  value = 2, min = 2, step = 1)
   }
