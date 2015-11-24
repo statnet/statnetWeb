@@ -498,28 +498,27 @@ tabPanel("Network Descriptives", value = "tab3",
                  ndtv:::ndtvAnimationWidgetOutput("nwplot"),
                  div(id = "legendbox",
                      plotOutput("legendplot", height = 248))
+        ),
+        tabPanel('Attributes', br(),
+           conditionalPanel('input.attrview == "Large table"',
+                            dataTableOutput("attrtbl_lg")
+           ),
+           conditionalPanel('input.attrview == "Small tables"',
+                            verbatimTextOutput("attrtbl_sm")
+           ),
+           conditionalPanel('input.attrview == "Plot summaries"',
+                            tags$label("Type of plots"),
+                            helpText("Density plots will only be created for",
+                                     "numeric attributes with more than nine",
+                                     "levels."),
+                            selectInput("attrhistaxis",
+                                        label = NULL,
+                                        choices = c("Barplot: counts" = "count",
+                                                    "Barplot: percents" = "percent",
+                                                    "Density plot" = "density")),
+                            uiOutput("attrhistplotspace"))
 
         )
-#         tabPanel('Attributes', br(),
-#            conditionalPanel('input.attrview == "Large table"',
-#                             dataTableOutput("attrtbl_lg")
-#            ),
-#            conditionalPanel('input.attrview == "Small tables"',
-#                             verbatimTextOutput("attrtbl_sm")
-#            ),
-#            conditionalPanel('input.attrview == "Plot summaries"',
-#                             tags$label("Type of plots"),
-#                             helpText("Density plots will only be created for",
-#                                      "numeric attributes with more than nine",
-#                                      "levels."),
-#                             selectInput("attrhistaxis",
-#                                         label = NULL,
-#                                         choices = c("Barplot: counts" = "count",
-#                                                     "Barplot: percents" = "percent",
-#                                                     "Density plot" = "density")),
-#                             uiOutput("attrhistplotspace"))
-#
-#         ),
 #         tabPanel('Degree Distribution',
 #            p(class = 'helper', id = 'ddhelper', icon('question-circle')),
 #            div(class = 'mischelperbox', id = 'ddhelperbox',
@@ -755,15 +754,15 @@ tabPanel("Network Descriptives", value = "tab3",
                       br()
 #                       downloadButton('nwplotdownload',
 #                                      label = "Download Plot", class = "btn-sm")
-                      )
-#                    conditionalPanel(condition='input.plottabs == "Attributes"',
-#                       selectInput("attrview", label = "View attributes in:",
-#                                   choices = c("Large table",
-#                                               "Small tables",
-#                                               "Plot summaries")),
-#                       br(),
-#                       uiOutput("attrcheck")
-#                    ),
+                      ),
+                   conditionalPanel(condition='input.plottabs == "Attributes" & input.',
+                      selectInput("attrview", label = "View attributes in:",
+                                  choices = c("Large table",
+                                              "Small tables",
+                                              "Plot summaries")),
+                      br(),
+                      uiOutput("attrcheck")
+                   )
 #                    conditionalPanel('input.plottabs == "Degree Distribution"',
 #                       uiOutput("dynamiccmode_dd"),
 #                       uiOutput("dynamiccolor_dd"),

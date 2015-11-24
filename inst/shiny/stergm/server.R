@@ -19,6 +19,13 @@ sampson[[2]] <- samplk2
 sampson[[3]] <- samplk3
 
 
+BRGcol <- "darkred"
+CUGcol <- "darkorange"
+obsblue <- "#076EC3"
+histblue <- "#83B6E1"
+tgray3 <- adjustcolor("gray", alpha.f = 0.3)
+tgray7 <- adjustcolor("gray", alpha.f = 0.7)
+
 shinyServer(
   function(input, output, session){
 
@@ -195,7 +202,7 @@ isolate({
                                onsets = seq(from = 0, length = length(nw_var)),
                                termini = seq(from = 1, length = length(nw_var)),
                                verbose = FALSE,
-                               create.TEAs = FALSE) # change to TRUE if attributes change through time
+                               create.TEAs = TRUE) # if attributes change through time
     }
   }
 
@@ -576,23 +583,23 @@ numattr <- reactive({
     }}
   numattr
 })
-#
-# #dataframe of nodes, their attributes, and their coordinates in nwplot
-# nwdf <- reactive({
-#   attrs <- menuattr()
-#   if(is.na(as.numeric(network.vertex.names(nw()))[1])){
-#     df <- data.frame(Names = network.vertex.names(nw()))
-#   } else {
-#     df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
-#   }
-#   for(i in seq(length(attrs))){
-#     df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
-#   }
-#   df[["Missing"]] <- get.vertex.attribute(nw(), "na")
-#   df[["cx"]] <- coords()[,1]
-#   df[["cy"]] <- coords()[,2]
-#   df
-# })
+
+#dataframe of nodes, their attributes, and their coordinates in nwplot
+nwdf <- reactive({
+  attrs <- menuattr()
+  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+    df <- data.frame(Names = network.vertex.names(nw()))
+  } else {
+    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+  }
+  for(i in seq(length(attrs))){
+    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+  }
+  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
+  df[["cx"]] <- coords()[,1]
+  df[["cy"]] <- coords()[,2]
+  df
+})
 
 # betweenness centrality of all nodes (for sizing menu)
 nodebetw <- reactive({
@@ -935,6 +942,85 @@ output$legendplot <- renderPlot({
            legend = legendlabels(),
            fill = legendfill())
   }
+})
+
+output$attrcheck <- renderUI({
+  checkboxGroupInput("attrcols",
+                     label = "Include these attributes",
+                     choices = c(menuattr(), "Missing"),
+                     selected = c(menuattr(), "Missing"))
+})
+outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
+
+output$attrtbl_lg <- renderDataTable({
+  dt <- nwdf()[, c("Names", input$attrcols)]
+  dt
+}, options = list(pageLength = 10))
+
+output$attrtbl_sm <- renderPrint({
+  ntbl <- length(input$attrcols)
+  if(ntbl == 0){return()}
+  attrname <- input$attrcols
+  tbl_list <- list()
+  if(ntbl == 1){
+    tab <- attr.info(df = nwdf(), colname = attrname,
+                     numattrs = numattr(), breaks = 10)
+    tbl_list[[attrname]] <- tab
+  } else {
+    for(a in attrname){
+      tab <- attr.info(df = nwdf(), colname = a,
+                       numattrs = numattr(), breaks = 10)
+      tbl_list[[a]] <- tab
+    }
+  }
+  for(a in attrname){
+    print(a, quote = FALSE)
+    print(tbl_list[[a]])
+  }
+})
+
+output$attrhist <- renderPlot({
+  nplots <- length(input$attrcols)
+  if(nplots == 0){return()}
+  attrname <- input$attrcols
+  if(nplots == 1){
+    par(mfrow = c(1, 1))
+    lvls <- length(unique(nwdf()[[attrname]]))
+    if(input$attrhistaxis == "density" & attrname %in% numattr() & lvls > 9){
+      plot(density(nwdf()[[attrname]]), main = attrname,
+           col = "#076EC3", lwd = 2)
+    } else {
+      tab <- attr.info(df = nwdf(), colname = attrname,
+                       numattrs = numattr(), breaks = 10)
+      if(input$attrhistaxis == "percent"){
+        tab <- tab/sum(tab)
+      }
+      barplot(tab, main = attrname, col = histblue)
+    }
+  } else {
+    r <- ceiling(nplots/2)
+    par(mfrow = c(r, 2))
+    for(a in attrname){
+      lvls <- length(unique(nwdf()[[a]]))
+      if(input$attrhistaxis == "density" & a %in% numattr() & lvls > 9){
+        plot(density(nwdf()[[a]]), main = a, col = "#076EC3", lwd = 2)
+      } else {
+        tab <- attr.info(df = nwdf(), colname = a,
+                         numattrs = numattr(), breaks = 10)
+        if(input$attrhistaxis == "percent"){
+          tab <- tab/sum(tab)
+        }
+        barplot(tab, main = a, col = histblue)
+      }
+    }
+  }
+})
+
+output$attrhistplotspace <- renderUI({
+  nplots <- length(input$attrcols)
+  r <- ceiling(nplots/2)
+  h <- ifelse(r == 1, 400, r * 300)
+  plotOutput("attrhist", height = h)
 })
 
 ## FIT MODEL ##
