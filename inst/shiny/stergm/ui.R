@@ -494,13 +494,9 @@ tabPanel("Network Descriptives", value = "tab3",
    fluidRow(
    column(7,
     tabsetPanel(id = 'plottabs',
-        tabPanel('Network Plot', br()
-#            plotOutput('nwplot', click = "plot_click",
-#                       dblclick = dblclickOpts(id = "plot_dblclick"),
-#                       hover = hoverOpts(id = "plot_hover", delay = 100,
-#                                         delayType = "throttle"),
-#                       brush = brushOpts(id = "plot_brush")
-#            )
+        tabPanel('Network Plot', br(),
+                 ndtv:::ndtvAnimationWidgetOutput("nwplot")
+
         )
 #         tabPanel('Attributes', br(),
 #            conditionalPanel('input.attrview == "Large table"',
@@ -731,37 +727,33 @@ tabPanel("Network Descriptives", value = "tab3",
      ), #end 7 column
      column(4,
             tabsetPanel(id = 'displaytabs',
-#               tabPanel(title = 'Display Options', br(),
-#                  wellPanel(
-#                    conditionalPanel('input.plottabs == "Network Plot"',
-#                       checkboxInput('iso',
-#                                     label = 'Display isolates',
-#                                     value = TRUE),
-#                       checkboxInput('vnames',
-#                                     label = 'Display vertex names',
-#                                     value = FALSE),
-#                       br(),
-#                       sliderInput('transp',
-#                                   label = 'Vertex opacity',
-#                                   min = 0, max = 1, value = 1),
-#                       br(),
-#                       uiOutput("dynamiccolor"),
-#                       conditionalPanel("Number(output.attrlevels) > 9",
-#                          column(10,
-#                                 p(id = "closewarning1", icon(name = "remove"),
-#                                   class = "warning"),
-#                                 div(class = "warning", id = "colorwarning1",
-#                                     span(tags$u("Note:"),
-#                                          "Color palette becomes a gradient for
-#                                          attributes with more than nine levels.")
-#                                 )
-#                          )),
-#                       uiOutput('dynamicsize'),
-#                       br(),
-#                       actionButton("refreshplot", icon = icon("refresh"),
-#                                    label = "Refresh Plot", class = "btn-sm"),
-#                       downloadButton('nwplotdownload',
-#                                      label = "Download Plot", class = "btn-sm")),
+              tabPanel(title = 'Display Options', br(),
+                 wellPanel(
+                   conditionalPanel('input.plottabs == "Network Plot"',
+                      checkboxInput('vnames',
+                                    label = 'Display vertex names',
+                                    value = FALSE),
+                      br(),
+                      sliderInput('transp',
+                                  label = 'Vertex opacity',
+                                  min = 0, max = 1, value = 1),
+                      br(),
+                      uiOutput("dynamiccolor"),
+                      conditionalPanel("Number(output.attrlevels) > 9",
+                         column(10,
+                                p(id = "closewarning1", icon(name = "remove"),
+                                  class = "warning"),
+                                div(class = "warning", id = "colorwarning1",
+                                    span(tags$u("Note:"),
+                                         "Color palette becomes a gradient for
+                                         attributes with more than nine levels.")
+                                )
+                         )),
+                      uiOutput('dynamicsize'),
+                      br(),
+                      downloadButton('nwplotdownload',
+                                     label = "Download Plot", class = "btn-sm")
+                      )
 #                    conditionalPanel(condition='input.plottabs == "Attributes"',
 #                       selectInput("attrview", label = "View attributes in:",
 #                                   choices = c("Large table",
@@ -861,7 +853,7 @@ tabPanel("Network Descriptives", value = "tab3",
 #                       p("No display options at this time,",
 #                         "stay tuned for updates!")
 #                    )
-#                  )),
+                 )),
               tabPanel(title = 'Network Summary', br(),
                        verbatimTextOutput('attr2'))
             )

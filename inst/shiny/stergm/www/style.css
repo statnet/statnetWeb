@@ -102,6 +102,9 @@ div.mischelperbox {
   z-index: 10;
 }
 
+.ndtv-d3-container {
+  border: none;
+}
 pre {
   font-size:12px;
 }

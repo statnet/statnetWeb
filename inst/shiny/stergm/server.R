@@ -4,6 +4,7 @@
 library(statnet)
 library(tergm)
 library(xlsx)
+library(RColorBrewer)
 
 data(faux.mesa.high)
 data(florentine)
@@ -246,12 +247,12 @@ nwname <- reactive({
   name
 })
 
-# #number of nodes in nw
-# nodes <- reactive({
-#   if(!is.network(nwinit())){return()}
-#   nwinit()$gal$n
-# })
-#
+#number of nodes in nw
+nodes <- reactive({
+  if(!is.network(nwinit())){return()}
+  nwinit()$gal$n
+})
+
 # #number of edges in initial nw
 # nedgesinit <- reactive({
 #   if (is.network(nwinit())){
@@ -530,51 +531,51 @@ nw <- reactive({
 # })
 #
 # #get coordinates to plot network with
-# coords <- reactive({
-#   input$refreshplot
-#   plot.network(nw())
-# })
-#
-# #initial network attributes
-# #returns vector of true/falses
-# nwattrinit <- reactive({
-#   if(!is.network(nwinit())){return()}
-#   nwattributes <- c('directed', 'hyper', 'loops', 'multiple', 'bipartite')
-#   unlist(lapply(nwattributes, get.network.attribute, x = nwinit()))
-# })
-#
-# #list of all vertex attributes in nw (after adding new)
-# attrib <- reactive({
-#   attr <- c()
-#   if(is.network(nw())){
-#     attr <- list.vertex.attributes(nw())
-#   }
-#   attr
-# })
-#
-# #don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
-# menuattr <- reactive({
-#   menuattr <- attrib()
-#   if(is.element("na", menuattr)){
-#     menuattr <- menuattr[-which("na" == menuattr)]
-#   }
-#   if(is.element("vertex.names", menuattr)){
-#     menuattr <- menuattr[-which("vertex.names" == menuattr)]
-#   }
-#   menuattr
-# })
-#
-# #numeric attributes only (for size menu, etc.)
-# numattr <- reactive({
-#   numattr <- c()
-#   if(is.network(nw())){
-#     for(i in 1:length(attrib())){
-#       if(is.numeric(get.vertex.attribute(nw(),attrib()[i]))){
-#         numattr <- append(numattr,attrib()[i])
-#       }
-#     }}
-#   numattr
-# })
+coords <- reactive({
+  input$refreshplot
+  plot.network(nw())
+})
+
+#initial network attributes
+#returns vector of true/falses
+nwattrinit <- reactive({
+  if(!is.network(nwinit())){return()}
+  nwattributes <- c('directed', 'hyper', 'loops', 'multiple', 'bipartite')
+  unlist(lapply(nwattributes, get.network.attribute, x = nwinit()))
+})
+
+#list of all vertex attributes in nw (after adding new)
+attrib <- reactive({
+  attr <- c()
+  if(is.network(nw())){
+    attr <- list.vertex.attributes(nw())
+  }
+  attr
+})
+
+#don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
+menuattr <- reactive({
+  menuattr <- attrib()
+  if(is.element("na", menuattr)){
+    menuattr <- menuattr[-which("na" == menuattr)]
+  }
+  if(is.element("vertex.names", menuattr)){
+    menuattr <- menuattr[-which("vertex.names" == menuattr)]
+  }
+  menuattr
+})
+
+#numeric attributes only (for size menu, etc.)
+numattr <- reactive({
+  numattr <- c()
+  if(is.network(nw())){
+    for(i in 1:length(attrib())){
+      if(is.numeric(get.vertex.attribute(nw(),attrib()[i]))){
+        numattr <- append(numattr,attrib()[i])
+      }
+    }}
+  numattr
+})
 #
 # #dataframe of nodes, their attributes, and their coordinates in nwplot
 # nwdf <- reactive({
@@ -592,94 +593,94 @@ nw <- reactive({
 #   df[["cy"]] <- coords()[,2]
 #   df
 # })
-#
-# # betweenness centrality of all nodes (for sizing menu)
-# nodebetw <- reactive({
-#   if(!is.network(nw())){return()}
-#   if(is.directed(nw())){
-#     gmode <- 'digraph'
-#     cmode <- 'directed'
-#   } else {
-#     gmode <- 'graph'
-#     cmode <- 'undirected'
-#   }
-#   sna::betweenness(nw(), gmode = gmode, diag = has.loops(nw()),
-#                    cmode = cmode)
-# })
-#
-# nodesize <- reactive({
-#   if(!is.network(nw())){return()}
-#   nw_var <- nw()
-#   #scale size of nodes onto range between .7 and 3.5
-#   if (input$sizeby == '1'){
-#     size = 1
-#   } else if (input$sizeby == 'Betweenness'){
-#     minsize <- min(nodebetw())
-#     maxsize <- max(nodebetw())
-#     size = (nodebetw()-minsize)/(maxsize-minsize)*(3.5-.7)+.7
-#   } else {
-#     minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
-#     maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
-#     size <- (get.vertex.attribute(nw_var,input$sizeby)-minsize) /
-#       (maxsize-minsize) * (3.5 - .7) + .7
-#   }
-#   size})
-#
-# #vertex color
-# vcol <- reactive({
-#   if(!is.network(nw())){return()}
-#   nw_var <- nw()
-#   if(input$colorby == 2){
-#     vcol <- rep(2, nodes())
-#   } else {
-#     full_list <- get.vertex.attribute(nw_var,input$colorby)
-#     short_list <- sort(unique(full_list))
-#     ncolors <- length(short_list)
-#     if(is.element("Other", short_list)){ #to be consistent with order of legend
-#       short_list <- short_list[-which(short_list == "Other")]
-#       short_list <- c(short_list, "Other")
-#     }
-#     full_list <- match(full_list, short_list)
-#     #each elt corresponds to integer position in short_list
-#     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
-#              'yellow', 'orange', 'black', 'grey')
-#     if(ncolors>9){
-#       pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
-#     }
-#     vcol <- pal[full_list]
-#   }
-#   vcol
-# })
-#
-# legendlabels <- reactive({
-#   if(!is.network(nw())){return()}
-#   nw_var <- nw()
-#   if(input$colorby == 2){
-#     legendlabels <- NULL
-#   }else{
-#     legendlabels <- sort(unique(get.vertex.attribute(nw_var, input$colorby)))
-#     if(is.element("Other", legendlabels)){
-#       legendlabels <- legendlabels[-which(legendlabels == "Other")]
-#       legendlabels <- c(legendlabels, "Other")
-#     }
-#   }
-#   legendlabels
-# })
-#
-# legendfill <- reactive({
-#   if(input$colorby == 2){
-#     legendfill <- NULL
-#   } else {
-#     n <- length(legendlabels())
-#     pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
-#              'yellow', 'orange', 'black', 'grey')
-#     if(n>9){
-#       pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
-#     }
-#     legendfill <- adjustcolor(pal, alpha.f = input$transp)
-#   }
-#   legendfill
-# })
+
+# betweenness centrality of all nodes (for sizing menu)
+nodebetw <- reactive({
+  if(!is.network(nw())){return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+    cmode <- 'directed'
+  } else {
+    gmode <- 'graph'
+    cmode <- 'undirected'
+  }
+  sna::betweenness(nw(), gmode = gmode, diag = has.loops(nw()),
+                   cmode = cmode)
+})
+
+nodesize <- reactive({
+  if(!("network" %in% class(nw()))){return()}
+  nw_var <- nw()
+  #scale size of nodes onto range between .7 and 3.5
+  if (input$sizeby == '1'){
+    size = 1
+  } else if (input$sizeby == 'Betweenness'){
+    minsize <- min(nodebetw())
+    maxsize <- max(nodebetw())
+    size = (nodebetw()-minsize)/(maxsize-minsize)*(3.5-.7)+.7
+  } else {
+    minsize <- min(get.vertex.attribute(nw_var,input$sizeby))
+    maxsize <- max(get.vertex.attribute(nw_var,input$sizeby))
+    size <- (get.vertex.attribute(nw_var,input$sizeby)-minsize) /
+      (maxsize-minsize) * (3.5 - .7) + .7
+  }
+  size})
+
+#vertex color
+vcol <- reactive({
+  if(!is.network(nw())){return()}
+  nw_var <- nw()
+  if(input$colorby == 2){
+    vcol <- rep(2, nodes())
+  } else {
+    full_list <- get.vertex.attribute(nw_var,input$colorby)
+    short_list <- sort(unique(full_list))
+    ncolors <- length(short_list)
+    if(is.element("Other", short_list)){ #to be consistent with order of legend
+      short_list <- short_list[-which(short_list == "Other")]
+      short_list <- c(short_list, "Other")
+    }
+    full_list <- match(full_list, short_list)
+    #each elt corresponds to integer position in short_list
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    if(ncolors>9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
+    }
+    vcol <- pal[full_list]
+  }
+  vcol
+})
+
+legendlabels <- reactive({
+  if(!is.network(nw())){return()}
+  nw_var <- nw()
+  if(input$colorby == 2){
+    legendlabels <- NULL
+  }else{
+    legendlabels <- sort(unique(get.vertex.attribute(nw_var, input$colorby)))
+    if(is.element("Other", legendlabels)){
+      legendlabels <- legendlabels[-which(legendlabels == "Other")]
+      legendlabels <- c(legendlabels, "Other")
+    }
+  }
+  legendlabels
+})
+
+legendfill <- reactive({
+  if(input$colorby == 2){
+    legendfill <- NULL
+  } else {
+    n <- length(legendlabels())
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    if(n>9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(n)
+    }
+    legendfill <- adjustcolor(pal, alpha.f = input$transp)
+  }
+  legendfill
+})
 
 #simulated graphs for cug tests
 # observeEvent(c(nw(), input$ncugsims),{
@@ -828,7 +829,7 @@ output$samplenetUI <- renderUI({
   selectizeInput('samplenet', label = NULL,
                  choices = nws)
 })
-outputOptions(output, "samplenetUI", suspendWhenHidden = FALSE)
+outputOptions(output, "samplenetUI", suspendWhenHidden = FALSE, priority = 50)
 
 output$npanelsui <- renderUI({
   if(values$nwnum == "multiple" & input$filetype == "excel"){
@@ -857,14 +858,73 @@ output$newattrname <- renderPrint({
 
 #summary of network attributes
 output$nwsum <- renderPrint({
-  if (nw() == ""){
+  if (!("network" %in% class(nw()))){
     return(cat('NA'))
   }
   nw_var <- nw()
   return(nw_var)
 })
 
+## DESCRIPTIVES ##
 
+#summary of network attributes
+output$attr2 <- renderPrint({
+  if (!is.network(nw())){
+    return(cat('NA'))
+  }
+  nw_var <- nw()
+  return(nw_var)
+})
+
+output$dynamiccolor <- renderUI({
+  selectInput('colorby',
+              label = 'Color nodes according to:',
+              c('None' = 2, attrib()))
+})
+outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
+
+# need this to know when color palette will change
+output$attrlevels <- renderText({
+  return(length(legendlabels()))
+})
+outputOptions(output,'attrlevels', suspendWhenHidden=FALSE, priority=10)
+
+output$dynamicsize <- renderUI({
+  choices <- c('None' = 1, numattr())
+  if(values$nwnum == "single"){
+    choices <- append(choices, "Betweenness")
+  }
+  selectInput('sizeby',
+              label = 'Size nodes according to:',
+              choices = choices)
+})
+outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
+
+output$nwplot <- ndtv:::renderNdtvAnimationWidget({
+  if (!("network" %in% class(nw()))){
+    return()
+  }
+  input$plottabs
+  input$rawdatafile
+  input$samplenet
+
+  color <- adjustcolor(vcol(), alpha.f = input$transp)
+  vcex <- nodesize()
+  if(is.bipartite(nw())){
+    sides <- c(rep(50, nw()$gal$bipartite),
+               rep(3, nodes() - nw()$gal$bipartite))
+  } else{
+    sides <- 50
+  }
+  render.d3movie(nw(),
+                 output.mode = "htmlWidget",
+                 launchBrowser = FALSE,
+                 displaylabels = input$vnames,
+                 vertex.col = color,
+                 vertex.sides = sides,
+                 vertex.cex = vcex,
+                 coords = coords())
+})
 
 ## FIT MODEL ##
 
