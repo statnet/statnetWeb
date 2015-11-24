@@ -188,7 +188,7 @@ isolate({
         nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
       }
     }
-    if(values$nwnum == "multiple" & nw_var != ""){
+    if(values$nwnum == "multiple" & "network" %in% class(nw_var)){
       nw_var <- networkDynamic(base.net = nw_var[[1]],
                                network.list = nw_var,
                                onsets = seq(from = 0, length = length(nw_var)),
@@ -200,23 +200,26 @@ isolate({
 
   })
   if(input$filetype == "builtin"){
-    if(input$samplenet == ""){
-      nw_var <- ""
-    } else {
-      nw_var <- eval(parse(text = input$samplenet))
-      if("network" %in% class(nw_var)){
-        if(!is.element('bipartite', names(nw_var$gal))){
-          set.network.attribute(nw_var, 'bipartite', FALSE)
+    if(!is.null(input$samplenet)){
+      if(input$samplenet == ""){
+        nw_var <- ""
+      } else {
+        nw_var <- eval(parse(text = input$samplenet))
+        if("network" %in% class(nw_var)){
+          if(!is.element('bipartite', names(nw_var$gal))){
+            set.network.attribute(nw_var, 'bipartite', FALSE)
+          }
+        }
+        if(values$nwnum == "multiple"){
+          nw_var <- networkDynamic(base.net = nw_var[[1]],
+                                   network.list = nw_var,
+                                   onsets = seq(from = 0, length = length(nw_var)),
+                                   termini = seq(from = 1, length = length(nw_var)),
+                                   verbose = FALSE,
+                                   create.TEAs = FALSE) # change to TRUE if attributes change through time
         }
       }
-    }
-    if(values$nwnum == "multiple" & nw_var != ""){
-      nw_var <- networkDynamic(base.net = nw_var[[1]],
-                               network.list = nw_var,
-                               onsets = seq(from = 0, length = length(nw_var)),
-                               termini = seq(from = 1, length = length(nw_var)),
-                               verbose = FALSE,
-                               create.TEAs = FALSE) # change to TRUE if attributes change through time
+
     }
   }
 
