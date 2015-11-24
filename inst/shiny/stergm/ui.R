@@ -485,23 +485,23 @@ actionLink("dataleft", icon = icon("arrow-left", class = "fa-2x"),
            label = NULL),
 actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
            label = NULL)
-)
+),
 
 # Network Descriptives ---------------------------------------------------
 
-#
-# tabPanel("Network Descriptives", value = "tab3",
-#    fluidRow(
-#    column(7,
-#     tabsetPanel(id = 'plottabs',
-#         tabPanel('Network Plot', br(),
+
+tabPanel("Network Descriptives", value = "tab3",
+   fluidRow(
+   column(7,
+    tabsetPanel(id = 'plottabs',
+        tabPanel('Network Plot', br()
 #            plotOutput('nwplot', click = "plot_click",
 #                       dblclick = dblclickOpts(id = "plot_dblclick"),
 #                       hover = hoverOpts(id = "plot_hover", delay = 100,
 #                                         delayType = "throttle"),
 #                       brush = brushOpts(id = "plot_brush")
 #            )
-#         ),
+        )
 #         tabPanel('Attributes', br(),
 #            conditionalPanel('input.attrview == "Large table"',
 #                             dataTableOutput("attrtbl_lg")
@@ -725,12 +725,12 @@ actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
 #            )
 #
 #         )
-#       ), #end tabsetPanel
-#      br(),
-#      br()
-#      ), #end 7 column
-#      column(4,
-#             tabsetPanel(id = 'displaytabs',
+      ), #end tabsetPanel
+     br(),
+     br()
+     ), #end 7 column
+     column(4,
+            tabsetPanel(id = 'displaytabs',
 #               tabPanel(title = 'Display Options', br(),
 #                  wellPanel(
 #                    conditionalPanel('input.plottabs == "Network Plot"',
@@ -862,23 +862,23 @@ actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
 #                         "stay tuned for updates!")
 #                    )
 #                  )),
-#               tabPanel(title = 'Network Summary', br(),
-#                        verbatimTextOutput('attr2'))
-#             )
-#      )
-#    ),
-#    icon("question-circle", class = "fa-2x helper-btn"),
-#    div(class = "helper-box",
-#        p("help help help")),
-#    actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
-#               label = NULL),
-#    actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
-#               label = NULL)
-#    ),
-#
-# # Fit Model ---------------------------------------------------------------
-#
-#
+              tabPanel(title = 'Network Summary', br(),
+                       verbatimTextOutput('attr2'))
+            )
+     )
+   ),
+   icon("question-circle", class = "fa-2x helper-btn"),
+   div(class = "helper-box",
+       p("help help help")),
+   actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
+              label = NULL),
+   actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
+              label = NULL)
+   )
+
+# Fit Model ---------------------------------------------------------------
+
+
 # tabPanel("Fit Model", value = "tab4",
 #
 #    fluidRow(
