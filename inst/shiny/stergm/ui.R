@@ -495,7 +495,9 @@ tabPanel("Network Descriptives", value = "tab3",
    column(7,
     tabsetPanel(id = 'plottabs',
         tabPanel('Network Plot', br(),
-                 ndtv:::ndtvAnimationWidgetOutput("nwplot")
+                 ndtv:::ndtvAnimationWidgetOutput("nwplot"),
+                 div(id = "legendbox",
+                     plotOutput("legendplot", height = 248))
 
         )
 #         tabPanel('Attributes', br(),
@@ -750,9 +752,9 @@ tabPanel("Network Descriptives", value = "tab3",
                                 )
                          )),
                       uiOutput('dynamicsize'),
-                      br(),
-                      downloadButton('nwplotdownload',
-                                     label = "Download Plot", class = "btn-sm")
+                      br()
+#                       downloadButton('nwplotdownload',
+#                                      label = "Download Plot", class = "btn-sm")
                       )
 #                    conditionalPanel(condition='input.plottabs == "Attributes"',
 #                       selectInput("attrview", label = "View attributes in:",

@@ -159,6 +159,15 @@ div.busy {
 #citebox {
   display: none;
 }
+#legendbox{
+  position: absolute;
+  height: 250px;
+  width: 100px;
+  bottom: 100px;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0);
+  z-index: 10;
+}
 
 #chooseterm {
   display:inline;

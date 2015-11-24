@@ -926,6 +926,17 @@ output$nwplot <- ndtv:::renderNdtvAnimationWidget({
                  coords = coords())
 })
 
+output$legendplot <- renderPlot({
+  par(mar = c(0, 0, 0, 0))
+  plot.new()
+  if(input$colorby != 2){
+    legend("topleft",
+           title=input$colorby,
+           legend = legendlabels(),
+           fill = legendfill())
+  }
+})
+
 ## FIT MODEL ##
 
 observeEvent(input$matchingButton, {
