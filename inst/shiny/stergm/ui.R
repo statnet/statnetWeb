@@ -516,7 +516,7 @@ tabPanel("Network Descriptives", value = "tab3",
                                         choices = c("Barplot: counts" = "count",
                                                     "Barplot: percents" = "percent",
                                                     "Density plot" = "density")),
-                            uiOutput("attrhistplotspace"))
+                            uiOutput("attrplotspace"))
 
         )
 #         tabPanel('Degree Distribution',
@@ -755,11 +755,13 @@ tabPanel("Network Descriptives", value = "tab3",
 #                       downloadButton('nwplotdownload',
 #                                      label = "Download Plot", class = "btn-sm")
                       ),
-                   conditionalPanel(condition='input.plottabs == "Attributes" & input.',
+                   conditionalPanel(condition='input.plottabs == "Attributes"',
                       selectInput("attrview", label = "View attributes in:",
                                   choices = c("Large table",
                                               "Small tables",
                                               "Plot summaries")),
+                      conditionalPanel('input.attrview == "Large table"',
+                                       uiOutput("ndslices_lgtbl_ui")),
                       br(),
                       uiOutput("attrcheck")
                    )

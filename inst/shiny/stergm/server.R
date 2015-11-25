@@ -197,7 +197,7 @@ isolate({
       }
     }
     if(values$nwnum == "multiple" & "network" %in% class(nw_var)){
-      nw_var <- networkDynamic(base.net = nw_var[[1]],
+      nw_var <- networkDynamic::networkDynamic(base.net = nw_var[[1]],
                                network.list = nw_var,
                                onsets = seq(from = 0, length = length(nw_var)),
                                termini = seq(from = 1, length = length(nw_var)),
@@ -219,7 +219,7 @@ isolate({
           }
         }
         if(values$nwnum == "multiple"){
-          nw_var <- networkDynamic(base.net = nw_var[[1]],
+          nw_var <- networkDynamic::networkDynamic(base.net = nw_var[[1]],
                                    network.list = nw_var,
                                    onsets = seq(from = 0, length = length(nw_var)),
                                    termini = seq(from = 1, length = length(nw_var)),
@@ -537,11 +537,6 @@ nw <- reactive({
 #   as.edgelist(nw())
 # })
 #
-# #get coordinates to plot network with
-coords <- reactive({
-  input$refreshplot
-  plot.network(nw())
-})
 
 #initial network attributes
 #returns vector of true/falses
@@ -561,15 +556,26 @@ attrib <- reactive({
 })
 
 #don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
+#remove ".active" suffix from networkDynamic objs
 menuattr <- reactive({
-  menuattr <- attrib()
-  if(is.element("na", menuattr)){
-    menuattr <- menuattr[-which("na" == menuattr)]
+  all.attrs <- unlist(strsplit(x = attrib(), split = ".active", fixed = TRUE))
+  teas <- c()
+  if("networkDynamic" %in% class(nw())){
+    tea.ind <- grep(pattern = ".active", x = attrib(),
+                    fixed = TRUE, value = FALSE)
+    teas <- all.attrs[tea.ind]
   }
-  if(is.element("vertex.names", menuattr)){
-    menuattr <- menuattr[-which("vertex.names" == menuattr)]
+  if(is.element("na", all.attrs)){
+    all.attrs <- all.attrs[-which("na" == all.attrs)]
   }
-  menuattr
+  if(is.element("vertex.names", all.attrs)){
+    all.attrs <- all.attrs[-which("vertex.names" == all.attrs)]
+  }
+  if(is.element("active", all.attrs)){
+    all.attrs <- all.attrs[-which("active" == all.attrs)]
+  }
+
+  menuattr <- list(all.attrs = all.attrs, teas = teas)
 })
 
 #numeric attributes only (for size menu, etc.)
@@ -584,20 +590,41 @@ numattr <- reactive({
   numattr
 })
 
-#dataframe of nodes, their attributes, and their coordinates in nwplot
+#dataframe of nodes, their attributes
+#list of dataframes for a networkDynamic object
 nwdf <- reactive({
-  attrs <- menuattr()
-  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
-    df <- data.frame(Names = network.vertex.names(nw()))
+  attrs <- menuattr()$all.attrs
+  if("networkDynamic" %in% class(nw())){
+   df <- lapply(X = networkDynamic::get.change.times(nw()),
+              FUN = function(time){
+      if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+        dfslice <- data.frame(Names = network.vertex.names(nw()))
+      } else {
+        dfslice <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+      }
+      for(i in seq(length(attrs))){
+        if(attrs[i] %in% menuattr()$teas){
+          dfslice[[attrs[i]]] <- networkDynamic::get.vertex.attribute.active(x = nw(),
+                                                        prefix = attrs[i],
+                                                        at = time)
+        } else {
+          dfslice[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+        }
+      }
+      dfslice[["Missing"]] <- get.vertex.attribute(nw(), "na")
+      dfslice
+    })
   } else {
-    df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+    if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+      df <- data.frame(Names = network.vertex.names(nw()))
+    } else {
+      df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
+    }
+    for(i in seq(length(attrs))){
+      df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
+    }
+    df[["Missing"]] <- get.vertex.attribute(nw(), "na")
   }
-  for(i in seq(length(attrs))){
-    df[[attrs[i]]] <- get.vertex.attribute(nw(), attrs[i])
-  }
-  df[["Missing"]] <- get.vertex.attribute(nw(), "na")
-  df[["cx"]] <- coords()[,1]
-  df[["cy"]] <- coords()[,2]
   df
 })
 
@@ -923,14 +950,13 @@ output$nwplot <- ndtv:::renderNdtvAnimationWidget({
   } else{
     sides <- 50
   }
-  render.d3movie(nw(),
+  ndtv::render.d3movie(nw(),
                  output.mode = "htmlWidget",
                  launchBrowser = FALSE,
                  displaylabels = input$vnames,
                  vertex.col = color,
                  vertex.sides = sides,
-                 vertex.cex = vcex,
-                 coords = coords())
+                 vertex.cex = vcex)
 })
 
 output$legendplot <- renderPlot({
@@ -947,13 +973,29 @@ output$legendplot <- renderPlot({
 output$attrcheck <- renderUI({
   checkboxGroupInput("attrcols",
                      label = "Include these attributes",
-                     choices = c(menuattr(), "Missing"),
-                     selected = c(menuattr(), "Missing"))
+                     choices = c(menuattr()$all.attrs, "Missing"),
+                     selected = c(menuattr()$all.attrs, "Missing"))
 })
 outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
+output$ndslices_lgtbl_ui <- renderUI({
+  if("networkDynamic" %in% class(nw())){
+    numericInput("ndslice_lgtbl",
+                 label = "Network panel",
+                 value = 0,
+                 min = 0,
+                 max = max(networkDynamic::get.change.times(nw())))
+  }
+})
+
 output$attrtbl_lg <- renderDataTable({
-  dt <- nwdf()[, c("Names", input$attrcols)]
+  if("networkDynamic" %in% class(nw())){
+    dflist <- nwdf()
+    df <- dflist[[input$ndslice_lgtbl + 1]]
+    dt <- df[, c("Names", input$attrcols)]
+  } else {
+    dt <- nwdf()[, c("Names", input$attrcols)]
+  }
   dt
 }, options = list(pageLength = 10))
 
@@ -979,7 +1021,7 @@ output$attrtbl_sm <- renderPrint({
   }
 })
 
-output$attrhist <- renderPlot({
+output$attrplots <- renderPlot({
   nplots <- length(input$attrcols)
   if(nplots == 0){return()}
   attrname <- input$attrcols
@@ -1016,11 +1058,11 @@ output$attrhist <- renderPlot({
   }
 })
 
-output$attrhistplotspace <- renderUI({
+output$attrplotspace <- renderUI({
   nplots <- length(input$attrcols)
   r <- ceiling(nplots/2)
   h <- ifelse(r == 1, 400, r * 300)
-  plotOutput("attrhist", height = h)
+  plotOutput("attrplot", height = h)
 })
 
 ## FIT MODEL ##
