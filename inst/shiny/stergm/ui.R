@@ -503,19 +503,12 @@ tabPanel("Network Descriptives", value = "tab3",
            conditionalPanel('input.attrview == "Large table"',
                             dataTableOutput("attrtbl_lg")
            ),
-           conditionalPanel('input.attrview == "Small tables"',
-                            verbatimTextOutput("attrtbl_sm")
-           ),
            conditionalPanel('input.attrview == "Plot summaries"',
                             tags$label("Type of plots"),
-                            helpText("Density plots will only be created for",
-                                     "numeric attributes with more than nine",
-                                     "levels."),
                             selectInput("attrhistaxis",
                                         label = NULL,
                                         choices = c("Barplot: counts" = "count",
-                                                    "Barplot: percents" = "percent",
-                                                    "Density plot" = "density")),
+                                                    "Barplot: percents" = "percent")),
                             uiOutput("attrplotspace"))
 
         )
@@ -758,10 +751,13 @@ tabPanel("Network Descriptives", value = "tab3",
                    conditionalPanel(condition='input.plottabs == "Attributes"',
                       selectInput("attrview", label = "View attributes in:",
                                   choices = c("Large table",
-                                              "Small tables",
                                               "Plot summaries")),
                       conditionalPanel('input.attrview == "Large table"',
                                        uiOutput("ndslices_lgtbl_ui")),
+                      conditionalPanel('input.attrview == "Plot summaries"',
+                                       checkboxInput("attrplot_join",
+                                                     label = "Join plots?",
+                                                     value = TRUE)),
                       br(),
                       uiOutput("attrcheck")
                    )

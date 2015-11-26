@@ -582,9 +582,9 @@ menuattr <- reactive({
 numattr <- reactive({
   numattr <- c()
   if(is.network(nw())){
-    for(i in 1:length(attrib())){
-      if(is.numeric(get.vertex.attribute(nw(),attrib()[i]))){
-        numattr <- append(numattr,attrib()[i])
+    for(i in 1:length(menuattr()$all.attrs)){
+      if(is.numeric(get.vertex.attribute(nw(),menuattr()$all.attrs[i]))){
+        numattr <- append(numattr,menuattr()$all.attrs[i])
       }
     }}
   numattr
@@ -971,10 +971,10 @@ output$legendplot <- renderPlot({
 })
 
 output$attrcheck <- renderUI({
-  checkboxGroupInput("attrcols",
-                     label = "Include these attributes",
-                     choices = c(menuattr()$all.attrs, "Missing"),
-                     selected = c(menuattr()$all.attrs, "Missing"))
+    checkboxGroupInput("attrcols",
+                       label = "Include these attributes",
+                       choices = c(menuattr()$all.attrs, "Missing"),
+                       selected = c(menuattr()$all.attrs, "Missing"))
 })
 outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
@@ -999,70 +999,81 @@ output$attrtbl_lg <- renderDataTable({
   dt
 }, options = list(pageLength = 10))
 
-output$attrtbl_sm <- renderPrint({
-  ntbl <- length(input$attrcols)
-  if(ntbl == 0){return()}
-  attrname <- input$attrcols
-  tbl_list <- list()
-  if(ntbl == 1){
-    tab <- attr.info(df = nwdf(), colname = attrname,
-                     numattrs = numattr(), breaks = 10)
-    tbl_list[[attrname]] <- tab
-  } else {
-    for(a in attrname){
-      tab <- attr.info(df = nwdf(), colname = a,
-                       numattrs = numattr(), breaks = 10)
-      tbl_list[[a]] <- tab
-    }
-  }
-  for(a in attrname){
-    print(a, quote = FALSE)
-    print(tbl_list[[a]])
-  }
-})
-
 output$attrplots <- renderPlot({
   nplots <- length(input$attrcols)
   if(nplots == 0){return()}
   attrname <- input$attrcols
-  if(nplots == 1){
-    par(mfrow = c(1, 1))
-    lvls <- length(unique(nwdf()[[attrname]]))
-    if(input$attrhistaxis == "density" & attrname %in% numattr() & lvls > 9){
-      plot(density(nwdf()[[attrname]]), main = attrname,
-           col = "#076EC3", lwd = 2)
-    } else {
-      tab <- attr.info(df = nwdf(), colname = attrname,
+  if("networkDynamic" %in% class(nw())){
+
+    slices <- networkDynamic::get.change.times(nw())
+    if(nplots == 1){
+      par(mfrow = c(1, 1))
+      template <- attr.info(df = nwdf()[[1]], colname = attrname,
                        numattrs = numattr(), breaks = 10)
-      if(input$attrhistaxis == "percent"){
-        tab <- tab/sum(tab)
+      timecounts <- vapply(nwdf(), FUN = function(x){
+        tab <- attr.info(x, attrname, numattrs = numattr(), breaks = 10)
+        if(input$attrhistaxis == "percent"){
+          tab <- tab/sum(tab)
+        }
+        tab
+      }, FUN.VALUE = template)
+
+      plot(x = slices,
+           y = timecounts[1,], type = "l", lwd = 2,
+           ylim = c(min(timecounts), max(timecounts)))
+      for(i in nrow(timecounts)){
+        lines(x = slices,
+              y = timecounts[i,], lwd = 2, col = i)
       }
-      barplot(tab, main = attrname, col = histblue)
-    }
-  } else {
-    r <- ceiling(nplots/2)
-    par(mfrow = c(r, 2))
-    for(a in attrname){
-      lvls <- length(unique(nwdf()[[a]]))
-      if(input$attrhistaxis == "density" & a %in% numattr() & lvls > 9){
-        plot(density(nwdf()[[a]]), main = a, col = "#076EC3", lwd = 2)
-      } else {
+
+    } else {
+      r <- ceiling(nplots/2)
+      par(mfrow = c(r, 2))
+      for(a in attrname){
         tab <- attr.info(df = nwdf(), colname = a,
                          numattrs = numattr(), breaks = 10)
         if(input$attrhistaxis == "percent"){
           tab <- tab/sum(tab)
         }
         barplot(tab, main = a, col = histblue)
+
+      }
+    }
+
+  } else {
+
+    if(nplots == 1){
+      par(mfrow = c(1, 1))
+      lvls <- length(unique(nwdf()[[attrname]]))
+      tab <- attr.info(df = nwdf(), colname = attrname,
+                       numattrs = numattr(), breaks = 10)
+      if(input$attrhistaxis == "percent"){
+        tab <- tab/sum(tab)
+      }
+      barplot(tab, main = attrname, col = histblue)
+
+    } else {
+      r <- ceiling(nplots/2)
+      par(mfrow = c(r, 2))
+      for(a in attrname){
+        tab <- attr.info(df = nwdf(), colname = a,
+                         numattrs = numattr(), breaks = 10)
+        if(input$attrhistaxis == "percent"){
+          tab <- tab/sum(tab)
+        }
+        barplot(tab, main = a, col = histblue)
+
       }
     }
   }
+
 })
 
 output$attrplotspace <- renderUI({
   nplots <- length(input$attrcols)
   r <- ceiling(nplots/2)
   h <- ifelse(r == 1, 400, r * 300)
-  plotOutput("attrplot", height = h)
+  plotOutput("attrplots", height = h)
 })
 
 ## FIT MODEL ##
