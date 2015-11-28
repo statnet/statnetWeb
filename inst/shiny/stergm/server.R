@@ -596,7 +596,7 @@ nwdf <- reactive({
   attrs <- menuattr()$all.attrs
   if("networkDynamic" %in% class(nw())){
    df <- lapply(X = networkDynamic::get.change.times(nw()),
-              FUN = function(time){
+                FUN = function(time){
       if(is.na(as.numeric(network.vertex.names(nw()))[1])){
         dfslice <- data.frame(Names = network.vertex.names(nw()))
       } else {
@@ -973,25 +973,26 @@ output$legendplot <- renderPlot({
 output$attrcheck <- renderUI({
     checkboxGroupInput("attrcols",
                        label = "Include these attributes",
-                       choices = c(menuattr()$all.attrs, "Missing"),
-                       selected = c(menuattr()$all.attrs, "Missing"))
+                       choices = menuattr()$all.attrs,
+                       selected = menuattr()$all.attrs)
 })
 outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
-output$ndslices_lgtbl_ui <- renderUI({
+output$ndslices_tbl_ui <- renderUI({
   if("networkDynamic" %in% class(nw())){
-    numericInput("ndslice_lgtbl",
+    numericInput("ndslice_tbl",
                  label = "Network panel",
                  value = 0,
                  min = 0,
                  max = max(networkDynamic::get.change.times(nw())))
   }
 })
+outputOptions(output, "ndslices_tbl_ui", suspendWhenHidden = FALSE)
 
-output$attrtbl_lg <- renderDataTable({
+output$attrtbl <- renderDataTable({
   if("networkDynamic" %in% class(nw())){
     dflist <- nwdf()
-    df <- dflist[[input$ndslice_lgtbl + 1]]
+    df <- dflist[[input$ndslice_tbl + 1]]
     dt <- df[, c("Names", input$attrcols)]
   } else {
     dt <- nwdf()[, c("Names", input$attrcols)]
@@ -1007,10 +1008,14 @@ output$attrplots <- renderPlot({
 
     slices <- networkDynamic::get.change.times(nw())
     if(nplots == 1){
+      lvls <- length(unique(nwdf()[[attrname]]))
+      cols <- RColorBrewer::brewer.pal(9, "Set1")
       par(mfrow = c(1, 1))
       template <- attr.info(df = nwdf()[[1]], colname = attrname,
-                       numattrs = numattr(), breaks = 10)
-      timecounts <- vapply(nwdf(), FUN = function(x){
+                            numattrs = numattr(), breaks = 10)/2
+      # get matrix of attribute totals
+      # each column is a nw panel, each row is an attr value
+      attrcounts <- vapply(nwdf(), FUN = function(x){
         tab <- attr.info(x, attrname, numattrs = numattr(), breaks = 10)
         if(input$attrhistaxis == "percent"){
           tab <- tab/sum(tab)
@@ -1019,24 +1024,49 @@ output$attrplots <- renderPlot({
       }, FUN.VALUE = template)
 
       plot(x = slices,
-           y = timecounts[1,], type = "l", lwd = 2,
-           ylim = c(min(timecounts), max(timecounts)))
-      for(i in nrow(timecounts)){
+           y = attrcounts[1,],
+           type = "l", lwd = 2, col = cols[1],
+           ylim = c(min(attrcounts)-1, max(attrcounts)+1),
+           xlab = "Time panel",
+           ylab = "Attribute totals",
+           main = attrname)
+      for(i in 2:nrow(attrcounts)){
         lines(x = slices,
-              y = timecounts[i,], lwd = 2, col = i)
+              y = attrcounts[i,], lwd = 2, col = cols[i])
       }
+      legend(x = "topright", legend = row.names(attrcounts),
+             fill = cols)
 
-    } else {
+    } else if (nplots > 1) {
       r <- ceiling(nplots/2)
       par(mfrow = c(r, 2))
       for(a in attrname){
-        tab <- attr.info(df = nwdf(), colname = a,
-                         numattrs = numattr(), breaks = 10)
-        if(input$attrhistaxis == "percent"){
-          tab <- tab/sum(tab)
+        lvls <- length(unique(nwdf()[[a]]))
+        cols <- RColorBrewer::brewer.pal(9, "Set1")
+        template <- attr.info(df = nwdf()[[1]], colname = a,
+                              numattrs = numattr(), breaks = 10)/2
+        # get matrix of attribute totals
+        # each column is a nw panel, each row is an attr value
+        attrcounts <- vapply(nwdf(), FUN = function(x){
+          tab <- attr.info(x, a, numattrs = numattr(), breaks = 10)
+          if(input$attrhistaxis == "percent"){
+            tab <- tab/sum(tab)
+          }
+          tab
+        }, FUN.VALUE = template)
+        plot(x = slices,
+             y = attrcounts[1,],
+             type = "l", lwd = 2, col = cols[1],
+             ylim = c(min(attrcounts)-.5, max(attrcounts)+.5),
+             xlab = "Time panel",
+             ylab = "Attribute totals",
+             main = a)
+        for(i in 2:nrow(attrcounts)){
+          lines(x = slices,
+                y = attrcounts[i,], lwd = 2, col = cols[i])
         }
-        barplot(tab, main = a, col = histblue)
-
+        legend(x = "topright", legend = row.names(attrcounts),
+               fill = cols)
       }
     }
 
