@@ -716,6 +716,60 @@ legendfill <- reactive({
   legendfill
 })
 
+dd_plotdata <- reactive({
+  if(!is.network(nw())){
+    return()
+  }
+  if(is.directed(nw())){
+    gmode <- "digraph"
+  } else {
+    gmode <- "graph"
+  }
+  if(has.loops(nw())){
+    diag <- TRUE
+  } else {
+    diag <- FALSE
+  }
+
+  if("networkDynamic" %in% class(nw())){
+    times <- networkDynamic::get.change.times(nw())
+    # columns are nodes, rows are times
+    deg <- tsna::tDegree(nw(), start = times[1], end = times[length(times)],
+                         cmode = input$cmode_dd)
+    ldata <- lapply(times, FUN = function(x){
+                data <- tabulate(deg[times,])
+                data <- append(data, sum(deg[times,] == 0), after = 0)
+                maxdeg <- max(deg[times,])
+                names(data) <- paste(0:maxdeg)
+              })
+  } else {
+    deg <- sna::degree(nw(), gmode = gmode, cmode = input$cmode_dd, diag = diag)
+    data <- tabulate(deg)
+    data <- append(data, sum(deg == 0), after = 0)
+    maxdeg <- max(deg)
+    names(data) <- paste(0:maxdeg)
+
+    #for color-coded bars
+    if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
+      if(is.directed(nw())){
+        if(input$cmode_dd == 'indegree'){
+          data <- summary(nw() ~ idegree(0:maxdeg, input$colorby_dd))
+        } else if(input$cmode_dd == 'outdegree'){
+          data <- summary(nw() ~ odegree(0:maxdeg, input$colorby_dd))
+        } else {
+          return('Cannot color code a directed graph using total degree.')
+        }
+      } else {
+        data <- summary(nw() ~ degree(0:maxdeg, input$colorby_dd))
+      }
+      data <- t(matrix(data,nrow = maxdeg+1))
+      colnames(data) <- 0:maxdeg
+    }
+    ldata <- list(data)
+  }
+  ldata
+})
+
 #simulated graphs for cug tests
 # observeEvent(c(nw(), input$ncugsims),{
 #   if(!is.null(nw())){
@@ -1104,6 +1158,130 @@ output$attrplotspace <- renderUI({
   r <- ceiling(nplots/2)
   h <- ifelse(r == 1, 400, r * 300)
   plotOutput("attrplots", height = h)
+})
+
+#DEGREE DISTRIBUTION
+
+output$dynamiccmode_dd <- renderUI({
+  menu <- c()
+  if(is.network(nw())){
+    menu <- c("total" = "freeman")
+    if(is.directed(nw())){
+      menu <- c("total" = "freeman",
+                "indegree",
+                "outdegree")
+    }
+  }
+  selectInput("cmode_dd",
+              label = "Type of degree",
+              choices = menu)
+})
+outputOptions(output,'dynamiccmode_dd',suspendWhenHidden=FALSE, priority=10)
+
+output$dynamiccolor_dd <- renderUI({
+  menu <- menuattr()
+  if(is.network(nw())){
+    if(input$cmode_dd == "freeman" & is.directed(nw())){
+      menu <- c()
+    }
+    selectInput('colorby_dd',
+                label = 'Color bars according to:',
+                c('None', menu),
+                selected = 'None')
+  }
+})
+outputOptions(output,'dynamiccolor_dd',suspendWhenHidden=FALSE, priority=10)
+
+output$ndslices_dd_ui <- renderUI({
+  npanels <- length(dd_plotdata())
+  numericInput("ndslice_dd",
+               label = "Network panel",
+               value = 0,
+               min = 0,
+               max = npanels - 1)
+})
+
+output$degreedist <- renderPlot({
+  if(!is.network(nw())){
+    return()
+  }
+  input$plottabs
+  input$rawdatafile
+  input$samplenet
+
+  ylabel <- "Count of Nodes"
+  xlabel <- "Degree"
+  if(input$cmode_dd == "indegree"){
+    xlabel <- "In Degree"
+  } else if (input$cmode_dd == "outdegree"){
+    xlabel <- "Out Degree"
+  }
+
+  plotme <- dd_plotdata()[[input$ndslice_dd + 1]]
+  color <- histblue
+  ltext <- c()
+  lcol <- c() #color for lines
+  lty <- c()
+  lpch <- c()
+  lfill <- c() #color for boxes
+  lborder <- c()
+  ltitle <- NULL
+
+#     if(!is.null(input$colorby_dd)){
+#       if(input$colorby_dd != "None"){
+#         ncolors <- dim(plotme)[1]
+#         if(ncolors == 2){
+#           color <- c("#eff3ff", "#377FBC")
+#         } else if(ncolors < 10){
+#           color <- brewer.pal(ncolors,"Blues")
+#         } else if(ncolors >= 10){
+#           color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+#         }
+#         ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
+#         ltext <- append(ltext, "")
+#         lfill <- c(color, 0)
+#         lborder <- append(lborder, c(rep("black", times=ncolors), 0))
+#         lty <- rep(0, times=ncolors+1)
+#         lpch <- rep(26, times=ncolors+1)
+#         ltitle <- input$colorby_dd
+#       }}
+
+  # get maximums for y limits of plot
+  if(class(plotme)=="matrix"){
+    maxfreq <- max(colSums(plotme))
+    maxdeg_obs <- dim(plotme)[2]-1
+  } else {
+    maxfreq <- max(plotme)
+    maxdeg_obs <- length(plotme)-1
+  }
+
+  #   if(state$plotperc_dd) {
+  #     plotme <- dd_plotdata()/sum(dd_plotdata())
+  #     ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline),
+  #                   max(bern_upperline))
+  #     ylabel <- 'Percent of Nodes'
+  #   }
+  #   if(maxdeg_obs < maxdeg_total){
+  #     if(class(plotme)=="matrix"){
+  #       nrows <- dim(plotme)[1]
+  #       plotme <- cbind(plotme, matrix(0, nrow=nrows, ncol= maxdeg_total-maxdeg_obs))
+  #       colnames(plotme) <- paste(0:maxdeg_total)
+  #     } else {
+  #       plotme <- append(plotme, rep(0,times=maxdeg_total-maxdeg_obs))
+  #       names(plotme) <- paste(0:maxdeg_total)
+  #     }
+  #   }
+
+  barplot(plotme, xlab=xlabel, ylab=ylabel,
+          col=color, ylim=c(0,maxfreq), plot=TRUE)
+
+  if(input$colorby_dd != "None" ){
+    lmerge <-FALSE
+    lpch <-NULL
+    legend(x="topright", legend=ltext, title=ltitle, fill=lfill, border=lborder,
+           col=lcol, lty= lty, pch=lpch, pt.cex=1.25, bty="n", merge=lmerge)
+  }
+
 })
 
 ## FIT MODEL ##
