@@ -13,6 +13,7 @@ data(samplk)
 data(ecoli)
 data(molecule)
 data(kapferer)
+data("windsurfers")
 sampson <- list()
 sampson[[1]] <- samplk1
 sampson[[2]] <- samplk2
@@ -102,7 +103,7 @@ nwinit <- reactive({
   input$uploadnet
   nw_var <- ""
 isolate({
-  if(!is.null(input$rawdatafile)){
+  if(input$filetype != "builtin" & !is.null(input$rawdatafile)){
     filepath <- input$rawdatafile[1,4]
     filename <- input$rawdatafile[1,1]
     fileext <- substr(filename,
@@ -114,6 +115,7 @@ isolate({
       validate(
         need(fileext %in% c(".rds", ".Rds", ".RDs", ".RDS"),
              "Upload an .rds file"))
+      # could be single network or list of networks or networkDynamic obj
       nw_var <- readRDS(paste(filepath))
     } else if(input$filetype == "rmat"){
       validate(
@@ -196,13 +198,16 @@ isolate({
         nw_var <- nws$networks[[as.numeric(input$choosepajnw)]]
       }
     }
-    if(values$nwnum == "multiple" & "network" %in% class(nw_var)){
+    if(values$nwnum == "multiple" & !("networkDynamic" %in% class(nw_var))){
+      validate(need(!is.network(nw_var),
+                    message = "Please upload a list of networks or a networkDynamic object"))
+      # if uploaded file is a list of networks, create nD
       nw_var <- networkDynamic::networkDynamic(base.net = nw_var[[1]],
                                network.list = nw_var,
                                onsets = seq(from = 0, length = length(nw_var)),
                                termini = seq(from = 1, length = length(nw_var)),
                                verbose = FALSE,
-                               create.TEAs = TRUE) # if attributes change through time
+                               create.TEAs = TRUE) # attributes can change through time
     }
   }
 
@@ -218,7 +223,7 @@ isolate({
             set.network.attribute(nw_var, 'bipartite', FALSE)
           }
         }
-        if(values$nwnum == "multiple"){
+        if(values$nwnum == "multiple" & !("networkDynamic" %in% class(nw_var))){
           nw_var <- networkDynamic::networkDynamic(base.net = nw_var[[1]],
                                    network.list = nw_var,
                                    onsets = seq(from = 0, length = length(nw_var)),
@@ -909,7 +914,7 @@ output$samplenetUI <- renderUI({
              "samplk2", "samplk3")
   } else if(values$nwnum == "multiple"){
     nws <- c("Choose a network" = "",
-             "sampson")
+             "sampson", "windsurfers")
   }
   selectizeInput('samplenet', label = NULL,
                  choices = nws)
