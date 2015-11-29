@@ -763,13 +763,14 @@ tabPanel("Network Descriptives", value = "tab3",
                    ),
                    conditionalPanel('input.plottabs == "Degree Distribution"',
                       uiOutput("dynamiccmode_dd"),
-                      uiOutput("dynamiccolor_dd"),
-                      uiOutput("ndslices_dd_ui"),
                       tags$label("Y-axis units:"), br(),
                       actionButton("countButton_dd", label = "Count of vertices",
                                    class = "btn-sm active"),
                       actionButton("percButton_dd", label = "Percent of vertices",
-                                   class = "btn-sm")
+                                   class = "btn-sm"),
+                      br(),
+                      uiOutput("dynamiccolor_dd"),
+                      uiOutput("ndslices_dd_ui")
 #                       downloadButton('degreedistdownload',
 #                                      label = "Download Plot",
 #                                      class = "btn-sm")

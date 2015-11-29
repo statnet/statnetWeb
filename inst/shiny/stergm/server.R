@@ -732,22 +732,19 @@ dd_plotdata <- reactive({
   }
 
   if("networkDynamic" %in% class(nw())){
-    times <- networkDynamic::get.change.times(nw())
+    times <- networkDynamic::get.change.times(nw())[-1]
     # columns are nodes, rows are times
-    deg <- tsna::tDegree(nw(), start = times[1], end = times[length(times)],
+    deg <- tsna::tDegree(nw(), start = times[1]-1, end = times[length(times)]-1,
                          cmode = input$cmode_dd)
     ldata <- lapply(times, FUN = function(x){
-                data <- tabulate(deg[times,])
-                data <- append(data, sum(deg[times,] == 0), after = 0)
-                maxdeg <- max(deg[times,])
-                names(data) <- paste(0:maxdeg)
+                data <- tabulate(deg[x,])
+                data <- append(data, sum(deg[x,] == 0), after = 0)
               })
   } else {
     deg <- sna::degree(nw(), gmode = gmode, cmode = input$cmode_dd, diag = diag)
     data <- tabulate(deg)
     data <- append(data, sum(deg == 0), after = 0)
     maxdeg <- max(deg)
-    names(data) <- paste(0:maxdeg)
 
     #for color-coded bars
     if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
@@ -1227,32 +1224,34 @@ output$degreedist <- renderPlot({
   lborder <- c()
   ltitle <- NULL
 
-#     if(!is.null(input$colorby_dd)){
-#       if(input$colorby_dd != "None"){
-#         ncolors <- dim(plotme)[1]
-#         if(ncolors == 2){
-#           color <- c("#eff3ff", "#377FBC")
-#         } else if(ncolors < 10){
-#           color <- brewer.pal(ncolors,"Blues")
-#         } else if(ncolors >= 10){
-#           color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
-#         }
-#         ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
-#         ltext <- append(ltext, "")
-#         lfill <- c(color, 0)
-#         lborder <- append(lborder, c(rep("black", times=ncolors), 0))
-#         lty <- rep(0, times=ncolors+1)
-#         lpch <- rep(26, times=ncolors+1)
-#         ltitle <- input$colorby_dd
-#       }}
+    if(!is.null(input$colorby_dd)){
+      if(input$colorby_dd != "None"){
+        ncolors <- dim(plotme)[1]
+        if(ncolors == 2){
+          color <- c("#eff3ff", "#377FBC")
+        } else if(ncolors < 10){
+          color <- brewer.pal(ncolors,"Blues")
+        } else if(ncolors >= 10){
+          color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+        }
+        ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
+        ltext <- append(ltext, "")
+        lfill <- c(color, 0)
+        lborder <- append(lborder, c(rep("black", times=ncolors), 0))
+        lty <- rep(0, times=ncolors+1)
+        lpch <- rep(26, times=ncolors+1)
+        ltitle <- input$colorby_dd
+      }}
 
   # get maximums for y limits of plot
   if(class(plotme)=="matrix"){
     maxfreq <- max(colSums(plotme))
     maxdeg_obs <- dim(plotme)[2]-1
+    names(plotme) <- paste(0:maxdeg_obs)
   } else {
     maxfreq <- max(plotme)
     maxdeg_obs <- length(plotme)-1
+    names(plotme) <- paste(0:maxdeg_obs)
   }
 
   #   if(state$plotperc_dd) {
