@@ -976,7 +976,7 @@ output$attr2 <- renderPrint({
 
 output$dynamiccolor <- renderUI({
   selectInput('colorby',
-              label = 'Color nodes according to:',
+              label = 'Color vertices according to:',
               c('None' = 2, attrib()))
 })
 outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
@@ -993,7 +993,7 @@ output$dynamicsize <- renderUI({
     choices <- append(choices, "Betweenness")
   }
   selectInput('sizeby',
-              label = 'Size nodes according to:',
+              label = 'Size vertices according to:',
               choices = choices)
 })
 outputOptions(output,'dynamicsize',suspendWhenHidden=FALSE)
@@ -1219,7 +1219,7 @@ output$degreedist <- renderPlot({
   input$rawdatafile
   input$samplenet
 
-  ylabel <- "Count of Nodes"
+  ylabel <- "Count of Vertices"
   xlabel <- "Degree"
   if(input$cmode_dd == "indegree"){
     xlabel <- "In Degree"
@@ -1269,7 +1269,7 @@ output$degreedist <- renderPlot({
 
   if(state$plotperc_dd) {
     plotme <- plotme/sum(plotme)
-    ylabel <- 'Percent of Nodes'
+    ylabel <- 'Percent of Vertices'
   }
 
   barplot(plotme, xlab = xlabel, ylab = ylabel,
