@@ -1293,17 +1293,21 @@ output$degreedist <- renderPlot({
 output$durplot <- renderPlot({
   boxplot(list(edges = tsna::edgeDuration(nw()),
                vertices = tsna::vertexDuration(nw())),
+          ylab = "Time Steps",
+          border = obsblue,
+          col = adjustcolor(obsblue, alpha.f = 0.3),
           main = "Durations")
 })
 
 output$tstatterm_ui <- renderUI({
   if(!is.network(nw())){return()}
   if(is.directed(nw())){
-    choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
-                 "transitive triads" = "transitive", "triangle", "twopath")
+    choices <- c("cyclicalties", "density", "isolates", "mean degree" = "meandeg", "mutual",
+                 "transitive triads" = "transitive", "triangle", "ttriple",
+                 "twopath")
   } else {
-    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg",
-                 "triangle")
+    choices <- c("cyclicalties", "density", "concurrent", "isolates", "mean degree" = "meandeg",
+                 "mixed 2-stars" = "m2star", "triangle")
   }
   selectizeInput("tstatterm", label = NULL,
                  choices = c("Choose one or more terms" = "", choices),

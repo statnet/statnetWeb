@@ -533,7 +533,7 @@ tabPanel("Network Descriptives", value = "tab3",
 #            plotOutput('geodistplot')
 #         ),
         tabPanel('More', value = 'More', br(),
-                 verbatimTextOutput("nwnum"),
+                 textOutput("nwnum"),
            conditionalPanel("output.nwnum == 'multiple'",
                             h5('Durations', icon('angle-double-left')),
                             wellPanel(plotOutput("durplot")),
