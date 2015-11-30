@@ -33,16 +33,6 @@ $(document).ready(function(){
       $("#nwnum1").toggleClass("active", false);
   });
 
-  $("#symmdir").click(function(){
-    $("#symmdir").toggleClass("active", true);
-    $("#symmundir").toggleClass("active", false);
-  });
-
-  $("#symmundir").click(function(){
-    $("#symmdir").toggleClass("active", false);
-    $("#symmundir").toggleClass("active", true);
-  });
-
   $("#Robjhelp").click(function(){
     $("#Robjbox").toggle(500);
   });
@@ -90,7 +80,17 @@ $(document).ready(function(){
     $("#filetypebox10").toggle(500);
   });
 
-    $("#termdocButton").click(function(){
+  $("#countButton_dd").click(function(){
+    $("#countButton_dd").toggleClass("active", true);
+    $("#percButton_dd").toggleClass("active", false);
+  });
+
+  $("#percButton_dd").click(function(){
+    $("#countButton_dd").toggleClass("active", false);
+    $("#percButton_dd").toggleClass("active", true);
+  });
+
+  $("#termdocButton").click(function(){
     $(".docpopup").toggle(500);
   });
 

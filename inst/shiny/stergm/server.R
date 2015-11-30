@@ -38,9 +38,9 @@ values <- reactiveValues()
 
 # when two options are available to the user, or when we need to know if one
 # variable is outdated this reactive value will keep track of the state
-# state <- reactiveValues(symmdir = FALSE, plotperc_dd = FALSE,
-#                         plotperc_gd = FALSE, allterms = FALSE, gof = 0)
-#
+state <- reactiveValues(symmdir = FALSE, plotperc_dd = FALSE,
+                        plotperc_gd = FALSE, allterms = FALSE, gof = 0)
+
 # # To keep a list of all attributes uploaded by the user:
 # values$v_attrNamesToAdd <- list(1)
 # values$v_attrValsToAdd <- list()
@@ -721,6 +721,13 @@ legendfill <- reactive({
   legendfill
 })
 
+observeEvent(input$percButton_dd, {
+  state$plotperc_dd <- TRUE
+})
+observeEvent(input$countButton_dd, {
+  state$plotperc_dd <- FALSE
+})
+
 dd_plotdata <- reactive({
   if(!is.network(nw())){
     return()
@@ -1250,35 +1257,23 @@ output$degreedist <- renderPlot({
       }}
 
   # get maximums for y limits of plot
-  if(class(plotme)=="matrix"){
+  if(class(plotme) == "matrix"){
     maxfreq <- max(colSums(plotme))
-    maxdeg_obs <- dim(plotme)[2]-1
+    maxdeg_obs <- dim(plotme)[2] - 1
     names(plotme) <- paste(0:maxdeg_obs)
   } else {
-    maxfreq <- max(plotme)
-    maxdeg_obs <- length(plotme)-1
+    maxfreq <- max(plotme, na.rm = TRUE)
+    maxdeg_obs <- length(plotme) - 1
     names(plotme) <- paste(0:maxdeg_obs)
   }
 
-  #   if(state$plotperc_dd) {
-  #     plotme <- dd_plotdata()/sum(dd_plotdata())
-  #     ylimit <- max(maxfreq/sum(dd_plotdata()), max(unif_upperline),
-  #                   max(bern_upperline))
-  #     ylabel <- 'Percent of Nodes'
-  #   }
-  #   if(maxdeg_obs < maxdeg_total){
-  #     if(class(plotme)=="matrix"){
-  #       nrows <- dim(plotme)[1]
-  #       plotme <- cbind(plotme, matrix(0, nrow=nrows, ncol= maxdeg_total-maxdeg_obs))
-  #       colnames(plotme) <- paste(0:maxdeg_total)
-  #     } else {
-  #       plotme <- append(plotme, rep(0,times=maxdeg_total-maxdeg_obs))
-  #       names(plotme) <- paste(0:maxdeg_total)
-  #     }
-  #   }
+  if(state$plotperc_dd) {
+    plotme <- plotme/sum(plotme)
+    ylabel <- 'Percent of Nodes'
+  }
 
   barplot(plotme, xlab = xlabel, ylab = ylabel,
-          col = color, ylim = c(0, maxfreq), plot = TRUE)
+          col = color, plot = TRUE)
 
   if(input$colorby_dd != "None" ){
     lmerge <- FALSE

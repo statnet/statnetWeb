@@ -768,7 +768,7 @@ tabPanel("Network Descriptives", value = "tab3",
                                    class = "btn-sm active"),
                       actionButton("percButton_dd", label = "Percent of vertices",
                                    class = "btn-sm"),
-                      br(),
+                      br(), br(),
                       uiOutput("dynamiccolor_dd"),
                       uiOutput("ndslices_dd_ui")
 #                       downloadButton('degreedistdownload',
