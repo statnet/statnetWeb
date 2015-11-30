@@ -753,6 +753,30 @@ dd_plotdata <- reactive({
                 data <- tabulate(deg[x,])
                 data <- append(data, sum(deg[x,] == 0, na.rm = TRUE), after = 0)
               })
+    maxdeg <- max(unlist(ldata), na.rm = TRUE)
+
+#     #for color-coded bars
+#     if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
+#       if(is.directed(nw())){
+#         if(input$cmode_dd == 'indegree'){
+#           data <- summary(
+#             nw() ~ idegree(0:maxdeg, input$colorby_dd), at = timeind - 1)
+#         } else if(input$cmode_dd == 'outdegree'){
+#           data <- summary(
+#             nw() ~ odegree(0:maxdeg, input$colorby_dd), at = timeind - 1)
+#         } else {
+#           return('Cannot color code a directed graph using total degree.')
+#         }
+#       } else {
+#         data <- summary(
+#           nw() ~ degree(0:maxdeg, input$colorby_dd), at = timeind - 1)
+#       }
+#       ldata <- lapply(timeind, FUN = function(x){
+#         data <- t(matrix(data[x,], nrow = maxdeg+1))
+#         colnames(data) <- 0:maxdeg
+#         })
+#     }
+
   } else {
     deg <- sna::degree(nw(), gmode = gmode, cmode = input$cmode_dd, diag = diag)
     data <- tabulate(deg)
@@ -772,7 +796,7 @@ dd_plotdata <- reactive({
       } else {
         data <- summary(nw() ~ degree(0:maxdeg, input$colorby_dd))
       }
-      data <- t(matrix(data,nrow = maxdeg+1))
+      data <- t(matrix(data, nrow = maxdeg+1))
       colnames(data) <- 0:maxdeg
     }
     ldata <- list(data)
@@ -1189,7 +1213,10 @@ output$dynamiccmode_dd <- renderUI({
 outputOptions(output,'dynamiccmode_dd',suspendWhenHidden=FALSE, priority=10)
 
 output$dynamiccolor_dd <- renderUI({
-  menu <- menuattr()
+  menu <- menuattr()$all.attrs
+  if(any(menu %in% menuattr()$teas)){
+    menu <- menu[-which(menu %in% menuattr()$teas)]
+  }
   if(is.network(nw())){
     if(input$cmode_dd == "freeman" & is.directed(nw())){
       menu <- c()
@@ -1239,13 +1266,15 @@ output$degreedist <- renderPlot({
 
     if(!is.null(input$colorby_dd)){
       if(input$colorby_dd != "None"){
+        validate(need(!("networkDynamic" %in% class(nw())),
+                      "Color coding by attribute is not yet available for networkDynamic objects"))
         ncolors <- dim(plotme)[1]
         if(ncolors == 2){
           color <- c("#eff3ff", "#377FBC")
         } else if(ncolors < 10){
-          color <- brewer.pal(ncolors,"Blues")
+          color <- RColorBrewer::brewer.pal(ncolors,"Blues")
         } else if(ncolors >= 10){
-          color <- colorRampPalette(brewer.pal(9,"Blues"))(ncolors)
+          color <- colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(ncolors)
         }
         ltext <- sort(unique(get.vertex.attribute(nw(),input$colorby_dd)))
         ltext <- append(ltext, "")
