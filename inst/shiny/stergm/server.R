@@ -262,8 +262,8 @@ nwname <- reactive({
 
 #number of nodes in nw
 nodes <- reactive({
-  if(!is.network(nwinit())){return()}
-  nwinit()$gal$n
+  if(!is.network(nw())){return()}
+  nw()$gal$n
 })
 
 # #number of edges in initial nw
@@ -806,6 +806,29 @@ dd_plotdata <- reactive({
   ldata
 })
 
+frs <- reactive({
+  input$frsButton
+  if("networkDynamic" %in% class(nw())){
+    timeind <- networkDynamic::get.change.times(nw())
+    start <- timeind[1]
+    end <- timeind[length(timeind)-1]
+    frs <- c()
+    isolate({
+      #columns are nodes, rows are time steps
+      frs <- vapply(1:nodes(), FUN = function(x){
+        frssize <- c()
+        for(i in start+1:end){
+          size <- length(tsna::forward.reachable(nw(), v = x,
+                                                 start = start, end = i))
+          frssize <- append(frssize, size)
+        }
+        frssize
+      }, FUN.VALUE = rep(0, length(start+1:end)))
+    })
+    frs
+  }
+})
+
 ## FIT MODEL ##
 #
 # formation <- reactive({
@@ -1299,16 +1322,18 @@ output$durplot <- renderPlot({
           col = adjustcolor(obsblue, alpha.f = 0.3),
           main = "Durations")
 })
+outputOptions(output, "durplot", suspendWhenHidden = FALSE)
 
 output$tstatterm_ui <- renderUI({
   if(!is.network(nw())){return()}
   if(is.directed(nw())){
-    choices <- c("cyclicalties", "density", "isolates", "mean degree" = "meandeg", "mutual",
+    choices <- c("cyclicalties", "density", "isolates", "mean degree" = "meandeg",
+                 "mixed 2-stars" = "m2star", "mutual",
                  "transitive triads" = "transitive", "triangle", "ttriple",
                  "twopath")
   } else {
-    choices <- c("cyclicalties", "density", "concurrent", "isolates", "mean degree" = "meandeg",
-                 "mixed 2-stars" = "m2star", "triangle")
+    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg",
+                 "triangle")
   }
   selectizeInput("tstatterm", label = NULL,
                  choices = c("Choose one or more terms" = "", choices),
@@ -1336,6 +1361,60 @@ output$tstatplot <- renderPlot({
   legend(x = "topright", legend = input$tstatterm,
          lwd = 2, col = cols[1:nlines])
 
+})
+outputOptions(output, "tstatplot", suspendWhenHidden = FALSE)
+
+output$frs_ui1 <- renderUI({
+  timeind <- networkDynamic::get.change.times(nw())
+  column(3,
+    numericInput("frsnode",
+                 label = "Node ID",
+                 value = 1,
+                 min = 1,
+                 max = nw()$gal$n)
+  )
+})
+outputOptions(output, "frs_ui1", suspendWhenHidden = FALSE)
+
+output$frs_ui2 <- renderUI({
+  timeind <- networkDynamic::get.change.times(nw())
+  column(3,
+     numericInput("frsstart",
+                  label = "Start time step",
+                  value = 0,
+                  min = 0,
+                  max = timeind[length(timeind)-2])
+  )
+})
+outputOptions(output, "frs_ui2", suspendWhenHidden = FALSE)
+
+output$frs_ui3 <- renderUI({
+  input$frsstart
+  timeind <- networkDynamic::get.change.times(nw())
+  column(3,
+         numericInput("frsend",
+                      label = "End time step",
+                      value = 1,
+                      min = 1 + input$frsstart,
+                      max = timeind[length(timeind)-1])
+  )
+})
+outputOptions(output, "frs_ui3", suspendWhenHidden = FALSE)
+
+output$frsnodeset <- renderPrint({
+  setvec <- tsna::forward.reachable(nw(), v = input$frsnode,
+                          start = input$frsstart, end = input$frsend)
+  cat(paste("FRS from node", input$frsnode, ":"), setvec)
+})
+
+output$frsplot <- renderPlot({
+  timeind <- networkDynamic::get.change.times(nw())
+  timeind <- timeind[-length(timeind)]
+  plot(x = timeind[-1], y = frs()[,1], type = "l", col = obsblue,
+       xlab = "Time Step", ylab = "", main = "Size of Forward Reachable Set")
+  for(p in 2:dim(frs())[2]){
+    lines(x = timeind[-1], y = frs()[,p], col = obsblue)
+  }
 })
 
 # update all the menu selection options for descriptive indices when network changes

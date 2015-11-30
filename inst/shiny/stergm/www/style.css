@@ -173,6 +173,14 @@ div.busy {
   visibility: hidden;
   z-index: -10;
 }
+
+#graphleveltitle:hover,
+#tstattitle:hover,
+#durationplottitle:hover,
+#frstitle:hover {
+  cursor: pointer;
+}
+
 #chooseterm {
   display:inline;
 }

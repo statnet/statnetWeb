@@ -90,6 +90,23 @@ $(document).ready(function(){
     $("#percButton_dd").toggleClass("active", true);
   });
 
+  $("#durationplottitle").click(function(){
+    $("#durationplotbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  $("#tstattitle").click(function(){
+    $("#tstatbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  $("#graphleveltitle").click(function(){
+    $("#graphlevelbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+  $("#frstitle").click(function(){
+    $("#frsbox").toggle(1000);
+    $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
+  });
+
   $("#termdocButton").click(function(){
     $(".docpopup").toggle(500);
   });
