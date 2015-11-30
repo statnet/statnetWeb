@@ -224,12 +224,13 @@ isolate({
           }
         }
         if(values$nwnum == "multiple" & !("networkDynamic" %in% class(nw_var))){
-          nw_var <- networkDynamic::networkDynamic(base.net = nw_var[[1]],
+          try({nw_var <- networkDynamic::networkDynamic(base.net = nw_var[[1]],
                                    network.list = nw_var,
                                    onsets = seq(from = 0, length = length(nw_var)),
                                    termini = seq(from = 1, length = length(nw_var)),
                                    verbose = FALSE,
                                    create.TEAs = FALSE) # change to TRUE if attributes change through time
+          })
         }
       }
 
@@ -1228,7 +1229,7 @@ output$degreedist <- renderPlot({
     xlabel <- "Out Degree"
   }
 
-  plotme <- dd_plotdata()[[input$ndslice_dd + 1]]
+  try({plotme <- dd_plotdata()[[input$ndslice_dd + 1]]})
   color <- histblue
   ltext <- c()
   lcol <- c() #color for lines
