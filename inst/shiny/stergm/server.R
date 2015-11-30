@@ -13,7 +13,7 @@ data(samplk)
 data(ecoli)
 data(molecule)
 data(kapferer)
-data("windsurfers")
+data(windsurfers)
 sampson <- list()
 sampson[[1]] <- samplk1
 sampson[[2]] <- samplk2
@@ -563,6 +563,7 @@ attrib <- reactive({
 #don't allow "na" or "vertex.names" as vertex attributes in menus on fit tab
 #remove ".active" suffix from networkDynamic objs
 menuattr <- reactive({
+  if(!is.network(nw())){return()}
   all.attrs <- unlist(strsplit(x = attrib(), split = ".active", fixed = TRUE))
   teas <- c()
   if("networkDynamic" %in% class(nw())){
@@ -804,38 +805,6 @@ dd_plotdata <- reactive({
   ldata
 })
 
-#simulated graphs for cug tests
-# observeEvent(c(nw(), input$ncugsims),{
-#   if(!is.null(nw())){
-#     s <- network.edgecount(nw())
-#     if (is.directed(nw())){
-#       mode <- "digraph"
-#     } else {
-#       mode <- "graph"
-#     }
-#
-#     brgsims <- sna::rgraph(n = nodes(), m = input$ncugsims,
-#                            tprob = sna::gden(nw()), mode = mode,
-#                            diag = nw()$gal$loops)
-#     cugsims <- sna::rgnm(n = input$ncugsims, nv = nodes(),
-#                          m = s, mode = mode,
-#                          diag = nw()$gal$loops)
-#
-#     values$cugsims <- list(brgsims, cugsims)
-#   }
-# })
-
-# brgvals <- reactive({
-#   apply(values$cugsims[[1]], MARGIN = 1, FUN = cugstats,
-#         term = input$cugtestterm, directed = nw()$gal$directed,
-#         loops = nw()$gal$loops)
-# })
-# cugvals <- reactive({
-#   apply(values$cugsims[[2]], MARGIN = 1, FUN = cugstats,
-#         term = input$cugtestterm, directed = nw()$gal$directed,
-#         loops = nw()$gal$loops)
-# })
-
 ## FIT MODEL ##
 #
 # formation <- reactive({
@@ -924,6 +893,11 @@ dd_plotdata <- reactive({
 
 
 # Output Objects ----------------------------------------------------------
+
+#to be able to check number of panels from the ui
+output$nwnum <- renderText({
+  values$nwnum
+})
 
 output$rawdatafile <- renderPrint({
   raw <- matrix(nrow = 2, ncol = 1)
@@ -1313,6 +1287,223 @@ output$degreedist <- renderPlot({
   }
 
 })
+
+# MORE
+
+output$durplot <- renderPlot({
+  boxplot(list(edges = tsna::edgeDuration(nw()),
+               vertices = tsna::vertexDuration(nw())),
+          main = "Durations")
+})
+
+output$tstatterm_ui <- renderUI({
+  if(!is.network(nw())){return()}
+  if(is.directed(nw())){
+    choices <- c("density", "isolates", "mean degree" = "meandeg", "mutual",
+                 "transitive triads" = "transitive", "triangle", "twopath")
+  } else {
+    choices <- c("density", "concurrent", "isolates", "mean degree" = "meandeg",
+                 "triangle")
+  }
+  selectizeInput("tstatterm", label = NULL,
+                 choices = c("Choose one or more terms" = "", choices),
+                 multiple = TRUE)
+})
+
+output$tstatplot <- renderPlot({
+  if(is.null(input$tstatterm)){return()}
+  if(input$tstatterm == ""){return()}
+  timeind <- networkDynamic::get.change.times(nw())
+  timeind <- timeind[-length(timeind)]
+  statform <- paste("~", paste(input$tstatterm, collapse = "+"))
+  dat <- tsna::tErgmStats(nw(), statform, start = timeind[1],
+                          end = length(timeind)-1)
+  nlines <- dim(dat)[2]
+  cols <- RColorBrewer::brewer.pal(9, "Set1")
+  plot(x = timeind, y = dat[,1], type = "l", lwd = 2,
+       ylim = c(min(dat), max(dat)), col = cols[1],
+       xlab = "Time Panel", ylab = "Network Statistic Value")
+  if(nlines >= 2){
+    for(i in 2:nlines){
+      lines(x = timeind, y = dat[,i], lwd = 2, col = cols[i])
+    }
+  }
+  legend(x = "topright", legend = input$tstatterm,
+         lwd = 2, col = cols[1:nlines])
+
+})
+
+# update all the menu selection options for descriptive indices when network changes
+observeEvent(nw(), {
+  if(is.network(nw())){
+    if(is.directed(nw())){
+      degmenu <- c('indegree', 'outdegree')
+      betwmenu <- c('directed', 'endpoints', 'proximalsrc',
+                    'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
+      closemenu <- c('directed', 'suminvdir')
+      stressmenu <- c('directed')
+      hgmenu <- c('directed')
+    } else {
+      degmenu <- c('total')
+      betwmenu <- c('undirected', 'endpoints', 'proximalsrc',
+                    'proximaltar', 'proximalsum', 'lengthscaled', 'linearscaled')
+      closemenu <- c('undirected', 'suminvundir')
+      stressmenu <- c('undirected')
+      hgmenu <- c('undirected')
+    }
+    updateNumericInput(session, "nodeind", label = NULL, value = 1,
+                       min = 1, max = nodes())
+    updateSelectInput(session, "gdegcmode", choices = degmenu)
+    updateSelectInput(session, "gbetwcmode", choices = betwmenu)
+    updateSelectInput(session, "gclosecmode", choices = closemenu)
+    updateSelectInput(session, "gstresscmode", choices = stressmenu)
+    updateSelectInput(session, "ggraphcentcmode", choices = hgmenu)
+    updateSelectInput(session, "ndegcmode", choices = degmenu)
+    updateSelectInput(session, "nbetwcmode", choices = betwmenu)
+    updateSelectInput(session, "nclosecmode", choices = closemenu)
+    updateSelectInput(session, "nstresscmode", choices = stressmenu)
+    updateSelectInput(session, "ngraphcentcmode", choices = hgmenu)
+  }
+})
+
+output$gden <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  sna::gden(nw(), diag=has.loops(nw()), mode=gmode)
+})
+outputOptions(output,'gden',suspendWhenHidden=FALSE)
+
+output$grecip <- renderText({
+  if(!is.network(nw())) {return()}
+  if(input$grecipmeas == ''){
+    return()
+  }
+  try(sna::grecip(nw(), measure=input$grecipmeas))
+})
+outputOptions(output,'grecip',suspendWhenHidden=FALSE)
+
+output$gtrans <- renderText({
+  if(!is.network(nw())) {return()}
+  if(input$gtransmeas == ''){
+    return()
+  }
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  try(sna::gtrans(nw(), diag=has.loops(nw()), mode=gmode,
+                  measure=input$gtransmeas))
+})
+outputOptions(output,'gtrans',suspendWhenHidden=FALSE)
+
+output$gdeg <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  d <- ""
+  cmode <- input$gdegcmode
+  if(cmode == 'total'){
+    cmode <- 'freeman'
+  }
+  try(d <- sna::centralization(nw(), sna::degree, mode=gmode, diag=has.loops(nw()),
+                               cmode=cmode))
+  d
+})
+outputOptions(output,'gdeg',suspendWhenHidden=FALSE)
+
+output$gbetw <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  b <- ""
+  try(b <- sna::centralization(nw(), sna::betweenness, mode=gmode, diag=has.loops(nw()),
+                               cmode=input$gbetwcmode))
+  b
+})
+outputOptions(output,'gbetw',suspendWhenHidden=FALSE)
+
+output$gclose <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  c <- ""
+  try(
+    c <- sna::centralization(nw(), sna::closeness, mode=gmode, diag=has.loops(nw()),
+                             cmode=input$gclosecmode))
+  c
+})
+outputOptions(output,'gclose',suspendWhenHidden=FALSE)
+
+output$gstress <- renderText({
+  if(!is.network(nw())){ return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  s <- ""
+  try(s <- sna::centralization(nw(), sna::stresscent, mode=gmode, diag=has.loops(nw()),
+                               cmode=input$gstresscmode))
+  s
+})
+outputOptions(output,'gstress',suspendWhenHidden=FALSE)
+
+output$ggraphcent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  g <- ""
+  try(g <- sna::centralization(nw(), sna::graphcent, mode=gmode, diag=has.loops(nw()),
+                               cmode=input$ggraphcentcmode))
+  g
+})
+outputOptions(output,'ggraphcent',suspendWhenHidden=FALSE)
+
+output$gevcent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  e <- ""
+  try(e <- sna::centralization(nw(), sna::evcent, mode=gmode, diag=has.loops(nw())))
+  e
+})
+outputOptions(output,'gevcent',suspendWhenHidden=FALSE)
+
+output$ginfocent <- renderText({
+  if(!is.network(nw())) {return()}
+  if(is.directed(nw())){
+    gmode <- 'digraph'
+  } else {
+    gmode <- 'graph'
+  }
+  i<-""
+  try({
+    i <- sna::centralization(nw(), sna::infocent, mode=gmode, diag=has.loops(nw()),
+                             cmode=input$ginfocentcmode)})
+  i
+})
+outputOptions(output,'ginfocent',suspendWhenHidden=FALSE)
+
 
 ## FIT MODEL ##
 

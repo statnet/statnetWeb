@@ -522,7 +522,7 @@ tabPanel("Network Descriptives", value = "tab3",
                "network. The degree distributions of directed graphs can",
                "be subset by in-degree or out-degree."),
            plotOutput('degreedist')
-        )
+        ),
 #         tabPanel('Geodesic Distribution',
 #            p(class = 'helper', id = 'gdhelper', icon('question-circle')),
 #            div(class = 'mischelperbox', id = 'gdhelperbox',
@@ -532,189 +532,87 @@ tabPanel("Network Descriptives", value = "tab3",
 #                "structure of network connectivity."),
 #            plotOutput('geodistplot')
 #         ),
-#         tabPanel('More', value = 'More', br(),
-#            h5('Conditional uniform graph tests', icon('angle-double-left'),
-#               id = "cugtitle"),
-#            wellPanel(id = "cugbox",
-#                    column(4, uiOutput("dynamiccugterm")),
-#                    column(4, selectInput("ncugsims",
-#                                          label = "Number of simulations",
-#                                          choices = c(100, 200, 500))),
-#                    column(3, actionButton("cugButton", label = "Run",
-#                                           style = "margin-top: 25px;")),
-#                    br(),
-#                    plotOutput("cugtest"),
-#                    br(),
-#                    downloadButton('cugtestdownload', label = "Download Plot",
-#                                   class = "btn-sm")
-#           ),
-#            h5('Mixing matrix', icon('angle-double-left'),
-#               id = "mixmxtitle"),
-#            wellPanel(id = "mixmxbox",
-#                    fluidRow(
-#                      column(6, uiOutput('mixmxchooser')),
-#                      column(6, downloadButton("mixmxdownload",
-#                                               class = "shiftdown25"))
-#                    ),
-#                    fluidRow(
-#                      verbatimTextOutput('mixingmatrix')
-#                    )
-#            ),
-#            h5('Graph-level descriptive indices',
-#               icon('angle-double-left'), id="graphleveltitle"),
-#            wellPanel(id="graphlevelbox",
-#                    fluidRow(
-#                      column(4, offset = 7, tags$u('Measure')),
-#                      fluidRow(
-#                        column(4, p('Density:', class = 'stitle')),
-#                        column(3, p(textOutput('gden'), class = 'snum'))),
-#
-#                      fluidRow(
-#                        column(4, p('Degree:', class = 'stitle')),
-#                        column(3, p(textOutput('gdeg'), class = 'snum')),
-#                        column(4, selectInput('gdegcmode', label = NULL,
-#                                              choices = c('indegree', 'outdegree', 'total')
-#                        ))),
-#                      fluidRow(
-#                        column(4, p('Reciprocity:', class = 'stitle')),
-#                        column(3, p(textOutput('grecip'), class = 'snum')),
-#                        column(4, selectInput('grecipmeas',label = NULL,
-#                                              choices = c('dyadic','dyadic.nonnull','edgewise',
-#                                                          'edgewise.lrr','correlation')))),
-#                      fluidRow(
-#                        column(4, p('Transitivity:'), class = 'stitle'),
-#                        column(3, p(textOutput('gtrans'), class = 'snum')),
-#                        column(4, selectInput('gtransmeas',label = NULL,
-#                                              choices = c('weak','strong','weakcensus',
-#                                                          'strongcensus','rank','correlation'))
-#                        )),
-#                      fluidRow(
-#                        column(4, p('Betweenness:', class = 'stitle')),
-#                        column(3, p(textOutput('gbetw'), class = 'snum')),
-#                        column(4, selectInput('gbetwcmode', label = NULL,
-#                                              choices = c('directed','undirected',
-#                                                          'endpoints','proximalsrc',
-#                                                          'proximaltar','proximalsum',
-#                                                          'lengthscaled', 'linearscaled'))
-#                        )),
-#                      fluidRow(
-#                        column(4, p('Closeness:', class = 'stitle')),
-#                        column(3, p(textOutput('gclose'), class = 'snum')),
-#                        column(4, selectInput('gclosecmode', label = NULL,
-#                                              choices = c('directed','undirected',
-#                                                          'suminvdir','suminvundir')))),
-#                      fluidRow(
-#                        column(4, p('Stress Centrality:', class = 'stitle')),
-#                        column(3, p(textOutput('gstress'), class = 'snum')),
-#                        column(4, selectInput('gstresscmode', label = NULL,
-#                                              choices = c('directed','undirected')))
-#                      ),
-#                      fluidRow(
-#                        column(4, p('(Harary) Graph Centrality:', class = 'stitle')),
-#                        column(3, p(textOutput('ggraphcent'), class = 'snum')),
-#                        column(4, selectInput('ggraphcentcmode', label = NULL,
-#                                              choices = c('directed', 'undirected')))
-#                      ),
-#                      fluidRow(
-#                        column(4, p('Eigenvector Centrality:', class = 'stitle')),
-#                        column(3, p(textOutput('gevcent'), class = 'snum')),
-#                        column(4, br())
-#                      ),
-#                      fluidRow(
-#                        column(4, p('Information Centrality:', class = 'stitle')),
-#                        column(3, p(textOutput('ginfocent'), class = 'snum')),
-#                        column(4, selectInput('ginfocentcmode',label = NULL,
-#                                              choices = c('weak', 'strong', 'upper',
-#                                                          'lower')))
-#                      )
-#                      )),
-#
-#            h5('Vertex-level descriptive indices',
-#               icon('angle-double-left'), id = "nodeleveltitle"),
-#            wellPanel(id = "nodelevelbox",
-#                    fluidRow(
-#                      column(2, span("Vertex index:")),
-#                      column(5, numericInput('nodeind',
-#                                             label = NULL,
-#                                             value = 1,
-#                                             min = 1))
-#                    ),
-#                    tags$hr(),
-#                    fluidRow(
-#                      column(2, offset = 3, tags$u('Current vertex')),
-#                      column(3, tags$u('Centrality mode')),
-#                      column(2, tags$u('Min')),
-#                      column(2, tags$u('Max'))),
-#                    fluidRow(
-#                      column(3, p('Degree:', class = 'stitle')),
-#                      column(2, p(textOutput('ndeg'), class = 'snum')),
-#                      column(3, selectInput('ndegcmode',
-#                                            label = NULL,
-#                                            choices = c('indegree', 'outdegree', 'total')),
-#                             class = "smallselect"),
-#                      column(2, p(textOutput('ndegmin'), class = 'snum', align = 'center')),
-#                      column(2, p(textOutput('ndegmax'), class = 'snum', align = 'center'))
-#                    ),
-#                    fluidRow(
-#                      column(3, p('Betweenness:', class = 'stitle')),
-#                      column(2, p(textOutput('nbetw'), class = 'snum')),
-#                      column(3, selectInput('nbetwcmode', label = NULL,
-#                                            choices=c('directed','undirected',
-#                                                      'endpoints','proximalsrc',
-#                                                      'proximaltar','proximalsum',
-#                                                      'lengthscaled', 'linearscaled')),
-#                             class = "smallselect"),
-#                      column(2, p(textOutput('nbetwmin'), class = 'snum')),
-#                      column(2, p(textOutput('nbetwmax'), class = 'snum'))
-#                    ),
-#                    fluidRow(
-#                      column(3, p('Closeness:', class = 'stitle')),
-#                      column(2, p(textOutput('nclose'), class = 'snum')),
-#                      column(3, selectInput('nclosecmode', label = NULL,
-#                                            choices=c('directed','undirected',
-#                                                      'suminvdir','suminvundir')),
-#                             class = "smallselect"),
-#                      column(2, p(textOutput('nclosemin'))),
-#                      column(2, p(textOutput('nclosemax')))
-#                    ),
-#                    fluidRow(
-#                      column(3, p('Stress Centrality:', class = 'stitle')),
-#                      column(2, p(textOutput('nstress'), class = 'snum')),
-#                      column(3, selectInput('nstresscmode', label = NULL,
-#                                            choices = c('directed','undirected')),
-#                             class = "smallselect"),
-#                      column(2, p(textOutput('nstressmin'))),
-#                      column(2, p(textOutput('nstressmax')))
-#                    ),
-#                    fluidRow(
-#                      column(3, p('(Harary) Graph Centrality:', class = 'stitle')),
-#                      column(2, p(textOutput('ngraphcent'), class = 'snum')),
-#                      column(3, selectInput('ngraphcentcmode', label = NULL,
-#                                            choices = c('directed', 'undirected')),
-#                             class = "smallselect"),
-#                      column(2, p(textOutput('ngraphcentmin'))),
-#                      column(2, p(textOutput('ngraphcentmax')))
-#                    ),
-#                    fluidRow(
-#                      column(3, p('Eigenvector Centrality:', class = 'stitle')),
-#                      column(2, p(textOutput('nevcent'), class = 'snum')),
-#                      column(3, br()),
-#                      column(2, p(textOutput('nevcentmin'))),
-#                      column(2, p(textOutput('nevcentmax')))
-#                    ),
-#                    fluidRow(
-#                      column(3, p('Information Centrality:', class = 'stitle')),
-#                      column(2, p(textOutput('ninfocent'), class = 'snum')),
-#                      column(3, selectInput('ninfocentcmode',label = NULL,
-#                                            choices = c('weak', 'strong', 'upper',
-#                                                      'lower')),
-#                             class = "smallselect"),
-#                      column(2, p(textOutput('ninfocentmin'))),
-#                      column(2, p(textOutput('ninfocentmax')))
-#                    )
-#            )
-#
-#         )
+        tabPanel('More', value = 'More', br(),
+                 verbatimTextOutput("nwnum"),
+           conditionalPanel("output.nwnum == 'multiple'",
+                            h5('Durations', icon('angle-double-left')),
+                            wellPanel(plotOutput("durplot")),
+                            h5('Temporal network statistics', icon('angle-double-left')),
+                            wellPanel(uiOutput("tstatterm_ui"),
+                                      plotOutput("tstatplot"))
+                            ),
+           conditionalPanel("output.nwnum == 'single'",
+                            h5('Graph-level descriptive indices',
+                               icon('angle-double-left'), id="graphleveltitle"),
+                            wellPanel(id="graphlevelbox",
+                                      fluidRow(
+                                        column(4, offset = 7, tags$u('Measure')),
+                                        fluidRow(
+                                          column(4, p('Density:', class = 'stitle')),
+                                          column(3, p(textOutput('gden'), class = 'snum'))),
+
+                                        fluidRow(
+                                          column(4, p('Degree:', class = 'stitle')),
+                                          column(3, p(textOutput('gdeg'), class = 'snum')),
+                                          column(4, selectInput('gdegcmode', label = NULL,
+                                                                choices = c('indegree', 'outdegree', 'total')
+                                          ))),
+                                        fluidRow(
+                                          column(4, p('Reciprocity:', class = 'stitle')),
+                                          column(3, p(textOutput('grecip'), class = 'snum')),
+                                          column(4, selectInput('grecipmeas',label = NULL,
+                                                                choices = c('dyadic','dyadic.nonnull','edgewise',
+                                                                            'edgewise.lrr','correlation')))),
+                                        fluidRow(
+                                          column(4, p('Transitivity:'), class = 'stitle'),
+                                          column(3, p(textOutput('gtrans'), class = 'snum')),
+                                          column(4, selectInput('gtransmeas',label = NULL,
+                                                                choices = c('weak','strong','weakcensus',
+                                                                            'strongcensus','rank','correlation'))
+                                          )),
+                                        fluidRow(
+                                          column(4, p('Betweenness:', class = 'stitle')),
+                                          column(3, p(textOutput('gbetw'), class = 'snum')),
+                                          column(4, selectInput('gbetwcmode', label = NULL,
+                                                                choices = c('directed','undirected',
+                                                                            'endpoints','proximalsrc',
+                                                                            'proximaltar','proximalsum',
+                                                                            'lengthscaled', 'linearscaled'))
+                                          )),
+                                        fluidRow(
+                                          column(4, p('Closeness:', class = 'stitle')),
+                                          column(3, p(textOutput('gclose'), class = 'snum')),
+                                          column(4, selectInput('gclosecmode', label = NULL,
+                                                                choices = c('directed','undirected',
+                                                                            'suminvdir','suminvundir')))),
+                                        fluidRow(
+                                          column(4, p('Stress Centrality:', class = 'stitle')),
+                                          column(3, p(textOutput('gstress'), class = 'snum')),
+                                          column(4, selectInput('gstresscmode', label = NULL,
+                                                                choices = c('directed','undirected')))
+                                        ),
+                                        fluidRow(
+                                          column(4, p('(Harary) Graph Centrality:', class = 'stitle')),
+                                          column(3, p(textOutput('ggraphcent'), class = 'snum')),
+                                          column(4, selectInput('ggraphcentcmode', label = NULL,
+                                                                choices = c('directed', 'undirected')))
+                                        ),
+                                        fluidRow(
+                                          column(4, p('Eigenvector Centrality:', class = 'stitle')),
+                                          column(3, p(textOutput('gevcent'), class = 'snum')),
+                                          column(4, br())
+                                        ),
+                                        fluidRow(
+                                          column(4, p('Information Centrality:', class = 'stitle')),
+                                          column(3, p(textOutput('ginfocent'), class = 'snum')),
+                                          column(4, selectInput('ginfocentcmode',label = NULL,
+                                                                choices = c('weak', 'strong', 'upper',
+                                                                            'lower')))
+                                        )
+                                      )
+                                    ) #end wellpanel
+                          )
+        )
       ), #end tabsetPanel
      br(),
      br()
