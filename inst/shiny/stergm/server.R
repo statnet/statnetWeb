@@ -737,19 +737,20 @@ dd_plotdata <- reactive({
   }
 
   if("networkDynamic" %in% class(nw())){
-    times <- networkDynamic::get.change.times(nw())[-1]
+    timeind <- networkDynamic::get.change.times(nw())[-1]
     # columns are nodes, rows are times
-    deg <- tsna::tDegree(nw(), start = times[1]-1, end = times[length(times)]-1,
+    deg <- tsna::tDegree(nw(), start = timeind[1] - 1,
+                         end = timeind[length(timeind)],
                          cmode = input$cmode_dd)
-    ldata <- lapply(times, FUN = function(x){
+    ldata <- lapply(timeind, FUN = function(x){
                 data <- tabulate(deg[x,])
-                data <- append(data, sum(deg[x,] == 0), after = 0)
+                data <- append(data, sum(deg[x,] == 0, na.rm = TRUE), after = 0)
               })
   } else {
     deg <- sna::degree(nw(), gmode = gmode, cmode = input$cmode_dd, diag = diag)
     data <- tabulate(deg)
-    data <- append(data, sum(deg == 0), after = 0)
-    maxdeg <- max(deg)
+    data <- append(data, sum(deg == 0, na.rm = TRUE), after = 0)
+    maxdeg <- max(deg, na.rm = TRUE)
 
     #for color-coded bars
     if(!is.null(input$colorby_dd) & input$colorby_dd != "None"){
@@ -1276,14 +1277,15 @@ output$degreedist <- renderPlot({
   #     }
   #   }
 
-  barplot(plotme, xlab=xlabel, ylab=ylabel,
-          col=color, ylim=c(0,maxfreq), plot=TRUE)
+  barplot(plotme, xlab = xlabel, ylab = ylabel,
+          col = color, ylim = c(0, maxfreq), plot = TRUE)
 
   if(input$colorby_dd != "None" ){
-    lmerge <-FALSE
-    lpch <-NULL
-    legend(x="topright", legend=ltext, title=ltitle, fill=lfill, border=lborder,
-           col=lcol, lty= lty, pch=lpch, pt.cex=1.25, bty="n", merge=lmerge)
+    lmerge <- FALSE
+    lpch <- NULL
+    legend(x = "topright", legend = ltext, title = ltitle, fill = lfill,
+           border = lborder, col = lcol, lty = lty, pch = lpch, pt.cex = 1.25,
+           bty = "n", merge = lmerge)
   }
 
 })
