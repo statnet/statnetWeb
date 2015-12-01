@@ -101,6 +101,9 @@ nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
   #datapath is stored in 4th column of dataframe
   input$uploadnet
+  validate(
+    need(!(input$filetype %in% c("pajeknet", "pajekpaj") & values$nwnum == "multiple"),
+         "Cannot accept multiple network panels from Pajek at this time"))
   nw_var <- ""
 isolate({
   if(input$filetype != "builtin" & !is.null(input$rawdatafile)){
@@ -1334,6 +1337,7 @@ output$tstatterm_ui <- renderUI({
   }
   selectizeInput("tstatterm", label = NULL,
                  choices = c("Choose one or more terms" = "", choices),
+                 selected = "density",
                  multiple = TRUE)
 })
 
@@ -1359,7 +1363,6 @@ output$tstatplot <- renderPlot({
          lwd = 2, col = cols[1:nlines])
 
 })
-outputOptions(output, "tstatplot", suspendWhenHidden = FALSE)
 
 output$frs_ui1 <- renderUI({
   timeind <- networkDynamic::get.change.times(nw())
@@ -1371,7 +1374,6 @@ output$frs_ui1 <- renderUI({
                  max = nw()$gal$n)
   )
 })
-outputOptions(output, "frs_ui1", suspendWhenHidden = FALSE)
 
 output$frs_ui2 <- renderUI({
   timeind <- networkDynamic::get.change.times(nw())
@@ -1383,7 +1385,6 @@ output$frs_ui2 <- renderUI({
                   max = timeind[length(timeind)-2])
   )
 })
-outputOptions(output, "frs_ui2", suspendWhenHidden = FALSE)
 
 output$frs_ui3 <- renderUI({
   input$frsstart
@@ -1391,12 +1392,11 @@ output$frs_ui3 <- renderUI({
   column(3,
          numericInput("frsend",
                       label = "End time step",
-                      value = 1,
+                      value = 1 + input$frsstart,
                       min = 1 + input$frsstart,
                       max = timeind[length(timeind)-1])
   )
 })
-outputOptions(output, "frs_ui3", suspendWhenHidden = FALSE)
 
 output$frsnodeset <- renderPrint({
   setvec <- tsna::forward.reachable(nw(), v = input$frsnode,
