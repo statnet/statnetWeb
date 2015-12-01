@@ -751,182 +751,182 @@ tabPanel("Network Descriptives", value = "tab3",
               label = NULL),
    actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
               label = NULL)
-   )
+   ),
 
 # Fit Model ---------------------------------------------------------------
 
 
-# tabPanel("Fit Model", value = "tab4",
-#
-#    fluidRow(
-#      column(3,
-#         div(class = "xscroll",
-#             strong("Network:"),
-#             verbatimTextOutput("currentnw1"),
-#             strong("Formation:"),
-#             verbatimTextOutput("form"),
-#             strong("Dissolution:"),
-#             verbatimTextOutput("diss")
-#         ),
-#         actionButton("fitButton", "Fit Model",
-#                      class = "btn-primary")
-#      ),
-#      column(7,
-#             tabsetPanel(
-#               tabPanel("Edit Formation",
-#               fluidRow(
-#                 column(6,
-#                    strong("Formula:"),
-#                    helpText("Type in term(s) and their arguments. For
-#                             multiple terms, separate with '+'."),
-#                    div(textInput(inputId = "formation", label = NULL,
-#                                  value = "edges"),
-#                        title = paste("Type in term(s) and their arguments.",
-#                                      "For multiple terms, separate with '+'.")
-#                    ),
-#                   actionButton('updateformulaButton', 'Update Formula',
-#                                class = "btn-primary btn-sm"),
-#                   actionButton('resetformulaButton', 'Reset Formula',
-#                                class = "btn-sm")
-#                       ),
-#                 column(6,
-#                    strong("Target stats:"),
-#                    helpText("If values to be targeted are not sufficient statistics
-#                             from cross-sectional network."),
-#                    textInput("target.stats", label = NULL, value = "")
-#                        )
-#                 ),
-#               fluidRow(style = "margin-top: 5px;",
-#                 column(2,
-#                        strong('Summary statistics:')),
-#                 column(10,
-#                        verbatimTextOutput('prefitsum')))
-#               ),
-#               tabPanel("Edit Dissolution",
-#
-#                  helpText("The dissolution formula may only include offsets
-#                           of the terms in the formation. The order of the
-#                           coefficients must correspond to the order of the terms."),
-#
-#                  fluidRow(column(12,
-#                     strong("Terms:"),
-#                     uiOutput("dissterms")
-#                  )),
-#                  fluidRow(column(12,
-#                         strong("Coefficient value(s):"),
-#                         div(class = "skinny",
-#                           uiOutput("disscoefs")
-#                         )
-#                         ))
-#               ),
-#               tabPanel("Control Options",
-#                      fluidRow(
-#                         column(5,
-#                                checkboxInput('controldefault',
-#                                              'Use default options',
-#                                              value = TRUE))
-#                      ),
-#                      div(id = "controls",
-#                       fluidRow(
-#                         conditionalPanel("0",
-#                           column(4,
-#                                  numericInput('MCMCinterval',
-#                                               label = "Interval:",
-#                                               value = 1024),
-#                                  title = paste("Number of proposals between sampled statistics.")
-#                             ),
-#
-#                           column(4,
-#                                  numericInput('MCMCburnin',
-#                                               label = "Burn-in:",
-#                                               value = 16384),
-#                                  title = paste("Number of proposals before any MCMC sampling is done.",
-#                                                "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
-#                             )
-#                           ),
-#                         conditionalPanel("1",
-#                           column(4,
-#                                  numericInput("EGMME.burnin.min",
-#                                               label = "Burn-in min:",
-#                                               value = 1000),
-#                                  numericInput("EGMME.burnin.max",
-#                                               label = "Burn-in max:",
-#                                               value = 100000)
-#                           ),
-#                           column(4,
-#                                  numericInput("EGMME.burnin.pval",
-#                                               label = "Burn-in p-value:",
-#                                               value = 0.5,
-#                                               step = 0.05),
-#                                  numericInput("EGMME.burnin.add",
-#                                               label = "Burn-in add:",
-#                                               value = 1)
-#                                  )
-#                           ),
-#                         column(4,
-#                                textInput("customMCMCcontrol",
-#                                          label = "Other controls:",
-#                                          value = ""),
-#                                title = paste("Other arguments to be passed to",
-#                                              "control.stergm")
-#                         )
-#                       )
-#                       )
-#                      ),
-#               tabPanel("Term Documentation",
-#                        br(),
-#                        div(class = "placeholder",
-#                            fluidRow(
-#                              column(12,
-#                                     a("Commonly used ergm terms",
-#                                       href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
-#                                       target = "_blank"), br(),
-#                                     a("Term cross-reference tables",
-#                                       href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
-#                                       target = "_blank"), br(), br()
-#                              ),
-#                              column(6,
-#                                     actionButton("matchingButton", "Compatible terms",
-#                                                  class = "btn-sm active"),
-#                                     actionButton("allButton", "All terms",
-#                                                  class = "btn-sm")
-#                              ),
-#                              column(4, uiOutput("listofterms"))
-#                            ),
-#                            fluidRow(
-#                              column(12,
-#                                     div(id="termdocbox",
-#                                         uiOutput("termdoc")
-#                                     ),
-#                                     div(id = "termexpand",
-#                                         icon(name = "angle-double-up"))
-#                              )
-#
-#                            )
-#
-#                        )
-#               )
-#             ) #end tabsetPanel
-#         )
-#    ),
-#    br(),
-#    tabsetPanel(id = 'fittingTabs',
-#                tabPanel('Model Summary', br(),
-#                         verbatimTextOutput('modelfitsum'),
-#                         downloadButton("modelfitdownload",
-#                                        "Download Summary (.txt)",
-#                                        class="btn-sm")),
-#                tabPanel('Model Fit Report', br(),
-#                         verbatimTextOutput('modelfit'))
-#    ), br(), br(),
-#
-#    icon("question-circle", class = "fa-2x helper-btn"),
-#    div(class = "helper-box",
-#        p("help help help")),
-#    actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
-#               label = NULL),
-#    actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
-#               label = NULL)
-#    )
+tabPanel("Fit Model", value = "tab4",
+
+   fluidRow(
+     column(3,
+        div(class = "xscroll",
+            strong("Network:"),
+            verbatimTextOutput("currentnw1"),
+            strong("Formation:"),
+            verbatimTextOutput("form"),
+            strong("Dissolution:"),
+            verbatimTextOutput("diss")
+        ),
+        actionButton("fitButton", "Fit Model",
+                     class = "btn-primary")
+     ),
+     column(7,
+            tabsetPanel(
+              tabPanel("Edit Formation",
+              fluidRow(
+                column(6,
+                   strong("Formula:"),
+                   helpText("Type in term(s) and their arguments. For
+                            multiple terms, separate with '+'."),
+                   div(textInput(inputId = "formation", label = NULL,
+                                 value = "edges"),
+                       title = paste("Type in term(s) and their arguments.",
+                                     "For multiple terms, separate with '+'.")
+                   ),
+                  actionButton('updateformulaButton', 'Update Formula',
+                               class = "btn-primary btn-sm"),
+                  actionButton('resetformulaButton', 'Reset Formula',
+                               class = "btn-sm")
+                      ),
+                column(6,
+                   strong("Target stats:"),
+                   helpText("If values to be targeted are not sufficient statistics
+                            from cross-sectional network."),
+                   textInput("target.stats", label = NULL, value = "")
+                       )
+                ),
+              fluidRow(style = "margin-top: 5px;",
+                column(2,
+                       strong('Summary statistics:')),
+                column(10,
+                       verbatimTextOutput('prefitsum')))
+              ),
+              tabPanel("Edit Dissolution",
+
+                 helpText("The dissolution formula may only include offsets
+                          of the terms in the formation. The order of the
+                          coefficients must correspond to the order of the terms."),
+
+                 fluidRow(column(12,
+                    strong("Terms:"),
+                    uiOutput("dissterms")
+                 )),
+                 fluidRow(column(12,
+                        strong("Coefficient value(s):"),
+                        div(class = "skinny",
+                          uiOutput("disscoefs")
+                        )
+                        ))
+              ),
+              tabPanel("Control Options",
+                     fluidRow(
+                        column(5,
+                               checkboxInput('controldefault',
+                                             'Use default options',
+                                             value = TRUE))
+                     ),
+                     div(id = "controls",
+                      fluidRow(
+                        conditionalPanel("0",
+                          column(4,
+                                 numericInput('MCMCinterval',
+                                              label = "Interval:",
+                                              value = 1024),
+                                 title = paste("Number of proposals between sampled statistics.")
+                            ),
+
+                          column(4,
+                                 numericInput('MCMCburnin',
+                                              label = "Burn-in:",
+                                              value = 16384),
+                                 title = paste("Number of proposals before any MCMC sampling is done.",
+                                               "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
+                            )
+                          ),
+                        conditionalPanel("1",
+                          column(4,
+                                 numericInput("EGMME.burnin.min",
+                                              label = "Burn-in min:",
+                                              value = 1000),
+                                 numericInput("EGMME.burnin.max",
+                                              label = "Burn-in max:",
+                                              value = 100000)
+                          ),
+                          column(4,
+                                 numericInput("EGMME.burnin.pval",
+                                              label = "Burn-in p-value:",
+                                              value = 0.5,
+                                              step = 0.05),
+                                 numericInput("EGMME.burnin.add",
+                                              label = "Burn-in add:",
+                                              value = 1)
+                                 )
+                          ),
+                        column(4,
+                               textInput("customMCMCcontrol",
+                                         label = "Other controls:",
+                                         value = ""),
+                               title = paste("Other arguments to be passed to",
+                                             "control.stergm")
+                        )
+                      )
+                      )
+                     ),
+              tabPanel("Term Documentation",
+                       br(),
+                       div(class = "placeholder",
+                           fluidRow(
+                             column(12,
+                                    a("Commonly used ergm terms",
+                                      href = "http://statnet.csde.washington.edu/EpiModel/nme/d2-ergmterms.html",
+                                      target = "_blank"), br(),
+                                    a("Term cross-reference tables",
+                                      href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
+                                      target = "_blank"), br(), br()
+                             ),
+                             column(6,
+                                    actionButton("matchingButton", "Compatible terms",
+                                                 class = "btn-sm active"),
+                                    actionButton("allButton", "All terms",
+                                                 class = "btn-sm")
+                             ),
+                             column(4, uiOutput("listofterms"))
+                           ),
+                           fluidRow(
+                             column(12,
+                                    div(id="termdocbox",
+                                        uiOutput("termdoc")
+                                    ),
+                                    div(id = "termexpand",
+                                        icon(name = "angle-double-up"))
+                             )
+
+                           )
+
+                       )
+              )
+            ) #end tabsetPanel
+        )
+   ),
+   br(),
+   tabsetPanel(id = 'fittingTabs',
+               tabPanel('Model Summary', br(),
+                        verbatimTextOutput('modelfitsum'),
+                        downloadButton("modelfitdownload",
+                                       "Download Summary (.txt)",
+                                       class="btn-sm")),
+               tabPanel('Model Fit Report', br(),
+                        verbatimTextOutput('modelfit'))
+   ), br(), br(),
+
+   icon("question-circle", class = "fa-2x helper-btn"),
+   div(class = "helper-box",
+       p("help help help")),
+   actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
+              label = NULL),
+   actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
+              label = NULL)
+   )
   ) #end navbarPage
 ) #end shinyUI
