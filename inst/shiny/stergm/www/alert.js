@@ -80,6 +80,11 @@ $(document).ready(function(){
     $("#filetypebox10").toggle(500);
   });
 
+  $("#closewarning1").click(function(){
+    $("#colorwarning1").hide();
+    $("#closewarning1").hide();
+  });
+
   $("#countButton_dd").click(function(){
     $("#countButton_dd").toggleClass("active", true);
     $("#percButton_dd").toggleClass("active", false);
