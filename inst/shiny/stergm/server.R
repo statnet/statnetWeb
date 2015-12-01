@@ -852,7 +852,7 @@ observeEvent(nw(), {
 dissoffsets <- reactive({
   ncoefs <- length(input$dissolution)
   ids <- paste0("coef", ncoefs)
-  unlist(input[ids])
+  unlist(input[[ids]])
 })
 
 estimate <- reactive({
