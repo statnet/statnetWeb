@@ -807,24 +807,21 @@ dd_plotdata <- reactive({
 })
 
 frs <- reactive({
-  input$frsButton
   if("networkDynamic" %in% class(nw())){
     timeind <- networkDynamic::get.change.times(nw())
     start <- timeind[1]
     end <- timeind[length(timeind)-1]
     frs <- c()
-    isolate({
-      #columns are nodes, rows are time steps
-      frs <- vapply(1:nodes(), FUN = function(x){
-        frssize <- c()
-        for(i in start+1:end){
-          size <- length(tsna::forward.reachable(nw(), v = x,
-                                                 start = start, end = i))
-          frssize <- append(frssize, size)
-        }
-        frssize
-      }, FUN.VALUE = rep(0, length(start+1:end)))
-    })
+    #columns are nodes, rows are time steps
+    frs <- vapply(1:nodes(), FUN = function(x){
+      frssize <- c()
+      for(i in start+1:end){
+        size <- length(tsna::forward.reachable(nw(), v = x,
+                                               start = start, end = i))
+        frssize <- append(frssize, size)
+      }
+      frssize
+    }, FUN.VALUE = rep(0, length(start+1:end)))
     frs
   }
 })
@@ -1408,13 +1405,17 @@ output$frsnodeset <- renderPrint({
 })
 
 output$frsplot <- renderPlot({
-  timeind <- networkDynamic::get.change.times(nw())
-  timeind <- timeind[-length(timeind)]
-  plot(x = timeind[-1], y = frs()[,1], type = "l", col = obsblue,
-       xlab = "Time Step", ylab = "", main = "Size of Forward Reachable Set")
-  for(p in 2:dim(frs())[2]){
-    lines(x = timeind[-1], y = frs()[,p], col = obsblue)
-  }
+  if(input$frsButton == 0){return()}
+  isolate({
+    timeind <- networkDynamic::get.change.times(nw())
+    timeind <- timeind[-length(timeind)]
+    plot(x = timeind[-1], y = frs()[,1], type = "l", col = obsblue,
+         xlab = "Time Step", ylab = "", main = "Size of Forward Reachable Set")
+    for(p in 2:dim(frs())[2]){
+      lines(x = timeind[-1], y = frs()[,p], col = obsblue)
+    }
+  })
+
 })
 
 # update all the menu selection options for descriptive indices when network changes
