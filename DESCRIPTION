@@ -17,7 +17,11 @@ Depends:
   ergm (>= 3.2.4),
   network
 Imports:
+  ndtv,
+  networkDynamic,
   sna,
+  tsna,
+  tergm,
   RColorBrewer,
   lattice,
   latticeExtra

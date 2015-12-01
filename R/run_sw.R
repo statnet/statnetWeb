@@ -1,8 +1,10 @@
 
 #' @title Run statnetWeb
 #'
-#' @description Runs the statnetWeb shiny application, a GUI for the statnet
-#' suite of network analysis packages.
+#' @description Runs the one of the statnetWeb shiny applications,
+#' which serve as GUIs for the statnet suite of network analysis packages.
+#'
+#' @param app
 #'
 #' @keywords GUI, shiny
 #' @export
@@ -13,6 +15,10 @@
 #' }
 #'
 #'
-run_sw <- function() {
-  shiny::runApp(system.file("shiny", package = "statnetWeb"))
+run_sw <- function(app = "ergm") {
+  if(!(app %in% c("ergm", "stergm"))){
+    stop("app must be one of ergm or stergm")
+  }
+  shiny::runApp(system.file(paste0("inst/shiny/", app),
+                            package = "statnetWeb"))
 }

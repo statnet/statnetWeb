@@ -8,6 +8,13 @@
 #' @import shiny
 #' @import ergm
 #' @import network
+#' @importFrom ndtv ndtvAnimationWidgetOutput
+#' @importFrom ndtv render.d3movie
+#' @importFrom ndtv renderNdtvAnimationWidget
+#' @importFrom networkDynamic get.change.times
+#' @importFrom networkDynamic networkDynamic
+#' @importFrom networkDynamic summary.statistics.networkDynamic
+#' @importFrom RColorBrewer brewer.pal
 #' @importFrom sna betweenness
 #' @importFrom sna centralization
 #' @importFrom sna closeness
@@ -22,5 +29,6 @@
 #' @importFrom sna rgnm
 #' @importFrom sna rgraph
 #' @importFrom sna symmetrize
-#' @importFrom RColorBrewer brewer.pal
+#' @importFrom tsna tDegree
+
 NULL
