@@ -826,7 +826,7 @@ tabPanel("Fit Model", value = "tab4",
                                              'Use default options',
                                              value = TRUE))
                      ),
-                     div(id = "controls",
+                     div(id = "controls", class = "gray",
                       fluidRow(
                         conditionalPanel("0",
                           column(4,
