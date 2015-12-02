@@ -796,6 +796,9 @@ tabPanel("Fit Model", value = "tab4",
                    textInput("target.stats", label = NULL, value = "")
                        )
                 ),
+              fluidRow(column(12,
+                 uiOutput("formcoefs")
+              )),
               fluidRow(style = "margin-top: 5px;",
                 column(2,
                        strong('Summary statistics:')),
