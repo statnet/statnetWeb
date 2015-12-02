@@ -112,6 +112,10 @@ $(document).ready(function(){
     $("i",this).toggleClass("fa-angle-double-left fa-angle-double-down");
   });
 
+  $("#controldefault").click(function(){
+    $("#controls").toggleClass("gray");
+  });
+
   $("#termdocButton").click(function(){
     $(".docpopup").toggle(500);
   });

@@ -259,6 +259,9 @@ div.placeholder {
   max-width: 75px;
 }
 
+.gray {
+  opacity: 0.5;
+}
 .round {
   border-radius: 4px;
   border: 1px solid #cccccc;

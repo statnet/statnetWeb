@@ -805,6 +805,9 @@ tabPanel("Fit Model", value = "tab4",
                    textInput("target.stats", label = NULL, value = "")
                        )
                 ),
+              fluidRow(column(12,
+                 uiOutput("formcoefs")
+              )),
               fluidRow(style = "margin-top: 5px;",
                 column(2,
                        strong('Summary statistics:')),
@@ -835,7 +838,7 @@ tabPanel("Fit Model", value = "tab4",
                                              'Use default options',
                                              value = TRUE))
                      ),
-                     div(id = "controls",
+                     div(id = "controls", class = "gray",
                       fluidRow(
                         conditionalPanel("0",
                           column(4,

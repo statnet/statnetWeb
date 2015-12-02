@@ -849,6 +849,14 @@ observeEvent(nw(), {
                   label = NULL, value = "edges")
 })
 
+formoffsets <- reactive({
+  offterms <- grep("offset", strsplit(formation(), "+", fixed = TRUE)[[1]],
+                   fixed = TRUE, value = TRUE)
+  ncoefs <- length(offterms)
+  ids <- paste0("fcoef", ncoefs)
+  unlist(input[[ids]])
+})
+
 dissoffsets <- reactive({
   ncoefs <- length(input$dissolution)
   ids <- paste0("coef", ncoefs)
@@ -895,17 +903,21 @@ stergm.fit <- reactive({
                     formation = as.formula(paste("~", formation())),
                     dissolution = as.formula(paste("~", dissolution())),
                     targets = "formation",
+                    offset.coef.form = formoffsets(),
                     offset.coef.diss = dissoffsets(),
                     estimate = estimate())
     })
   } else {
+    isolate({
       fit <- stergm(nw(),
                     formation = as.formula(paste("~", formation())),
                     dissolution = as.formula(paste("~", dissolution())),
                     targets = "formation",
+                    offset.coef.form = formoffsets(),
                     offset.coef.diss = dissoffsets(),
                     estimate = estimate(),
                     control = stergmcontrols())
+    })
   }
 
   return(fit)
@@ -1647,6 +1659,20 @@ output$currentnw1 <- renderPrint({
 
 output$form <- renderPrint({
   cat(paste("~", formation()))
+})
+
+output$formcoefs <- renderUI({
+  offterms <- grep("offset", strsplit(formation(), "+", fixed = TRUE)[[1]],
+                   fixed = TRUE, value = TRUE)
+  ncoefs <- length(offterms)
+  if(ncoefs == 0) {return()}
+  ids <- paste0("fcoef", seq(ncoefs))
+  div(class = "skinny",
+      strong("Offset coefficient value(s):"),
+      lapply(ids, FUN = numericInput, value = 1, label = NULL),
+      title = "Enter coefficients values in the same order offset terms appear in the formation formula",
+      style = "margin-top: 5px;"
+  )
 })
 
 output$diss <- renderPrint({
