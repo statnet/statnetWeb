@@ -555,8 +555,17 @@ tabPanel("Network Descriptives", value = "tab3",
                                         uiOutput("frs_ui3")
                                       ),
                                       verbatimTextOutput("frsnodeset"),
-                                      actionButton("frsButton",
-                                                   label = "Get FRS Plot"),
+                                      fluidRow(
+                                        column(3,
+                                               actionButton("frsButton",
+                                                   label = "Get FRS Plot")),
+                                        column(3,
+                                               checkboxInput("frslines",
+                                                   label = "lines for each node",
+                                                   value = FALSE))),
+                                      helpText("This plot will take a long time to
+                                               run if your network has many nodes and/or
+                                               many time panels."),
                                       plotOutput("frsplot"))
                             ),
            conditionalPanel("output.nwnum == 'single'",
@@ -791,8 +800,8 @@ tabPanel("Fit Model", value = "tab4",
                       ),
                 column(6,
                    strong("Target stats:"),
-                   helpText("If values to be targeted are not sufficient statistics
-                            from cross-sectional network."),
+                   helpText("Optional. If values to be targeted are not
+                            sufficient statistics from cross-sectional network."),
                    textInput("target.stats", label = NULL, value = "")
                        )
                 ),

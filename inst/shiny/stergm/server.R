@@ -1409,10 +1409,20 @@ output$frsplot <- renderPlot({
   isolate({
     timeind <- networkDynamic::get.change.times(nw())
     timeind <- timeind[-length(timeind)]
-    plot(x = timeind[-1], y = frs()[,1], type = "l", col = obsblue,
-         xlab = "Time Step", ylab = "", main = "Size of Forward Reachable Set")
-    for(p in 2:dim(frs())[2]){
-      lines(x = timeind[-1], y = frs()[,p], col = obsblue)
+    if(input$frslines){
+      plot(x = timeind[-1], y = frs()[,1], type = "l", col = obsblue,
+           xlab = "Time Step", ylab = "", main = "Size of Forward Reachable Set")
+      for(p in 2:dim(frs())[2]){
+        lines(x = timeind[-1], y = frs()[,p], col = obsblue)
+      }
+    } else {
+      mn <- rowMeans(frs())
+      ql <- vapply(seq(nrow(frs())), function(x){quantile(frs()[x,], 0.25)}, 1)
+      qu <- vapply(seq(nrow(frs())), function(x){quantile(frs()[x,], 0.75)}, 1)
+      plot(x = timeind[-1], y = mn, type = "l", lwd = 2, col = obsblue,
+           xlab = "Time Step", ylab = "", main = "Size of Forward Reachable Set")
+      polygon(x = c(timeind[-1], rev(timeind[-1])), y = c(qu, rev(ql)),
+              col = adjustcolor(obsblue, alpha.f = .3), border = NA)
     }
   })
 
