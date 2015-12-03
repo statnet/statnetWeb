@@ -867,6 +867,14 @@ targetstats <- reactive({
   eval(parse(text = paste("c(", input$target.stats, ")")))
 })
 
+CMLEtimes <- reactive({
+  if(input$inclusivetimes){
+    input$CMLEtimes[1]:input$CMLEtimes[2]
+  } else {
+    input$CMLEtimes
+  }
+})
+
 estimate <- reactive({
   if("networkDynamic" %in% class(nw())){
     "CMLE"
@@ -891,17 +899,13 @@ stergmcontrols <- reactive({
                    EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
                    EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval)
   } else {
-    if(estimate() == "EGMME"){
-      control.stergm(EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
-                     EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
-                     EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
-                     EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval,
-                     eval(parse(text = customcontrols)))
-    } else if(estimate() == "CMLE") {
-      control.stergm(CMLE.MCMC.burnin = input$MCMCburnin,
-                     CMLE.MCMC.interval = input$MCMCinterval,
-                     eval(parse(text = customcontrols)))
-    }
+    control.stergm(CMLE.MCMC.burnin = input$MCMCburnin,
+                   CMLE.MCMC.interval = input$MCMCinterval,
+                   EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
+                   EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
+                   EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
+                   EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval,
+                   eval(parse(text = customcontrols)))
   }
 })
 
@@ -918,6 +922,7 @@ stergm.fit <- reactive({
                     dissolution = as.formula(paste("~", dissolution())),
                     targets = "formation",
                     target.stats = targetstats(),
+                    times = CMLEtimes(),
                     offset.coef.form = formoffsets(),
                     offset.coef.diss = dissoffsets(),
                     estimate = estimate())
@@ -929,6 +934,7 @@ stergm.fit <- reactive({
                     dissolution = as.formula(paste("~", dissolution())),
                     targets = "formation",
                     target.stats = targetstats(),
+                    times = CMLEtimes(),
                     offset.coef.form = formoffsets(),
                     offset.coef.diss = dissoffsets(),
                     estimate = estimate(),
@@ -1691,6 +1697,13 @@ output$formcoefs <- renderUI({
   )
 })
 
+output$CMLEtimes_ui <- renderUI({
+  times <- networkDynamic::get.change.times(nw())
+  sliderInput("CMLEtimes", label = NULL,
+              min = times[1], max = times[length(times)],
+              value = times[1:2], step = 1, dragRange = TRUE)
+})
+
 output$diss <- renderPrint({
   cat(paste("~", dissolution()))
 })
@@ -1716,7 +1729,19 @@ output$prefitsum <- renderPrint({
     return(cat('NA'))
   }
   options(width = 140)
-  summary(as.formula(paste("nw() ~", formation())))
+  f <- as.formula(paste("nw() ~", formation()))
+  if(estimate() == "EGMME"){
+    summary(as.formula(paste("nw() ~", formation())))
+  } else {
+    summ <- summary(f, at = CMLEtimes())
+    if(length(attr(terms(f), which = "term.labels")) == 1){
+      colnames(summ) <- ""
+    } else {
+      rownames(summ) <- paste("time", CMLEtimes())
+    }
+    summ
+  }
+
 })
 
 output$modelfit <- renderPrint({

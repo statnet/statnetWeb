@@ -807,8 +807,13 @@ tabPanel("Fit Model", value = "tab4",
                           title = "Enter numeric values separated by commas."
                         ),
                        conditionalPanel("output.nwnum == 'multiple'",
-                          strong("Times:")
-
+                          strong("Times:"),
+                          helpText("Times or indexes at which the networks",
+                                   "whose transition is to be modeled are observed."),
+                          checkboxInput("inclusivetimes",
+                                        label = "Include time points between slider values",
+                                        value = TRUE),
+                          uiOutput("CMLEtimes_ui")
                         )
 
                        )
