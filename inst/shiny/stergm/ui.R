@@ -799,10 +799,18 @@ tabPanel("Fit Model", value = "tab4",
                                class = "btn-sm")
                       ),
                 column(6,
-                   strong("Target stats:"),
-                   helpText("Optional. If values to be targeted are not
-                            sufficient statistics from cross-sectional network."),
-                   textInput("target.stats", label = NULL, value = "")
+                       conditionalPanel("output.nwnum == 'single'",
+                          strong("Target stats:"),
+                          helpText("Optional. Values of formation terms to be targeted if not
+                                   the sufficient statistics from cross-sectional network."),
+                          textInput("target.stats", label = NULL, value = ""),
+                          title = "Enter numeric values separated by commas."
+                        ),
+                       conditionalPanel("output.nwnum == 'multiple'",
+                          strong("Times:")
+
+                        )
+
                        )
                 ),
               fluidRow(column(12,

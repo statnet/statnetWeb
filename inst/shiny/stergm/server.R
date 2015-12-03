@@ -863,6 +863,10 @@ dissoffsets <- reactive({
   unlist(input[[ids]])
 })
 
+targetstats <- reactive({
+  eval(parse(text = paste("c(", input$target.stats, ")")))
+})
+
 estimate <- reactive({
   if("networkDynamic" %in% class(nw())){
     "CMLE"
@@ -913,6 +917,7 @@ stergm.fit <- reactive({
                     formation = as.formula(paste("~", formation())),
                     dissolution = as.formula(paste("~", dissolution())),
                     targets = "formation",
+                    target.stats = targetstats(),
                     offset.coef.form = formoffsets(),
                     offset.coef.diss = dissoffsets(),
                     estimate = estimate())
@@ -923,6 +928,7 @@ stergm.fit <- reactive({
                     formation = as.formula(paste("~", formation())),
                     dissolution = as.formula(paste("~", dissolution())),
                     targets = "formation",
+                    target.stats = targetstats(),
                     offset.coef.form = formoffsets(),
                     offset.coef.diss = dissoffsets(),
                     estimate = estimate(),
