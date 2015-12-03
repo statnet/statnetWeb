@@ -874,18 +874,28 @@ estimate <- reactive({
 stergmcontrols <- reactive({
   customcontrols <- isolate(paste(input$customMCMCcontrol, sep = ","))
   if(customcontrols == ""){
-    if(estimate() == "EGMME"){
-      control.stergm(EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
-                     EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
-                     EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
-                     EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval)
-    }
+    control.stergm(CMLE.MCMC.burnin = input$MCMCburnin,
+                   CMLE.MCMC.interval = input$MCMCinterval,
+                   CMLE.control = control.ergm(
+                     MCMLE.maxit = input$MCMLEmaxit,
+                     MCMLE.steplength.margin = 0.05,
+                     MCMLE.steplength = input$MCMLEsteplength,
+                     MCMC.samplesize = input$MCMCsamplesize
+                   ),
+                   EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
+                   EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
+                   EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
+                   EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval)
   } else {
     if(estimate() == "EGMME"){
       control.stergm(EGMME.MCMC.burnin.min = input$EGMME.burnin.min,
                      EGMME.MCMC.burnin.max = input$EGMME.burnin.max,
                      EGMME.MCMC.burnin.add = input$EGMME.burnin.add,
                      EGMME.MCMC.burnin.pval = input$EGMME.burnin.pval,
+                     eval(parse(text = customcontrols)))
+    } else if(estimate() == "CMLE") {
+      control.stergm(CMLE.MCMC.burnin = input$MCMCburnin,
+                     CMLE.MCMC.interval = input$MCMCinterval,
                      eval(parse(text = customcontrols)))
     }
   }

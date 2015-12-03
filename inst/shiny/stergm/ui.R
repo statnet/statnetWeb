@@ -477,6 +477,7 @@ column(4,
                   verbatimTextOutput('nwsum')
         ))
 ),
+textOutput("nwnum"),
 icon("question-circle", class = "fa-2x helper-btn"),
 div(class = "helper-box",
     p("Upload a file of observed network data (must be of a supported type).",
@@ -533,7 +534,6 @@ tabPanel("Network Descriptives", value = "tab3",
 #            plotOutput('geodistplot')
 #         ),
         tabPanel('More', value = 'More', br(),
-                 textOutput("nwnum"),
            conditionalPanel("output.nwnum == 'multiple'",
                             h5('Durations', icon('angle-double-down'),
                                id = "durationplottitle"),
@@ -840,23 +840,46 @@ tabPanel("Fit Model", value = "tab4",
                      ),
                      div(id = "controls", class = "gray",
                       fluidRow(
-                        conditionalPanel("0",
+                        conditionalPanel("output.nwnum == 'multiple'",
                           column(4,
                                  numericInput('MCMCinterval',
                                               label = "Interval:",
                                               value = 1024),
                                  title = paste("Number of proposals between sampled statistics.")
                             ),
-
                           column(4,
                                  numericInput('MCMCburnin',
                                               label = "Burn-in:",
                                               value = 16384),
                                  title = paste("Number of proposals before any MCMC sampling is done.",
                                                "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
-                            )
+                            ),
+                          column(4,
+                                 numericInput('MCMCsamplesize',
+                                              label = "Sample size:",
+                                              value = 1024),
+                                 title = paste("Number of network statistics, randomly drawn from a given distribution
+                                               on the set of all networks, returned by the Metropolis-Hastings algorithm.")
                           ),
-                        conditionalPanel("1",
+                          column(4,
+                                 numericInput('MCMLEmaxit',
+                                              label = "Max it:",
+                                              value = 20),
+                                 title = paste("Maximum number of times the parameter for the MCMC should be updated
+                                               by maximizing the MCMC likelihood. At each step the parameter is changed
+                                               to the values that maximizes the MCMC likelihood based on the current sample.")
+                          ),
+                          column(4,
+                                 numericInput('MCMLEsteplength',
+                                              label = "Step length:",
+                                              value = 1,
+                                              step = 0.1,
+                                              min = 0.1),
+                                 title = paste("Multiplier for step length, which may (for values less than one) make
+                                               fitting more stable at the cost of computational efficiency.")
+                          )
+                          ),
+                        conditionalPanel("output.nwnum == 'single'",
                           column(4,
                                  numericInput("EGMME.burnin.min",
                                               label = "Burn-in min:",
