@@ -890,8 +890,6 @@ stergmcontrols <- reactive({
                    CMLE.MCMC.interval = input$MCMCinterval,
                    CMLE.control = control.ergm(
                      MCMLE.maxit = input$MCMLEmaxit,
-                     MCMLE.steplength.margin = 0.05,
-                     MCMLE.steplength = input$MCMLEsteplength,
                      MCMC.samplesize = input$MCMCsamplesize
                    ),
                    EGMME.MCMC.burnin.min = input$EGMME.burnin.min,

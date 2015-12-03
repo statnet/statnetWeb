@@ -881,15 +881,6 @@ tabPanel("Fit Model", value = "tab4",
                                  title = paste("Maximum number of times the parameter for the MCMC should be updated
                                                by maximizing the MCMC likelihood. At each step the parameter is changed
                                                to the values that maximizes the MCMC likelihood based on the current sample.")
-                          ),
-                          column(4,
-                                 numericInput('MCMLEsteplength',
-                                              label = "Step length:",
-                                              value = 1,
-                                              step = 0.1,
-                                              min = 0.1),
-                                 title = paste("Multiplier for step length, which may (for values less than one) make
-                                               fitting more stable at the cost of computational efficiency.")
                           )
                           ),
                         conditionalPanel("output.nwnum == 'single'",
