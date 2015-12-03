@@ -1733,10 +1733,12 @@ output$prefitsum <- renderPrint({
   if(estimate() == "EGMME"){
     summary(as.formula(paste("nw() ~", formation())))
   } else {
+    nterms <- length(attr(terms(f), which = "term.labels")) +
+      length(attr(terms(f), which = "offset"))
     summ <- summary(f, at = CMLEtimes())
-    if(length(attr(terms(f), which = "term.labels")) == 1){
+    if(nterms == 1){
       colnames(summ) <- ""
-    } else {
+    } else if(nterms > 1) {
       rownames(summ) <- paste("time", CMLEtimes())
     }
     summ
