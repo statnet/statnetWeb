@@ -837,7 +837,13 @@ formation <- reactive({
 })
 
 dissolution <- reactive({
-  paste(input$dissolution, collapse = " + ")
+  if(values$nwnum == "single"){
+    paste(input$dissolution, collapse = " + ")
+  } else {
+    input$updatedissButton
+    isolate(input$dissolution2)
+  }
+
 })
 
 observeEvent(input$resetformulaButton, {
@@ -847,6 +853,10 @@ observeEvent(input$resetformulaButton, {
 observeEvent(nw(), {
   updateTextInput(session, "formation",
                   label = NULL, value = "edges")
+})
+observeEvent(input$resetdissButton, {
+  updateTextInput(session, "dissolution2",
+                  label = NULL, value = "")
 })
 
 formoffsets <- reactive({
@@ -858,7 +868,13 @@ formoffsets <- reactive({
 })
 
 dissoffsets <- reactive({
-  ncoefs <- length(input$dissolution)
+  if(values$nwnum == "single"){
+    ncoefs <- length(input$dissolution)
+  } else {
+    offterms <- grep("offset", strsplit(dissolution(), "+", fixed = TRUE)[[1]],
+                     fixed = TRUE, value = TRUE)
+    ncoefs <- length(offterms)
+  }
   ids <- paste0("coef", ncoefs)
   unlist(input[[ids]])
 })
@@ -1716,10 +1732,21 @@ output$dissterms <- renderUI({
 })
 
 output$disscoefs <- renderUI({
-  ncoefs <- length(input$dissolution)
+  if(values$nwnum == "single"){
+    ncoefs <- length(input$dissolution)
+  } else {
+    offterms <- grep("offset", strsplit(dissolution(), "+", fixed = TRUE)[[1]],
+                     fixed = TRUE, value = TRUE)
+    ncoefs <- length(offterms)
+  }
   if(ncoefs == 0) {return()}
   ids <- paste0("coef", seq(ncoefs))
-  lapply(ids, FUN = numericInput, value = 1, label = NULL)
+  div(class = "skinny",
+      strong("Offset coefficient value(s):"),
+      lapply(ids, FUN = numericInput, value = 1, label = NULL),
+      title = "Enter coefficients values in the same order offset terms appear in the formation formula",
+      style = "margin-top: 5px;"
+  )
 })
 
 output$prefitsum <- renderPrint({

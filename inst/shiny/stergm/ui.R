@@ -793,9 +793,9 @@ tabPanel("Fit Model", value = "tab4",
                        title = paste("Type in term(s) and their arguments.",
                                      "For multiple terms, separate with '+'.")
                    ),
-                  actionButton('updateformulaButton', 'Update Formula',
+                  actionButton('updateformulaButton', 'Update Formation',
                                class = "btn-primary btn-sm"),
-                  actionButton('resetformulaButton', 'Reset Formula',
+                  actionButton('resetformulaButton', 'Reset Formation',
                                class = "btn-sm")
                       ),
                 column(6,
@@ -829,6 +829,7 @@ tabPanel("Fit Model", value = "tab4",
               ),
               tabPanel("Edit Dissolution",
 
+                conditionalPanel("output.nwnum == 'single'",
                  helpText("The dissolution formula may only include offsets
                           of the terms in the formation. The order of the
                           coefficients must correspond to the order of the terms."),
@@ -836,12 +837,23 @@ tabPanel("Fit Model", value = "tab4",
                  fluidRow(column(12,
                     strong("Terms:"),
                     uiOutput("dissterms")
-                 )),
+                 ))
+                ),
+                conditionalPanel("output.nwnum == 'multiple'",
+                   fluidRow(column(12,
+                       strong("Terms:"),
+                       helpText("Type in term(s) and their arguments. For
+                            multiple terms, separate with '+'."),
+                       textInput("dissolution2", label = NULL, value = "",
+                                 width = "100%"),
+                       actionButton("updatedissButton", "Update Dissolution",
+                                    class = "btn-sm btn-primary"),
+                       actionButton("resetdissButton", "Reset Dissolution",
+                                    class = "btn-sm")
+                   ))
+                 ),
                  fluidRow(column(12,
-                        strong("Coefficient value(s):"),
-                        div(class = "skinny",
-                          uiOutput("disscoefs")
-                        )
+                     uiOutput("disscoefs")
                         ))
               ),
               tabPanel("Control Options",
