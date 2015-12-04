@@ -70,24 +70,24 @@ observe({
 })
 
 #update active tab in navbar when arrows are clicked
-# leftarrowclicks <- reactive({
-#   input$dataleft+input$plotleft+input$fitleft
-# })
-# rightarrowclicks <- reactive({
-#   input$dataright+input$plotright+input$fitright
-# })
-# observe({
-#   if(leftarrowclicks() == 0) {return()}
-#   tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4')
-#   current <- isolate(which(input$navbar == tabOptions))
-#   updateTabsetPanel(session, 'navbar', selected = tabOptions[current-1])
-# })
-# observe({
-#   if(rightarrowclicks() == 0) {return()}
-#   tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4')
-#   current <- isolate(which(input$navbar == tabOptions))
-#   updateTabsetPanel(session, 'navbar', selected = tabOptions[current+1])
-# })
+leftarrowclicks <- reactive({
+  input$dataleft+input$plotleft+input$fitleft+input$diagleft+input$simleft
+})
+rightarrowclicks <- reactive({
+  input$dataright+input$plotright+input$fitright+input$diagright+input$simright
+})
+observe({
+  if(leftarrowclicks() == 0) {return()}
+  tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7')
+  current <- isolate(which(input$navbar == tabOptions))
+  updateTabsetPanel(session, 'navbar', selected = tabOptions[current-1])
+})
+observe({
+  if(rightarrowclicks() == 0) {return()}
+  tabOptions <- c('tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7')
+  current <- isolate(which(input$navbar == tabOptions))
+  updateTabsetPanel(session, 'navbar', selected = tabOptions[current+1])
+})
 
 observeEvent(input$nwnum1,{
   values$nwnum <- "single"

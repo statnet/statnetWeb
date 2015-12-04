@@ -21,7 +21,8 @@ code {
   cursor: pointer;
 }
 #dataleft, #fitleft,
-#plotleft {
+#plotleft, #diagleft,
+#simleft {
   position: absolute;
   top: 50px;
   right: 65px;
@@ -29,7 +30,8 @@ code {
   cursor: pointer;
 }
 #dataright, #fitright,
-#plotright {
+#plotright, #diagright,
+#simright {
   position: absolute;
   top: 50px;
   right: 38px;
@@ -37,9 +39,11 @@ code {
   cursor: pointer;
 }
 
-#dataleft:hover, #fitleft:hover,
-#plotleft:hover, #dataright:hover,
-#fitright:hover, #plotright:hover,
+#dataleft:hover, #dataright:hover,
+#fitleft:hover, #fitright:hover,
+#plotleft:hover, #plotright:hover,
+#diagleft:hover, #diagright:hover,
+#simleft:hover, #simright:hover,
 .helper-btn:hover {
   color: #3A3A3A;
 }
