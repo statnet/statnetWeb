@@ -1034,7 +1034,29 @@ conditionalPanel("output.nwnum == 'single'",
              br(),
              verbatimTextOutput("mcmcsum"))
   )
-)
-)
-  ) #end navbarPage
+),
+icon("question-circle", class = "fa-2x helper-btn"),
+div(class = "helper-box",
+    p("help help help")),
+actionLink("diagleft", icon = icon("arrow-left", class = "fa-2x"),
+           label = NULL),
+actionLink("diagright", icon = icon("arrow-right", class = "fa-2x"),
+           label = NULL)
+),
+tabPanel("Simulations", value = "tab6",
+#include progress box when this tab is loading
+div(class = "busy",
+   p("Calculation in progress..."),
+   img(src="ajax-loader.gif")
+   ),
+icon("question-circle", class = "fa-2x helper-btn"),
+div(class = "helper-box",
+    p("help help help")),
+actionLink("simleft", icon = icon("arrow-left", class = "fa-2x"),
+           label = NULL),
+actionLink("simright", icon = icon("arrow-right", class = "fa-2x"),
+           label = NULL)
+),
+tabPanel("Help", value = "tab7")
+) #end navbarPage
 ) #end shinyUI
