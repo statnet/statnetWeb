@@ -971,8 +971,14 @@ stergm.gof <- reactive({
 sim <- reactive({
   if(input$simButton == 0){return()}
   isolate({
-    simulate.stergm(stergm.fit(), nsim = input$nsims,
-                    time.slices = input$nslices, nw.start = "first")
+    if(estimate() == "EGMME"){
+      simulate.stergm(stergm.fit(), nsim = input$nsims,
+                      time.slices = input$nslices)
+    } else {
+      simulate.stergm(stergm.fit(), nsim = input$nsims,
+                    time.slices = input$nslices,
+                    nw.start = input$nwstart)
+    }
   })
 })
 
@@ -1908,7 +1914,7 @@ output$dynamicsize2 <- renderUI({
 outputOptions(output,'dynamicsize2',suspendWhenHidden=FALSE)
 
 output$simplot <- ndtv:::renderNdtvAnimationWidget({
-  if (!("network" %in% class(sim()))){
+  if (!("networkDynamic" %in% class(sim()))){
     return()
   }
 

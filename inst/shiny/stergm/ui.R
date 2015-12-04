@@ -1064,10 +1064,20 @@ fluidRow(
          numericInput("nslices", label = NULL,
                       min = 1, value = 20)
   ),
-  column(1,
-         actionButton("simButton", "Simulate", class = "btn-primary",
-                      style = "margin-top: 20px;")
+  conditionalPanel("output.nwnum == 'multiple'",
+     column(4,
+            strong("Start simulation from:"),
+            selectInput("nwstart", label = NULL,
+                        choices = c("first time point used in fitting" = "first",
+                                    "last time point used in fitting" = "last"))
+      )
   )
+),
+fluidRow(
+   column(1,
+     actionButton("simButton", "Simulate", class = "btn-primary",
+                    style = "margin-bottom: 10px;")
+   )
 ),
 column(8,
   tabsetPanel(
