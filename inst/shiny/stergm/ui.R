@@ -994,12 +994,16 @@ div(class = "busy",
  actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
             label = NULL)
  ),
-tabPanel("GOF", value = "tab5",
+tabPanel("Diagnostics", value = "tab5",
 #include progress box when this tab is loading
 div(class = "busy",
    p("Calculation in progress..."),
    img(src="ajax-loader.gif")
 ),
+p("Currently the", code("tergm"), "package supports MCMC diagnostics
+  for EGMME models only and Goodness of Fit diagnostics for CMLE models only."),
+br(),
+conditionalPanel("output.nwnum == 'multiple'",
  tabsetPanel(
   tabPanel("Formation",
     br(),
@@ -1020,6 +1024,17 @@ div(class = "busy",
      )
   )
  )
+),
+conditionalPanel("output.nwnum == 'single'",
+  tabsetPanel(
+    tabPanel("Plots",
+             uiOutput("mcmc_ui")
+             ),
+    tabPanel("Summary",
+             br(),
+             verbatimTextOutput("mcmcsum"))
+  )
+)
 )
   ) #end navbarPage
 ) #end shinyUI

@@ -836,6 +836,10 @@ formation <- reactive({
   isolate({input$formation})
 })
 
+nformcoefs <- reactive({
+  length(strsplit(formation(), split = "+", fixed = TRUE))
+})
+
 dissolution <- reactive({
   if(values$nwnum == "single"){
     paste(input$dissolution, collapse = " + ")
@@ -958,8 +962,6 @@ stergm.fit <- reactive({
 
   return(fit)
 })
-
-
 
 stergm.gof <- reactive({
   if(estimate() == "EGMME"){return()}
@@ -1761,8 +1763,7 @@ output$prefitsum <- renderPrint({
   if(estimate() == "EGMME"){
     summary(as.formula(paste("nw() ~", formation())))
   } else {
-    nterms <- length(attr(terms(f), which = "term.labels")) +
-      length(attr(terms(f), which = "offset"))
+    nterms <- length(strsplit(formation(), split = "+", fixed = TRUE))
     summ <- summary(f, at = CMLEtimes())
     if(nterms == 1){
       colnames(summ) <- ""
@@ -1791,6 +1792,10 @@ output$modelfitsum <- renderPrint({
   summary(stergm.fit())
 })
 
+output$mcmcplot <- renderPlot({
+  plot(mcmcdiag())
+})
+
 output$gofsumform <- renderPrint({
   stergm.gof()$formation
 })
@@ -1817,5 +1822,19 @@ output$gofplotdiss <- renderPlot({
   }
   plot(stergm.gof()$dissolution, cex.lab = 1.8, cex.axis = 1.5)
 }, height = 1200)
+
+output$mcmcplot <- renderPlot({
+  if(estimate() == "CMLE"){return()}
+  mcmc.diagnostics(stergm.fit(), vars.per.page = nformcoefs())
+})
+output$mcmc_ui <- renderUI({
+  vpp <- nformcoefs()
+  plotOutput("mcmcplot", height = vpp * 200)
+})
+
+output$mcmcsum <- renderPrint({
+  if(estimate() == "CMLE"){return()}
+  mcmc.diagnostics(stergm.fit())
+})
 
 })
