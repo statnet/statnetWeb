@@ -1071,8 +1071,8 @@ fluidRow(
 ),
 column(8,
   tabsetPanel(
-    tabPanel("Dynamic Network Plot"
-
+    tabPanel("Dynamic Network Plot",
+             ndtv:::ndtvAnimationWidgetOutput("simplot")
     ),
     tabPanel("Simulation Statistics"
 
@@ -1081,11 +1081,23 @@ column(8,
 ),
 column(4,
   tabsetPanel(
-    tabPanel("Display Options"
+    tabPanel("Display Options",
+      wellPanel(
+        checkboxInput('vnames2',
+                      label = 'Display vertex names',
+                      value = FALSE),
+        br(),
+        sliderInput('transp2',
+                    label = 'Vertex opacity',
+                    min = 0, max = 1, value = 1),
+        br(),
+        uiOutput("dynamiccolor2"),
+        uiOutput("dynamicsize2")
+      )
 
     ),
-    tabPanel("Simulation Summary"
-
+    tabPanel("Simulation Summary",
+      verbatimTextOutput("simsumm")
     )
   )
 ),

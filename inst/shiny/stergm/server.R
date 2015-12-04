@@ -968,6 +968,54 @@ stergm.gof <- reactive({
   gof(stergm.fit())
 })
 
+sim <- reactive({
+  if(input$simButton == 0){return()}
+  isolate({
+    simulate.stergm(stergm.fit(), nsim = input$nsims,
+                    time.slices = input$nslices, nw.start = "first")
+  })
+})
+
+nodesize2 <- reactive({
+  if(!("network" %in% class(sim()))){return()}
+  nw_var <- sim()
+  #scale size of nodes onto range between .7 and 3.5
+  if (input$sizeby2 == '1'){
+    size = 1
+  } else {
+    minsize <- min(get.vertex.attribute(nw_var,input$sizeby2))
+    maxsize <- max(get.vertex.attribute(nw_var,input$sizeby2))
+    size <- (get.vertex.attribute(nw_var,input$sizeby2)-minsize) /
+      (maxsize-minsize) * (3.5 - .7) + .7
+  }
+  size
+})
+
+#vertex color
+vcol2 <- reactive({
+  if(!is.network(sim())){return()}
+  nw_var <- sim()
+  if(input$colorby2 == 2){
+    vcol <- rep(2, nodes())
+  } else {
+    full_list <- get.vertex.attribute(nw_var,input$colorby2)
+    short_list <- sort(unique(full_list))
+    ncolors <- length(short_list)
+    if(is.element("Other", short_list)){ #to be consistent with order of legend
+      short_list <- short_list[-which(short_list == "Other")]
+      short_list <- c(short_list, "Other")
+    }
+    full_list <- match(full_list, short_list)
+    #each elt corresponds to integer position in short_list
+    pal <- c('red', 'blue', 'green3', 'cyan', 'magenta3',
+             'yellow', 'orange', 'black', 'grey')
+    if(ncolors>9){
+      pal <- colorRampPalette(brewer.pal(11,"RdYlBu"))(ncolors)
+    }
+    vcol <- pal[full_list]
+  }
+  vcol
+})
 
 # Output Objects ----------------------------------------------------------
 
@@ -1842,6 +1890,44 @@ output$currentnw2 <- renderPrint({
     return(cat('Upload a network'))
   }
   cat(isolate(nwname()))
+})
+
+output$dynamiccolor2 <- renderUI({
+  selectInput('colorby2',
+              label = 'Color vertices according to:',
+              c('None' = 2, attrib()))
+})
+outputOptions(output,'dynamiccolor2', suspendWhenHidden=FALSE, priority=10)
+
+output$dynamicsize2 <- renderUI({
+  choices <- c('None' = 1, numattr())
+  selectInput('sizeby2',
+              label = 'Size vertices according to:',
+              choices = choices)
+})
+outputOptions(output,'dynamicsize2',suspendWhenHidden=FALSE)
+
+output$simplot <- ndtv:::renderNdtvAnimationWidget({
+  if (!("network" %in% class(sim()))){
+    return()
+  }
+
+  color <- adjustcolor(vcol2(), alpha.f = input$transp2)
+  vcex <- nodesize2()
+  if(is.bipartite(sim())){
+    sides <- c(rep(50, sim()$gal$bipartite),
+               rep(3, nodes2() - sim()$gal$bipartite))
+  } else{
+    sides <- 50
+  }
+  ndtv::render.d3movie(sim(),
+                       output.mode = "htmlWidget",
+                       launchBrowser = FALSE,
+                       displaylabels = input$vnames2,
+                       vertex.col = color,
+                       vertex.sides = sides,
+                       vertex.cex = vcex)
+
 })
 
 })
