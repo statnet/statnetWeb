@@ -1082,9 +1082,13 @@ fluidRow(
 column(8,
   tabsetPanel(
     tabPanel("Dynamic Network Plot",
+             actionButton("simplotButton", "Make Plot"),
              ndtv:::ndtvAnimationWidgetOutput("simplot")
     ),
-    tabPanel("Simulation Statistics"
+    tabPanel("Simulation Statistics",
+             uiOutput("usesimno_ui"),
+             uiOutput("simstats_ui"),
+             plotOutput("simtermscatter")
 
     )
   )
@@ -1092,6 +1096,7 @@ column(8,
 column(4,
   tabsetPanel(
     tabPanel("Display Options",
+      br(),
       wellPanel(
         checkboxInput('vnames2',
                       label = 'Display vertex names',
@@ -1107,6 +1112,7 @@ column(4,
 
     ),
     tabPanel("Simulation Summary",
+      br(),
       verbatimTextOutput("simsumm")
     )
   )

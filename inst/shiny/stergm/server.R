@@ -968,23 +968,24 @@ stergm.gof <- reactive({
   gof(stergm.fit())
 })
 
-sim <- reactive({
+stergm.sim <- reactive({
   if(input$simButton == 0){return()}
   isolate({
     if(estimate() == "EGMME"){
-      simulate.stergm(stergm.fit(), nsim = input$nsims,
+      s <- simulate.stergm(stergm.fit(), nsim = input$nsims,
                       time.slices = input$nslices)
     } else {
-      simulate.stergm(stergm.fit(), nsim = input$nsims,
+      s <- simulate.stergm(stergm.fit(), nsim = input$nsims,
                     time.slices = input$nslices,
                     nw.start = input$nwstart)
     }
+    s
   })
 })
 
 nodesize2 <- reactive({
-  if(!("network" %in% class(sim()))){return()}
-  nw_var <- sim()
+  if(!("network" %in% class(stergm.sim()))){return()}
+  nw_var <- stergm.sim()
   #scale size of nodes onto range between .7 and 3.5
   if (input$sizeby2 == '1'){
     size = 1
@@ -999,8 +1000,8 @@ nodesize2 <- reactive({
 
 #vertex color
 vcol2 <- reactive({
-  if(!is.network(sim())){return()}
-  nw_var <- sim()
+  if(!is.network(stergm.sim())){return()}
+  nw_var <- stergm.sim()
   if(input$colorby2 == 2){
     vcol <- rep(2, nodes())
   } else {
@@ -1846,10 +1847,6 @@ output$modelfitsum <- renderPrint({
   summary(stergm.fit())
 })
 
-output$mcmcplot <- renderPlot({
-  plot(mcmcdiag())
-})
-
 output$gofsumform <- renderPrint({
   stergm.gof()$formation
 })
@@ -1913,26 +1910,66 @@ output$dynamicsize2 <- renderUI({
 })
 outputOptions(output,'dynamicsize2',suspendWhenHidden=FALSE)
 
+observeEvent(nw(), {
+
+})
+
 output$simplot <- ndtv:::renderNdtvAnimationWidget({
-  if (!("networkDynamic" %in% class(sim()))){
+  if (!("networkDynamic" %in% class(stergm.sim()))){
     return()
   }
+  input$simplotButton
 
   color <- adjustcolor(vcol2(), alpha.f = input$transp2)
   vcex <- nodesize2()
-  if(is.bipartite(sim())){
-    sides <- c(rep(50, sim()$gal$bipartite),
-               rep(3, nodes2() - sim()$gal$bipartite))
+  if(is.bipartite(stergm.sim())){
+    sides <- c(rep(50, stergm.sim()$gal$bipartite),
+               rep(3, nodes2() - stergm.sim()$gal$bipartite))
   } else{
     sides <- 50
   }
-  ndtv::render.d3movie(sim(),
+  ndtv::render.d3movie(stergm.sim(),
                        output.mode = "htmlWidget",
                        launchBrowser = FALSE,
                        displaylabels = input$vnames2,
                        vertex.col = color,
                        vertex.sides = sides,
                        vertex.cex = vcex)
+
+})
+
+output$simsumm <- renderPrint({
+  stergm.sim()
+})
+
+output$usesimno_ui <- renderUI({
+  numericInput("usesimno", label = "Choose a simulation number",
+               min = 1, max = input$nsims, value = 1)
+})
+
+output$simstats_ui <- renderUI({
+  output$simstatsplot <- renderPlot({
+    if(estimate() == "EGMME"){
+      par(mar = c(3,3,2,2))
+      if(input$nsims == 1){
+        sim <- stergm.sim()
+        plot(attributes(sim)$stats)
+      } else {
+        sim <- stergm.sim()
+        plot(attributes(sim[[input$usesimno]])$stats)
+      }
+    }
+  }, height = 300)
+})
+
+output$simtermscatter <- renderPlot({
+  if(estimate() == "EGMME" & nformcoefs() >= 2){
+    if(input$nsims == 1){
+      plot(as.matrix(attributes(stergm.sim()$stats)))
+    } else {
+      plot(as.matrix(attributes(stergm.sim()[[input$usesimno]]$stats)))
+    }
+  }
 
 })
 
