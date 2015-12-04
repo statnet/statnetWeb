@@ -1837,4 +1837,11 @@ output$mcmcsum <- renderPrint({
   mcmc.diagnostics(stergm.fit())
 })
 
+output$currentnw2 <- renderPrint({
+  if(!is.network(nw())){
+    return(cat('Upload a network'))
+  }
+  cat(isolate(nwname()))
+})
+
 })

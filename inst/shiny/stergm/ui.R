@@ -1049,6 +1049,46 @@ div(class = "busy",
    p("Calculation in progress..."),
    img(src="ajax-loader.gif")
    ),
+fluidRow(
+  column(2,
+         strong("Network:"),
+         verbatimTextOutput("currentnw2")
+  ),
+  column(2,
+         strong("Number of simulations:"),
+         numericInput("nsims", label = NULL,
+                      min = 1, value = 1)
+  ),
+  column(2,
+         strong("Number of time slices:"),
+         numericInput("nslices", label = NULL,
+                      min = 1, value = 20)
+  ),
+  column(1,
+         actionButton("simButton", "Simulate", class = "btn-primary",
+                      style = "margin-top: 20px;")
+  )
+),
+column(8,
+  tabsetPanel(
+    tabPanel("Dynamic Network Plot"
+
+    ),
+    tabPanel("Simulation Statistics"
+
+    )
+  )
+),
+column(4,
+  tabsetPanel(
+    tabPanel("Display Options"
+
+    ),
+    tabPanel("Simulation Summary"
+
+    )
+  )
+),
 icon("question-circle", class = "fa-2x helper-btn"),
 div(class = "helper-box",
     p("help help help")),
