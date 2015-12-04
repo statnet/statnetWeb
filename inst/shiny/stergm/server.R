@@ -1805,16 +1805,17 @@ output$gofplotform <- renderPlot({
   } else {
     par(mfrow = c(3,1))
   }
-  plot(stergm.gof()$formation)
+  plot(stergm.gof()$formation, cex.lab = 1.8, cex.axis = 1.5)
 }, height = 1200)
 
 output$gofplotdiss <- renderPlot({
+  par(cex.lab = 1.8, cex.axis = 2)
   if(is.directed(nw())){
     par(mfrow = c(4,1))
   } else {
     par(mfrow = c(3,1))
   }
-  plot(stergm.gof()$dissolution)
+  plot(stergm.gof()$dissolution, cex.lab = 1.8, cex.axis = 1.5)
 }, height = 1200)
 
 })

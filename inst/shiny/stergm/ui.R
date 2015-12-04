@@ -24,7 +24,11 @@ shinyUI(
                tags$link(rel = "stylesheet", type = "text/css",
                          href = "style.css"),
                tags$script(type = "text/javascript", src = "alert.js")),
-
+             #include progress box when this tab is loading
+             div(class = "busy",
+                 p("Calculation in progress..."),
+                 img(src="ajax-loader.gif")
+             ),
              fluidRow(
                column(2,
                       actionButton("aboutButton", label = "About stergm",
@@ -152,6 +156,11 @@ CRAN.R-project.org/package=tergm.")
 
 
 tabPanel("Data", value = "tab2",
+#include progress box when this tab is loading
+div(class = "busy",
+   p("Calculation in progress..."),
+   img(src="ajax-loader.gif")
+),
 column(7,
 tabsetPanel(
   tabPanel("Upload Network",
@@ -492,38 +501,43 @@ actionLink("dataright", icon = icon("arrow-right", class = "fa-2x"),
 
 
 tabPanel("Network Descriptives", value = "tab3",
-   fluidRow(
-   column(7,
-    tabsetPanel(id = 'plottabs',
-        tabPanel('Network Plot', br(),
-                 ndtv:::ndtvAnimationWidgetOutput("nwplot"),
-                 div(id = "legendbox",
-                     plotOutput("legendplot", height = 248))
-        ),
-        tabPanel('Attributes', br(),
-           conditionalPanel('input.attrview == "Large table"',
-                            dataTableOutput("attrtbl")
-           ),
-           conditionalPanel('input.attrview == "Plot summaries"',
-                            tags$label("Type of plots"),
-                            selectInput("attrhistaxis",
-                                        label = NULL,
-                                        choices = c("Y-axis: counts" = "count",
-                                                    "Y-axis: percents" = "percent")),
-                            uiOutput("attrplotspace"))
+#include progress box when this tab is loading
+div(class = "busy",
+   p("Calculation in progress..."),
+   img(src="ajax-loader.gif")
+),
+ fluidRow(
+ column(7,
+  tabsetPanel(id = 'plottabs',
+      tabPanel('Network Plot', br(),
+               ndtv:::ndtvAnimationWidgetOutput("nwplot"),
+               div(id = "legendbox",
+                   plotOutput("legendplot", height = 248))
+      ),
+      tabPanel('Attributes', br(),
+         conditionalPanel('input.attrview == "Large table"',
+                          dataTableOutput("attrtbl")
+         ),
+         conditionalPanel('input.attrview == "Plot summaries"',
+                          tags$label("Type of plots"),
+                          selectInput("attrhistaxis",
+                                      label = NULL,
+                                      choices = c("Y-axis: counts" = "count",
+                                                  "Y-axis: percents" = "percent")),
+                          uiOutput("attrplotspace"))
 
-        ),
-        tabPanel('Degree Distribution',
-           p(class = 'helper', id = 'ddhelper', icon('question-circle')),
-           div(class = 'mischelperbox', id = 'ddhelperbox',
-               "Degrees are a node level measure for the number of edges incident on each node.",
-               "The degree distribution shows how the edges in a network are distributed among the",
-               "vertices. The amount (or proportion) of vertices with low, medium",
-               "or high degrees contribute to the overall structure of the",
-               "network. The degree distributions of directed graphs can",
-               "be subset by in-degree or out-degree."),
-           plotOutput('degreedist')
-        ),
+      ),
+      tabPanel('Degree Distribution',
+         p(class = 'helper', id = 'ddhelper', icon('question-circle')),
+         div(class = 'mischelperbox', id = 'ddhelperbox',
+             "Degrees are a node level measure for the number of edges incident on each node.",
+             "The degree distribution shows how the edges in a network are distributed among the",
+             "vertices. The amount (or proportion) of vertices with low, medium",
+             "or high degrees contribute to the overall structure of the",
+             "network. The degree distributions of directed graphs can",
+             "be subset by in-degree or out-degree."),
+         plotOutput('degreedist')
+      ),
 #         tabPanel('Geodesic Distribution',
 #            p(class = 'helper', id = 'gdhelper', icon('question-circle')),
 #            div(class = 'mischelperbox', id = 'gdhelperbox',
@@ -533,169 +547,169 @@ tabPanel("Network Descriptives", value = "tab3",
 #                "structure of network connectivity."),
 #            plotOutput('geodistplot')
 #         ),
-        tabPanel('More', value = 'More', br(),
-           conditionalPanel("output.nwnum == 'multiple'",
-                            h5('Durations', icon('angle-double-down'),
-                               id = "durationplottitle"),
-                            wellPanel(id = "durationplotbox",
-                                      plotOutput("durplot")),
-                            h5('Temporal network statistics',
-                               icon('angle-double-down'),
-                               id = "tstattitle"),
-                            wellPanel(id = "tstatbox",
-                                      uiOutput("tstatterm_ui"),
-                                      plotOutput("tstatplot")),
-                            h5('Forward reachable sets',
-                               icon('angle-double-down'),
-                               id = 'frstitle'),
-                            wellPanel(id = "frsbox",
+      tabPanel('More', value = 'More', br(),
+         conditionalPanel("output.nwnum == 'multiple'",
+                          h5('Durations', icon('angle-double-down'),
+                             id = "durationplottitle"),
+                          wellPanel(id = "durationplotbox",
+                                    plotOutput("durplot")),
+                          h5('Temporal network statistics',
+                             icon('angle-double-down'),
+                             id = "tstattitle"),
+                          wellPanel(id = "tstatbox",
+                                    uiOutput("tstatterm_ui"),
+                                    plotOutput("tstatplot")),
+                          h5('Forward reachable sets',
+                             icon('angle-double-down'),
+                             id = 'frstitle'),
+                          wellPanel(id = "frsbox",
+                                    fluidRow(
+                                      uiOutput("frs_ui1"),
+                                      uiOutput("frs_ui2"),
+                                      uiOutput("frs_ui3")
+                                    ),
+                                    verbatimTextOutput("frsnodeset"),
+                                    fluidRow(
+                                      column(3,
+                                             actionButton("frsButton",
+                                                 label = "Get FRS Plot")),
+                                      column(5,
+                                             checkboxInput("frslines",
+                                                 label = "lines for each node",
+                                                 value = FALSE))),
+                                    helpText("This plot will take a long time to
+                                             run if your network has many nodes and/or
+                                             many time panels."),
+                                    plotOutput("frsplot"))
+                          ),
+         conditionalPanel("output.nwnum == 'single'",
+                          h5('Graph-level descriptive indices',
+                             icon('angle-double-down'), id="graphleveltitle"),
+                          wellPanel(id="graphlevelbox",
+                                    fluidRow(
+                                      column(4, offset = 7, tags$u('Measure')),
                                       fluidRow(
-                                        uiOutput("frs_ui1"),
-                                        uiOutput("frs_ui2"),
-                                        uiOutput("frs_ui3")
-                                      ),
-                                      verbatimTextOutput("frsnodeset"),
-                                      fluidRow(
-                                        column(3,
-                                               actionButton("frsButton",
-                                                   label = "Get FRS Plot")),
-                                        column(3,
-                                               checkboxInput("frslines",
-                                                   label = "lines for each node",
-                                                   value = FALSE))),
-                                      helpText("This plot will take a long time to
-                                               run if your network has many nodes and/or
-                                               many time panels."),
-                                      plotOutput("frsplot"))
-                            ),
-           conditionalPanel("output.nwnum == 'single'",
-                            h5('Graph-level descriptive indices',
-                               icon('angle-double-down'), id="graphleveltitle"),
-                            wellPanel(id="graphlevelbox",
-                                      fluidRow(
-                                        column(4, offset = 7, tags$u('Measure')),
-                                        fluidRow(
-                                          column(4, p('Density:', class = 'stitle')),
-                                          column(3, p(textOutput('gden'), class = 'snum'))),
+                                        column(4, p('Density:', class = 'stitle')),
+                                        column(3, p(textOutput('gden'), class = 'snum'))),
 
-                                        fluidRow(
-                                          column(4, p('Degree:', class = 'stitle')),
-                                          column(3, p(textOutput('gdeg'), class = 'snum')),
-                                          column(4, selectInput('gdegcmode', label = NULL,
-                                                                choices = c('indegree', 'outdegree', 'total')
-                                          ))),
-                                        fluidRow(
-                                          column(4, p('Reciprocity:', class = 'stitle')),
-                                          column(3, p(textOutput('grecip'), class = 'snum')),
-                                          column(4, selectInput('grecipmeas',label = NULL,
-                                                                choices = c('dyadic','dyadic.nonnull','edgewise',
-                                                                            'edgewise.lrr','correlation')))),
-                                        fluidRow(
-                                          column(4, p('Transitivity:'), class = 'stitle'),
-                                          column(3, p(textOutput('gtrans'), class = 'snum')),
-                                          column(4, selectInput('gtransmeas',label = NULL,
-                                                                choices = c('weak','strong','weakcensus',
-                                                                            'strongcensus','rank','correlation'))
-                                          )),
-                                        fluidRow(
-                                          column(4, p('Betweenness:', class = 'stitle')),
-                                          column(3, p(textOutput('gbetw'), class = 'snum')),
-                                          column(4, selectInput('gbetwcmode', label = NULL,
-                                                                choices = c('directed','undirected',
-                                                                            'endpoints','proximalsrc',
-                                                                            'proximaltar','proximalsum',
-                                                                            'lengthscaled', 'linearscaled'))
-                                          )),
-                                        fluidRow(
-                                          column(4, p('Closeness:', class = 'stitle')),
-                                          column(3, p(textOutput('gclose'), class = 'snum')),
-                                          column(4, selectInput('gclosecmode', label = NULL,
-                                                                choices = c('directed','undirected',
-                                                                            'suminvdir','suminvundir')))),
-                                        fluidRow(
-                                          column(4, p('Stress Centrality:', class = 'stitle')),
-                                          column(3, p(textOutput('gstress'), class = 'snum')),
-                                          column(4, selectInput('gstresscmode', label = NULL,
-                                                                choices = c('directed','undirected')))
-                                        ),
-                                        fluidRow(
-                                          column(4, p('(Harary) Graph Centrality:', class = 'stitle')),
-                                          column(3, p(textOutput('ggraphcent'), class = 'snum')),
-                                          column(4, selectInput('ggraphcentcmode', label = NULL,
-                                                                choices = c('directed', 'undirected')))
-                                        ),
-                                        fluidRow(
-                                          column(4, p('Eigenvector Centrality:', class = 'stitle')),
-                                          column(3, p(textOutput('gevcent'), class = 'snum')),
-                                          column(4, br())
-                                        ),
-                                        fluidRow(
-                                          column(4, p('Information Centrality:', class = 'stitle')),
-                                          column(3, p(textOutput('ginfocent'), class = 'snum')),
-                                          column(4, selectInput('ginfocentcmode',label = NULL,
-                                                                choices = c('weak', 'strong', 'upper',
-                                                                            'lower')))
-                                        )
+                                      fluidRow(
+                                        column(4, p('Degree:', class = 'stitle')),
+                                        column(3, p(textOutput('gdeg'), class = 'snum')),
+                                        column(4, selectInput('gdegcmode', label = NULL,
+                                                              choices = c('indegree', 'outdegree', 'total')
+                                        ))),
+                                      fluidRow(
+                                        column(4, p('Reciprocity:', class = 'stitle')),
+                                        column(3, p(textOutput('grecip'), class = 'snum')),
+                                        column(4, selectInput('grecipmeas',label = NULL,
+                                                              choices = c('dyadic','dyadic.nonnull','edgewise',
+                                                                          'edgewise.lrr','correlation')))),
+                                      fluidRow(
+                                        column(4, p('Transitivity:'), class = 'stitle'),
+                                        column(3, p(textOutput('gtrans'), class = 'snum')),
+                                        column(4, selectInput('gtransmeas',label = NULL,
+                                                              choices = c('weak','strong','weakcensus',
+                                                                          'strongcensus','rank','correlation'))
+                                        )),
+                                      fluidRow(
+                                        column(4, p('Betweenness:', class = 'stitle')),
+                                        column(3, p(textOutput('gbetw'), class = 'snum')),
+                                        column(4, selectInput('gbetwcmode', label = NULL,
+                                                              choices = c('directed','undirected',
+                                                                          'endpoints','proximalsrc',
+                                                                          'proximaltar','proximalsum',
+                                                                          'lengthscaled', 'linearscaled'))
+                                        )),
+                                      fluidRow(
+                                        column(4, p('Closeness:', class = 'stitle')),
+                                        column(3, p(textOutput('gclose'), class = 'snum')),
+                                        column(4, selectInput('gclosecmode', label = NULL,
+                                                              choices = c('directed','undirected',
+                                                                          'suminvdir','suminvundir')))),
+                                      fluidRow(
+                                        column(4, p('Stress Centrality:', class = 'stitle')),
+                                        column(3, p(textOutput('gstress'), class = 'snum')),
+                                        column(4, selectInput('gstresscmode', label = NULL,
+                                                              choices = c('directed','undirected')))
+                                      ),
+                                      fluidRow(
+                                        column(4, p('(Harary) Graph Centrality:', class = 'stitle')),
+                                        column(3, p(textOutput('ggraphcent'), class = 'snum')),
+                                        column(4, selectInput('ggraphcentcmode', label = NULL,
+                                                              choices = c('directed', 'undirected')))
+                                      ),
+                                      fluidRow(
+                                        column(4, p('Eigenvector Centrality:', class = 'stitle')),
+                                        column(3, p(textOutput('gevcent'), class = 'snum')),
+                                        column(4, br())
+                                      ),
+                                      fluidRow(
+                                        column(4, p('Information Centrality:', class = 'stitle')),
+                                        column(3, p(textOutput('ginfocent'), class = 'snum')),
+                                        column(4, selectInput('ginfocentcmode',label = NULL,
+                                                              choices = c('weak', 'strong', 'upper',
+                                                                          'lower')))
                                       )
-                                    ) #end wellpanel
-                          )
-        )
-      ), #end tabsetPanel
-     br(),
-     br()
-     ), #end 7 column
-     column(4,
-            tabsetPanel(id = 'displaytabs',
-              tabPanel(title = 'Display Options', br(),
-                 wellPanel(
-                   conditionalPanel('input.plottabs == "Network Plot"',
-                      checkboxInput('vnames',
-                                    label = 'Display vertex names',
-                                    value = FALSE),
-                      br(),
-                      sliderInput('transp',
-                                  label = 'Vertex opacity',
-                                  min = 0, max = 1, value = 1),
-                      br(),
-                      uiOutput("dynamiccolor"),
-                      conditionalPanel("Number(output.attrlevels) > 9",
-                         column(10,
-                                p(id = "closewarning1", icon(name = "remove"),
-                                  class = "warning"),
-                                div(class = "warning", id = "colorwarning1",
-                                    span(tags$u("Note:"),
-                                         "Color palette becomes a gradient for
-                                         attributes with more than nine levels.")
-                                )
-                         )),
-                      uiOutput('dynamicsize'),
-                      br()
+                                    )
+                                  ) #end wellpanel
+                        )
+      )
+    ), #end tabsetPanel
+   br(),
+   br()
+   ), #end 7 column
+   column(4,
+          tabsetPanel(id = 'displaytabs',
+            tabPanel(title = 'Display Options', br(),
+               wellPanel(
+                 conditionalPanel('input.plottabs == "Network Plot"',
+                    checkboxInput('vnames',
+                                  label = 'Display vertex names',
+                                  value = FALSE),
+                    br(),
+                    sliderInput('transp',
+                                label = 'Vertex opacity',
+                                min = 0, max = 1, value = 1),
+                    br(),
+                    uiOutput("dynamiccolor"),
+                    conditionalPanel("Number(output.attrlevels) > 9",
+                       column(10,
+                              p(id = "closewarning1", icon(name = "remove"),
+                                class = "warning"),
+                              div(class = "warning", id = "colorwarning1",
+                                  span(tags$u("Note:"),
+                                       "Color palette becomes a gradient for
+                                       attributes with more than nine levels.")
+                              )
+                       )),
+                    uiOutput('dynamicsize'),
+                    br()
 #                       downloadButton('nwplotdownload',
 #                                      label = "Download Plot", class = "btn-sm")
-                      ),
-                   conditionalPanel(condition='input.plottabs == "Attributes"',
-                      selectInput("attrview", label = "View attributes in:",
-                                  choices = c("Large table",
-                                              "Plot summaries")),
-                      conditionalPanel('input.attrview == "Large table"',
-                                       uiOutput("ndslices_tbl_ui")),
-                      br(),
-                      uiOutput("attrcheck")
-                   ),
-                   conditionalPanel('input.plottabs == "Degree Distribution"',
-                      uiOutput("dynamiccmode_dd"),
-                      tags$label("Y-axis units:"), br(),
-                      actionButton("countButton_dd", label = "Count of vertices",
-                                   class = "btn-sm active"),
-                      actionButton("percButton_dd", label = "Percent of vertices",
-                                   class = "btn-sm"),
-                      br(), br(),
-                      uiOutput("dynamiccolor_dd"),
-                      uiOutput("ndslices_dd_ui")
+                    ),
+                 conditionalPanel(condition='input.plottabs == "Attributes"',
+                    selectInput("attrview", label = "View attributes in:",
+                                choices = c("Large table",
+                                            "Plot summaries")),
+                    conditionalPanel('input.attrview == "Large table"',
+                                     uiOutput("ndslices_tbl_ui")),
+                    br(),
+                    uiOutput("attrcheck")
+                 ),
+                 conditionalPanel('input.plottabs == "Degree Distribution"',
+                    uiOutput("dynamiccmode_dd"),
+                    tags$label("Y-axis units:"), br(),
+                    actionButton("countButton_dd", label = "Count of vertices",
+                                 class = "btn-sm active"),
+                    actionButton("percButton_dd", label = "Percent of vertices",
+                                 class = "btn-sm"),
+                    br(), br(),
+                    uiOutput("dynamiccolor_dd"),
+                    uiOutput("ndslices_dd_ui")
 #                       downloadButton('degreedistdownload',
 #                                      label = "Download Plot",
 #                                      class = "btn-sm")
-                   )
+                 )
 #                    conditionalPanel('input.plottabs == "Geodesic Distribution"',
 #                       tags$label("Y-axis units:"), br(),
 #                       actionButton("countButton_gd", "Count of vertex pairs",
@@ -747,256 +761,265 @@ tabPanel("Network Descriptives", value = "tab3",
 #                       p("No display options at this time,",
 #                         "stay tuned for updates!")
 #                    )
-                 )),
-              tabPanel(title = 'Network Summary', br(),
-                       verbatimTextOutput('attr2'))
-            )
-     )
-   ),
-   icon("question-circle", class = "fa-2x helper-btn"),
-   div(class = "helper-box",
-       p("help help help")),
-   actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
-              label = NULL),
-   actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
-              label = NULL)
-   ),
+               )),
+            tabPanel(title = 'Network Summary', br(),
+                     verbatimTextOutput('attr2'))
+          )
+   )
+ ),
+ icon("question-circle", class = "fa-2x helper-btn"),
+ div(class = "helper-box",
+     p("help help help")),
+ actionLink("plotleft", icon = icon("arrow-left", class = "fa-2x"),
+            label = NULL),
+ actionLink("plotright", icon = icon("arrow-right", class = "fa-2x"),
+            label = NULL)
+ ),
 
 # Fit Model ---------------------------------------------------------------
 
 
 tabPanel("Fit Model", value = "tab4",
-
-   fluidRow(
-     column(3,
-        div(class = "xscroll",
-            strong("Network:"),
-            verbatimTextOutput("currentnw1"),
-            strong("Formation:"),
-            verbatimTextOutput("form"),
-            strong("Dissolution:"),
-            verbatimTextOutput("diss")
-        ),
-        actionButton("fitButton", "Fit Model",
-                     class = "btn-primary")
-     ),
-     column(7,
-            tabsetPanel(
-              tabPanel("Edit Formation",
-              fluidRow(
-                column(6,
-                   strong("Formula:"),
-                   helpText("Type in term(s) and their arguments. For
-                            multiple terms, separate with '+'."),
-                   div(textInput(inputId = "formation", label = NULL,
-                                 value = "edges"),
-                       title = paste("Type in term(s) and their arguments.",
-                                     "For multiple terms, separate with '+'.")
-                   ),
-                  actionButton('updateformulaButton', 'Update Formation',
-                               class = "btn-primary btn-sm"),
-                  actionButton('resetformulaButton', 'Reset Formation',
-                               class = "btn-sm")
-                      ),
-                column(6,
-                       conditionalPanel("output.nwnum == 'single'",
-                          strong("Target stats:"),
-                          helpText("Optional. Values of formation terms to be targeted if not
-                                   the sufficient statistics from cross-sectional network."),
-                          textInput("target.stats", label = NULL, value = ""),
-                          title = "Enter numeric values separated by commas."
-                        ),
-                       conditionalPanel("output.nwnum == 'multiple'",
-                          strong("Times:"),
-                          helpText("Times or indexes at which the networks",
-                                   "whose transition is to be modeled are observed."),
-                          checkboxInput("inclusivetimes",
-                                        label = "Include time points between slider values",
-                                        value = TRUE),
-                          uiOutput("CMLEtimes_ui")
-                        )
-
-                       )
-                ),
-              fluidRow(column(12,
-                 uiOutput("formcoefs")
-              )),
-              fluidRow(style = "margin-top: 5px;",
-                column(2,
-                       strong('Summary statistics:')),
-                column(10,
-                       verbatimTextOutput('prefitsum')))
-              ),
-              tabPanel("Edit Dissolution",
-
-                conditionalPanel("output.nwnum == 'single'",
-                 helpText("The dissolution formula may only include offsets
-                          of the terms in the formation. The order of the
-                          coefficients must correspond to the order of the terms."),
-
-                 fluidRow(column(12,
-                    strong("Terms:"),
-                    uiOutput("dissterms")
-                 ))
-                ),
-                conditionalPanel("output.nwnum == 'multiple'",
-                   fluidRow(column(12,
-                       strong("Terms:"),
-                       helpText("Type in term(s) and their arguments. For
-                            multiple terms, separate with '+'."),
-                       textInput("dissolution2", label = NULL, value = "",
-                                 width = "100%"),
-                       actionButton("updatedissButton", "Update Dissolution",
-                                    class = "btn-sm btn-primary"),
-                       actionButton("resetdissButton", "Reset Dissolution",
-                                    class = "btn-sm")
-                   ))
+#include progress box when this tab is loading
+div(class = "busy",
+   p("Calculation in progress..."),
+   img(src="ajax-loader.gif")
+),
+ fluidRow(
+   column(3,
+      div(class = "xscroll",
+          strong("Network:"),
+          verbatimTextOutput("currentnw1"),
+          strong("Formation:"),
+          verbatimTextOutput("form"),
+          strong("Dissolution:"),
+          verbatimTextOutput("diss")
+      ),
+      actionButton("fitButton", "Fit Model",
+                   class = "btn-primary")
+   ),
+   column(7,
+          tabsetPanel(
+            tabPanel("Edit Formation",
+            fluidRow(
+              column(6,
+                 strong("Formula:"),
+                 helpText("Type in term(s) and their arguments. For
+                          multiple terms, separate with '+'."),
+                 div(textInput(inputId = "formation", label = NULL,
+                               value = "edges"),
+                     title = paste("Type in term(s) and their arguments.",
+                                   "For multiple terms, separate with '+'.")
                  ),
-                 fluidRow(column(12,
-                     uiOutput("disscoefs")
-                        ))
+                actionButton('updateformulaButton', 'Update Formation',
+                             class = "btn-primary btn-sm"),
+                actionButton('resetformulaButton', 'Reset Formation',
+                             class = "btn-sm")
+                    ),
+              column(6,
+                     conditionalPanel("output.nwnum == 'single'",
+                        strong("Target stats:"),
+                        helpText("Optional. Values of formation terms to be targeted if not
+                                 the sufficient statistics from cross-sectional network."),
+                        textInput("target.stats", label = NULL, value = ""),
+                        title = "Enter numeric values separated by commas."
+                      ),
+                     conditionalPanel("output.nwnum == 'multiple'",
+                        strong("Times:"),
+                        helpText("Times or indexes at which the networks",
+                                 "whose transition is to be modeled are observed."),
+                        checkboxInput("inclusivetimes",
+                                      label = "Include time points between slider values",
+                                      value = TRUE),
+                        uiOutput("CMLEtimes_ui")
+                      )
+
+                     )
               ),
-              tabPanel("Control Options",
-                     fluidRow(
-                        column(5,
-                               checkboxInput('controldefault',
-                                             'Use default options',
-                                             value = TRUE))
-                     ),
-                     div(id = "controls", class = "gray",
-                      fluidRow(
-                        conditionalPanel("output.nwnum == 'multiple'",
-                          column(4,
-                                 numericInput('MCMCinterval',
-                                              label = "Interval:",
-                                              value = 1024),
-                                 title = paste("Number of proposals between sampled statistics.")
-                            ),
-                          column(4,
-                                 numericInput('MCMCburnin',
-                                              label = "Burn-in:",
-                                              value = 16384),
-                                 title = paste("Number of proposals before any MCMC sampling is done.",
-                                               "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
-                            ),
-                          column(4,
-                                 numericInput('MCMCsamplesize',
-                                              label = "Sample size:",
-                                              value = 1024),
-                                 title = paste("Number of network statistics, randomly drawn from a given distribution
-                                               on the set of all networks, returned by the Metropolis-Hastings algorithm.")
-                          ),
-                          column(4,
-                                 numericInput('MCMLEmaxit',
-                                              label = "Max it:",
-                                              value = 20),
-                                 title = paste("Maximum number of times the parameter for the MCMC should be updated
-                                               by maximizing the MCMC likelihood. At each step the parameter is changed
-                                               to the values that maximizes the MCMC likelihood based on the current sample.")
-                          )
-                          ),
-                        conditionalPanel("output.nwnum == 'single'",
-                          column(4,
-                                 numericInput("EGMME.burnin.min",
-                                              label = "Burn-in min:",
-                                              value = 1000),
-                                 numericInput("EGMME.burnin.max",
-                                              label = "Burn-in max:",
-                                              value = 100000)
-                          ),
-                          column(4,
-                                 numericInput("EGMME.burnin.pval",
-                                              label = "Burn-in p-value:",
-                                              value = 0.5,
-                                              step = 0.05),
-                                 numericInput("EGMME.burnin.add",
-                                              label = "Burn-in add:",
-                                              value = 1)
-                                 )
+            fluidRow(column(12,
+               uiOutput("formcoefs")
+            )),
+            fluidRow(style = "margin-top: 5px;",
+              column(2,
+                     strong('Summary statistics:')),
+              column(10,
+                     verbatimTextOutput('prefitsum')))
+            ),
+            tabPanel("Edit Dissolution",
+
+              conditionalPanel("output.nwnum == 'single'",
+               helpText("The dissolution formula may only include offsets
+                        of the terms in the formation. The order of the
+                        coefficients must correspond to the order of the terms."),
+
+               fluidRow(column(12,
+                  strong("Terms:"),
+                  uiOutput("dissterms")
+               ))
+              ),
+              conditionalPanel("output.nwnum == 'multiple'",
+                 fluidRow(column(12,
+                     strong("Terms:"),
+                     helpText("Type in term(s) and their arguments. For
+                          multiple terms, separate with '+'."),
+                     textInput("dissolution2", label = NULL, value = "edges",
+                               width = "100%"),
+                     actionButton("updatedissButton", "Update Dissolution",
+                                  class = "btn-sm btn-primary"),
+                     actionButton("resetdissButton", "Reset Dissolution",
+                                  class = "btn-sm")
+                 ))
+               ),
+               fluidRow(column(12,
+                   uiOutput("disscoefs")
+                      ))
+            ),
+            tabPanel("Control Options",
+                   fluidRow(
+                      column(5,
+                             checkboxInput('controldefault',
+                                           'Use default options',
+                                           value = TRUE))
+                   ),
+                   div(id = "controls", class = "gray",
+                    fluidRow(
+                      conditionalPanel("output.nwnum == 'multiple'",
+                        column(4,
+                               numericInput('MCMCinterval',
+                                            label = "Interval:",
+                                            value = 1024),
+                               title = paste("Number of proposals between sampled statistics.")
                           ),
                         column(4,
-                               textInput("customMCMCcontrol",
-                                         label = "Other controls:",
-                                         value = ""),
-                               title = paste("Other arguments to be passed to",
-                                             "control.stergm")
+                               numericInput('MCMCburnin',
+                                            label = "Burn-in:",
+                                            value = 16384),
+                               title = paste("Number of proposals before any MCMC sampling is done.",
+                                             "Defaults to 16 times the MCMC interval, unless burn-in is specified after the interval.")
+                          ),
+                        column(4,
+                               numericInput('MCMCsamplesize',
+                                            label = "Sample size:",
+                                            value = 1024),
+                               title = paste("Number of network statistics, randomly drawn from a given distribution
+                                             on the set of all networks, returned by the Metropolis-Hastings algorithm.")
+                        ),
+                        column(4,
+                               numericInput('MCMLEmaxit',
+                                            label = "Max iterations:",
+                                            value = 20),
+                               title = paste("Maximum number of times the parameter for the MCMC should be updated
+                                             by maximizing the MCMC likelihood. At each step the parameter is changed
+                                             to the values that maximizes the MCMC likelihood based on the current sample.")
                         )
+                        ),
+                      conditionalPanel("output.nwnum == 'single'",
+                        column(4,
+                               numericInput("EGMME.burnin.min",
+                                            label = "Burn-in min:",
+                                            value = 1000),
+                               numericInput("EGMME.burnin.max",
+                                            label = "Burn-in max:",
+                                            value = 100000)
+                        ),
+                        column(4,
+                               numericInput("EGMME.burnin.pval",
+                                            label = "Burn-in p-value:",
+                                            value = 0.5,
+                                            step = 0.05),
+                               numericInput("EGMME.burnin.add",
+                                            label = "Burn-in add:",
+                                            value = 1)
+                               )
+                        ),
+                      column(4,
+                             textInput("customMCMCcontrol",
+                                       label = "Other controls:",
+                                       value = ""),
+                             title = paste("Other arguments to be passed to",
+                                           "control.stergm")
                       )
-                      )
-                     ),
-              tabPanel("Term Documentation",
-                       br(),
-                       div(class = "placeholder",
-                           fluidRow(
-                             column(12,
-                                    a("ERGM term cross-reference tables",
-                                      href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
-                                      target = "_blank"), br(), br()
-                             ),
-                             column(6,
-                                    actionButton("matchingButton", "Compatible terms",
-                                                 class = "btn-sm active"),
-                                    actionButton("allButton", "All terms",
-                                                 class = "btn-sm")
-                             ),
-                             column(4, uiOutput("listofterms"))
+                    )
+                    )
+                   ),
+            tabPanel("Term Documentation",
+                     br(),
+                     div(class = "placeholder",
+                         fluidRow(
+                           column(12,
+                                  a("ERGM term cross-reference tables",
+                                    href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
+                                    target = "_blank"), br(), br()
                            ),
-                           fluidRow(
-                             column(12,
-                                    div(id="termdocbox",
-                                        uiOutput("termdoc")
-                                    ),
-                                    div(id = "termexpand",
-                                        icon(name = "angle-double-up"))
-                             )
-
+                           column(6,
+                                  actionButton("matchingButton", "Compatible terms",
+                                               class = "btn-sm active"),
+                                  actionButton("allButton", "All terms",
+                                               class = "btn-sm")
+                           ),
+                           column(4, uiOutput("listofterms"))
+                         ),
+                         fluidRow(
+                           column(12,
+                                  div(id="termdocbox",
+                                      uiOutput("termdoc")
+                                  ),
+                                  div(id = "termexpand",
+                                      icon(name = "angle-double-up"))
                            )
 
-                       )
-              )
-            ) #end tabsetPanel
-        )
-   ),
-   br(),
-   tabsetPanel(id = 'fittingTabs',
-               tabPanel('Model Summary', br(),
-                        verbatimTextOutput('modelfitsum'),
-                        downloadButton("modelfitdownload",
-                                       "Download Summary (.txt)",
-                                       class="btn-sm")),
-               tabPanel('Model Fit Report', br(),
-                        verbatimTextOutput('modelfit'))
-   ), br(), br(),
+                         )
 
-   icon("question-circle", class = "fa-2x helper-btn"),
-   div(class = "helper-box",
-       p("help help help")),
-   actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
-              label = NULL),
-   actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
-              label = NULL)
-   ),
-tabPanel("GOF", value = "tab5",
-   tabsetPanel(
-    tabPanel("Formation",
-      br(),
-      column(4,
-        verbatimTextOutput("gofsumform")
-      ),
-      column(8,
-             plotOutput("gofplotform")
+                     )
+            )
+          ) #end tabsetPanel
       )
+ ),
+ br(),
+ tabsetPanel(id = 'fittingTabs',
+             tabPanel('Model Summary', br(),
+                      verbatimTextOutput('modelfitsum'),
+                      downloadButton("modelfitdownload",
+                                     "Download Summary (.txt)",
+                                     class="btn-sm")),
+             tabPanel('Model Fit Report', br(),
+                      verbatimTextOutput('modelfit'))
+ ), br(), br(),
+
+ icon("question-circle", class = "fa-2x helper-btn"),
+ div(class = "helper-box",
+     p("help help help")),
+ actionLink("fitleft", icon = icon("arrow-left", class = "fa-2x"),
+            label = NULL),
+ actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
+            label = NULL)
+ ),
+tabPanel("GOF", value = "tab5",
+#include progress box when this tab is loading
+div(class = "busy",
+   p("Calculation in progress..."),
+   img(src="ajax-loader.gif")
+),
+ tabsetPanel(
+  tabPanel("Formation",
+    br(),
+    column(4,
+      verbatimTextOutput("gofsumform")
     ),
-    tabPanel("Dissolution",
-       br(),
-       column(4,
-              verbatimTextOutput("gofsumdiss")
-       ),
-       column(8,
-              plotOutput("gofplotdiss")
-       )
+    column(8,
+           plotOutput("gofplotform")
     )
-   )
+  ),
+  tabPanel("Dissolution",
+     br(),
+     column(4,
+            verbatimTextOutput("gofsumdiss")
+     ),
+     column(8,
+            plotOutput("gofplotdiss")
+     )
+  )
+ )
 )
   ) #end navbarPage
 ) #end shinyUI
