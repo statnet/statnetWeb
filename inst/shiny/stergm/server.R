@@ -961,7 +961,10 @@ stergm.fit <- reactive({
 
 
 
-
+stergm.gof <- reactive({
+  if(estimate() == "EGMME"){return()}
+  gof(stergm.fit())
+})
 
 
 # Output Objects ----------------------------------------------------------
@@ -1787,5 +1790,31 @@ output$modelfitsum <- renderPrint({
   options(width = 140)
   summary(stergm.fit())
 })
+
+output$gofsumform <- renderPrint({
+  stergm.gof()$formation
+})
+
+output$gofsumdiss <- renderPrint({
+  stergm.gof()$dissolution
+})
+
+output$gofplotform <- renderPlot({
+  if(is.directed(nw())){
+    par(mfrow = c(4,1))
+  } else {
+    par(mfrow = c(3,1))
+  }
+  plot(stergm.gof()$formation)
+}, height = 1200)
+
+output$gofplotdiss <- renderPlot({
+  if(is.directed(nw())){
+    par(mfrow = c(4,1))
+  } else {
+    par(mfrow = c(3,1))
+  }
+  plot(stergm.gof()$dissolution)
+}, height = 1200)
 
 })

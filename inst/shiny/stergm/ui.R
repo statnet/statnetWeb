@@ -975,6 +975,28 @@ tabPanel("Fit Model", value = "tab4",
               label = NULL),
    actionLink("fitright", icon = icon("arrow-right", class = "fa-2x"),
               label = NULL)
+   ),
+tabPanel("GOF", value = "tab5",
+   tabsetPanel(
+    tabPanel("Formation",
+      br(),
+      column(4,
+        verbatimTextOutput("gofsumform")
+      ),
+      column(8,
+             plotOutput("gofplotform")
+      )
+    ),
+    tabPanel("Dissolution",
+       br(),
+       column(4,
+              verbatimTextOutput("gofsumdiss")
+       ),
+       column(8,
+              plotOutput("gofplotdiss")
+       )
+    )
    )
+)
   ) #end navbarPage
 ) #end shinyUI
