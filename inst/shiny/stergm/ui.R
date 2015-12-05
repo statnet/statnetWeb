@@ -1000,12 +1000,13 @@ div(class = "busy",
    p("Calculation in progress..."),
    img(src="ajax-loader.gif")
 ),
-p("Currently the", code("tergm"), "package supports MCMC diagnostics
-  for EGMME models only and Goodness of Fit diagnostics for CMLE models only."),
+p("Currently the", code("tergm"), "package supports Goodness of Fit diagnostics
+  for CMLE models only. MCMC diagnostics are available for any model that uses MCMC"),
 br(),
-conditionalPanel("output.nwnum == 'multiple'",
- tabsetPanel(
-  tabPanel("Formation",
+
+tabsetPanel(
+ conditionalPanel("output.nwnum == 'multiple'",
+  tabPanel("GOF: Formation",
     br(),
     column(4,
       verbatimTextOutput("gofsumform")
@@ -1014,7 +1015,7 @@ conditionalPanel("output.nwnum == 'multiple'",
            plotOutput("gofplotform")
     )
   ),
-  tabPanel("Dissolution",
+  tabPanel("GOF: Dissolution",
      br(),
      column(4,
             verbatimTextOutput("gofsumdiss")
@@ -1022,17 +1023,14 @@ conditionalPanel("output.nwnum == 'multiple'",
      column(8,
             plotOutput("gofplotdiss")
      )
-  )
- )
-),
-conditionalPanel("output.nwnum == 'single'",
-  tabsetPanel(
-    tabPanel("Plots",
-             uiOutput("mcmc_ui")
-             ),
-    tabPanel("Summary",
-             br(),
-             verbatimTextOutput("mcmcsum"))
+   )
+  ),
+  tabPanel("MCMC Plots",
+           uiOutput("mcmc_ui")
+  ),
+  tabPanel("MCMC Summary",
+           br(),
+           verbatimTextOutput("mcmcsum")
   )
 ),
 icon("question-circle", class = "fa-2x helper-btn"),

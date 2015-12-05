@@ -1875,7 +1875,6 @@ output$gofplotdiss <- renderPlot({
 }, height = 1200)
 
 output$mcmcplot <- renderPlot({
-  if(estimate() == "CMLE"){return()}
   mcmc.diagnostics(stergm.fit(), vars.per.page = nformcoefs())
 })
 output$mcmc_ui <- renderUI({
@@ -1909,10 +1908,6 @@ output$dynamicsize2 <- renderUI({
               choices = choices)
 })
 outputOptions(output,'dynamicsize2',suspendWhenHidden=FALSE)
-
-observeEvent(nw(), {
-
-})
 
 output$simplot <- ndtv:::renderNdtvAnimationWidget({
   if (!("networkDynamic" %in% class(stergm.sim()))){
