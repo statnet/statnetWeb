@@ -734,6 +734,8 @@ fluidRow(
        tabPanel(title='Display Options', br(),
           wellPanel(
                 conditionalPanel(condition='input.plottabs == "Network Plot"',
+                   selectInput('activeplot', label = NULL,
+                               choices = c("Static Plot", "Interactive Plot")),
                    checkboxInput('iso',
                                  label = 'Display isolates',
                                  value = TRUE),

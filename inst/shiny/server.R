@@ -1336,34 +1336,36 @@ output$nwplot <- renderPlot({
     sides <- 50
   }
 
-  if(!is.null(values$hoverpoints)){
-    if(nrow(values$hoverpoints) > 0){
-      nhov <- as.numeric(rownames(values$hoverpoints))
-      vcex <- rep(1, nodes())
-      vcex[nhov] <- 2
+  if(input$activeplot == "Interactive Plot"){
+    if(!is.null(values$hoverpoints)){
+      if(nrow(values$hoverpoints) > 0){
+        nhov <- as.numeric(rownames(values$hoverpoints))
+        vcex <- rep(1, nodes())
+        vcex[nhov] <- 2
+      }
     }
-  }
-  if(!is.null(values$clickedpoints)){
-    if(nrow(values$clickedpoints) > 0){
-      nclick <- as.numeric(rownames(values$clickedpoints))
-      color <- adjustcolor(vcol(), alpha.f = 0.4)
-      color[nclick] <- vcol()[nclick]
-      ecolor <- "lightgrey"
-      vborder <- rep("lightgrey", nodes())
-      vborder[nclick] <- 1
+    if(!is.null(values$clickedpoints)){
+      if(nrow(values$clickedpoints) > 0){
+        nclick <- as.numeric(rownames(values$clickedpoints))
+        color <- adjustcolor(vcol(), alpha.f = 0.4)
+        color[nclick] <- vcol()[nclick]
+        ecolor <- "lightgrey"
+        vborder <- rep("lightgrey", nodes())
+        vborder[nclick] <- 1
+      }
     }
-  }
-  if(!is.null(values$dblclickpoints)){
-    if(nrow(values$dblclickpoints) > 0){
-      ndbl <- as.numeric(rownames(values$dblclickpoints))
-      neighb <- nw()[ndbl,] == 1
-      color <- adjustcolor(vcol(), alpha.f = 0.4)
-      color[ndbl] <- vcol()[ndbl]
-      ecolor <- rep("lightgrey", nedgesinit())
-      ecolor[apply(elist(), MARGIN = 1, FUN = function(x){any(x == ndbl)})] <- "black"
-      vborder <- rep("lightgrey", nodes())
-      vborder[neighb] <- "black"
-      vborder[ndbl] <- "black"
+    if(!is.null(values$dblclickpoints)){
+      if(nrow(values$dblclickpoints) > 0){
+        ndbl <- as.numeric(rownames(values$dblclickpoints))
+        neighb <- nw()[ndbl,] == 1
+        color <- adjustcolor(vcol(), alpha.f = 0.4)
+        color[ndbl] <- vcol()[ndbl]
+        ecolor <- rep("lightgrey", nedgesinit())
+        ecolor[apply(elist(), MARGIN = 1, FUN = function(x){any(x == ndbl)})] <- "black"
+        vborder <- rep("lightgrey", nodes())
+        vborder[neighb] <- "black"
+        vborder[ndbl] <- "black"
+      }
     }
   }
 
@@ -1381,19 +1383,21 @@ output$nwplot <- renderPlot({
            fill = legendfill(), bty='n')
   }
 
-  if(!is.null(values$clickedpoints)){
-    if(nrow(values$clickedpoints) > 0){
-      #isolate(legend("topleft",
-      #               legend = values$clickedpoints[, c("Names", menuattr())]))
-      cx <- values$clickedpoints[, "cx"]
-      cy <- values$clickedpoints[, "cy"]
-      name <- values$clickedpoints[, "Names"]
-      attrlabel <- paste("\n", menuattr())
-      text(x = cx, y = cy,
-           labels = paste0(name,
-                           paste(attrlabel, values$clickedpoints[, menuattr()],
-                                 collapse = "")),
-           pos = 4, offset = 1)
+  if(input$activeplot == "Interactive Plot"){
+    if(!is.null(values$clickedpoints)){
+      if(nrow(values$clickedpoints) > 0){
+        #isolate(legend("topleft",
+        #               legend = values$clickedpoints[, c("Names", menuattr())]))
+        cx <- values$clickedpoints[, "cx"]
+        cy <- values$clickedpoints[, "cy"]
+        name <- values$clickedpoints[, "Names"]
+        attrlabel <- paste("\n", menuattr())
+        text(x = cx, y = cy,
+             labels = paste0(name,
+                             paste(attrlabel, values$clickedpoints[, menuattr()],
+                                   collapse = "")),
+             pos = 4, offset = 1)
+      }
     }
   }
 
@@ -1414,7 +1418,10 @@ observeEvent({c(input$plot_dblclick, input$plot_click)}, {
                                       xvar = "cx", yvar = "cy",
                                       threshold = 10, maxpoints = 1)
 })
-
+observeEvent(nwinit(), {
+  values$clickedpoints <- NULL
+  values$dblclickedpoints <- NULL
+})
 
 output$nwplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_plot.pdf',sep='')},
