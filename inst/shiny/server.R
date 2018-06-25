@@ -92,6 +92,8 @@ observe({
 })
 
 
+## Data Selection ------------------------------------------------------
+
 #nwinit is used to get the initial values of the network
 nwinit <- reactive({
   #input$rawdatafile comes as a dataframe with name, size, type and datapath
@@ -516,6 +518,8 @@ numattr <- reactive({
     numattr
 })
 
+## Network Descriptives (Plots) ------------------------------------------------------
+
 #dataframe of nodes, their attributes, and their coordinates in nwplot
 nwdf <- reactive({
   attrs <- menuattr()
@@ -649,6 +653,8 @@ cugvals <- reactive({
         directed = nw()$gal$directed, loops = nw()$gal$loops)
 })
 
+## Fit Model ------------------------------------------------------
+
 #add terms to list as user enters them
 #function in alert.js will click the addtermButton when user
 #presses Enter from within the terms textbox
@@ -778,6 +784,8 @@ observe({
   }
 })
 
+## Goodness of Fit ---------------------------------------------------------
+
 model1gof <- reactive({
   input$gofButton
   mod <- input$choosemodel_gof
@@ -863,6 +871,8 @@ model5gof <- reactive({
   }
   return(model5gof)
 })
+
+## Simulations -------------------------------------------------------------
 
 allmodelsimreac <- reactive({
   input$simButton
@@ -1025,7 +1035,7 @@ legendfill2 <- reactive({
 # into sections depending on what tab of the app they are called from.
 
 
-# Data Upload -------------------------------------------------------------
+## Data Upload -------------------------------------------------------------
 
 
 
@@ -1266,7 +1276,7 @@ output$nwsum <- renderPrint({
 })
 
 
-# Network Descriptives ------------------------------------------------------
+## Network Descriptives ------------------------------------------------------
 
 #NETWORK PLOT
 
@@ -2936,7 +2946,7 @@ output$ninfocentmax <- renderText({
 })
 
 
-# Fit Model ---------------------------------------------------------------
+## Fit Model ---------------------------------------------------------------
 
 observeEvent(input$matchingButton, {
   state$allterms <- FALSE
@@ -3100,7 +3110,7 @@ outputOptions(output, "modelfit", priority = 10, suspendWhenHidden = FALSE)
 outputOptions(output, "modelfitsum", priority = -10)
 
 
-# MCMC Diagnostics --------------------------------------------------------
+## MCMC Diagnostics --------------------------------------------------------
 
 
 # When using the `mcmc.diagnostics` function in the command line, the printed
@@ -3214,7 +3224,7 @@ output$diagnostics <- renderPrint({
 outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 
 
-# Goodness of Fit ---------------------------------------------------------
+## Goodness of Fit ---------------------------------------------------------
 
 
 # One drawback of the navbarPage layout option is that you can't specify
@@ -3227,6 +3237,7 @@ outputOptions(output, 'diagnostics', suspendWhenHidden=FALSE)
 # the user inputs. After checking that the user has already clicked the
 # actionButton on the page we can output the text of the gof object and the
 # plot of the gof object.
+
 
 #dataset only updates after goButton on first tab has been clicked
 output$currentdataset_gof <- renderPrint({
@@ -3303,9 +3314,9 @@ output$gofplot <- renderPlot({
   gofterm <- isolate(input$gofterm)
   if (gofterm == 'Default'){
     if(is.directed(nw())){
-      par(mfrow=c(4,1))
+      par(mfrow=c(5,1))
     } else {
-      par(mfrow=c(3,1))
+      par(mfrow=c(4,1))
     }
     cex <- 1.5
   } else {
@@ -3372,13 +3383,13 @@ output$gofplotcomp <- renderPlot({
   n <- values$modeltotal
   if (gofterm == 'Default'){
     if(is.directed(nw())){
-      cols <- isolate(4)
-      bottomtext <- c("idegree","odegree","espartners","distance")
-      bottommat <- c(0,(n*cols+1):(n*cols+4))
+      cols <- isolate(5)
+      bottomtext <- c("idegree","odegree","espartners","distance","Model Terms")
+      bottommat <- c(0,(n*cols+1):(n*cols+5))
     } else {
-      cols <- isolate(3)
-      bottomtext <- c("degree","espartners","distance")
-      bottommat <- c(0,(n*cols+1):(n*cols+3))
+      cols <- isolate(4)
+      bottomtext <- c("degree","espartners","distance","Model Terms")
+      bottommat <- c(0,(n*cols+1):(n*cols+4))
     }
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
 
@@ -3441,10 +3452,10 @@ output$gofplotcompdownload <- downloadHandler(
     gofterm <- input$gofterm
     n <- values$modeltotal
     if (gofterm == 'Default'){
-      cols <- 3
+      cols <- 4
       lastelt <- 15
       bottommat <- c(0,(n*cols+1):(n*cols+3))
-      bottomtext <- c("degree","espartners","distance")
+      bottomtext <- c("degree","espartners","distance","Model Terms")
       if(n<=4){
         #landscape page
         pdf(file=file, height=8.5, width=11)
@@ -3503,7 +3514,7 @@ output$gofplotcompdownload <- downloadHandler(
 )
 
 
-# Simulations -------------------------------------------------------------
+## Simulations -------------------------------------------------------------
 
 # On this page the user can choose how many simulations of the model to run.
 # The reactive object model1simreac contains all the simulations, which we
