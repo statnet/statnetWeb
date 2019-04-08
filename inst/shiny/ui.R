@@ -1111,7 +1111,7 @@ tabPanel(title='Goodness of Fit',value='tab6',
                   uiOutput('uichoosemodel_gof'), class="nwlabel"),
                   verbatimTextOutput('checkterms_gof'))
           ),
-         p('If you do not specify a term the default formula for undirected
+         p('GOF is based on 100 simulated networks from your fitted model.  If you do not specify a term the default formula for undirected
            networks is ', code('~ degree + espartners + distance + model'), 'and for
            directed networks is ', code('~ idegree + odegree + espartners +
                                         distance + model'), '.  ',
