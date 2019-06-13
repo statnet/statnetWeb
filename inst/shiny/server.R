@@ -2320,7 +2320,7 @@ output$cugtest <- renderPlot({
   isolate({
     term <- input$cugtestterm
     n <- nodes()
-    obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+    obsval <- summary(as.formula(paste("nw() ~", term)))
 
     # gets summary statistics of the already run simulations
     brgvals <- brgvals()
@@ -2385,7 +2385,7 @@ output$cugtestdownload <- downloadHandler(
 
     term <- input$cugtestterm
     n <- nodes()
-    obsval <- summary.formula(as.formula(paste("nw() ~", term)))
+    obsval <- summary(as.formula(paste("nw() ~", term)))
 
     # gets summary statistics of the already run simulations
     brgvals <- brgvals()
@@ -3334,7 +3334,7 @@ output$gofplot <- renderPlot({
                               "5" = model5gof())})
   }
   par(cex.lab=cex, mar=c(5,4.2,2,2)+.1)
-  isolate(plot.gofobject(gofobj, cex.axis=cex, main=NULL))
+  isolate(plot(gofobj, cex.axis=cex, main=NULL))
   par(mfrow=c(1,1), cex.lab=1, cex.axis=1)
 })
 
@@ -3353,7 +3353,7 @@ output$gofplotdownload <- downloadHandler(
                                 "4" = model4gof(),
                                 "5" = model5gof())})
     }
-    isolate(plot.gofobject(gofobj, cex.axis=1, main=NULL))
+    isolate(plot(gofobj, cex.axis=1, main=NULL))
     dev.off()
   }
 )
@@ -3415,7 +3415,7 @@ output$gofplotcomp <- renderPlot({
                               "3" = model3gof(),
                               "4" = model4gof(),
                               "5" = model5gof())
-    plot.gofobject(gofobj, main="", cex.axis=1)
+    plot(gofobj, main="", cex.axis=1)
   }
   par(mar=c(1,1,1,1))
   for(j in 1:cols){
@@ -3496,7 +3496,7 @@ output$gofplotcompdownload <- downloadHandler(
                        "3" = model3gof(),
                        "4" = model4gof(),
                        "5" = model5gof())
-      plot.gofobject(gofobj, cex.axis=1, main="")
+      plot(gofobj, cex.axis=1, main="")
     }
     par(mar=c(1,1,1,1))
     for(j in 1:cols){
