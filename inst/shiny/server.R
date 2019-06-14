@@ -523,7 +523,7 @@ numattr <- reactive({
 #dataframe of nodes, their attributes, and their coordinates in nwplot
 nwdf <- reactive({
   attrs <- menuattr()
-  if(is.na(as.numeric(network.vertex.names(nw()))[1])){
+  if(suppressWarnings(is.na(as.numeric(network.vertex.names(nw()))[1]))){
     df <- data.frame(Names = network.vertex.names(nw()))
   } else {
     df <- data.frame(Names = as.numeric(network.vertex.names(nw())))
@@ -3170,7 +3170,7 @@ output$diagnosticsplot <- renderPlot({
     mcmc.diagnostics(mod, vars.per.page = vpp),
     error = function(e) cat("MCMC was not run or MCMC sample was not stored."))
 })
-outputOptions(output, "diagnosticsplot", suspendWhenHidden = FALSE)
+outputOptions(output, "diagnosticsplot", suspendWhenHidden = TRUE)
 
 output$mcmcplotdownload <- downloadHandler(
   filename = function(){paste(nwname(),'_mcmc.pdf',sep='')},
