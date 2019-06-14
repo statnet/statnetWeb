@@ -21,10 +21,3 @@ statnet packages on CRAN:
 http://cran.r-project.org/web/packages/ergm/  
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
-
-#### New in v0.4.0
-##### On CRAN as of 11/4/2015
-
-* Interactive network plot: click on nodes to see vertex names and attributes, double click to highlight neighbors.
-* More tables and plots to visualize attribute distributions.
-* Better formatting for term documentation.
