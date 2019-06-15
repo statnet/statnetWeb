@@ -4,7 +4,8 @@
 #' @description Runs the statnetWeb shiny application, a GUI for the statnet
 #' suite of network analysis packages.
 #'
-#' @keywords GUI shiny
+#' @keywords graphs datagen models
+#' @concept networks GUI shiny ergm
 #' @export
 #' @examples
 #' \dontrun{
