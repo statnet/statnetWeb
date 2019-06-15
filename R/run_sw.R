@@ -14,5 +14,5 @@
 #'
 #'
 run_sw <- function() {
-  shiny::runApp(system.file("shiny", package = "statnetWeb"))
+  shiny::runApp(system.file("shiny/statnetWeb", package = "statnetWeb"))
 }
