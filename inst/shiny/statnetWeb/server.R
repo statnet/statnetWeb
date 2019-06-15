@@ -9,7 +9,7 @@ data(faux.mesa.high)
 data(florentine)
 data(sampson)
 data(samplk)
-data(ecoli)
+#data(ecoli)
 data(molecule)
 data(kapferer)
 
@@ -596,6 +596,7 @@ vcol <- reactive({
 })
 
 legendlabels <- reactive({
+  req(nw())
   if(!is.network(nw())){return()}
   nw_var <- nw()
     if(input$colorby == 2){
@@ -1042,31 +1043,31 @@ legendfill2 <- reactive({
 output$datadesc <- renderUI({
   net <- input$samplenet
   text <- div()
-  if(net == "ecoli1" | net == "ecoli2"){
-    text <- div(
-      p("The", code("ecoli", class = "codetxt"),
-        "network data set comprises two versions of a",
-        "biological network in which the nodes are operons in",
-        em("Escherichia Coli"), "and a directed edge from one node to another",
-        "indicates that the first encodes the transcription factor that",
-        "regulates the second."),
-      p("The network object", code("ecoli1", class = "codetxt"),
-        "is directed, with 423 nodes", "and 519 ties. The object",
-        code("ecoli2", class = "codetxt"), "is an undirected",
-        "version of the same network, in which the five isolated nodes",
-        "(which exhibit only self-regulation in",
-        code("ecoli1", class = "codetxt"), "are removed, leaving 418 nodes."),
-      p("The data set is based on the RegulonDB network (Salgado et al, 2001)",
-        "and was modified by Shen-Orr et al (2002)."),
-      strong("References"),
-      p("Salgado et al (2001), Regulondb (version 3.2): Transcriptional",
-        "Regulation and Operon Organization in Escherichia Coli K-12,",
-        em("Nucleic Acids Research,"), "29(1): 72-74."),
-      p("Shen-Orr et al (2002), Network Motifs in the Transcriptional",
-        "Regulation Network of Escerichia Coli,", em("Nature Genetics,"),
-        "31(1): 64-68.")
-    )
-  }
+  # if(net == "ecoli1" | net == "ecoli2"){
+  #   text <- div(
+  #     p("The", code("ecoli", class = "codetxt"),
+  #       "network data set comprises two versions of a",
+  #       "biological network in which the nodes are operons in",
+  #       em("Escherichia Coli"), "and a directed edge from one node to another",
+  #       "indicates that the first encodes the transcription factor that",
+  #       "regulates the second."),
+  #     p("The network object", code("ecoli1", class = "codetxt"),
+  #       "is directed, with 423 nodes", "and 519 ties. The object",
+  #       code("ecoli2", class = "codetxt"), "is an undirected",
+  #       "version of the same network, in which the five isolated nodes",
+  #       "(which exhibit only self-regulation in",
+  #       code("ecoli1", class = "codetxt"), "are removed, leaving 418 nodes."),
+  #     p("The data set is based on the RegulonDB network (Salgado et al, 2001)",
+  #       "and was modified by Shen-Orr et al (2002)."),
+  #     strong("References"),
+  #     p("Salgado et al (2001), Regulondb (version 3.2): Transcriptional",
+  #       "Regulation and Operon Organization in Escherichia Coli K-12,",
+  #       em("Nucleic Acids Research,"), "29(1): 72-74."),
+  #     p("Shen-Orr et al (2002), Network Motifs in the Transcriptional",
+  #       "Regulation Network of Escerichia Coli,", em("Nature Genetics,"),
+  #       "31(1): 64-68.")
+  #   )
+  # }
   if(net == "faux.mesa.high"){
     text <- div(
       p("This data set represents a simulation of an in-school friendship",
@@ -1298,6 +1299,7 @@ outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
 
 # need this to know when color palette will change
 output$attrlevels <- renderText({
+  req(legendlabels())
   return(length(legendlabels()))
 })
 outputOptions(output,'attrlevels', suspendWhenHidden=FALSE, priority=10)
