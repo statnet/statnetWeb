@@ -1,5 +1,5 @@
 
-library(statnetWeb)
+#library(statnetWeb)
 library(RColorBrewer)
 library(lattice)
 library(latticeExtra)

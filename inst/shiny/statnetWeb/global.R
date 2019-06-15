@@ -1,5 +1,5 @@
 
-library(statnetWeb)
+#library(statnetWeb)
 
 # version of textInput with more size options.
 # specify class = 'input-small' or class='input-mini' in

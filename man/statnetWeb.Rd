@@ -9,4 +9,3 @@
 The statnetWeb package makes it easy to run the graphical user interface
 for the statnet suite of network analysis packages.
 }
-

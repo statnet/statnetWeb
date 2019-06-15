@@ -5,6 +5,8 @@ account: statnet
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 42335
-bundleId: 2153902
+bundleId: 2155890
 url: https://statnet.shinyapps.io/statnetWeb/
-when: 1560529654.27331
+when: 1560626190.96857
+asMultiple: FALSE
+asStatic: FALSE
