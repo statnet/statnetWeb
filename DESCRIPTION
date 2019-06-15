@@ -1,8 +1,8 @@
 Package: statnetWeb
 Type: Package
 Title: A Graphical User Interface for Network Modeling with 'Statnet'
-Version: 0.5.1
-Date: 2019-06-13
+Version: 0.5.2
+Date: 2019-06-15
 Authors@R: c(
   person("Martina", "Morris", email = "morrism@uw.edu", role = c("cre", "aut")),
   person("Emily", "Beylerian", email = "ebeylerian@path.org", role = "aut"),
