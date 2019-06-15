@@ -1,4 +1,3 @@
-
 #' @title Run statnetWeb
 #'
 #' @description Runs the statnetWeb shiny application, a GUI for the statnet
