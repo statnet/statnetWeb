@@ -216,7 +216,8 @@ fluidRow(
                 column(6,
                     br(style="line-height:26px;"),
                     selectizeInput('samplenet', label=NULL,
-                                choices=c("Choose a network" = '', 'ecoli1', 'ecoli2',
+                                choices=c("Choose a network" = '', 
+                                          #'ecoli1', 'ecoli2',
                                           'faux.mesa.high','flobusiness',
                                           'flomarriage', 'kapferer', 'kapferer2',
                                           'molecule', 'samplike', 'samplk1',
@@ -904,7 +905,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       fluidRow(
                         column(12,
                                a("Commonly used ergm terms",
-                                 href = "http://statnet.github.io/nme/ergmterms.html",
+                                 href = "https://statnet.github.io/nme/d2-ergmterms.html",
                                  target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
