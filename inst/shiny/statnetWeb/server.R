@@ -1,5 +1,7 @@
 
 #library(statnetWeb)
+library(ergm)
+library(sna)
 library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
