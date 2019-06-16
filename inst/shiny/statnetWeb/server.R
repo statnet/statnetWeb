@@ -7,11 +7,11 @@ library(lattice)
 library(latticeExtra)
 
 data(faux.mesa.high)
-#data(faux.magnolia.high)
+#data(faux.magnolia.high) too big
 data(florentine)
 data(sampson)
 data(samplk)
-#data(ecoli)
+#data(ecoli) causes errors with infocent
 data(molecule)
 data(kapferer)
 
