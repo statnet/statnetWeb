@@ -1183,7 +1183,7 @@ tabPanel(title='Simulations', value='tab7',
                            fluidRow(
                              column(3, class = "shiftright",
                                     inlineSelectInput('simcontroltype',label=NULL,
-                                                      choices=c("MCMC","Parallel"),
+                                                      choices=c("MCMC"),
                                                       style="margin:10px 0px;")),
                              column(7,
                                     checkboxInput('simcontroldefault','Use default options', value=TRUE))
