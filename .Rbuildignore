@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 inst/shiny/rsconnect
+inst/pics
 NUL
 LICENSE
