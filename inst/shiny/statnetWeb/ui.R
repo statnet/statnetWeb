@@ -905,7 +905,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       fluidRow(
                         column(12,
                                a("Commonly used ergm terms",
-                                 href = "https://statnet.github.io/nme/d2-ergmterms.html",
+                                 href = "https://github.com/statnet/statnetWeb/blob/master/inst/html/d2-sX-ergmterms.html",
                                  target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
@@ -1335,7 +1335,7 @@ tabPanel(title='Help', value='tab8',
                          div(title=paste("Homepage of the statnet project with tutorials,",
                                          "publications and recent news."),
                              a("About statnet",
-                               href = "https://statnet.csde.washington.edu/trac", target = "_blank")
+                               href = "http://statnet.org/", target = "_blank")
                          ),
 
                          column(11, offset = 1,
