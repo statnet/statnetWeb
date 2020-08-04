@@ -7,7 +7,7 @@ The app can be run in two ways:
 
 * Through the shinyapps server with this link:   https://statnet.shinyapps.io/statnetWeb  
 
-* On your own machine using the statnetWeb R package:
+* On your local machine using the statnetWeb R package:
 ```r
 install.packages("statnetWeb")
 statnetWeb::run_sw()
@@ -23,7 +23,7 @@ https://https://github.com/statnet/statnetWeb
 More info on the statnet suite of packages:  
 https://statnet.org 
 
-statnet packages on CRAN:  
+statnet packages on CRAN used by statnetWeb:  
 http://cran.r-project.org/web/packages/ergm/  
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
