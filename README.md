@@ -26,3 +26,8 @@ statnet packages on CRAN used by statnetWeb:
 http://cran.r-project.org/web/packages/ergm/  
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
+
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.com/statnet/statnetWeb.svg?branch=master)](https://travis-ci.com/statnet/statnetWeb)
+<!-- badges: end -->
+
