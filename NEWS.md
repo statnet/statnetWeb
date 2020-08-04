@@ -1,7 +1,4 @@
-statnetWeb
-==========
-
-# Changes in version 0.5.6
+# statnetWeb 0.5.6
 
 ## Bugfixes
 

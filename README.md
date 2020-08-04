@@ -17,7 +17,6 @@ More info on the statnetWeb wiki:
 https://github.com/statnet/statnetWeb/wiki
 
 Please use the GitHub repository to report bugs or request features:
-
 https://https://github.com/statnet/statnetWeb
 
 More info on the statnet suite of packages:  
