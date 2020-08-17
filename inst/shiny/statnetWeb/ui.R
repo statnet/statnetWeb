@@ -936,9 +936,8 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                     div(class = "placeholder",
                     fluidRow(class = "shiftright",
                       column(3, style = "padding-left: 0;",
-                        inlineSelectInput('controltype',label = NULL,
-                                          choices = c("MCMC"),
-                                          style="margin:10px 0px;")),
+                        selectInput('controltype',label = NULL,
+                                          choices = c("MCMC"))),
                       column(5,
                         checkboxInput('controldefault', 'Use default options', value = TRUE))
                     ),
@@ -1182,9 +1181,8 @@ tabPanel(title='Simulations', value='tab7',
                   tabPanel("Control Options",
                            fluidRow(
                              column(3, class = "shiftright",
-                                    inlineSelectInput('simcontroltype',label=NULL,
-                                                      choices=c("MCMC"),
-                                                      style="margin:10px 0px;")),
+                                    selectInput('simcontroltype',label=NULL,
+                                                      choices=c("MCMC"))),
                              column(7,
                                     checkboxInput('simcontroldefault','Use default options', value=TRUE))
                            ),
