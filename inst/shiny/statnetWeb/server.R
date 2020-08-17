@@ -3126,10 +3126,10 @@ outputOptions(output, "modelfitsum", priority = -10)
 output$uichoosemodel_mcmc <- renderUI({
   n <- values$modeltotal
   if(n == 0){
-    inlineSelectInput("choosemodel_mcmc",label=NULL,
+    selectInput("choosemodel_mcmc",label=NULL,
                 choices=c("Current"))
   } else {
-    inlineSelectInput("choosemodel_mcmc",label=NULL,
+    selectInput("choosemodel_mcmc",label=NULL,
                 choices=c(paste0("Model",1:n)))
   }
 })
@@ -3254,10 +3254,10 @@ output$currentdataset_gof <- renderPrint({
 output$uichoosemodel_gof <- renderUI({
   n <- values$modeltotal
   if(n == 0){
-    inlineSelectInput("choosemodel_gof",label=NULL,
+    selectInput("choosemodel_gof",label=NULL,
                       choices=c("Current"))
   } else {
-    inlineSelectInput("choosemodel_gof",label=NULL,
+    selectInput("choosemodel_gof",label=NULL,
                       choices=c(paste0("Model",1:n)))
   }
 })
@@ -3532,10 +3532,10 @@ output$gofplotcompdownload <- downloadHandler(
 output$uichoosemodel_sim <- renderUI({
   n <- values$modeltotal
   if(n == 0){
-    inlineSelectInput("choosemodel_sim",label=NULL,
+    selectInput("choosemodel_sim",label=NULL,
                       choices=c("Current"))
   } else {
-    inlineSelectInput("choosemodel_sim",label=NULL,
+    selectInput("choosemodel_sim",label=NULL,
                       choices=c(paste0("Model",1:n)))
   }
 })
