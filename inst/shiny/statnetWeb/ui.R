@@ -905,7 +905,7 @@ actionLink('plotright', icon=icon('arrow-right', class='fa-2x'), label=NULL)
                       fluidRow(
                         column(12,
                                a("Commonly used ergm terms",
-                                 href = "https://github.com/statnet/statnetWeb/blob/master/inst/html/d2-sX-ergmterms.html",
+                                 href = "https://github.com/statnet/statnetWeb/wiki/Commonly-used-ERGM-terms",
                                  target = "_blank"), br(),
                                a("Term cross-reference tables",
                                  href = "http://cran.r-project.org/web/packages/ergm/vignettes/ergm-term-crossRef.html",
