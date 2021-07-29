@@ -1,3 +1,10 @@
+# statnetWeb 0.5.7
+
+## Bugfixes
+
+* Fixed selectInput error.
+
+
 # statnetWeb 0.5.6
 
 ## Bugfixes
