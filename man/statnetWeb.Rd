@@ -3,7 +3,6 @@
 \docType{package}
 \name{statnetWeb}
 \alias{statnetWeb}
-\alias{statnetWeb-package}
 \title{statnetWeb: A graphical user interface for network analysis.}
 \description{
 The statnetWeb package makes it easy to run the graphical user interface

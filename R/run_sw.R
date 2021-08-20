@@ -4,7 +4,10 @@
 #' suite of network analysis packages.
 #'
 #' @keywords graphs datagen models
-#' @concept networks GUI shiny ergm
+#' @concept networks
+#' @concept GUI
+#' @concept shiny
+#' @concept ergm
 #' @export
 #' @examples
 #' \dontrun{

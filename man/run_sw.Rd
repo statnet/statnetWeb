@@ -17,7 +17,10 @@ run_sw()
 
 
 }
-\concept{networks GUI shiny ergm}
+\concept{GUI}
+\concept{ergm}
+\concept{networks}
+\concept{shiny}
 \keyword{datagen}
 \keyword{graphs}
 \keyword{models}
