@@ -20,7 +20,9 @@ Depends:
     latticeExtra
 Imports:
     sna,
-    RColorBrewer
+    RColorBrewer,
+    statnet.data
+Remotes: github::statnet/statnet.data@master
 LazyData: true
 RoxygenNote: 7.1.1
 Encoding: UTF-8
