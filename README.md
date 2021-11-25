@@ -1,6 +1,10 @@
 statnetWeb
 ==========
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/statnet/statnetWeb/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/statnetWeb/actions)
+<!-- badges: end -->
+
 This is an R-shiny interface for the statnet suite of R packages. It currently incorporates functionality from the ergm, network and sna packages, allowing users to explore, fit and assess exponential random graph models via a simple GUI.
 
 The app can be run in two ways:  
@@ -26,9 +30,4 @@ statnet packages on CRAN used by statnetWeb:
 http://cran.r-project.org/web/packages/ergm/  
 http://cran.r-project.org/web/packages/network/  
 http://cran.r-project.org/web/packages/sna/
-
-<!-- badges: start -->
-[![Travis build status](https://travis-ci.com/statnet/statnetWeb.svg?branch=master)](https://travis-ci.com/statnet/statnetWeb)
-[![R-CMD-check](https://github.com/statnet/statnetWeb/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/statnetWeb/actions)
-<!-- badges: end -->
 
