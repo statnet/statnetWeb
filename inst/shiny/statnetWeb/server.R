@@ -6,14 +6,14 @@ library(RColorBrewer)
 library(lattice)
 library(latticeExtra)
 
-data(faux.mesa.high)
-#data(faux.magnolia.high) too big
-data(florentine)
-data(sampson)
-data(samplk)
-#data(ecoli) causes errors with infocent
-data(molecule)
-data(kapferer)
+data(faux.mesa.high, package="statnet.data")
+#data(faux.magnolia.high, package="statnet.data") too big
+data(flomarriage, flobusiness, package="statnet.data")
+data(samplike, package="statnet.data")
+data(samplk1, samplk2, samplk3, package="statnet.data")
+#data(ecoli, package="statnet.data") causes errors with infocent
+data(molecule, package="statnet.data")
+data(kapferer, package="statnet.data")
 
 BRGcol <- "darkred"
 CUGcol <- "darkorange"
