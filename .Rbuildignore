@@ -6,3 +6,4 @@ inst/html
 NUL
 LICENSE
 ^\.travis\.yml$
+^\.github$

@@ -29,5 +29,6 @@ http://cran.r-project.org/web/packages/sna/
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/statnet/statnetWeb.svg?branch=master)](https://travis-ci.com/statnet/statnetWeb)
+[![R-CMD-check](https://github.com/statnet/statnetWeb/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/statnetWeb/actions)
 <!-- badges: end -->
 
