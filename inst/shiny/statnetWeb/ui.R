@@ -1112,9 +1112,9 @@ tabPanel(title='Goodness of Fit',value='tab6',
                   verbatimTextOutput('checkterms_gof'))
           ),
          p('GOF is based on 100 simulated networks from your fitted model.  If you do not specify a term the default formula for undirected
-           networks is ', code('~ degree + espartners + distance + model'), 'and for
-           directed networks is ', code('~ idegree + odegree + espartners +
-                                        distance + model'), '.  ',
+           networks is ', code('~ model + degree + espartners + distance'), 'and for
+           directed networks is ', code('~ model + idegree + odegree + espartners +
+                                        distance'), '.  ',
            'The "model" plot shows how well the fitted model reproduces the observed values for the 
            terms in the model (the sufficient statistics), and can be used to assess convergence.'),
          fluidRow(

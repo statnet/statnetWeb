@@ -3388,11 +3388,11 @@ output$gofplotcomp <- renderPlot({
   if (gofterm == 'Default'){
     if(is.directed(nw())){
       cols <- isolate(5)
-      bottomtext <- c("idegree","odegree","espartners","distance","Model Terms")
+      bottomtext <- c("Model Terms", "idegree","odegree","espartners","distance")
       bottommat <- c(0,(n*cols+1):(n*cols+5))
     } else {
       cols <- isolate(4)
-      bottomtext <- c("degree","espartners","distance","Model Terms")
+      bottomtext <- c("Model Terms","degree","espartners","distance")
       bottommat <- c(0,(n*cols+1):(n*cols+4))
     }
     innermat <- matrix(1:(n*cols),ncol=cols, byrow=TRUE)
