@@ -75,14 +75,16 @@ tags$pre(id='swcitation',"@Manual{beylerian:statnetWeb,
                        ),
               tabPanel("Other",
 p(strong("statnet")),
-tags$pre("Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, and
-Martina Morris (2003). statnet: Software tools for the Statistical Modeling
-of Network Data. URL http://statnetproject.org"),
+tags$pre("Statnet Development Team (Pavel N. Krivitsky, Mark S. Handcock, 
+David R. Hunter, Carter T. Butts, Michal Bojanowski, Chad Klumb, 
+Steven M. Goodreau, and Martina Morris) (2003-2024). 
+statnet: Software tools for the Statistical Modeling of Network Data. 
+         URL https://statnet.org"),
 
 p(strong("statnetWeb")),
 tags$pre("Emily N. Beylerian, Samuel Jenness, Kirk Li, and Martina Morris (2014).
 statnetWeb: A Graphical User Interface for Network Modeling with 'Statnet'.")
-                       )
+              )
             ),
 
             p('If you use statnet or statnetWeb, please cite them.',
@@ -90,10 +92,10 @@ statnetWeb: A Graphical User Interface for Network Modeling with 'Statnet'.")
               'and the component packages can be found here:'),
             tags$ul(
               tags$li(a('Citing statnet',
-                        href='http://statnet.org/attribution',
+                        href='https://statnet.org/attribution#citation',
                         target='_blank')),
               tags$li(a('License and source code attribution requirements',
-                        href = 'http://statnet.org/attribution',
+                        href = 'https://statnet.org/attribution#license-and-attribution',
                         target = '_blank')),
               tags$li(a('statnet Organization on GitHub',
                         href = 'https://github.com/statnet',
@@ -111,32 +113,32 @@ statnetWeb: A Graphical User Interface for Network Modeling with 'Statnet'.")
               div(title=paste("Homepage of the statnet project with tutorials,",
                               "publications and recent news."),
                   a("About statnet",
-                    href = "http://statnet.org/", target = "_blank")
+                    href = "https://statnet.org/about/", target = "_blank")
               ),
 
               column(11, offset = 1,
                     span(id="linktitle1",'Key background papers',icon('angle-double-left')),br(),
                     div(id="linkbox1",
                       a("ergm: Journal of Statistical Software",
-                        href = "http://www.jstatsoft.org/v24/i03/", target = "_blank"),
+                        href = "https://www.jstatsoft.org/article/view/v024i03", target = "_blank"),
                       br(),
                       a("Using ergm: Journal of Statistical Software",
-                        href = "http://www.jstatsoft.org/v24/i04/", target = "_blank")),
+                        href = "https://www.jstatsoft.org/article/view/v024i04", target = "_blank")),
 
                     span(id="linktitle2",'Tutorials and documentation',icon('angle-double-left')),br(),
                     div(id="linkbox2",
                         a("ergm tutorial",
-                        href = "https://github.com/statnet/Workshops/wiki",
+                        href = "https://statnet.org/workshops/",
                         target= "_blank"),
                       br(),
                       a("ergm documentation on CRAN",
-                        href = "http://cran.r-project.org/web/packages/ergm/ergm.pdf",
+                        href = "https://cran.r-project.org/web/packages/ergm/ergm.pdf",
                         target = "_blank")),
                     style="margin-bottom:10px;"),
               br(),
               div(a("statnetWeb on GitHub", href="https://github.com/statnet/statnetWeb",
                     target="_blank")),
-              div(a("Shiny: a web application framework for R", href="http://shiny.rstudio.com/",
+              div(a("Shiny: a web application framework for R", href="https://shiny.posit.co/",
                     target="_blank"))
    ),
    fluidRow(img(src= 'UW.Wordmark_ctr_K.jpg', width=200), style="margin-left:15px;"),
@@ -500,10 +502,10 @@ fluidRow(
                            )
         ),
       tabPanel('Attributes', br(),
-               conditionalPanel('input.attrview == "Large table"',
-                                dataTableOutput("attrtbl_lg")
+               conditionalPanel('input.attrview == "Raw Data"',
+                                DT::DTOutput("attrtbl_lg")
                                 ),
-               conditionalPanel('input.attrview == "Small tables"',
+               conditionalPanel('input.attrview == "Frequency tables"',
                                 verbatimTextOutput("attrtbl_sm")
                                 ),
                conditionalPanel('input.attrview == "Plot summaries"',
@@ -764,8 +766,8 @@ fluidRow(
                                   label = "Download Plot", class = "btn-sm")),
                 conditionalPanel(condition='input.plottabs == "Attributes"',
                                  selectInput("attrview", label = "View attributes in:",
-                                             choices = c("Large table",
-                                                         "Small tables",
+                                             choices = c("Raw Data",
+                                                         "Frequency tables",
                                                          "Plot summaries")),
                                  br(),
                                  uiOutput("attrcheck")
