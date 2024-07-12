@@ -1464,7 +1464,7 @@ output$attrcheck <- renderUI({
 })
 outputOptions(output, "attrcheck", suspendWhenHidden = FALSE)
 
-output$attrtbl_lg <- renderDataTable({
+output$attrtbl_lg <- DT::renderDT({
   dt <- nwdf()[, c("Names", input$attrcols)]
   dt
 }, options = list(pageLength = 10))
