@@ -35,20 +35,20 @@ inlineSelectInput <- function(inputId, label, choices, ...) {
 }
 
 # create a list of unique term names
-splitargs <- function(searchterm, nw){
+# allow searching by string -- set to NULL to get search by nw attributes
+splitargs <- function(string, nw){
   sink("NUL")
-  allterms <- search.ergmTerms(keyword = searchterm, net = nw)
+  allterms <- search.ergmTerms(search = string, net = nw)
   sink()
   ind1 <- regexpr(pattern = "\\(", allterms)
   ind2 <- regexpr(pattern = "\\)", allterms)
   termnames <- substr(allterms, start = rep(1, length(allterms)), stop = ind1 - 1)
   termargs <- substr(allterms, start = ind1, stop = ind2)
   dups <- duplicated(termnames)
-  termargs <- termargs[-which(dups)]
-  termnames <- unique(termnames)
+  termnames <- termnames[!dups]
+  termargs <- termargs[!dups]
   list(names = termnames, args = termargs)
 }
-
 
 
 # disable widgets when they should not be usable

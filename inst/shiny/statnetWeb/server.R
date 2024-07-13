@@ -22,7 +22,8 @@ histblue <- "#83B6E1"
 tgray3 <- adjustcolor("gray", alpha.f = 0.3)
 tgray7 <- adjustcolor("gray", alpha.f = 0.7)
 
-allterms <- splitargs(searchterm = "")
+# All ergm terms (no network or search terms passed)
+allterms <- splitargs()
 
 shinyServer(
   function(input, output, session){
