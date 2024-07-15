@@ -1,28 +1,28 @@
 Package: statnetWeb
 Type: Package
 Title: A Shiny App for Network Modeling with 'statnet'
-Version: 0.5.7
-Date: 2021-07-28
+Version: 0.5.8
 Authors@R: c(
   person("Martina", "Morris", email = "morrism@uw.edu", role = c("cre", "aut")),
   person("Emily", "Beylerian", email = "ebeylerian@path.org", role = "aut"),
   person("Kirk", "Li", email = "kirkli@uw.edu", role = "ctb"),
-  person("Samuel", "Jenness", email = "samuel.m.jenness@emory.edu", role = "ctb"))
+  person("Samuel", "Jenness", email = "samuel.m.jenness@emory.edu", role = "ctb"),
+  person("Michał", " Bojanowski", email="michal2992@gmail.com", role=c("ctb"), comment=c(ORCID="0000-0001-7503-852X")))
 Description: A graphical user interface for cross-sectional network modeling 
     with the 'statnet' software suite <https://github.com/statnet>.
 License: GPL-3
 Depends:
-    R (>= 4.0),
-    shiny (>= 1.3),
-    ergm (>= 4.0),
-    network (>= 1.17),
+    R (>= 4.4),
+    shiny (>= 1.8),
+    ergm (>= 4.6),
+    network (>= 1.18),
     lattice,
     latticeExtra
 Imports:
     sna,
     RColorBrewer
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
 Encoding: UTF-8
 BugReports: https://github.com/statnet/statnetWeb/issues
-URL: https://statnet.org
+URL: https://statnet.org, https://github.com/statnet/statnetWeb
