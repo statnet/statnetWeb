@@ -12,7 +12,7 @@ Description: A graphical user interface for cross-sectional network modeling
     with the 'statnet' software suite <https://github.com/statnet>.
 License: GPL-3
 Depends:
-    R (>= 4.4),
+    R (>= 4.0),
     shiny (>= 1.8),
     ergm (>= 4.6),
     network (>= 1.18),
