@@ -27,7 +27,7 @@ More info on the statnet suite of packages:
 https://statnet.org 
 
 statnet packages on CRAN used by statnetWeb:  
-http://cran.r-project.org/web/packages/ergm/  
-http://cran.r-project.org/web/packages/network/  
-http://cran.r-project.org/web/packages/sna/
+https://cran.r-project.org/web/packages/ergm/  
+https://cran.r-project.org/web/packages/network/  
+https://cran.r-project.org/web/packages/sna/
 
