@@ -2,9 +2,40 @@
 % Please edit documentation in R/statnetWeb-package.R
 \docType{package}
 \name{statnetWeb}
+\alias{statnetWeb-package}
 \alias{statnetWeb}
 \title{statnetWeb: A graphical user interface for network analysis.}
 \description{
-The statnetWeb package makes it easy to run the graphical user interface
-for the statnet suite of network analysis packages.
+The statnetWeb package makes it easy to run
+statistical analyses of static network data 
+via an intuitive graphical user interface.  
+It is an Rshiny application based on 
+the Statnet suite of network analysis packages  
+See https://statnet.org for more information.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://statnet.org}
+  \item \url{https://github.com/statnet/statnetWeb}
+  \item Report bugs at \url{https://github.com/statnet/statnetWeb/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Martina Morris \email{morrism@uw.edu}
+
+Authors:
+\itemize{
+  \item Emily Beylerian \email{ebeylerian@path.org}
+}
+
+Other contributors:
+\itemize{
+  \item Kirk Li \email{kirkli@uw.edu} [contributor]
+  \item Samuel Jenness \email{samuel.m.jenness@emory.edu} [contributor]
+  \item Michał Bojanowski \email{michal2992@gmail.com} (\href{https://orcid.org/0000-0001-7503-852X}{ORCID}) [contributor]
+}
+
+}
+\keyword{internal}

@@ -1,10 +1,17 @@
 #' statnetWeb: A graphical user interface for network analysis.
 #'
-#' The statnetWeb package makes it easy to run the graphical user interface
-#' for the statnet suite of network analysis packages.
+#' The statnetWeb package makes it easy to run
+#' statistical analyses of static network data 
+#' via an intuitive graphical user interface.  
+#' It is an Rshiny application based on 
+#' the Statnet suite of network analysis packages  
+#' See https://statnet.org for more information.
 #'
-#' @docType package
 #' @name statnetWeb
+
+#' @keywords internal
+"_PACKAGE"
+
 #' @import shiny
 #' @import ergm
 #' @import network
@@ -25,4 +32,5 @@
 #' @importFrom sna rgraph
 #' @importFrom sna symmetrize
 #' @importFrom RColorBrewer brewer.pal
+
 NULL
