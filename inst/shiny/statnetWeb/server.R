@@ -2982,11 +2982,11 @@ output$termdoc <- renderUI({
     return(p("Select or search for a term in the menu above."))
   }
   chrvec <- capture.output(search.ergmTerms(name = myterm))
-  desc <- strsplit(chrvec[3], split = "_")
+  desc <- strsplit(capture.output(cat(chrvec[3:(length(chrvec)-2)])), split = ":")
   p(chrvec[1], br(),br(),
     strong(chrvec[2]), br(),br(),
-    em(desc[[1]][2]), desc[[1]][3], br(),
-    chrvec[4])
+    em(paste0(desc[[1]][1], ": ")), desc[[1]][2], br(),br(),
+    em(chrvec[length(chrvec)-1]))
 })
 
 observe({
