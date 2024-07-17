@@ -1,7 +1,7 @@
 #' statnetWeb: A graphical user interface for network analysis.
 #'
 #' The statnetWeb package makes it easy to run
-#' statistical analyses of static network data 
+#' descriptive statistics, graphics and statistical analyses of network data 
 #' via an intuitive graphical user interface.  
 #' It is an Rshiny application based on 
 #' the Statnet suite of network analysis packages  
