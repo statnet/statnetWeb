@@ -47,3 +47,9 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+          
+      - name: Install tidy (on Linux if running vignettes)
+        if: runner.os == 'Linux' && contains(matrix.config.flags, 'vignettes')
+        run: |
+          /usr/bin/sudo DEBIAN_FRONTEND=noninteractive apt-get install -y tidy
+        shell: bash
