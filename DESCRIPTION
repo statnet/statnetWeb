@@ -18,6 +18,7 @@ Depends:
     lattice,
     latticeExtra
 Imports:
+    DT,
     sna,
     RColorBrewer
 RoxygenNote: 7.3.2
