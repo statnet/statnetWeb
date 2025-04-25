@@ -1231,7 +1231,7 @@ output$datadesc <- renderUI({
   text
 })
 
-output$rawdatafile <- renderPrint({
+output$rawdata_stats <- renderPrint({
   raw <- matrix(nrow=2,ncol=1)
   rownames(raw)<-c("name:", "size:")
   if(!is.null(input$rawdatafile)){
