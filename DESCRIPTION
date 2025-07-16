@@ -1,6 +1,6 @@
 Package: statnetWeb
 Title: A Shiny App for Network Modeling with 'statnet'
-Version: 0.5.8
+Version: 0.7
 Authors@R: c(
   person("Martina", "Morris", email = "morrism@uw.edu", role = c("cre", "aut")),
   person("Emily", "Beylerian", email = "ebeylerian@path.org", role = "aut"),
