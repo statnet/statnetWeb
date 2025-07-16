@@ -15,5 +15,9 @@ NUL
 #shinyapps files
 shinyapps/
 inst/shiny/rsconnect
+inst/shiny/statnetWeb/rsconnect/
 
 .DS_Store
+
+# CRAN submission
+CRAN-SUBMISSION
