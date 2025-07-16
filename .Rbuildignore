@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+rsconnect
 inst/shiny/rsconnect
 inst/pics
 inst/html
@@ -8,3 +9,4 @@ LICENSE
 ^\.travis\.yml$
 ^\.github$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

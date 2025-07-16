@@ -34,16 +34,26 @@ inlineSelectInput <- function(inputId, label, choices, ...) {
                       lapply(choices, tags$option)))
 }
 
-# create a list of unique term names
+# create a list of unique term names and arguments
 # allow searching by string -- set to NULL to get search by nw attributes
+# note not all terms have arguments, so pattern matching accomodates
+
 splitargs <- function(string, nw){
   sink("NUL")
   allterms <- search.ergmTerms(search = string, net = nw)
   sink()
+  
+  hasarg <- ifelse(
+    grepl(pattern = "[^ ]\\(", allterms), 1, 0)
   ind1 <- regexpr(pattern = "\\(", allterms)
   ind2 <- regexpr(pattern = "\\)", allterms)
-  termnames <- substr(allterms, start = rep(1, length(allterms)), stop = ind1 - 1)
-  termargs <- substr(allterms, start = ind1, stop = ind2)
+  
+  termnames <- substr(allterms, 
+                      start = rep(1, length(allterms)), 
+                      stop = ifelse(hasarg, ind1-1, ind1-2))
+  termargs <- ifelse(hasarg,
+                     substr(allterms, start = ind1, stop=ind2),
+                     "")
   dups <- duplicated(termnames)
   termnames <- termnames[!dups]
   termargs <- termargs[!dups]
