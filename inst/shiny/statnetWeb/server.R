@@ -907,7 +907,7 @@ allmodelsimreac <- reactive({
 })
 
 # Currently, the reactive statements that control the sizing/coloring/legend in
-# thesimulation plots use the attributes from the original network as a point
+# the simulation plots use the attributes from the original network as a point
 # of reference. If the method for simulating networks changes from applying the
 # same distribution of attributes, these `get.vertex.attribute` commands for
 # `minsize` and `maxsize` would also need to change.
@@ -1296,7 +1296,7 @@ output$attr2 <- renderPrint({
 output$dynamiccolor <- renderUI({
   selectInput('colorby',
               label = 'Color nodes according to:',
-              c('None' = 2, attrib()))
+              c('None' = 2, menuattr()))
 })
 outputOptions(output,'dynamiccolor', suspendWhenHidden=FALSE, priority=10)
 
