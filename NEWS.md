@@ -1,3 +1,5 @@
+# statnetWeb (development version)
+
 # statnetWeb 0.6.1
 
 ## Bugfixes
