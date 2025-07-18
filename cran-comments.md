@@ -2,7 +2,6 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new minor release.
-* Employed usethis::use_release_issue()
-* Note refers to HTML tidy check on local machine
-* No revdeps
+* This is a patch.
+* Release checklist based on CRAN policies (https://cran.r-project.org/web/packages/policies.html) and usethis::use_release_issue()
+* No reverse dependencies.
