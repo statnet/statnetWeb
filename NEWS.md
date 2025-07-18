@@ -1,3 +1,12 @@
+# statnetWeb 0.6.1
+
+## Bugfixes
+
+* mixingmatrix now ignores a blank network
+* update to coef() accessor for ergm fit objects
+* import DT
+
+
 # statnetWeb 0.6
 
 ## Bugfixes

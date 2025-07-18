@@ -11,7 +11,7 @@ The app can be run in two ways:
 
 * Through the shinyapps server with this link:   https://statnet.shinyapps.io/statnetWeb  
 
-* On your local machine using the statnetWeb R package:
+* On your local machine after installing the package:
 ```r
 install.packages("statnetWeb")
 statnetWeb::run_sw()
