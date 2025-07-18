@@ -17,6 +17,7 @@
 #' @import network
 #' @import lattice
 #' @import latticeExtra
+#' @importFrom DT renderDT
 #' @importFrom sna betweenness
 #' @importFrom sna centralization
 #' @importFrom sna closeness
