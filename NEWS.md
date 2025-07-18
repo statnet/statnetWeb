@@ -1,5 +1,3 @@
-# statnetWeb 0.6.1
-
 ## Bugfixes
 
 * mixingmatrix now ignores a blank network
