@@ -25,3 +25,7 @@ RoxygenNote: 7.3.2
 Encoding: UTF-8
 BugReports: https://github.com/statnet/statnetWeb/issues
 URL: https://statnet.org, https://github.com/statnet/statnetWeb
+Suggests: 
+    testthat (>= 3.0.0),
+    shinytest2
+Config/testthat/edition: 3

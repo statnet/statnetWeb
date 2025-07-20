@@ -212,7 +212,8 @@ fluidRow(
                column(6,
                     br(),
                     fileInput(inputId='rawdatafile', label=NULL, accept='text'),
-                    verbatimTextOutput('rawdatafile'))
+                    verbatimTextOutput('rawdata_stats')
+                    )
                 ),
              conditionalPanel(condition = 'input.filetype == 5',
                 column(6,
